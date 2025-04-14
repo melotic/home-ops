@@ -39,6 +39,7 @@ spec:
       - --events
       - --ignore-ingress-tls-spec
       - --ingress-class=external
+      - --log-level=debug
     policy: sync
     sources: ["crd", "ingress"]
     txtPrefix: k8s.
