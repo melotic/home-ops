@@ -41,8 +41,15 @@ spec:
     postgresql:
       enabled: true
       primary:
-        persistence:
-          enabled: false
+        # The container must run as UID 977 / GID 988 to match our NFS export config.
+        # Our NAS uses `all_squash,anonuid=977,anongid=988`, which maps all users to UID 977.
+        # Bitnami PostgreSQL normally runs as UID 1001, but this fails with NFS unless permissions match.
+        # Running the container with UID 977 ensures proper ownership of /bitnami/postgresql/data.
+        containerSecurityContext:
+          runAsUser: 977
+          runAsGroup: 988
+        podSecurityContext:
+          fsGroup: 988
       auth:
         existingSecret: postgres-secret
     ingress:
