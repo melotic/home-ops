@@ -13,5 +13,6 @@
   "yaml.schemas": {
     "kubernetes": "./kubernetes/**/*.yaml",
     "https://raw.githubusercontent.com/dcermak/vscode-rke-cluster-config/main/schemas/cluster.yml.json": "file:///Users/justin/dev/home-ops/cluster.yaml"
-  }
+  },
+  "sarif-viewer.connectToGithubCodeScanning": "off"
 }
