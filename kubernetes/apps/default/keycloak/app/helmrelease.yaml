@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/ocirepository_v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: keycloak
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 24.5.3
+  url: oci://registry-1.docker.io/bitnamicharts/keycloak
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keycloak
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: keycloak
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    proxy: edge
+    production: true
+    auth:
+      existingSecret: keycloak-secret
+      passwordSecretKey: admin-password
+    postgresql:
+      enabled: true
+      auth:
+        existingSecret: keycloak-secret
+        secretKeys:
+          userPasswordKey: postgresql-password
+    ingress:
+      enabled: true
+      ingressClassName: external
+      annotations:
+        external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+      hostname: "{{ .Release.Name }}.${SECRET_DOMAIN}"
+    adminIngress:
+      enabled: true
+      ingressClassName: internal
+      annotations:
+        external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
+      hostname: "{{ .Release.Name }}-admin.${SECRET_DOMAIN}"
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
