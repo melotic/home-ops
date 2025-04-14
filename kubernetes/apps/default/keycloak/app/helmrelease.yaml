@@ -40,6 +40,9 @@ spec:
       defaultStorageClass: nfs-csi
     postgresql:
       enabled: true
+      primary:
+        persistence:
+          enabled: false
       auth:
         existingSecret: postgres-secret
     ingress:
