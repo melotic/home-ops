@@ -36,6 +36,8 @@ spec:
     auth:
       existingSecret: keycloak-secret
       passwordSecretKey: admin-password
+    global:
+      defaultStorageClass: nfs-csi
     postgresql:
       enabled: true
       auth:
