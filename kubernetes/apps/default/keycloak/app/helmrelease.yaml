@@ -41,9 +41,7 @@ spec:
     postgresql:
       enabled: true
       auth:
-        existingSecret: keycloak-secret
-        secretKeys:
-          userPasswordKey: pg-user-password
+        existingSecret: postgres-secret
     ingress:
       enabled: true
       ingressClassName: external
