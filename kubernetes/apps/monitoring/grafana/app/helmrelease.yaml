@@ -44,6 +44,8 @@ spec:
         check_for_updates: false
         check_for_plugin_updates: false
         reporting_enabled: false
+      auth.basic:
+        enabled: false
       auth.generic_oauth:
         enabled: true
         name: Keycloak
