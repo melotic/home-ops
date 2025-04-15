@@ -52,9 +52,14 @@ spec:
         allow_keyring: true
         client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
         client_secret: = $__file{/etc/secrets/auth_generic_oauth/client_secret}
+        scopes: openid email profile offline_access roles
+        email_attribute_path: email
+        login_attribute_path: username
+        name_attribute_path: full_name
         auth_url: https://keycloak.${SECRET_DOMAIN}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
         token_url: https://keycloak.${SECRET_DOMAIN}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token
         api_url: https://keycloak.${SECRET_DOMAIN}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/userinfo
+        role_attribute_path: contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'
       news:
         news_feed_enabled: false
     extraSecretMounts:
