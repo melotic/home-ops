@@ -16,7 +16,6 @@
     "prEditedNotification",
     "prIgnoreNotification",
   ],
-  schedule: ["every weekend"],
   ignorePaths: ["**/*.sops.*"],
   flux: {
     fileMatch: ["(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"],
