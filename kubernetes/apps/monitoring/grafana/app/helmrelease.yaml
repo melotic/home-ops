@@ -33,8 +33,6 @@ spec:
   values:
     deploymentStrategy:
       type: Recreate
-    admin:
-      existingSecret: grafana-admin-secret
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
@@ -50,13 +48,19 @@ spec:
         enabled: true
         name: Keycloak
         allow_keyring: true
-        client_id: grafana
-        client_secret: ${KEYCLOAK_GRAFANA_CLIENT_SECRET}
+        client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
+        client_secret: = $__file{/etc/secrets/auth_generic_oauth/client_secret}
         auth_url: https://keycloak.${SECRET_DOMAIN}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
         token_url: https://keycloak.${SECRET_DOMAIN}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token
         api_url: https://keycloak.${SECRET_DOMAIN}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/userinfo
       news:
         news_feed_enabled: false
+    extraSecretMounts:
+      - name: auth-generic-oauth-secret-mount
+        secretName: grafana-oauth-secret
+        defaultMode: 0440
+        mountPath: /etc/secrets/auth_generic_oauth
+        readOnly: true
     datasources:
       datasources.yaml:
         apiVersion: 1
@@ -218,9 +222,9 @@ spec:
     serviceMonitor:
       enabled: true
     ingress:
-       enabled: true
-       ingressClassName: internal
-       hosts: ["grafana.${SECRET_DOMAIN}"]
+      enabled: true
+      ingressClassName: internal
+      hosts: ["grafana.${SECRET_DOMAIN}"]
     persistence:
       enabled: false
     testFramework:
