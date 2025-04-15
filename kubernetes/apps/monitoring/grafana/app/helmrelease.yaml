@@ -50,9 +50,9 @@ spec:
         allow_keyring: true
         client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
         client_secret: = $__file{/etc/secrets/auth_generic_oauth/client_secret}
-        auth_url: https://keycloak.${SECRET_DOMAIN}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
-        token_url: https://keycloak.${SECRET_DOMAIN}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token
-        api_url: https://keycloak.${SECRET_DOMAIN}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/userinfo
+        auth_url: https://keycloak.${SECRET_DOMAIN}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/auth
+        token_url: https://keycloak.${SECRET_DOMAIN}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token
+        api_url: https://keycloak.${SECRET_DOMAIN}/realms/${KEYCLOAK_REALM}/protocol/openid-connect/userinfo
       news:
         news_feed_enabled: false
     extraSecretMounts:
