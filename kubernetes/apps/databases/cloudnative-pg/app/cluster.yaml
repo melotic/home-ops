@@ -37,10 +37,8 @@ spec:
       instances: 2
       affinity:
         topologyKey: kubernetes.io/hostname
-      postgresUID: 977
-      postgresGID: 988
       storage:
-        storageClass: nfs-csi
+        storageClass: smb-cnpg
       monitoring:
         enabled: true
         podMonitor:
