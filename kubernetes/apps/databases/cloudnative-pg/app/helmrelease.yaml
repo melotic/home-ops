@@ -49,7 +49,9 @@ spec:
       enabled: true
       provider: azure
       azure:
+        storageAccount: matrixpgbackup
         containerName: pg-backups
+        path: /v1
       secret:
         create: false
         name: pg-azure-backup-secret
