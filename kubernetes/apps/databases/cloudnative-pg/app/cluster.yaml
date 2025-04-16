@@ -1,0 +1,47 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cloudnative-pg-cluster
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: cluster
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    type: postgresql
+    mode: standalone
+    cluster:
+      instances: 2
+      affinity:
+        topologyKey: kubernetes.io/hostname
+      storage:
+        storageClass: nfs-csi
+      monitoring:
+        enabled: true
+        podMonitor:
+          enabled: true
+        prometheusRule:
+          enabled: true
+    backups:
+      enabled: true
+      provider: azure
+      azure:
+        storageAccount: matrixpgbackup
+        containerName: pg-backups
+        path: /v1
+      secret:
+        create: false
+        name: pg-azure-backup-secret
+      scheduledBackups:
+        - name: daily-backup # Daily at midnight
+          schedule: "0 0 0 * * *" # Daily at midnight
+          backupOwnerReference: self
+      retentionPolicy: "30d"
