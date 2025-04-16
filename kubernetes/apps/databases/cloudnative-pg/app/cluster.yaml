@@ -33,7 +33,6 @@ spec:
   values:
     type: postgresql
     mode: standalone
-    nameOverride: cnpg
     cluster:
       instances: 2
       affinity:
