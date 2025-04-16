@@ -20,6 +20,9 @@ metadata:
   name: cloudnative-pg
 spec:
   interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: cluster
   install:
     remediation:
       retries: -1
