@@ -7,7 +7,7 @@ metadata:
   namespace: kube-system # Required for Renovate lookups
 spec:
   interval: 12h
-  url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-nfs/master/charts/
+  url: https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -31,3 +31,6 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  values:
+    controller:
+      runOnControlPlane: true
