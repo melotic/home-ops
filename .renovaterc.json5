@@ -34,27 +34,18 @@
       groupName: "CoreDNS",
       matchDatasources: ["docker"],
       matchPackageNames: ["/coredns/"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
     },
     {
       description: "Flux Operator Group",
       groupName: "Flux Operator",
       matchPackageNames: ["/flux-operator/", "/flux-instance/"],
       matchDatasources: ["docker"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
     },
     {
       description: "Spegel Group",
       groupName: "Spegel",
       matchDatasources: ["docker"],
       matchPackageNames: ["/spegel/"],
-      group: {
-        commitMessageTopic: "{{{groupName}}} group",
-      },
     },
     {
       description: "Auto-merge GitHub Actions",
@@ -69,22 +60,18 @@
       matchUpdateTypes: ["major"],
       semanticCommitType: "feat",
       commitMessagePrefix: "{{semanticCommitType}}({{semanticCommitScope}})!:",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
     },
     {
       matchUpdateTypes: ["minor"],
       semanticCommitType: "feat",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
     },
     {
       matchUpdateTypes: ["patch"],
       semanticCommitType: "fix",
-      commitMessageExtra: "( {{currentVersion}} → {{newVersion}} )",
     },
     {
       matchUpdateTypes: ["digest"],
       semanticCommitType: "chore",
-      commitMessageExtra: "( {{currentDigestShort}} → {{newDigestShort}} )",
     },
     {
       matchDatasources: ["docker"],
