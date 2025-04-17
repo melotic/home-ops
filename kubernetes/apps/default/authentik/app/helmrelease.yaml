@@ -35,7 +35,6 @@ spec:
     global:
       deploymentAnnotations:
         reloader.stakater.com/auto: "true"
-      defaultStorageClass: nfs-csi
       topologySpreadContraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
@@ -75,3 +74,6 @@ spec:
     # TODO: deploy seperate redis cluster
     redis:
       enabled: true
+      master:
+        persistence:
+          storageClass: nfs-csi
