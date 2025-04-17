@@ -30,6 +30,10 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  # import values from flux2-monitoring-example, prioritizing values in this repo
+  valuesFrom:
+    - kind: ConfigMap
+      name: flux-ksm-config
   values:
     crds:
       enabled: true

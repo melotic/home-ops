@@ -6,3 +6,7 @@ resources:
   - ./alertmanagerconfig.yaml
   - ./helmrelease.yaml
   - ./secrets.sops.yaml
+configMapGenerator:
+  - name: flux-ksm-config
+    files:
+      - ./kube-state-metrics-config.yaml
