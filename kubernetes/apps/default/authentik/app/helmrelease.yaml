@@ -1,0 +1,73 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: authentik
+  namespace: default
+spec:
+  interval: 1h
+  url: https://charts.goauthentik.io
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: goauthentik/authentik
+      version: 2025.2.4
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: authentik
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: authentik-pg-cluster
+  values:
+    global:
+      topologySpreadContraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: authentik
+    authentik:
+      secret_key: "${SECRET_AUTHENTIK_SECRET_KEY}"
+      error_reporting:
+        enabled: false
+      postgresql:
+        host: authentik-pg-cluster-rw
+        user: file:///postgres-creds/username
+        password: file:///postgres-creds/passwordk
+    server:
+      replicas: 2
+      volumes: &volumes
+        - name: postgres-creds
+          secret:
+            secretName: authentik-pg-cluster-app
+      volumeMounts: &mounts
+        - name: postgres-creds
+          mountPath: /postgres-creds
+          readOnly: true
+      worker:
+        volumes: *volumes
+        volumeMounts: *mounts
+      ingress:
+        enabled: true
+        ingressClassName: external
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
+        hosts:
+          - "login.${SECRET_DOMAIN}"
+    # TODO: deploy seperate redis cluster
+    redis:
+      enabled: true
