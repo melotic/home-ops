@@ -33,6 +33,7 @@ spec:
     - name: authentik-pg-cluster
   values:
     global:
+      defaultStorageClass: nfs-csi
       topologySpreadContraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
