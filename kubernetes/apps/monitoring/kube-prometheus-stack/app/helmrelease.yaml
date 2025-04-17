@@ -34,6 +34,7 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: flux-ksm-config
+      valuesKey: kube-state-metrics-config.yaml
   values:
     crds:
       enabled: true
