@@ -51,6 +51,7 @@ spec:
         host: authentik-pg-cluster-rw
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
+        name: app
     server:
       replicas: 2
       volumes: &volumes
