@@ -9,4 +9,3 @@ components:
 resources:
   - ./authentik/ks.yaml
   - ./echo/ks.yaml
-  - ./keycloak/ks.yaml
