@@ -35,6 +35,10 @@ spec:
     global:
       deploymentAnnotations:
         reloader.stakater.com/auto: "true"
+      deploymentStrategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
       topologySpreadContraints:
         - maxSkew: 1
           topologyKey: kubernetes.io/hostname
