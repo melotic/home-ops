@@ -54,6 +54,7 @@ spec:
         name: authentik
         client_id: $__file{/etc/secrets/auth_generic_oauth/client_id}
         client_secret: = $__file{/etc/secrets/auth_generic_oauth/client_secret}
+        use_pkce: true
         scopes: openid email profile
         auth_url: "https://login.${SECRET_DOMAIN}/application/o/authorize/"
         token_url: "https://login.${SECRET_DOMAIN}/application/o/token/"
