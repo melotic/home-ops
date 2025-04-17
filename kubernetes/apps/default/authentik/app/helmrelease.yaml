@@ -50,7 +50,7 @@ spec:
       postgresql:
         host: authentik-pg-cluster-rw
         user: file:///postgres-creds/username
-        password: file:///postgres-creds/passwordk
+        password: file:///postgres-creds/password
     server:
       replicas: 2
       volumes: &volumes
