@@ -71,9 +71,6 @@ spec:
     worker:
       volumes: *volumes
       volumeMounts: *mounts
-    postgresql:
-      auth:
-        database: app
     # TODO: deploy seperate redis cluster
     redis:
       enabled: true

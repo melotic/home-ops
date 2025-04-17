@@ -26,6 +26,9 @@ spec:
         topologyKey: kubernetes.io/hostname
       storage:
         storageClass: smb-cnpg
+      bootstrap:
+        initdb:
+          database: authentik
       monitoring:
         enabled: true
         podMonitor:
