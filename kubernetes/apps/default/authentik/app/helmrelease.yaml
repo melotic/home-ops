@@ -33,6 +33,8 @@ spec:
     - name: authentik-pg-cluster
   values:
     global:
+      deploymentAnnotations:
+        reloader.stakater.com/auto: "true"
       defaultStorageClass: nfs-csi
       topologySpreadContraints:
         - maxSkew: 1
@@ -59,9 +61,6 @@ spec:
         - name: postgres-creds
           mountPath: /postgres-creds
           readOnly: true
-      worker:
-        volumes: *volumes
-        volumeMounts: *mounts
       ingress:
         enabled: true
         ingressClassName: external
@@ -69,6 +68,9 @@ spec:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - "login.${SECRET_DOMAIN}"
+    worker:
+      volumes: *volumes
+      volumeMounts: *mounts
     # TODO: deploy seperate redis cluster
     redis:
       enabled: true
