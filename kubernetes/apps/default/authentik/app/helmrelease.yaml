@@ -51,7 +51,6 @@ spec:
         host: authentik-pg-cluster-rw
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
-        database: app
     server:
       replicas: 2
       volumes: &volumes
@@ -72,6 +71,9 @@ spec:
     worker:
       volumes: *volumes
       volumeMounts: *mounts
+    postgresql:
+      auth:
+        database: app
     # TODO: deploy seperate redis cluster
     redis:
       enabled: true
