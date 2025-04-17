@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: authentik
+  name: goauthentik
   namespace: default
 spec:
   interval: 1h
@@ -16,11 +16,11 @@ spec:
   interval: 1h
   chart:
     spec:
-      chart: goauthentik/authentik
+      chart: authentik
       version: 2025.2.4
       sourceRef:
         kind: HelmRepository
-        name: authentik
+        name: goauthentik
         namespace: default
   install:
     remediation:
