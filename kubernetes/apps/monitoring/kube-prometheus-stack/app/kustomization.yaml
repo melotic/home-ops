@@ -9,4 +9,6 @@ resources:
 configMapGenerator:
   - name: flux-ksm-config
     files:
-      - ./kube-state-metrics-config.yaml
+      - ./helm/kube-state-metrics-config.yaml
+configurations:
+  - ./helm/kustomizeconfig.yaml
