@@ -30,6 +30,8 @@ spec:
     remediation:
       retries: 3
   values:
+    cluster:
+      name: kubernetes
     destinations:
       - name: loki
         type: loki
