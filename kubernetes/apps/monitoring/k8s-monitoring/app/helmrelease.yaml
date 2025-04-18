@@ -6,7 +6,7 @@ metadata:
   name: k8s-monitoring
 spec:
   interval: 5m
-  url: https://kubernetes-sigs.github.io/metrics-server
+  url: https://grafana.github.io/helm-charts
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
