@@ -85,6 +85,6 @@ spec:
       peers:
         - name: peer-64513-v4
           peerASN: 64513
-          peerAddress: 10.60.0.1
+          peerAddress: 10.0.0.1
           peerConfigRef:
             name: bgp-peer-config-v4
