@@ -14,11 +14,9 @@ additionalMachineCertSans: *sans
 clusterPodNets: ["10.42.0.0/16"]
 clusterSvcNets: ["10.43.0.0/16"]
 
-
 # Disable built-in CNI to use Cilium
 cniConfig:
   name: none
-
 
 nodes:
   - hostname: "k8s-neo"
@@ -30,7 +28,9 @@ nodes:
       customization:
         systemExtensions:
           officialExtensions:
+            - siderolabs/iscsi-tools
             - siderolabs/qemu-guest-agent
+            - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -70,6 +70,8 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -107,8 +109,10 @@ nodes:
       customization:
         systemExtensions:
           officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
