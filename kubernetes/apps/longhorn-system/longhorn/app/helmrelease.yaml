@@ -27,7 +27,7 @@ spec:
   values:
     ingress:
       enabled: true
-      ingressClassName: external
+      ingressClassName: internal
       host: "longhorn.${SECRET_DOMAIN}"
     metrics:
       serviceMonitor:
