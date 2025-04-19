@@ -19,7 +19,6 @@ spec:
   chart:
     spec:
       chart: longhorn
-      reconcileStrategy: ChartVersion
       sourceRef:
         kind: HelmRepository
         name: longhorn-repo
