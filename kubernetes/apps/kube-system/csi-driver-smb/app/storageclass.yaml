@@ -4,7 +4,7 @@ metadata:
   name: smb-cnpg
 provisioner: smb.csi.k8s.io
 parameters:
-  source: //192.168.1.24/k8s
+  source: //10.60.10.20/k8s
   # if csi.storage.k8s.io/provisioner-secret is provided, will create a sub directory
   # with PV name under source
   csi.storage.k8s.io/provisioner-secret-name: smb-secret
