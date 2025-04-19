@@ -77,13 +77,14 @@ spec:
     matchLabels:
       kubernetes.io/os: linux
   bgpInstances:
-    # Router ASN: 64513
-    # Node ASN: 64514
-    - name: instance-64513
-      localASN: 64513
+    # k8s ASN: 64514
+    - name: instance-64514
+      localASN: 64514
+
+      # Router ASN: 64513
       peers:
-        - name: peer-64514-v4
-          peerASN: 64514
+        - name: peer-64513-v4
+          peerASN: 64513
           peerAddress: 10.60.0.1
           peerConfigRef:
             name: bgp-peer-config-v4
