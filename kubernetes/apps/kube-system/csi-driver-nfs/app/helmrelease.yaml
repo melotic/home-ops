@@ -38,7 +38,7 @@ spec:
       create: true
       name: nfs-csi
       parameters:
-        server: 192.168.1.24
+        server: 10.60.10.20
         share: /var/nfs/shared/k8s
       reclaimPolicy: Delete
       volumeBindingMode: Immediate # maybe change this to WaitForFirstConsumer
