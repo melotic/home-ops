@@ -5,3 +5,6 @@ kubernetes-k8s-wk-01.yaml
 kubernetes-k8s-wk-02.yaml
 kubernetes-k8s-wk-03.yaml
 talosconfig
+zion-k8s-trinity.yaml
+zion-k8s-niobe.yaml
+zion-k8s-neo.yaml

@@ -1,132 +1,127 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/budimanjojo/talhelper/master/pkg/config/schemas/talconfig.json
 ---
-clusterName: kubernetes
+clusterName: zion
 
 talosVersion: "${talosVersion}"
 kubernetesVersion: "${kubernetesVersion}"
 
-endpoint: https://192.168.5.8:6443
+endpoint: https://10.60.81.1:6443
 additionalApiServerCertSans: &sans
   - "127.0.0.1"
-  - "192.168.5.8"
+  - "10.60.81.1"
 additionalMachineCertSans: *sans
 
 clusterPodNets: ["10.42.0.0/16"]
 clusterSvcNets: ["10.43.0.0/16"]
 
+
 # Disable built-in CNI to use Cilium
 cniConfig:
   name: none
 
+
 nodes:
-  - hostname: "k8s-cp-01"
-    ipAddress: "192.168.5.50"
+  - hostname: "k8s-neo"
+    ipAddress: "10.60.80.1"
     installDisk: "/dev/sda"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/qemu-guest-agent
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:eb:0c:92"
+          hardwareAddr: "bc:24:11:e4:b4:74"
         dhcp: false
         addresses:
-          - "192.168.5.50/24"
+          - "10.60.80.1/16"
         routes:
           - network: "0.0.0.0/0"
-            gateway: "192.168.5.1"
+            gateway: "10.60.0.1"
         mtu: 1500
         vip:
-          ip: "192.168.5.8"
-  - hostname: "k8s-cp-02"
-    ipAddress: "192.168.5.166"
-    installDisk: "/dev/sda"
+          ip: "10.60.81.1"
+  - hostname: "k8s-niobe"
+    ipAddress: "10.60.80.2"
+    installDisk: "/dev/nvme0n1"
+    volumes:
+      - name: "EPHEMERAL"
+        provisioning:
+          diskSelector:
+            match: system_disk
+          minSize: 2GiB
+          maxSize: 56GiB
+          grow: false
+    userVolumes:
+      - name: longhorn-data
+        provisioning:
+          diskSelector:
+            match: "disk.transport == 'nvme'"
+          minSize: 150GiB
+          maxSize: 200GiB
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:9b:b6:5f"
+          hardwareAddr: "00:24:27:88:e6:a8"
         dhcp: false
         addresses:
-          - "192.168.5.166/24"
+          - "10.60.80.2/16"
         routes:
           - network: "0.0.0.0/0"
-            gateway: "192.168.5.1"
+            gateway: "10.60.0.1"
         mtu: 1500
         vip:
-          ip: "192.168.5.8"
-  - hostname: "k8s-cp-03"
-    ipAddress: "192.168.5.233"
-    installDisk: "/dev/sda"
+          ip: "10.60.81.1"
+  - hostname: "k8s-trinity"
+    ipAddress: "10.60.80.3"
+    installDisk: "/dev/nvme0n1"
+    volumes:
+      - name: "EPHEMERAL"
+        provisioning:
+          diskSelector:
+            match: system_disk
+          minSize: 2GiB
+          maxSize: 56GiB
+          grow: false
+    userVolumes:
+      - name: longhorn-data
+        provisioning:
+          diskSelector:
+            match: "disk.transport == 'nvme'"
+          minSize: 150GiB
+          maxSize: 200GiB
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915
+            - siderolabs/intel-ucode
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
-          hardwareAddr: "bc:24:11:fd:5e:34"
+          hardwareAddr: "04:0e:3c:92:31:01"
         dhcp: false
         addresses:
-          - "192.168.5.233/24"
+          - "10.60.80.3/16"
         routes:
           - network: "0.0.0.0/0"
-            gateway: "192.168.5.1"
+            gateway: "10.60.0.1"
         mtu: 1500
         vip:
-          ip: "192.168.5.8"
-  - hostname: "k8s-wk-01"
-    ipAddress: "192.168.5.204"
-    installDisk: "/dev/sda"
-    machineSpec:
-      secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
-    controlPlane: false
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "bc:24:11:23:f1:88"
-        dhcp: false
-        addresses:
-          - "192.168.5.204/24"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "192.168.5.1"
-        mtu: 1500
-  - hostname: "k8s-wk-02"
-    ipAddress: "192.168.5.81"
-    installDisk: "/dev/sda"
-    machineSpec:
-      secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
-    controlPlane: false
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "bc:24:11:2e:d1:01"
-        dhcp: false
-        addresses:
-          - "192.168.5.81/24"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "192.168.5.1"
-        mtu: 1500
-  - hostname: "k8s-wk-03"
-    ipAddress: "192.168.5.54"
-    installDisk: "/dev/sda"
-    machineSpec:
-      secureboot: false
-    talosImageURL: factory.talos.dev/installer/ce4c980550dd2ab1b17bbf2b08801c7eb59418eafe8f279833297925d67c7515
-    controlPlane: false
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "bc:24:11:5b:0c:6c"
-        dhcp: false
-        addresses:
-          - "192.168.5.54/24"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "192.168.5.1"
-        mtu: 1500
+          ip: "10.60.81.1"
 
 # Global patches
 patches:
@@ -141,4 +136,3 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
-
