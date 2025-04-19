@@ -50,6 +50,8 @@ spec:
             port: http-webhook
           initialDelaySeconds: 10
           timeoutSeconds: 5
+    extraArgs:
+      - --ingress-class=internal
     triggerLoopOnEvent: true
     policy: sync
     sources: ["crd", "ingress"]
