@@ -35,3 +35,4 @@ spec:
     defaultSettings:
       storageMinimalAvailablePercentage: 25
       storageOverProvisioningPercentage: 100
+      defaultDataPath: "/var/mnt/longhorn/"
