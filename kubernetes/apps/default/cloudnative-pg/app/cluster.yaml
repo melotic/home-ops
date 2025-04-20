@@ -49,7 +49,7 @@ spec:
         prometheusRule:
           enabled: true
     version:
-      postgresql: 17
+      postgresql: "17"
     # TODO: migrate to barman-cloud
     backups:
       enabled: true
