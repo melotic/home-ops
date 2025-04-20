@@ -35,3 +35,6 @@ spec:
       podMonitorEnabled: true
       grafanaDashboard:
         create: true
+    image:
+      repository: ghcr.io/cloudnative-pg/cloudnative-pg
+      tag: 1.26.0-rc2@sha256:2f07e6fd395cbec205be3fd8d9464cd8a47f7d83e57a92531ac4a2ab40c1132a
