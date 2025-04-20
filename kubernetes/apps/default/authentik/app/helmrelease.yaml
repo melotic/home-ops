@@ -2,7 +2,6 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
   name: goauthentik
-  namespace: default
 spec:
   interval: 1h
   url: https://charts.goauthentik.io
@@ -21,7 +20,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: goauthentik
-        namespace: default
   install:
     remediation:
       retries: -1
@@ -30,11 +28,9 @@ spec:
     remediation:
       retries: 3
   dependsOn:
-    - name: authentik-pg-cluster
+    - name: cnpg-cluster
   values:
     global:
-      deploymentAnnotations:
-        reloader.stakater.com/auto: "true"
       deploymentStrategy:
         type: RollingUpdate
         rollingUpdate:
@@ -48,13 +44,11 @@ spec:
               app.kubernetes.io/name: authentik
     authentik:
       secret_key: "${SECRET_AUTHENTIK_SECRET_KEY}"
-      error_reporting:
-        enabled: false
       postgresql:
-        host: authentik-pg-cluster-rw
+        host: cnpg-cluster-rw
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
-        name: app
+        name: authentik
     server:
       replicas: 2
       volumes: &volumes
@@ -80,4 +74,4 @@ spec:
       enabled: true
       master:
         persistence:
-          storageClass: nfs-csi
+          storageClass: longhorn

@@ -1,0 +1,10 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: &name authentik
+spec:
+  name: *name
+  owner: app
+  cluster:
+    name: cnpg-cluster
