@@ -5,5 +5,4 @@ kind: Kustomization
 resources:
   - ./cluster.yaml
   - ./helmrelease.yaml
-  - ./secrets.sops.yaml
   - ./storageclass.yaml
