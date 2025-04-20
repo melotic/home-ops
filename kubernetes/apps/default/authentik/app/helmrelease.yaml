@@ -54,7 +54,7 @@ spec:
       volumes: &volumes
         - name: postgres-creds
           secret:
-            secretName: authentik-pg-cluster-app
+            secretName: cnpg-cluster-app
       volumeMounts: &mounts
         - name: postgres-creds
           mountPath: /postgres-creds

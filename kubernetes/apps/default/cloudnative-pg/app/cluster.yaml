@@ -50,17 +50,15 @@ spec:
           enabled: true
     version:
       postgresql: "17"
-    # TODO: migrate to barman-cloud
     backups:
       enabled: true
       provider: azure
       azure:
-        storageAccount: matrixpgbackup
         containerName: pg-backups
-        path: /authentik
+        storageAccount: ${SECRET_AZURE_STORAGE_ACCOUNT}
+        storageKey: ${SECRET_AZURE_STORAGE_KEY}
       secret:
-        create: false
-        name: pg-azure-backup-secret
+        create: true
       scheduledBackups:
         - name: daily-backup # Daily at midnight
           schedule: "0 0 0 * * *" # Daily at midnight
