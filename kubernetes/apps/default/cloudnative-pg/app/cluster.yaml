@@ -57,6 +57,8 @@ spec:
         containerName: pg-backups
         storageAccount: ${SECRET_AZURE_STORAGE_ACCOUNT}
         storageKey: ${SECRET_AZURE_STORAGE_KEY}
+      secret:
+        create: true
       scheduledBackups:
         - name: daily-backup # Daily at midnight
           schedule: "0 0 0 * * *" # Daily at midnight
