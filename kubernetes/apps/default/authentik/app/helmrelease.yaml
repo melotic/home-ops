@@ -66,6 +66,10 @@ spec:
           external-dns.alpha.kubernetes.io/target: "external.${SECRET_DOMAIN}"
         hosts:
           - "login.${SECRET_DOMAIN}"
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
     worker:
       volumes: *volumes
       volumeMounts: *mounts
