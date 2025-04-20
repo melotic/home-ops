@@ -38,7 +38,6 @@ spec:
     mode: standalone
     cluster:
       instances: 3
-      imageName: ghcr.io/cloudnative-pg/cloudnative-pg:17.4@sha256:7fe409b20345c8269d070362d24715d322797126cfcdd45619267f29f7fa981e
       affinity:
         topologyKey: kubernetes.io/hostname
       storage:
