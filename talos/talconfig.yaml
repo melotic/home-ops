@@ -47,6 +47,8 @@ nodes:
   - hostname: "k8s-niobe"
     ipAddress: "10.60.80.2"
     installDisk: "/dev/nvme0n1"
+    patches:
+      - "@./patches/longhorn/machine-longhorn.yaml"
     volumes:
       - name: "EPHEMERAL"
         provisioning:
@@ -56,7 +58,7 @@ nodes:
           maxSize: 56GiB
           grow: false
     userVolumes:
-      - name: longhorn-data
+      - name: longhorn
         provisioning:
           diskSelector:
             match: "disk.transport == 'nvme'"
@@ -88,6 +90,8 @@ nodes:
   - hostname: "k8s-trinity"
     ipAddress: "10.60.80.3"
     installDisk: "/dev/nvme0n1"
+    patches:
+      - "@./patches/longhorn/machine-longhorn.yaml"
     volumes:
       - name: "EPHEMERAL"
         provisioning:
@@ -97,7 +101,7 @@ nodes:
           maxSize: 56GiB
           grow: false
     userVolumes:
-      - name: longhorn-data
+      - name: longhorn
         provisioning:
           diskSelector:
             match: "disk.transport == 'nvme'"
