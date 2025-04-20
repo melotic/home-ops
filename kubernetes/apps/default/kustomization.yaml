@@ -8,4 +8,5 @@ components:
   - ../../components/repos/app-template
 resources:
   - ./authentik/ks.yaml
+  - ./cloudnative-pg/ks.yaml
   - ./echo/ks.yaml
