@@ -49,8 +49,6 @@ spec:
           enabled: true
         prometheusRule:
           enabled: true
-    version:
-      postgresql: "17"
     backups:
       enabled: true
       provider: azure
