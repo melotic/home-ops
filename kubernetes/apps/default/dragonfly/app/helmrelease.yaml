@@ -1,0 +1,37 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/ocirepository-source-v1beta2.json
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: dragonfly
+spec:
+  interval: 5m
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: v1.1.11
+  url: oci://ghcr.io/dragonflydb/dragonfly-operator/helm/dragonfly-operator
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/refs/heads/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dragonfly-operator
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: dragonfly
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    serviceMonitor:
+      enabled: true
+    grafanaDashboard:
+      enabled: true
