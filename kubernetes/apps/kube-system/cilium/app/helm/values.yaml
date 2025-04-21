@@ -1,28 +1,53 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cilium/cilium/refs/heads/main/install/kubernetes/cilium/values.schema.json
 ---
 autoDirectNodeRoutes: true
-bpf:
-  masquerade: true
-  # Ref: https://github.com/siderolabs/talos/issues/10002
-  hostLegacyRouting: true
 bgpControlPlane:
   enabled: true
-cni:
-  # Required for pairing with Multus CNI
-  exclusive: false
+bpf:
+  # Ref: https://github.com/siderolabs/talos/issues/10002
+  hostLegacyRouting: true
+  masquerade: true
 cgroup:
   automount:
     enabled: false
   hostRoot: /sys/fs/cgroup
+cni:
+  # Required for pairing with Multus CNI
+  exclusive: false
 # NOTE: devices might need to be set if you have more than one active NIC on your hosts
 # devices: eno+ eth+
+dashboards:
+  enabled: true
+encryption:
+  enabled: true
+  nodeEncryption: true
+  type: wireguard
 endpointRoutes:
   enabled: true
 envoy:
   enabled: false
-dashboards:
-  enabled: true
 hubble:
-  enabled: false
+  enabled: true
+  metrics:
+    dashboards:
+      enabled: true
+    enabled:
+      - dns
+      - drop
+      - flow
+      - http
+      - tcp
+    serviceMonitor:
+      enabled: true
+  relay:
+    enabled: true
+  ui:
+    enabled: true
+    ingress:
+      className: internal
+      enabled: true
+      hosts:
+        - hubble.${SECRET_DOMAIN}
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "10.60.0.0/16"
