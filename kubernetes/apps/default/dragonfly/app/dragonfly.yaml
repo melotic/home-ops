@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/dragonflydb.io/dragonfly_v1alpha1.json
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  name: &app dragonfly
+spec:
+  replicas: 3
+  args:
+    - --cluster_mode=emulated
+    - --lock_on_hashtags
+    - --maxmemory=$(MAX_MEMORY)Mi
+    - --proactor_threads=2
+  env:
+    - name: MAX_MEMORY
+      valueFrom:
+        resourceFieldRef:
+          resource: limits.memory
+          divisor: 1Mi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: *app
