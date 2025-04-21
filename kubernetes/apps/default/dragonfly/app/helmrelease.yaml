@@ -22,7 +22,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: cloudnative-pg
+    name: dragonfly
   install:
     remediation:
       retries: -1
