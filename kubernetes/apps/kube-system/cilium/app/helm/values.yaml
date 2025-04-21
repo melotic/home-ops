@@ -39,6 +39,8 @@ hubble:
       - tcp
     serviceMonitor:
       enabled: true
+  relay:
+    enabled: true
   ui:
     enabled: true
     ingress:
