@@ -76,15 +76,17 @@ spec:
     persistence:
       # This is where paperless stores all its data (search index, SQLite database, classification model, etc).
       data:
-        type: persistentVolumeClaim
+        enabled: true
+        retain: true
+        mountPath: /usr/src/paperless/data
         storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 1Gi
-        mountPath: /usr/src/paperless/data
       # This is where your documents and thumbnails are stored.
       media:
-        type: persistentVolumeClaim
+        enabled: true
+        retain: true
+        mountPath: /usr/src/paperless/media
         storageClass: nfs-csi
         accessMode: ReadWriteOnce
         size: 8Gi
-        mountPath: /usr/src/paperless/media
