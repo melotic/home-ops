@@ -49,6 +49,12 @@ spec:
           enabled: true
         prometheusRule:
           enabled: true
+      roles:
+        - ensure: present
+          login: true
+          name: paperless
+          passwordSecret:
+            name: cnpg-cluster-paperless
     backups:
       enabled: true
       provider: azure
