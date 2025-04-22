@@ -44,8 +44,6 @@ spec:
               PAPERLESS_REDIS_PREFIX: paperless
               PAPERLESS_TIME_ZONE: America/Chicago
               PAPERLESS_URL: https://paperless.${SECRET_DOMAIN}
-              USERMAP_UID: 977
-              USERMAP_GID: 988
             envFrom:
               - secretRef:
                   name: paperless-secret
@@ -82,16 +80,11 @@ spec:
         storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 1Gi
-        globalMounts:
-          - path: /usr/src/paperless/data
-            readOnly: false
+        mountPath: /usr/src/paperless/data
       # This is where your documents and thumbnails are stored.
       media:
         type: persistentVolumeClaim
         storageClass: nfs-csi
         accessMode: ReadWriteOnce
         size: 8Gi
-        globalMounts:
-          - path: /usr/src/paperless/media
-            readOnly: false
-
+        mountPath: /usr/src/paperless/media
