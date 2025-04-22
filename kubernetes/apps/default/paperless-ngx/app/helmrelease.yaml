@@ -44,6 +44,8 @@ spec:
               PAPERLESS_REDIS_PREFIX: paperless
               PAPERLESS_TIME_ZONE: America/Chicago
               PAPERLESS_URL: https://paperless.${SECRET_DOMAIN}
+              USERMAP_UID: 977
+              USERMAP_GID: 988
             envFrom:
               - secretRef:
                   name: paperless-secret
@@ -56,12 +58,6 @@ spec:
                 cpu: 10m
               limits:
                 memory: 256Mi
-    defaultPodOptions:
-      securityContext:
-        runAsGroup: 988
-        runAsNonRoot: true
-        runAsUser: 977
-        seccompProfile: { type: RuntimeDefault }
     service:
       app:
         controller: paperless-ngx
