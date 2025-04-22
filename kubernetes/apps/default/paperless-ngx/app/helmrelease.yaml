@@ -74,9 +74,9 @@ spec:
         enabled: true
         hosts:
           - host: paperless.${SECRET_DOMAIN}
-        paths:
-          - path: /
-            pathType: Prefix
+            paths:
+              - path: /
+                pathType: Prefix
     persistence:
       # This is where paperless stores all its data (search index, SQLite database, classification model, etc).
       data:
