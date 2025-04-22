@@ -77,6 +77,9 @@ spec:
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  name: paperless-ngx
+                  port: 8000
     persistence:
       # This is where paperless stores all its data (search index, SQLite database, classification model, etc).
       data:
