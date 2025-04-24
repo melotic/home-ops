@@ -73,6 +73,7 @@ nodes:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
             - siderolabs/iscsi-tools
+            - siderolabs/realtek-firmware
             - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
