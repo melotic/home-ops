@@ -40,6 +40,8 @@ spec:
                   secretKeyRef:
                     name: cnpg-cluster-paperless
                     key: password
+              PAPERLESS_DISABLE_REGULAR_LOGIN: true
+              PAPERLESS_REDIRECT_LOGIN_TO_SSO: true
               PAPERLESS_REDIS: redis://dragonfly.default.svc.cluster.local:6379
               PAPERLESS_REDIS_PREFIX: paperless
               PAPERLESS_TIME_ZONE: America/Chicago
