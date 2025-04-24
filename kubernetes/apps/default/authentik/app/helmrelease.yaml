@@ -49,6 +49,8 @@ spec:
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
         name: authentik
+      redis:
+        host: dragonfly
     server:
       replicas: 2
       volumes: &volumes
@@ -73,9 +75,3 @@ spec:
     worker:
       volumes: *volumes
       volumeMounts: *mounts
-    # TODO: deploy seperate redis cluster
-    redis:
-      enabled: true
-      master:
-        persistence:
-          storageClass: longhorn
