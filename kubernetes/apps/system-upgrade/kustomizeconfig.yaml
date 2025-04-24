@@ -1,0 +1,7 @@
+---
+nameReference:
+  - fieldSpecs:
+      - kind: Kustomization
+        path: spec/postBuild/substituteFrom/name
+    kind: ConfigMap
+    version: v1
