@@ -95,6 +95,12 @@
       commitMessageTopic: "release {{depName}}",
     },
     {
+      description: "Use semver for siderolabs installer GitHub releases",
+      matchDatasources: ["github-releases"],
+      matchPackageNames: ["siderolabs/talos"],
+      versioning: "semver"
+    },
+    {
       matchUpdateTypes: ["major"],
       labels: ["type/major"],
     },
