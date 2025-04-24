@@ -50,10 +50,11 @@ spec:
               - secretRef:
                   name: paperless-secret
             resources:
-              requests:
-                cpu: 10m
+              # requests:
+              #   cpu: 10m
+              #   memory: 512Mi
               limits:
-                memory: 512Mi
+                memory: 1Gi
     service:
       app:
         controller: paperless-ngx
