@@ -23,7 +23,22 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
+          tika:
+            image:
+              repository: docker.io/apache/tika
+              tag: 3.1.0.0
+          gotenberg:
+            image:
+              repository: docker.io/gotenberg/gotenberg
+              tag: 8.19
+            command:
+              - "gotenberg"
+              - "--chromium-disable-javascript=true"
+              - "--chromium-allow-list=file:///tmp/.*"
           app:
+            dependsOn:
+              - gotenberg
+              - tika
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
               tag: 2.15.3
@@ -44,6 +59,9 @@ spec:
               PAPERLESS_REDIRECT_LOGIN_TO_SSO: true
               PAPERLESS_REDIS: redis://dragonfly.default.svc.cluster.local:6379
               PAPERLESS_REDIS_PREFIX: paperless
+              PAPERLESS_TIKA_ENABLED: 1
+              PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+              PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
               PAPERLESS_TIME_ZONE: America/Chicago
               PAPERLESS_URL: https://paperless.${SECRET_DOMAIN}
             envFrom:
@@ -51,11 +69,11 @@ spec:
                   name: paperless-secret
             resources:
               requests:
-                cpu: 100m
+                cpu: 200m
                 memory: 1Gi
               limits:
-                cpu: 300m
-                memory: 2Gi
+                cpu: 750m
+                memory: 2.5Gi
     service:
       app:
         controller: paperless-ngx
