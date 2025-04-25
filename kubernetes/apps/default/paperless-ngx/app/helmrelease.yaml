@@ -19,7 +19,6 @@ spec:
   values:
     controllers:
       paperless-ngx:
-        strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
