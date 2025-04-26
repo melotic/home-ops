@@ -3,6 +3,7 @@
   extends: [
     "config:recommended",
     "docker:enableMajor",
+    "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     ":automergeBranch",
     ":disableRateLimiting",
@@ -130,6 +131,17 @@
     },
   ],
   customManagers: [
+    {
+      description: "Process any annotated docker imageName:tag@digest lines",
+      customType: "regex",
+      fileMatch: ["(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$"],
+      matchStrings: [
+        "# renovate:\\s*datasource=docker\\s+depName=(?<depName>\\S+)[\\s\\S]*?imageName:\\s*(?<repository>[^:@\\s]+):(?<currentValue>[^@\\s]+)(?:@(?<currentDigest>\\S+))?"
+      ],
+      datasourceTemplate: "docker",
+      versioningTemplate: "docker",
+      pinDigests: true
+    },
     {
       description: "Process annotated dependencies",
       customType: "regex",
