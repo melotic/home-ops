@@ -38,6 +38,7 @@ spec:
     mode: standalone
     cluster:
       instances: 3
+      # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
       imageName: ghcr.io/cloudnative-pg/postgresql:17.4@sha256:5abfcc284a440c091f01a89381bf4cdafdfd14038a2e6aa903c6f0508d211be3
       affinity:
         topologyKey: kubernetes.io/hostname
