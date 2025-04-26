@@ -32,7 +32,7 @@ spec:
               - "--chromium-allow-list=file:///tmp/.*"
           protonmail-bridge:
             image:
-              repository: ghcr.io/shenxn/protonmail-bridge
+              repository: docker.io/shenxn/protonmail-bridge
               tag: 3.19.0-1
           tika:
             image:
