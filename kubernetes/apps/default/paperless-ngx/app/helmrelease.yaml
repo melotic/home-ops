@@ -98,15 +98,19 @@ spec:
         storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 1Gi
-        globalMounts:
-          - path: /usr/src/paperless/data
-            readOnly: false
+        advancedMounts:
+          paperless-ngx:
+            app:
+              - path: /usr/src/paperless/data
+                readOnly: false
       # This is where your documents and thumbnails are stored.
       media:
         type: persistentVolumeClaim
         storageClass: nfs-csi
         accessMode: ReadWriteOnce
         size: 8Gi
-        globalMounts:
-          - path: /usr/src/paperless/media
-            readOnly: false
+        advancedMounts:
+          paperless-ngx:
+            app:
+              - path: /usr/src/paperless/media
+                readOnly: false
