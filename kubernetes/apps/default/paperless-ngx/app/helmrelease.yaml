@@ -112,5 +112,5 @@ spec:
         advancedMounts:
           paperless-ngx:
             app:
-              - path: /usr/src/paperless/data
+              - path: /usr/src/paperless/media
                 readOnly: false
