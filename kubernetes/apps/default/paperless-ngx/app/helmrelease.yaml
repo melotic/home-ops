@@ -22,10 +22,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          tika:
-            image:
-              repository: docker.io/apache/tika
-              tag: 3.1.0.0
           gotenberg:
             image:
               repository: docker.io/gotenberg/gotenberg
@@ -34,9 +30,18 @@ spec:
               - "gotenberg"
               - "--chromium-disable-javascript=true"
               - "--chromium-allow-list=file:///tmp/.*"
+          protonmail-bridge:
+            image:
+              repository: docker.io/shenxn/protonmail-bridge
+              tag: 3.19.0-1
+          tika:
+            image:
+              repository: docker.io/apache/tika
+              tag: 3.1.0.0
           app:
             dependsOn:
               - gotenberg
+              - protonmail-bridge
               - tika
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
@@ -113,4 +118,14 @@ spec:
           paperless-ngx:
             app:
               - path: /usr/src/paperless/media
+                readOnly: false
+      protonmail:
+        type: persistentVolumeClaim
+        storageClass: longhorn
+        accessMode: ReadWriteOnce
+        size: 16Mi
+        advancedMounts:
+          paperless-ngx:
+            protonmail-bridge:
+              - path: /root
                 readOnly: false
