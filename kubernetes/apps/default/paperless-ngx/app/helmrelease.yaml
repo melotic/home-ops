@@ -84,18 +84,15 @@ spec:
         ports:
           http:
             port: 8000
-    ingress:
+    route:
       app:
-        className: internal
         enabled: true
-        hosts:
-          - host: paperless.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  name: paperless-ngx
-                  port: 8000
+        hostnames:
+          - "paperless.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
     persistence:
       # This is where paperless stores all its data (search index, SQLite database, classification model, etc).
       data:

@@ -51,11 +51,6 @@ hubble:
     enabled: true
   ui:
     enabled: true
-    ingress:
-      className: internal
-      enabled: true
-      hosts:
-        - hubble.${SECRET_DOMAIN}
 ipam:
   mode: kubernetes
 ipv4NativeRoutingCIDR: "10.60.0.0/16"

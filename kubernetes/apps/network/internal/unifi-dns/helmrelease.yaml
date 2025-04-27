@@ -50,13 +50,11 @@ spec:
             port: http-webhook
           initialDelaySeconds: 10
           timeoutSeconds: 5
-    extraArgs:
-      - --ingress-class=internal
     triggerLoopOnEvent: true
     policy: sync
-    sources: ["crd", "ingress"]
-    txtPrefix: k8s.
-    txtOwnerId: default
+    sources: ["gateway-httproute", "service"]
+    txtOwnerId: main
+    txtPrefix: k8s.main.
     domainFilters: ["${SECRET_DOMAIN}"]
     logLevel: debug
     serviceMonitor:
