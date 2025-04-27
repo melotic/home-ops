@@ -4,9 +4,9 @@ autoDirectNodeRoutes: true
 bgpControlPlane:
   enabled: true
 bpf:
-  # Ref: https://github.com/siderolabs/talos/issues/10002
-  hostLegacyRouting: true
+  datapathMode: netkit
   masquerade: true
+  preallocateMaps: true
 cgroup:
   automount:
     enabled: false
@@ -25,7 +25,15 @@ encryption:
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
+  enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  rollOutPods: true
+gatewayAPI:
+  enableAlpn: true
+  enabled: true
 hubble:
   enabled: true
   metrics:
@@ -68,7 +76,7 @@ operator:
     enabled: true
     serviceMonitor:
       enabled: true
-  replicas: 1
+  replicas: 2
   rollOutPods: true
 prometheus:
   enabled: true
