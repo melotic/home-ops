@@ -61,13 +61,6 @@ spec:
         controller:
           podAnnotations:
             reloader.stakater.com/auto: "true"
-        ingress:
-          enabled: true
-          ingressClassName: internal
-          annotations:
-            external-dns.alpha.kubernetes.io/hostname: "alloy.${SECRET_DOMAIN}"
-          hosts:
-            - "alloy.${SECRET_DOMAIN}"
         # required for kubernetes api
         mounts:
           varlog: false
