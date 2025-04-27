@@ -25,10 +25,6 @@ spec:
       version: v1.8.1
   interval: 1h
   values:
-    ingress:
-      enabled: true
-      ingressClassName: internal
-      host: "longhorn.${SECRET_DOMAIN}"
     metrics:
       serviceMonitor:
         enabled: true
