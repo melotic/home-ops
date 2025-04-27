@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: paperless-ngx
+  name: &app paperless-ngx
 spec:
   interval: 1h
   chartRef:
@@ -80,19 +80,23 @@ spec:
                 memory: 2.5Gi
     service:
       app:
-        controller: paperless-ngx
+        controller: *app
         ports:
           http:
-            port: 8000
+            port: &port 8000
     route:
       app:
         enabled: true
         hostnames:
           - "paperless.${SECRET_DOMAIN}"
         parentRefs:
-          - name: external
+          - name: internal
             namespace: kube-system
             sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     persistence:
       # This is where paperless stores all its data (search index, SQLite database, classification model, etc).
       data:
