@@ -43,9 +43,6 @@ spec:
             matchLabels:
               app.kubernetes.io/name: authentik
     authentik:
-      envFrom:
-        - secretRef:
-            name: authentik-email-secret
       secret_key: "${SECRET_AUTHENTIK_SECRET_KEY}"
       postgresql:
         host: cnpg-cluster-rw
@@ -56,6 +53,9 @@ spec:
         host: dragonfly
     server:
       replicas: 2
+      envFrom:
+        - secretRef:
+            name: authentik-email-secret
       volumes: &volumes
         - name: postgres-creds
           secret:
