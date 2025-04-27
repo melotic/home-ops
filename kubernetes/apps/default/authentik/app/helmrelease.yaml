@@ -31,6 +31,9 @@ spec:
     - name: cnpg-cluster
   values:
     global:
+      envFrom:
+        - secretRef:
+            name: authentik-email-secret
       deploymentStrategy:
         type: RollingUpdate
         rollingUpdate:
@@ -53,9 +56,6 @@ spec:
         host: dragonfly
     server:
       replicas: 2
-      envFrom:
-        - secretRef:
-            name: authentik-email-secret
       volumes: &volumes
         - name: postgres-creds
           secret:
