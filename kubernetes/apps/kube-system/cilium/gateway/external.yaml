@@ -6,8 +6,6 @@ metadata:
   name: external
   annotations:
     external-dns.alpha.kubernetes.io/target: &hostname external.${SECRET_DOMAIN}
-  labels:
-    pool: ingress
 spec:
   gatewayClassName: cilium
   addresses:
@@ -18,6 +16,8 @@ spec:
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: *hostname
+    labels:
+      pool: ingress
   listeners:
     - name: http
       protocol: HTTP
