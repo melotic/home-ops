@@ -23,6 +23,10 @@ cluster:
 
 machine:
   features:
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: false
+      resolveMemberNames: true
     kubernetesTalosAPIAccess:
       enabled: true
       allowedRoles: ["os:admin"]
