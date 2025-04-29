@@ -27,7 +27,7 @@ spec:
   values:
     defaultBackupStore:
       backupTarget: "azblob://longhorn@core.windows.net/"
-      backupTargetCredentialStore: longhorn-azblob-secret
+      backupTargetCredentialSecret: longhorn-azblob-secret
     defaultSettings:
       defaultDataPath: "/var/mnt/longhorn/"
       storageMinimalAvailablePercentage: 25
