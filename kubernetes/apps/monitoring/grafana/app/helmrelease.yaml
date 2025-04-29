@@ -173,6 +173,9 @@ spec:
           gnetId: 11454
           revision: 14
           datasource: Prometheus
+        longhorn:
+          url: https://raw.githubusercontent.com/onzack/grafana-dashboards/refs/heads/main/grafana/longhorn/onzack-longhorn-monitoring.json
+          datasource: Prometheus
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
