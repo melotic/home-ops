@@ -25,13 +25,16 @@ spec:
       version: v1.8.1
   interval: 1h
   values:
-    metrics:
-      serviceMonitor:
-        enabled: true
+    defaultBackupStore:
+      backupTarget: "azblob://longhorn@core.windows.net/"
+      backupTargetCredentialStore: longhorn-azblob-secret
     defaultSettings:
+      defaultDataPath: "/var/mnt/longhorn/"
       storageMinimalAvailablePercentage: 25
       storageOverProvisioningPercentage: 100
-      defaultDataPath: "/var/mnt/longhorn/"
     longhornManager:
       serviceAnnotations:
         reloader.stakater.com/auto: "true"
+    metrics:
+      serviceMonitor:
+        enabled: true
