@@ -5,8 +5,6 @@
     "docker:enableMajor",
     "helpers:pinGitHubActionDigests",
     ":automergeBranch",
-    ":automergePatch",
-    ":automergeDigest",
     ":disableRateLimiting",
     "github>melotic/home-ops//.renovate/grafana-dashboards.json",
   ],
