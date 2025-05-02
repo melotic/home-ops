@@ -70,6 +70,14 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "login.${SECRET_DOMAIN}"
+          parentRefs:
+            - name: external
+              namespace: kube-system
     worker:
       volumes: *volumes
       volumeMounts: *mounts
