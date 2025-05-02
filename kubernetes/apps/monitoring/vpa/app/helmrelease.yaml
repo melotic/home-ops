@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrepository-source-v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: fairwinds-stable
+spec:
+  interval: 1h
+  url: https://charts.fairwinds.com/stable
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vpa
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: vpa
+      sourceRef:
+        kind: HelmRepository
+        name: fairwinds-stable
+      version: 4.7.2
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: metrics-server
+      namespace: kube-system
+    - name: kube-prometheus-stack
+      namespace: monitoring
+  values:
+    recommender:
+      extraArgs:
+        prometheus-address: |
+          http://prometheus-operated.monitoring.svc.cluster.local:9090
+        storage: prometheus
