@@ -13,7 +13,7 @@ spec:
     - name: vpa
       namespace: monitoring
   interval: 1h
-  path: ./kubernetes/apps/monitoring/vpa/app
+  path: ./kubernetes/apps/monitoring/goldilocks/app
   postBuild:
     substituteFrom:
       - name: cluster-secrets
