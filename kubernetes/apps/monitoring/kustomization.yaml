@@ -7,8 +7,10 @@ components:
   - ../../components/common
   - ../../components/repos/app-template
 resources:
+  - ./goldilocks/ks.yaml
   - ./grafana/ks.yaml
   - ./k8s-monitoring/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./loki/ks.yaml
   - ./unpoller/ks.yaml
+  - ./vpa/ks.yaml
