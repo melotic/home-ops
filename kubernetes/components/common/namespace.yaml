@@ -4,5 +4,6 @@ kind: Namespace
 metadata:
   name: not-used
   annotations:
-    goldilocks.fairwinds.com/enabled: "true"
     kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
