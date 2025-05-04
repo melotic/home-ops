@@ -1,0 +1,27 @@
+# yaml-language-server: $schema=https://kubernetesjsonschema.dev/v1.18.1-standalone-strict/secret-v1.json
+apiVersion: v1
+kind: Secret
+metadata:
+    labels:
+        cnpg.io/reload: "true"
+    name: cnpg-cluster-immich
+stringData:
+    password: ENC[AES256_GCM,data:pUkYdiB5E3O9JfLOEPDVuojxP5YPrNQTX9F8vtGJ+QeJlhgxDxURNbE9fCc=,iv:9pToEFQhQ7U1+SoyxnvNVpgqv82EBIKLJvaHoVmcSfo=,tag:zCVaGOd0wSIl8fUeQ+FUjw==,type:str]
+    username: ENC[AES256_GCM,data:UvcfZNc1,iv:1AY3Yxdvl4sr30+He1qsTtTDglSrEf60mt+pcdESFs8=,tag:0IijOT8FcC1/jDKto5a5Cg==,type:str]
+type: kubernetes.io/basic-auth
+sops:
+    age:
+        - recipient: age1swl8rf4aqksyqrwuyum0ny7vq5a7mtna0n79umsrw7lkrh2859zqsx0mpk
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBNYUQvemhUQSszQ1p4V2ZQ
+            aVhSOWJiTFY5bmYxUlYwalVDMGZNVnZsNVRBCjlGKy9kNGlVdjZQZVN4OTlXRDda
+            WEcyN21rT1pNdnk1cmMxckVyalY3VjgKLS0tIGpkcG54OUM1YjY2WU9zMHdqaXVl
+            VVJwTldJbGpKQlR0TlpER2hFUzVuSVkK4OwQfvrUNaC8QaF68l6chkiXTlb4k2Ru
+            f2H0/JGWoxcG+JYKK0N74oupKpGEzfKd5wMXOHvdA57DMVnz46cjKQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-05-04T20:48:36Z"
+    mac: ENC[AES256_GCM,data:zBNiGLtnFQJqavxB+rxYZJjLDWhLSl694x2vUKvPOmCp7/G9uQyZ90m/Ox8tIUrGkc9lKs/QtT4Huek+ulGqCR5GbgniOkc3iYm1mpyPbYXdig3BVXOSOF4+xZ2zqiJu9z5qgCK8G8o8WOn7jOtoSR+Lu2icpC8vu3ImkImVbC8=,iv:+qS0IeZuyLm6Ee1begmLgwnbNkcKNxUTvOHPUHN5weQ=,tag:SQYKlFMTZW0GIpJmpWMO8w==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    mac_only_encrypted: true
+    version: 3.10.2
