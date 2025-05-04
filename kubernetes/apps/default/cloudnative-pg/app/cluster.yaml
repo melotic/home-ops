@@ -56,6 +56,11 @@ spec:
           name: paperless
           passwordSecret:
             name: cnpg-cluster-paperless
+        - ensure: present
+          login: true
+          name: immich
+          passwordSecret:
+            name: cnpg-cluster-immich
     backups:
       enabled: true
       provider: azure

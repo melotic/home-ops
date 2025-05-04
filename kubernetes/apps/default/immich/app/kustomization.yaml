@@ -3,8 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./cluster.yaml
+  - ./database.yaml
   - ./helmrelease.yaml
-  - ./immich.sops.yaml
-  - ./paperless.sops.yaml
-  - ./storageclass.yaml
+  - ./pvc.yaml
+  - ./secrets.sops.yaml
