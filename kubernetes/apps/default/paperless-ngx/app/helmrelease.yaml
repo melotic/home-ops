@@ -64,8 +64,8 @@ spec:
               PAPERLESS_REDIS: redis://dragonfly.default.svc.cluster.local:6379
               PAPERLESS_REDIS_PREFIX: paperless
               PAPERLESS_TIKA_ENABLED: 1
-              PAPERLESS_TIKA_ENDPOINT: http://tika:9998
-              PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+              PAPERLESS_TIKA_ENDPOINT: http://localhost:9998
+              PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://localhost:3000
               PAPERLESS_TIME_ZONE: America/Chicago
               PAPERLESS_URL: https://paperless.${SECRET_DOMAIN}
             envFrom:
