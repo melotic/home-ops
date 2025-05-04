@@ -2,18 +2,9 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-patchesJson6902:
-  - patch: |-
-      - op: replace
-        path: /apiVersion
-        value: gateway.networking.k8s.io/v1
-    target:
-      group: gateway.networking.k8s.io
-      kind: HTTPRoute
-      name: immich-server
-      version: v1alpha2
 resources:
   - ./database.yaml
   - ./helmrelease.yaml
+  - ./httproute.yaml
   - ./pvc.yaml
   - ./secrets.sops.yaml
