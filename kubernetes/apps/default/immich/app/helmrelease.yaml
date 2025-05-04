@@ -48,3 +48,17 @@ spec:
       persistence:
         library:
           existingClaim: immich-library
+    server:
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "photos.${SECRET_DOMAIN}"
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+          rules:
+            - backendRefs:
+                - name: immich-server
+                  port: 2283
