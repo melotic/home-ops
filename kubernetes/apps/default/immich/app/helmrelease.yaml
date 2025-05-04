@@ -57,6 +57,8 @@ spec:
           enabled: true
           name: immich-config
           type: secret
+      podAnnotations:
+        reloader.stakater.com/auto: "true"
       route:
         main:
           enabled: true
