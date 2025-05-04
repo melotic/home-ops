@@ -11,4 +11,5 @@ resources:
   - ./cloudnative-pg/ks.yaml
   - ./dragonfly/ks.yaml
   - ./echo/ks.yaml
+  - ./immich/ks.yaml
   - ./paperless-ngx/ks.yaml
