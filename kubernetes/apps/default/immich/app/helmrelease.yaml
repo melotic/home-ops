@@ -50,20 +50,6 @@ spec:
       persistence:
         library:
           existingClaim: immich-library
-    route:
-      main:
-        apiVersion: gateway.networking.k8s.io/v1
-        enabled: true
-        hostnames:
-          - "photos.${SECRET_DOMAIN}"
-        parentRefs:
-          - name: internal
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: immich-server
-                port: 2283
     server:
       # manually mount the config as a secret, since it has oauth secrets
       persistence:
@@ -73,3 +59,16 @@ spec:
           type: secret
       podAnnotations:
         reloader.stakater.com/auto: "true"
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "photos.${SECRET_DOMAIN}"
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+          rules:
+            - backendRefs:
+                - name: immich-server
+                  port: 2283
