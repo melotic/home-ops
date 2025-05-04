@@ -43,6 +43,21 @@ spec:
       # renovate: datasource=github-releases depName=immich-app/immich
       tag: v1.119.0
     immich:
+      configuration:
+        oauth:
+          authLaunch: true
+          buttonText: "Sign in with Authentik"
+          clientID:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secret
+                key: oauth-client-id
+          clientSecret:
+            valueFrom:
+              secretKeyRef:
+                name: immich-secret
+                key: oauth-client-secret
+          enabled: true
       metrics:
         enabled: true
       persistence:

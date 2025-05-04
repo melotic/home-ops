@@ -6,3 +6,4 @@ resources:
   - ./database.yaml
   - ./helmrelease.yaml
   - ./pvc.yaml
+  - ./secrets.sops.yaml
