@@ -9,6 +9,8 @@ spec:
   args:
     - --cluster_mode=emulated
     - --lock_on_hashtags
+    # For immich
+    - --default_lua_flags=allow-undeclared-keys
     - --maxmemory=$(MAX_MEMORY)Mi
     - --proactor_threads=2
   env:
