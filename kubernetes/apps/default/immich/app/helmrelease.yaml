@@ -52,6 +52,8 @@ spec:
         library:
           existingClaim: immich-library
     server:
+      env:
+        IMMICH_CONFIG_FILE: /config/immich-config.yaml
       # manually mount the config as a secret, since it has oauth secrets
       persistence:
         config:
