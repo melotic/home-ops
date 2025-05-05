@@ -38,6 +38,7 @@ spec:
             name: cnpg-cluster-immich
             key: password
       DB_USERNAME: immich
+      DB_VECTOR_EXTENSION: pgvector
       REDIS_HOSTNAME: dragonfly
     image:
       # renovate: datasource=github-releases depName=immich-app/immich
