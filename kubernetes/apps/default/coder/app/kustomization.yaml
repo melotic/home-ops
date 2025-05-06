@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./database.yaml
   - ./helmrelease.yaml
+  - ./servicemonitor.yaml
