@@ -1,0 +1,50 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrepository-source-v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: coder-v2
+spec:
+  interval: 5m
+  url: https://helm.coder.com/v2
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: coder
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: coder
+      sourceRef:
+        kind: HelmRepository
+        name: coder-v2
+      version: 2.21.3
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: cnpg-cluster
+  values:
+    coder:
+      env:
+        - name: CODER_ACCESS_URL
+          value: "https://coder.${SECRET_DOMAIN}"
+        - name: CODER_PG_CONNECTION_URL
+          valueFrom:
+            secretKeyRef:
+                # You'll need to create a secret called coder-db-url with your
+                # Postgres connection URL like:
+                # postgres://coder:password@postgres:5432/coder?sslmode=disable
+                key: url
+                name: cnpg-cluster-coder
+        - name: CODER_TELEMETRY_ENABLE
+          value: false
+        - name: CODER_WILDCARD_ACCESS_URL
+          value: "https://*.coder.${SECRET_DOMAIN}"
+      envUseClusterAccessURL: true

@@ -9,6 +9,7 @@ components:
 resources:
   - ./authentik/ks.yaml
   - ./cloudnative-pg/ks.yaml
+  - ./coder/ks.yaml
   - ./dragonfly/ks.yaml
   - ./echo/ks.yaml
   - ./immich/ks.yaml
