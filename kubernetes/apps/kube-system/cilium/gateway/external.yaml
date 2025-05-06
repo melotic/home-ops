@@ -39,3 +39,14 @@ spec:
             name: ${SECRET_DOMAIN//./-}-tls
           - kind: Secret
             name: coder-${SECRET_DOMAIN//./-}-tls
+    - name: https-coder
+      protocol: HTTPS
+      port: 443
+      hostname: "*.coder.${SECRET_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: coder-${SECRET_DOMAIN//./-}-tls
