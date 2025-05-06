@@ -8,7 +8,6 @@ metadata:
 spec:
   hostnames:
     - "coder.${SECRET_DOMAIN}"
-    - "*.coder.${SECRET_DOMAIN}"
   parentRefs:
     - name: external
       namespace: kube-system

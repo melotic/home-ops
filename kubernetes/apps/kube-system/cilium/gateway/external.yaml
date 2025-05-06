@@ -26,10 +26,10 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    # HTTPS matches all hostnames
     - name: https
       protocol: HTTPS
       port: 443
+      hostname: "*.${SECRET_DOMAIN}"
       allowedRoutes:
         namespaces:
           from: All
