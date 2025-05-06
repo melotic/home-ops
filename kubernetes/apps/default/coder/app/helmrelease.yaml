@@ -46,5 +46,5 @@ spec:
         - name: CODER_TELEMETRY_ENABLE
           value: "false"
         - name: CODER_WILDCARD_ACCESS_URL
-          value: "https://*.coder.${SECRET_DOMAIN}"
+          value: "*.coder.${SECRET_DOMAIN}"
       envUseClusterAccessURL: true
