@@ -44,7 +44,7 @@ spec:
                 key: url
                 name: cnpg-cluster-coder
         - name: CODER_TELEMETRY_ENABLE
-          value: false
+          value: "false"
         - name: CODER_WILDCARD_ACCESS_URL
           value: "https://*.coder.${SECRET_DOMAIN}"
       envUseClusterAccessURL: true
