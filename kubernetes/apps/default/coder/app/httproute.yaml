@@ -16,7 +16,7 @@ spec:
     - backendRefs:
         - name: coder
           port: 80
-    - matches:
+      matches:
         - path:
             type: PathPrefix
             value: /
