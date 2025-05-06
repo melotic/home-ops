@@ -61,6 +61,11 @@ spec:
           name: immich
           passwordSecret:
             name: cnpg-cluster-immich
+        - ensure: present
+          login: true
+          name: coder
+          passwordSecret:
+            name: cnpg-cluster-coder
     backups:
       enabled: true
       provider: azure
