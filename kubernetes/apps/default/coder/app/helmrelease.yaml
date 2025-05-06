@@ -48,3 +48,5 @@ spec:
         - name: CODER_WILDCARD_ACCESS_URL
           value: "*.coder.${SECRET_DOMAIN}"
       envUseClusterAccessURL: true
+      service:
+        type: ClusterIP
