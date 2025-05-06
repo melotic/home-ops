@@ -37,3 +37,5 @@ spec:
         certificateRefs:
           - kind: Secret
             name: ${SECRET_DOMAIN//./-}-tls
+          - kind: Secret
+            name: coder-${SECRET_DOMAIN//./-}-tls
