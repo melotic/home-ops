@@ -33,14 +33,14 @@ spec:
   postRenderers:
     - kustomize:
         patches:
-          - target:
-              kind: Deployment
-              name: coder
-              version: apps/v1
-            patch: |-
+          - patch: |-
               - op: replace
                 path: /spec/ports/0/targetPort
                 value: 8080
+            target:
+              kind: Service
+              name: coder
+              version: v1
   values:
     coder:
       env:
