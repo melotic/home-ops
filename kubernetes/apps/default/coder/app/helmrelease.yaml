@@ -48,4 +48,8 @@ spec:
         - name: CODER_WILDCARD_ACCESS_URL
           value: "*.coder.${SECRET_DOMAIN}"
       service:
+        ports:
+          - name: http
+            port: 80
+            targetPort: 8080
         type: ClusterIP
