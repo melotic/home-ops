@@ -64,6 +64,7 @@ spec:
         # required for kubernetes api
         mounts:
           varlog: false
+          dockercontainers: false
         clustering:
           enabled: true
     alloy-profiles:
