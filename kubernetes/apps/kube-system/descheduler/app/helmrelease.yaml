@@ -35,43 +35,68 @@ spec:
     kind: Deployment
     deschedulerPolicyAPIVersion: descheduler/v1alpha2
     deschedulerPolicy:
+      maxNoOfPodsToEvictPerNode: 2
+      maxNoOfPodsToEvictTotal: 20
+      metricsProviders:
+        - source: Prometheus
+          prometheus:
+            url: http://prometheus-operated.monitoring.svc.cluster.local:9090
       profiles:
-        - name: Default
+        - name: balance
           pluginConfig:
             - name: DefaultEvictor
               args:
                 evictFailedBarePods: true
-                evictLocalStoragePods: true
-                evictSystemCriticalPods: true
-            - name: RemoveFailedPods
+                evictSystemCriticalPods: false
+                nodeFit: true
+                priorityThreshold:
+                  value: 1000000000
+            - name: LowNodeUtilization
               args:
-                reasons:
-                  - ContainerStatusUnknown
-                  - NodeAffinity
-                  - NodeShutdown
-                  - Terminated
-                  - UnexpectedAdmissionError
-                includingInitContainers: true
-                excludeOwnerKinds:
-                  - Job
-                minPodLifetimeSeconds: 1800
-            - name: RemovePodsViolatingInterPodAntiAffinity
-            - name: RemovePodsViolatingNodeAffinity
-              args:
-                nodeAffinityType:
-                  - requiredDuringSchedulingIgnoredDuringExecution
-            - name: RemovePodsViolatingNodeTaints
-            - name: RemovePodsViolatingTopologySpreadConstraint
+                thresholds:
+                  cpu: 10
+                  memory: 20
+                  pods: 20
+                targetThresholds:
+                  cpu: 30
+                  memory: 50
+                  pods: 80
+                evictionLimits:
+                  node: 5
+                evictableNamespaces:
+                  exclude:
+                    - kube-system
+                    - monitoring
+                metricsUtilization:
+                  source: Prometheus
+                  prometheus:
+                    query: |
+                        sum by (instance) (rate(node_cpu_seconds_total{mode!="idle"}[15m]))
+                      /
+                        sum by (instance) (rate(node_cpu_seconds_total[15m]))
+              - name: RemoveFailedPods
+                args:
+                  excludeOwnerKinds:
+                    - Job
+                  includingInitContainers: true
+                  minPodLifetimeSeconds: 1800
+                  reasons:
+                    - ContainerStatusUnknown
+                    - NodeAffinity
+                    - NodeShutdown
+                    - Terminated
+                    - UnexpectedAdmissionError
           plugins:
             balance:
               enabled:
+                - LowNodeUtilization
                 - RemovePodsViolatingTopologySpreadConstraint
             deschedule:
               enabled:
                 - RemoveFailedPods
-                - RemovePodsViolatingInterPodAntiAffinity
                 - RemovePodsViolatingNodeAffinity
                 - RemovePodsViolatingNodeTaints
+                - RemovePodsViolatingInterPodAntiAffinity
     service:
       enabled: true
     serviceMonitor:
