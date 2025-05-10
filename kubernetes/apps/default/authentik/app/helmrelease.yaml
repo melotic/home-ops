@@ -74,11 +74,10 @@ spec:
           enabled: true
       resources:
         requests:
-          cpu: 50m
+          cpu: 400m
           memory: 700Mi
         limits:
-          cpu: 50m
-          memory: 700Mi
+          memory: 1Gi
       route:
         main:
           enabled: true
@@ -91,9 +90,9 @@ spec:
     worker:
       resources:
         requests:
-          cpu: 50m
-          memory: 600Mi
+          cpu: 227m
+          memory: 705Mi
         limits:
-          memory: 1.2Gi
+          memory: 1Gi
       volumes: *volumes
       volumeMounts: *mounts
