@@ -57,7 +57,7 @@ spec:
               tag: 2.15.3
             resources:
               requests:
-                cpu: 20m
+                cpu: 500m
                 memory: 700Mi
               limits:
                 memory: 1.5Gi
@@ -70,7 +70,6 @@ spec:
                 cpu: 10m
                 memory: 32Mi
               limits:
-                cpu: 50m
                 memory: 68Mi
             command:
               - "gotenberg"
@@ -85,7 +84,6 @@ spec:
                 cpu: 10m
                 memory: 64Mi
               limits:
-                cpu: 20m
                 memory: 256Mi
           tika:
             image:
@@ -93,10 +91,9 @@ spec:
               tag: 3.1.0.0
             resources:
               requests:
-                cpu: 10m
+                cpu: 60m
                 memory: 300Mi
               limits:
-                cpu: 20m
                 memory: 600Mi
     service:
       app:
