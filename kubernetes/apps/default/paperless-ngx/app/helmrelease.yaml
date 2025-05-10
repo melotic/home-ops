@@ -22,43 +22,24 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          gotenberg:
-            image:
-              repository: docker.io/gotenberg/gotenberg
-              tag: 8.20
-            command:
-              - "gotenberg"
-              - "--chromium-disable-javascript=true"
-              - "--chromium-allow-list=file:///tmp/.*"
-          protonmail-bridge:
-            image:
-              repository: docker.io/shenxn/protonmail-bridge
-              tag: 3.19.0-1
-          tika:
-            image:
-              repository: docker.io/apache/tika
-              tag: 3.1.0.0
           app:
             dependsOn:
               - gotenberg
               - protonmail-bridge
               - tika
-            image:
-              repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.15.3
             env:
               PAPERLESS_DBHOST: cnpg-cluster-rw
               PAPERLESS_DBNAME: paperless
               PAPERLESS_DBUSER:
                 valueFrom:
                   secretKeyRef:
-                    name: cnpg-cluster-paperless
                     key: username
+                    name: cnpg-cluster-paperless
               PAPERLESS_DBPASS:
                 valueFrom:
                   secretKeyRef:
-                    name: cnpg-cluster-paperless
                     key: password
+                    name: cnpg-cluster-paperless
               PAPERLESS_DISABLE_REGULAR_LOGIN: true
               PAPERLESS_REDIRECT_LOGIN_TO_SSO: true
               PAPERLESS_REDIS: redis://dragonfly.default.svc.cluster.local:6379
@@ -71,13 +52,53 @@ spec:
             envFrom:
               - secretRef:
                   name: paperless-secret
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 2.15.3
             resources:
               requests:
-                cpu: 200m
-                memory: 1Gi
+                cpu: 20m
+                memory: 700Mi
               limits:
-                cpu: 750m
-                memory: 2.5Gi
+                cpu: 100m
+                memory: 1.5Gi
+          gotenberg:
+            image:
+              repository: docker.io/gotenberg/gotenberg
+              tag: 8.20
+            resources:
+              requests:
+                cpu: 10m
+                memory: 32Mi
+              limits:
+                cpu: 50m
+                memory: 68Mi
+            command:
+              - "gotenberg"
+              - "--chromium-disable-javascript=true"
+              - "--chromium-allow-list=file:///tmp/.*"
+          protonmail-bridge:
+            image:
+              repository: docker.io/shenxn/protonmail-bridge
+              tag: 3.19.0-1
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                cpu: 20m
+                memory: 256Mi
+          tika:
+            image:
+              repository: docker.io/apache/tika
+              tag: 3.1.0.0
+            resources:
+              requests:
+                cpu: 10m
+                memory: 300Mi
+              limits:
+                cpu: 20m
+                memory: 600Mi
     service:
       app:
         controller: *app
