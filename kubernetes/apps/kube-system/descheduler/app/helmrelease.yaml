@@ -75,6 +75,12 @@ spec:
                   - NodeShutdown
                   - Terminated
                   - UnexpectedAdmissionError
+            - name: RemovePodsViolatingNodeAffinity
+              args:
+                nodeAffinityType:
+                  - requiredDuringSchedulingIgnoredDuringExecution
+            - name: RemovePodsViolatingNodeTaints
+            - name: RemovePodsViolatingInterPodAntiAffinity
           plugins:
             balance:
               enabled:
