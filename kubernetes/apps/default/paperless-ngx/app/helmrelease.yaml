@@ -60,7 +60,6 @@ spec:
                 cpu: 20m
                 memory: 700Mi
               limits:
-                cpu: 100m
                 memory: 1.5Gi
           gotenberg:
             image:
