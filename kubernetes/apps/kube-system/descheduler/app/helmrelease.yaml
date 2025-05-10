@@ -37,10 +37,6 @@ spec:
     deschedulerPolicy:
       maxNoOfPodsToEvictPerNode: 2
       maxNoOfPodsToEvictTotal: 20
-      metricsProviders:
-        - source: Prometheus
-          prometheus:
-            url: http://prometheus-operated.monitoring.svc.cluster.local:9090
       profiles:
         - name: balance
           pluginConfig:
@@ -67,13 +63,6 @@ spec:
                   exclude:
                     - kube-system
                     - monitoring
-                metricsUtilization:
-                  source: Prometheus
-                  prometheus:
-                    query: |
-                      sum by (instance) (rate(node_cpu_seconds_total{mode!="idle"}[15m]))
-                      /
-                      sum by (instance) (rate(node_cpu_seconds_total[15m]))
             - name: RemoveFailedPods
               args:
                 excludeOwnerKinds:
