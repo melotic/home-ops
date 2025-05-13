@@ -19,6 +19,7 @@ cniConfig:
   name: none
 
 nodes:
+  # proxmox node
   - hostname: "k8s-neo"
     ipAddress: "10.60.80.1"
     installDisk: "/dev/sda"
@@ -44,6 +45,7 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.81.1"
+  # AMD genmachine
   - hostname: "k8s-niobe"
     ipAddress: "10.60.80.2"
     installDisk: "/dev/nvme0n1"
@@ -63,7 +65,8 @@ nodes:
           diskSelector:
             match: "disk.transport == 'nvme'"
           minSize: 150GiB
-          maxSize: 200GiB
+          maxSize: 1TB
+          grow: true
     machineSpec:
       secureboot: false
     schematic:
@@ -88,6 +91,7 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.81.1"
+  # HP ProDesk
   - hostname: "k8s-trinity"
     ipAddress: "10.60.80.3"
     installDisk: "/dev/nvme0n1"
@@ -131,10 +135,54 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.81.1"
+  # minisform UMS60
+  - hostname: "k8s-ghost"
+    ipAddress: "10.60.80.4"
+    installDisk: "/dev/nvme0n1"
+    patches:
+      - "@./patches/longhorn/machine-longhorn.yaml"
+    volumes:
+      - name: "EPHEMERAL"
+        provisioning:
+          diskSelector:
+            match: system_disk
+          minSize: 2GiB
+          maxSize: 56GiB
+          grow: false
+    userVolumes:
+      - name: longhorn
+        provisioning:
+          diskSelector:
+            match: "disk.transport == 'nvme'"
+          minSize: 150GiB
+          maxSize: 1TB
+    machineSpec:
+      secureboot: true
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "58:47:ca:70:56:71"
+        dhcp: false
+        addresses:
+          - "10.60.80.4/16"
+        routes:
+          - network: "0.0.0.0/0"
+            gateway: "10.60.0.1"
+        mtu: 1500
+        # vip:
+        #   ip: "10.60.81.1"
 
 # Global patches
 patches:
   - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-hostdns.yaml"
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
