@@ -19,7 +19,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: goauthentik
-      version: 2025.4.0
+      version: 2025.4.1
   install:
     remediation:
       retries: -1
