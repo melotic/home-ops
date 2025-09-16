@@ -88,7 +88,7 @@ spec:
           tika:
             image:
               repository: docker.io/apache/tika
-              tag: 3.2.0.0
+              tag: 3.2.3.0
             resources:
               requests:
                 cpu: 60m
