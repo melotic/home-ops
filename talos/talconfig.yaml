@@ -39,7 +39,7 @@ nodes:
         vip:
           ip: "10.60.8.10"
   - hostname: "k8s-trinity"
-    ipAddress: "10.60.80.3"
+    ipAddress: "10.60.85.11"
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: false
@@ -50,7 +50,7 @@ nodes:
           hardwareAddr: "04:0e:3c:92:31:01"
         dhcp: false
         addresses:
-          - "10.60.80.3/16"
+          - "10.60.85.11/16"
         routes:
           - network: "0.0.0.0/0"
             gateway: "10.60.0.1"
@@ -58,7 +58,7 @@ nodes:
         vip:
           ip: "10.60.8.10"
   - hostname: "k8s-ghost"
-    ipAddress: "10.60.80.4"
+    ipAddress: "10.60.85.12"
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: true
@@ -69,7 +69,7 @@ nodes:
           hardwareAddr: "58:47:ca:70:56:71"
         dhcp: false
         addresses:
-          - "10.60.80.4/16"
+          - "10.60.85.12/16"
         routes:
           - network: "0.0.0.0/0"
             gateway: "10.60.0.1"
@@ -90,4 +90,3 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
-
