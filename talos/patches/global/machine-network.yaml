@@ -1,4 +1,7 @@
 machine:
+  hostDNS:
+    enabled: true
+    forwardKubeDNSToHost: false
   network:
     disableSearchDomain: true
     nameservers:
