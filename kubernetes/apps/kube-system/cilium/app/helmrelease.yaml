@@ -20,8 +20,6 @@ spec:
     autoDirectNodeRoutes: true
     bpf:
       masquerade: true
-      # Ref: https://github.com/siderolabs/talos/issues/10002
-      hostLegacyRouting: true
     bgpControlPlane:
       enabled: true
     cni:
