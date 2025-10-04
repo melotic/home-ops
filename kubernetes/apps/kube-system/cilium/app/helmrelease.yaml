@@ -19,6 +19,7 @@ spec:
   values:
     autoDirectNodeRoutes: true
     bpf:
+      datapathMode: netkit
       masquerade: true
     bgpControlPlane:
       enabled: true
