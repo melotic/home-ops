@@ -87,6 +87,22 @@ patches:
 
 # Controller patches
 controlPlane:
+  userVolumes:
+    - name: longhorn
+      provisioning:
+        diskSelector:
+          match: disk.transport == 'nvme'
+        grow: true
+        minSize: 128GiB
+        maxSize: 512GiB
+  volumes:
+    - name: EPHEMERAL
+      provisioning:
+        diskSelector:
+          match: system_disk
+        grow: false
+        minSize: 8GiB
+        maxSize: 64GiB
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
