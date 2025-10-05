@@ -1,7 +1,9 @@
+# yaml-language-server: $schema=https://www.talos.dev/v1.11/schemas/config.schema.json
 machine:
-  hostDNS:
-    enabled: true
-    forwardKubeDNSToHost: false
+  features:
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: false
   network:
     disableSearchDomain: true
     nameservers:
