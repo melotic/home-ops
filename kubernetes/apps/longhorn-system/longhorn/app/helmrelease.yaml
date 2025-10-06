@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: longhorn-repo
+  namespace: longhorn-system
+spec:
+  interval: 5m
+  url: https://charts.longhorn.io
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: longhorn-release
+  namespace: longhorn-system
+spec:
+  chart:
+    spec:
+      chart: longhorn
+      sourceRef:
+        kind: HelmRepository
+        name: longhorn-repo
+      version: 1.10.0
+  interval: 5m
+  values:
+    defaultBackupStore:
+      backupTarget: cifs://construct.${SECRET_DOMAIN}/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
+      backupTargetCredentialSecret: cifs-secret
+    defaultSettings:
+      defaultDataLocality: best-effort
+      defaultDataPath: /var/mnt/longhorn
+      nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      replicaAutoBalance: best-effort
+    ingress:
+      enabled: false
+    metrics:
+      serviceMonitor:
+        enabled: true
+    persistence:
+      defaultClass: true
+      defaultDataLocality: best-effort
