@@ -29,11 +29,17 @@ spec:
       backupTarget: cifs://construct.${SECRET_DOMAIN}/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
       backupTargetCredentialSecret: cifs-secret
     defaultSettings:
+      concurrentReplicaRebuildPerNodeLimit: 1
+      defaultDataEngine: v1
       defaultDataLocality: best-effort
       defaultDataPath: /var/mnt/longhorn
       defaultReplicaCount: 2
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
+      nodeDrainPolicy: block-if-contains-last-replica
       replicaAutoBalance: best-effort
+      storageMinimalAvailablePercentage: 5
+      storageOverProvisioningPercentage: 100
+      storageReservedPercentageForDefaultDisk: 0
     ingress:
       enabled: false
     metrics:
@@ -43,3 +49,4 @@ spec:
       defaultClass: true
       defaultClassReplicaCount: 2
       defaultDataLocality: best-effort
+      defaultFsType: xfs
