@@ -70,8 +70,8 @@ spec:
         server: construct.${SECRET_DOMAIN}
         path: /var/nfs/shared/media
         globalMounts:
-          - path: /media/usenet/downloads
-            subPath: usenet/downloads
+          - path: /media/usenet/
+            subPath: usenet
       tmpfs:
         type: emptyDir
         advancedMounts:
