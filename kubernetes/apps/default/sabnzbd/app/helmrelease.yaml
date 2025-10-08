@@ -1,0 +1,81 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: sabnzbd
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: sabnzbd
+  interval: 1h
+  values:
+    controllers:
+      sabnzbd:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/linuxserver/sabznbd
+              tag: 4.5.3-ls232
+            env:
+              TZ: Zulu
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api?mode=version
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 8Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 988
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - sabznbd.${SECRET_DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+    persistence:
+      config:
+        accessMode: ReadWriteOnce
+        size: 1Gi
+      media:
+        type: nfs
+        server: construct.${SECRET_DOMAIN}
+        path: /var/nfs/shared/media
+        globalMounts:
+          - path: /media/usenet/downloads
+            subPath: usenet/downloads
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          sabnzbd:
+            app:
+              - path: /tmp
+                subPath: tmp
