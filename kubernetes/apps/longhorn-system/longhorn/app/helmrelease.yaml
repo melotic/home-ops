@@ -31,6 +31,7 @@ spec:
     defaultSettings:
       defaultDataLocality: best-effort
       defaultDataPath: /var/mnt/longhorn
+      defaultReplicaCount: 2
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       replicaAutoBalance: best-effort
     ingress:
@@ -40,4 +41,5 @@ spec:
         enabled: true
     persistence:
       defaultClass: true
+      defaultClassReplicaCount: 2
       defaultDataLocality: best-effort
