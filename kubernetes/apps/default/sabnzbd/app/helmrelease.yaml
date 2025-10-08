@@ -15,8 +15,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/linuxserver/sabnzbd
-              tag: 4.5.3-ls232
+              repository: ghcr.io/home-operations/sabnzbd
+              tag: 4.5.3
             env:
               TZ: Zulu
             probes:
