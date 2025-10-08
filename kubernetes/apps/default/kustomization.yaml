@@ -7,3 +7,4 @@ components:
   - ../../components/common
 resources:
   - ./echo/ks.yaml
+  - ./sabnzbd/ks.yaml
