@@ -56,7 +56,7 @@ spec:
     route:
       app:
         hostnames:
-          - sabznbd.${SECRET_DOMAIN}
+          - sabnzbd.${SECRET_DOMAIN}
         parentRefs:
           - name: internal
             namespace: kube-system
