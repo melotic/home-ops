@@ -13,6 +13,16 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: *app
+      namespace: *namespace
+  healthCheckExprs:
+    - apiVersion: longhorn.io/v1beta2
+      kind: InstanceManager
+      current: status.currentState == 'running'
+      failed: status.currentState == 'error'
   interval: 1h
   path: ./kubernetes/apps/longhorn-system/longhorn/app
   postBuild:
