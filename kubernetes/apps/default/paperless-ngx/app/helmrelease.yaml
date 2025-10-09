@@ -64,7 +64,7 @@ spec:
           gotenberg:
             image:
               repository: docker.io/gotenberg/gotenberg
-              tag: 8.210
+              tag: 8.240
             resources:
               requests:
                 cpu: 10m
