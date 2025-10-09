@@ -68,9 +68,9 @@ spec:
       media:
         type: nfs
         server: construct.${SECRET_DOMAIN}
-        path: /var/nfs/shared/media
+        path: /var/nfs/shared/data
         globalMounts:
-          - path: /media/usenet/
+          - path: /data/usenet/
             subPath: usenet
       tmpfs:
         type: emptyDir
