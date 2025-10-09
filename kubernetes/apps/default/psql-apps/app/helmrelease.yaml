@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: psql-apps
+spec:
+  interval: 15m
+  url: https://cloudnative-pg.github.io/charts
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: psql-apps
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: cluster
+      sourceRef:
+        kind: HelmRepository
+        name: psql-apps
+      version: 0.3.1
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    type: postgresql
+    mode: standalone
+    version:
+      postgresql: "17"
+    cluster:
+      affinity:
+        topologyKey: kubernetes.io/hostname
+      instances: 3
+      monitoring:
+        enabled: true
+      storage:
+        size: 8Gi
+        storageClass: longhorn-cnpg-strict-local
+    backups:
+      enabled: false
