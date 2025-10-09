@@ -7,4 +7,5 @@ components:
   - ../../components/common
 resources:
   - ./echo/ks.yaml
+  - ./psql-apps/ks.yaml
   - ./sabnzbd/ks.yaml
