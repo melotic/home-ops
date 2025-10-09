@@ -6,6 +6,5 @@ namespace: default
 components:
   - ../../components/common
 resources:
-  - ./cloudnative-pg/ks.yaml
   - ./echo/ks.yaml
   - ./sabnzbd/ks.yaml
