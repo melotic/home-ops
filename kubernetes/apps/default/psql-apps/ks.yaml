@@ -17,7 +17,7 @@ spec:
     - name: cnpg
       namespace: cnpg-system
   healthCheckExprs:
-    - apiVersion: clusters.postgresql.cnpg.io/v1
+    - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
       failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
       current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
