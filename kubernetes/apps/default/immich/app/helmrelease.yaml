@@ -8,7 +8,7 @@ metadata:
 spec:
   interval: 5m
   ref:
-    tag: 0.9.3
+    tag: 0.10.0
   url: oci://ghcr.io/immich-app/immich-charts/immich
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
