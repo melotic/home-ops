@@ -17,7 +17,7 @@ spec:
   interval: 1h
   chart:
     spec:
-      chart: cluster
+      chart: connect
       sourceRef:
         kind: HelmRepository
         name: onepassword
