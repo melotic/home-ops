@@ -11,3 +11,4 @@ resources:
   - ./psql-apps/ks.yaml
   - ./radarr/ks.yaml
   - ./sabnzbd/ks.yaml
+  - ./sonarr/ks.yaml
