@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/json-patch
+- op: add
+  path: /spec/managed/roles/-
+  value:
+    name: ${APP}
+    ensure: present
+    login: true
+    passwordSecret:
+      name: ${APP}-psql
