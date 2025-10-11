@@ -8,6 +8,7 @@ components:
 resources:
   - ./echo/ks.yaml
   - ./lidarr/ks.yaml
+  - ./plex/ks.yaml
   - ./prowlarr/ks.yaml
   - ./psql-apps/ks.yaml
   - ./radarr/ks.yaml
