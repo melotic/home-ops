@@ -9,8 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../components/cnpg-database
   decryption:
     provider: sops
     secretRef:
@@ -19,15 +17,9 @@ spec:
     - name: longhorn
       namespace: longhorn-system
     - name: psql-apps
-    - name: external-secrets
-      namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/default/radarr/app
   postBuild:
-    substitute:
-      APP: *app
-      CLUSTER_NAME: psql-apps-cluster
-      CLUSTER_NS: *namespace
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
