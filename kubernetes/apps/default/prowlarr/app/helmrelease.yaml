@@ -89,11 +89,5 @@ spec:
         accessMode: ReadWriteOnce
         size: 5Gi
         storageClass: longhorn
-      data:
-        type: nfs
-        server: construct.${SECRET_DOMAIN}
-        path: /var/nfs/shared/data
-        globalMounts:
-          - path: /data
       tmp:
         type: emptyDir
