@@ -65,7 +65,7 @@ spec:
       config:
         accessMode: ReadWriteOnce
         size: 1Gi
-      media:
+      data:
         type: nfs
         server: construct.${SECRET_DOMAIN}
         path: /var/nfs/shared/data
