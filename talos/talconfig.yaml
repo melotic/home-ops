@@ -103,7 +103,7 @@ controlPlane:
           match: disk.transport == 'nvme'
         grow: true
         minSize: 128GiB
-        maxSize: 512GiB
+        maxSize: 1TiB
   volumes:
     - name: EPHEMERAL
       provisioning:
@@ -111,7 +111,7 @@ controlPlane:
           match: system_disk
         grow: false
         minSize: 8GiB
-        maxSize: 64GiB
+        maxSize: 128GiB
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
