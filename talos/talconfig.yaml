@@ -64,25 +64,26 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.8.10"
-  - hostname: "k8s-ghost"
-    ipAddress: "10.60.85.12"
-    installDisk: "/dev/nvme0n1"
-    machineSpec:
-      secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/65cf8364cd0de4cf7b851dc7067a2db83d0ba04f11d8635c6cd3334be6ffb825
-    controlPlane: true
-    networkInterfaces:
-      - deviceSelector:
-          hardwareAddr: "58:47:ca:70:56:71"
-        dhcp: false
-        addresses:
-          - "10.60.85.12/16"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "10.60.0.1"
-        mtu: 1500
-        vip:
-          ip: "10.60.8.10"
+  # RMA'd
+  # - hostname: "k8s-ghost"
+  #   ipAddress: "10.60.85.12"
+  #   installDisk: "/dev/nvme0n1"
+  #   machineSpec:
+  #     secureboot: true
+  #   talosImageURL: factory.talos.dev/installer-secureboot/65cf8364cd0de4cf7b851dc7067a2db83d0ba04f11d8635c6cd3334be6ffb825
+  #   controlPlane: true
+  #   networkInterfaces:
+  #     - deviceSelector:
+  #         hardwareAddr: "58:47:ca:70:56:71"
+  #       dhcp: false
+  #       addresses:
+  #         - "10.60.85.12/16"
+  #       routes:
+  #         - network: "0.0.0.0/0"
+  #           gateway: "10.60.0.1"
+  #       mtu: 1500
+  #       vip:
+  #         ip: "10.60.8.10"
 
 # Global patches
 patches:
