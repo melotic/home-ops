@@ -20,7 +20,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: fairwinds-stable
-      version: 4.7.2
+      version: 4.9.0
   install:
     remediation:
       retries: -1
