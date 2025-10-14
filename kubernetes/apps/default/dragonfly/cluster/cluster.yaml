@@ -5,7 +5,7 @@ metadata:
   name: &app dragonfly
 spec:
   replicas: 3
-  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.30.3@sha256:29d44a25a9e6937672f1c12e28c9f481f3d3c0441001ee56ed274a72f50593b7
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.34.2@sha256:d5312167ab5125f916218e71994323800926038eb284e2da8ed41d47e9c2b44e
   args:
     - --cluster_mode=emulated
     - --lock_on_hashtags
