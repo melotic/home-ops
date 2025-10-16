@@ -11,6 +11,8 @@ spec:
   addresses:
     - type: IPAddress
       value: "10.60.80.1"
+    - type: IPAddress
+      value: "${IPV6_PREFIX}::301"
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: "external.${SECRET_DOMAIN}"
