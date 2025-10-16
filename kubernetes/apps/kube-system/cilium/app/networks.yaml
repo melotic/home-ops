@@ -87,10 +87,7 @@ spec:
           peerConfigRef:
             name: bgp-peer-config-v4
         - name: peer-64513-v6
-          autoDiscovery:
-            mode: "DefaultGateway"
-            defaultGateway:
-              addressFamily: ipv6
+          peerAddress: "${IPV6_BGP_PEER}"
           peerASN: 64513
           peerConfigRef:
             name: bgp-peer-config-v6
