@@ -8,7 +8,7 @@ spec:
   allowFirstLastIPs: "No"
   blocks:
     - cidr: "10.60.0.0/16"
-    - cidr: "${IPV6_LB_POOL}"
+    - cidr: "${IPV6_PREFIX}::300/120"
 ---
 # yaml-language-server: $schema=https://datreeio.github.io/CRDs-catalog/cilium.io/ciliuml2announcementpolicy_v2alpha1.json
 apiVersion: cilium.io/v2alpha1
@@ -87,7 +87,7 @@ spec:
           peerConfigRef:
             name: bgp-peer-config-v4
         - name: peer-64513-v6
-          peerAddress: "${IPV6_BGP_PEER}"
+          peerAddress: "${IPV6_PREFIX}::1"
           peerASN: 64513
           peerConfigRef:
             name: bgp-peer-config-v6
