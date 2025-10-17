@@ -35,7 +35,7 @@ spec:
       sync:
         kind: GitRepository
         url: "https://github.com/melotic/home-ops.git"
-        ref: "refs/heads/next"
+        ref: "refs/heads/main"
         path: kubernetes/flux/cluster
       commonMetadata:
         labels:
