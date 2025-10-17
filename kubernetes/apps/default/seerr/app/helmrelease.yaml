@@ -1,0 +1,87 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: seerr
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: seerr
+  interval: 1h
+  values:
+    controllers:
+      seerr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/fallenbagel/jellyseerr
+              tag: 2.7.3
+            env:
+              DB_HOST: psql-apps-cluster-rw
+              DB_NAME: seerr
+              DB_TYPE: postgres
+              DB_USER:
+                secretKeyRef:
+                  name: &pgsecret psql-apps-cluster-app
+                  key: user
+              DB_PASS:
+                secretKeyRef:
+                  name: *pgsecret
+                  key: password
+              LOG_LEVEL: info
+              PORT: &port 80
+              TZ: Etc/UTC
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 4Gi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "seerr.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+    persistence:
+      config:
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        storageClass: longhorn
+        globalMounts:
+          - path: /app/config
+      tmp:
+        type: emptyDir
