@@ -12,7 +12,7 @@ additionalApiServerCertSans: &sans
 additionalMachineCertSans: *sans
 
 clusterPodNets: ["10.42.0.0/16", "fd00:42::/48"]
-clusterSvcNets: ["10.43.0.0/16", "fd00:43::/48"]
+clusterSvcNets: ["10.43.0.0/16", "fd00:43::/112"]
 
 # Disable built-in CNI to use Cilium
 cniConfig:
