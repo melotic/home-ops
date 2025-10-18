@@ -24,7 +24,7 @@ spec:
       version: 1.19.0
   interval: 1h
   values:
-    fullnameOverride: *app
+    fullnameOverride: unifi-external-dns
     provider:
       name: webhook
       webhook:
