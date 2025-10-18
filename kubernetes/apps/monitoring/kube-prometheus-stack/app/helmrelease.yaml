@@ -78,14 +78,23 @@ spec:
               namespace: kube-system
               sectionName: https
       prometheusSpec:
+        enableAdminAPI: true
+        enableFeatures:
+          - memory-snapshot-on-shutdown
         externalUrl: https://prometheus.${SECRET_DOMAIN}
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
+        walCompression: true
         retention: 14d
         retentionSize: 50GB
+        resources:
+          requests:
+            cpu: 100m
+          limits:
+            memory: 2000Mi
         storageSpec:
           volumeClaimTemplate:
             spec:
