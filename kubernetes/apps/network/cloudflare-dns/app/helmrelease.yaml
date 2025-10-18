@@ -18,7 +18,7 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    fullnameOverride: *app
+    fullnameOverride: cloudflare-external-dns
     provider: cloudflare
     env:
       - name: CF_API_TOKEN
