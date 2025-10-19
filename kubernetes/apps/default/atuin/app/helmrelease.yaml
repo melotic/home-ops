@@ -21,6 +21,7 @@ spec:
               ATUIN_HOST: "0.0.0.0"
               ATUIN_OPEN_REGISTRATION: "true"
               ATUIN_PORT: &port 80
+              RUST_LOG: info,atuin_server=debug
               TZ: Etc
             envFrom:
               - secretRef:
