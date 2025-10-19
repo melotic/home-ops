@@ -40,6 +40,15 @@ spec:
       instances: 2
       monitoring:
         enabled: true
+      roles:
+        - name: app
+          ensure: present
+          login: true
+          inRoles:
+            - pg_monitor
+            - pg_signal_backend
+          passwordSecret:
+            name: psql-apps-cluster-app
       storage:
         size: 8Gi
         storageClass: longhorn-cnpg-strict-local
