@@ -76,7 +76,7 @@ spec:
         hostnames:
           - "seerr.${SECRET_DOMAIN}"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: kube-system
             sectionName: https
     persistence:
