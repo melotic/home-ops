@@ -37,7 +37,7 @@ spec:
     cluster:
       affinity:
         topologyKey: kubernetes.io/hostname
-      instances: 2
+      instances: 3
       monitoring:
         enabled: true
       roles:
