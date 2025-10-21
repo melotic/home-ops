@@ -70,6 +70,9 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
         hostnames:
           - "seerr.${SECRET_DOMAIN}"
         parentRefs:
