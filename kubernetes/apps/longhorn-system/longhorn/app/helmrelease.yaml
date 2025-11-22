@@ -22,7 +22,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: longhorn
-      version: 1.10.0
+      version: 1.10.1
   interval: 5m
   values:
     defaultBackupStore:
