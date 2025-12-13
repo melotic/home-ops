@@ -11,7 +11,7 @@ spec:
       sourceRef:
         name: cloudnative-pg
         kind: HelmRepository
-      version: 0.26.1
+      version: 0.27.0
   interval: 1h
   values:
     monitoring:
