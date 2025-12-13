@@ -50,7 +50,7 @@ spec:
           passwordSecret:
             name: psql-apps-cluster-app
       storage:
-        size: 8Gi
+        size: 16Gi
         storageClass: longhorn-cnpg-strict-local
     backups:
       enabled: false
