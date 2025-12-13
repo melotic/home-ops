@@ -1,13 +1,4 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: onepassword
-spec:
-  interval: 15m
-  url: https://1password.github.io/connect-helm-charts/
----
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -15,13 +6,9 @@ metadata:
   name: onepassword
 spec:
   interval: 1h
-  chart:
-    spec:
-      chart: connect
-      sourceRef:
-        kind: HelmRepository
-        name: onepassword
-      version: 2.0.5
+  chartRef:
+    kind: OCIRepository
+    name: onepassword
   install:
     remediation:
       retries: -1
