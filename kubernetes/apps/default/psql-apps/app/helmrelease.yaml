@@ -37,6 +37,9 @@ spec:
     cluster:
       affinity:
         topologyKey: kubernetes.io/hostname
+      imageCatalogRef:
+        kind: ClusterImageCatalog
+        name: postgresql-system-bullseye
       instances: 3
       monitoring:
         enabled: true
