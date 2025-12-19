@@ -1,6 +1,15 @@
 # home-ops
 
-This repo is the GitOps source-of-truth for a Talos Kubernetes cluster running media, home automation, monitoring, and network services, nicknamed Zion.
+![Talos Version](https://kromgo.melotic.dev/talos_version?format=badge)
+![Kubernetes Version](https://kromgo.melotic.dev/kubernetes_version?format=badge)
+![Nodes](https://kromgo.melotic.dev/cluster_node_count?format=badge)
+![Pods](https://kromgo.melotic.dev/cluster_pod_count?format=badge)
+![CPU](https://kromgo.melotic.dev/cluster_cpu_usage?format=badge)
+![Memory](https://kromgo.melotic.dev/cluster_memory_usage?format=badge)
+![Uptime](https://kromgo.melotic.dev/cluster_uptime_days?format=badge)
+![Alerts](https://kromgo.melotic.dev/cluster_alert_count?format=badge)
+
+This repo is the GitOps source-of-truth for my Talos Kubernetes cluster running media, home automation, monitoring, and network services, nicknamed Zion.
 
 ## 🧩 Stack & Choices
 
