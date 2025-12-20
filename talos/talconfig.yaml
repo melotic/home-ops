@@ -24,7 +24,6 @@ nodes:
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: false
-    talosImageURL: factory.talos.dev/installer/7c9e329e408b058e4bdb5e18e4af75eed95d5b53944d6024fa59f8fa235e1741
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -38,19 +37,21 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.8.10"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
+            - siderolabs/realtek-firmware
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+
   - hostname: "k8s-trinity"
     ipAddress: "10.60.85.11"
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: true
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/i915
-            - siderolabs/intel-ucode
-            - siderolabs/iscsi-tools
-            - siderolabs/util-linux-tools
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -64,12 +65,20 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.8.10"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/i915
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
+
   - hostname: "k8s-ghost"
     ipAddress: "10.60.85.12"
     installDisk: "/dev/nvme0n1"
     machineSpec:
       secureboot: true
-    talosImageURL: factory.talos.dev/installer-secureboot/65cf8364cd0de4cf7b851dc7067a2db83d0ba04f11d8635c6cd3334be6ffb825
     controlPlane: true
     networkInterfaces:
       - deviceSelector:
@@ -83,6 +92,15 @@ nodes:
         mtu: 1500
         vip:
           ip: "10.60.8.10"
+    schematic:
+      customization:
+        systemExtensions:
+          officialExtensions:
+            - siderolabs/amd-ucode
+            - siderolabs/amdgpu
+            - siderolabs/realtek-firmware
+            - siderolabs/iscsi-tools
+            - siderolabs/util-linux-tools
 
 # Global patches
 patches:
