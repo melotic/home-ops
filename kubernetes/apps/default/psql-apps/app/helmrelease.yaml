@@ -39,7 +39,7 @@ spec:
         topologyKey: kubernetes.io/hostname
       imageCatalogRef:
         kind: ClusterImageCatalog
-        name: postgresql-system-bullseye
+        name: postgresql-system-trixie
       instances: 3
       monitoring:
         enabled: true
