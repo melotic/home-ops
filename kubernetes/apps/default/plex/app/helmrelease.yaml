@@ -46,19 +46,16 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: 100m
               limits:
-                memory: 16Gi
+                memory: 4Gi
     defaultPodOptions:
-      affinity:
-        nodeAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - preference:
-                matchExpressions:
-                  - key: extensions.talos.dev/i915
-                    operator: Exists
-              weight: 100
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: plex
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -90,12 +87,6 @@ spec:
         accessMode: ReadWriteOnce
         storageClass: longhorn
         size: 50Gi
-      dri:
-        type: hostPath
-        hostPath: /dev/dri
-        hostPathType: Directory
-        globalMounts:
-          - path: /dev/dri
       media:
         type: nfs
         server: construct.${SECRET_DOMAIN}
