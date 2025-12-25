@@ -1,0 +1,124 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics-k8s-stack
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: victoria-metrics-k8s-stack
+  interval: 1h
+  values:
+    victoria-metrics-operator:
+      operator:
+        disable_prometheus_converter: false
+        enable_converter_ownership: true
+
+    grafana:
+      enabled: false
+      forceDeployDatasource: true
+
+    vmsingle:
+      enabled: true
+      spec:
+        retentionPeriod: "14d"
+        storage:
+          storageClassName: longhorn
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 55Gi
+
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 1024Mi
+
+      route:
+        enabled: true
+        hostnames:
+          - prometheus.${SECRET_DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+
+    vmagent:
+      enabled: true
+      spec:
+        scrapeInterval: 30s
+
+    vmalert:
+      enabled: true
+
+    alertmanager:
+      enabled: true
+      spec:
+        externalURL: "https://alertmanager.${SECRET_DOMAIN}"
+        routePrefix: /
+
+        configNamespaceSelector: {}
+        configSelector: {}
+
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              accessModes:
+                - ReadWriteOnce
+              resources:
+                requests:
+                  storage: 1Gi
+
+      route:
+        enabled: true
+        hostnames:
+          - alertmanager.${SECRET_DOMAIN}
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+
+    kubeEtcd:
+      service:
+        selector:
+          component: kube-apiserver
+
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+
+    additionalVictoriaMetricsMap:
+      dockerhub-rules:
+        groups:
+          - name: dockerhub
+            rules:
+              - alert: DockerHubRateLimit
+                annotations:
+                  summary: DockerHub rate limit is at 80% or more.
+                expr: |
+                  (sum by (host) (rate(registry_client_requests_total{host="registry-1.docker.io",code="TOOMANYREQUESTS"}[5m])) > 0)
+                  and
+                  (sum by (host) (rate(registry_client_requests_total{host="registry-1.docker.io"}[5m])) > 0)
+                for: 10m
+                labels:
+                  severity: warning
+
+      oom-rules:
+        groups:
+          - name: oom-kills
+            rules:
+              - alert: KubernetesPodOOMKilled
+                annotations:
+                  summary: Pod is restarting due to OOMKilled.
+                expr: |
+                  max_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[5m]) == 1
+                for: 2m
+                labels:
+                  severity: warning
