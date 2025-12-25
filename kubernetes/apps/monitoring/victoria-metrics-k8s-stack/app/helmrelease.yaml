@@ -19,70 +19,55 @@ spec:
       enabled: false
       forceDeployDatasource: true
 
+    defaultDashboards:
+      enabled: true
+
     vmsingle:
       enabled: true
       spec:
         retentionPeriod: "14d"
         storage:
           storageClassName: longhorn
-          accessModes:
-            - ReadWriteOnce
+          accessModes: ["ReadWriteOnce"]
           resources:
             requests:
-              storage: 55Gi
-
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            memory: 1024Mi
+              storage: 50Gi
+        extraArgs:
+          http.pathPrefix: "/"
 
       route:
         enabled: true
-        hostnames:
-          - prometheus.${SECRET_DOMAIN}
         parentRefs:
           - name: internal
             namespace: kube-system
             sectionName: https
-
-    vmagent:
-      enabled: true
-      spec:
-        scrapeInterval: 30s
-
-    vmalert:
-      enabled: true
+        hostnames:
+          - vm.${SECRET_DOMAIN}
 
     alertmanager:
       enabled: true
       spec:
-        externalURL: "https://alertmanager.${SECRET_DOMAIN}"
-        routePrefix: /
-
-        configNamespaceSelector: {}
-        configSelector: {}
-
+        routePrefix: "/"
+        externalURL: https://alertmanager.${SECRET_DOMAIN}
         storage:
           volumeClaimTemplate:
             spec:
               storageClassName: longhorn
-              accessModes:
-                - ReadWriteOnce
+              accessModes: ["ReadWriteOnce"]
               resources:
                 requests:
                   storage: 1Gi
 
       route:
         enabled: true
-        hostnames:
-          - alertmanager.${SECRET_DOMAIN}
         parentRefs:
           - name: internal
             namespace: kube-system
             sectionName: https
+        hostnames:
+          - alertmanager.${SECRET_DOMAIN}
 
+    # Talos/cilium control plane: etcd is behind kube-apiserver static pods
     kubeEtcd:
       service:
         selector:
@@ -99,26 +84,19 @@ spec:
         groups:
           - name: dockerhub
             rules:
-              - alert: DockerHubRateLimit
+              - alert: DockerhubRateLimitRisk
                 annotations:
-                  summary: DockerHub rate limit is at 80% or more.
-                expr: |
-                  (sum by (host) (rate(registry_client_requests_total{host="registry-1.docker.io",code="TOOMANYREQUESTS"}[5m])) > 0)
-                  and
-                  (sum by (host) (rate(registry_client_requests_total{host="registry-1.docker.io"}[5m])) > 0)
-                for: 10m
+                  summary: Kubernetes cluster Dockerhub rate limit risk
+                expr: count(time() - container_last_seen{image=~"(docker.io).*",container!=""} < 30) > 100
                 labels:
-                  severity: warning
-
+                  severity: critical
       oom-rules:
         groups:
-          - name: oom-kills
+          - name: oom
             rules:
-              - alert: KubernetesPodOOMKilled
+              - alert: OomKilled
                 annotations:
-                  summary: Pod is restarting due to OOMKilled.
-                expr: |
-                  max_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[5m]) == 1
-                for: 2m
+                  summary: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.
+                expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
                 labels:
-                  severity: warning
+                  severity: critical
