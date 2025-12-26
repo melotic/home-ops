@@ -19,6 +19,10 @@ spec:
       enabled: false
       forceDeployDatasource: true
 
+    external:
+      grafana:
+        host: grafana.${SECRET_DOMAIN}
+
     defaultDashboards:
       enabled: true
 
@@ -32,8 +36,6 @@ spec:
           resources:
             requests:
               storage: 50Gi
-        extraArgs:
-          http.pathPrefix: "/"
 
       route:
         enabled: true
@@ -47,8 +49,7 @@ spec:
     alertmanager:
       enabled: true
       spec:
-        routePrefix: "/"
-        externalURL: https://alertmanager.${SECRET_DOMAIN}
+        externalURL: https://vm-alertmanager.${SECRET_DOMAIN}
         storage:
           volumeClaimTemplate:
             spec:
@@ -65,7 +66,7 @@ spec:
             namespace: kube-system
             sectionName: https
         hostnames:
-          - alertmanager.${SECRET_DOMAIN}
+          - vm-alertmanager.${SECRET_DOMAIN}
 
     # Talos/cilium control plane: etcd is behind kube-apiserver static pods
     kubeEtcd:
