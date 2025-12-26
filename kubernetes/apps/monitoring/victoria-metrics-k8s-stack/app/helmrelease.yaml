@@ -72,8 +72,16 @@ spec:
     # Talos/cilium control plane: etcd is behind kube-apiserver static pods
     kubeEtcd:
       service:
+        port: 2381
+        targetPort: 2381
         selector:
           component: kube-apiserver
+      vmScrape:
+        spec:
+          endpoints:
+            - port: http-metrics
+              scheme: http
+              path: /metrics
 
     prometheus-node-exporter:
       fullnameOverride: node-exporter
