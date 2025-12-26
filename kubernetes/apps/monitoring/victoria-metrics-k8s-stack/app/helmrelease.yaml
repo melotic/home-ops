@@ -83,6 +83,34 @@ spec:
               scheme: http
               path: /metrics
 
+    kubeControllerManager:
+      service:
+        selector:
+          component: kube-apiserver
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              path: /metrics
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
+    kubeScheduler:
+      service:
+        selector:
+          component: kube-apiserver
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              path: /metrics
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+
     prometheus-node-exporter:
       fullnameOverride: node-exporter
 
