@@ -10,6 +10,7 @@ spec:
     name: victoria-metrics-k8s-stack
   interval: 1h
   values:
+    fullnameOverride: vm-kube-stack
     victoria-metrics-operator:
       operator:
         disable_prometheus_converter: false
@@ -49,7 +50,7 @@ spec:
     alertmanager:
       enabled: true
       spec:
-        externalURL: https://vm-alertmanager.${SECRET_DOMAIN}
+        externalURL: https://alertmanager.${SECRET_DOMAIN}
         storage:
           volumeClaimTemplate:
             spec:
@@ -66,7 +67,7 @@ spec:
             namespace: kube-system
             sectionName: https
         hostnames:
-          - vm-alertmanager.${SECRET_DOMAIN}
+          - alertmanager.${SECRET_DOMAIN}
 
     # Talos/cilium control plane: etcd is behind kube-apiserver static pods
     kubeEtcd:
