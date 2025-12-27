@@ -83,6 +83,32 @@ spec:
               scheme: http
               path: /metrics
 
+    kubeScheduler:
+      vmScrape:
+        spec:
+          namespaceSelector:
+            matchNames: ["kube-system"]
+          endpoints:
+            - port: http-metrics
+              bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                insecureSkipVerify: true
+
+    kubeControllerManager:
+      vmScrape:
+        spec:
+          namespaceSelector:
+            matchNames: ["kube-system"]
+          endpoints:
+            - port: http-metrics
+              bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                insecureSkipVerify: true
+
     prometheus-node-exporter:
       fullnameOverride: node-exporter
 
