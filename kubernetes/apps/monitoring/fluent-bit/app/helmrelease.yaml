@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: fluent-bit
+spec:
+  interval: 1h
+  url: https://fluent.github.io/helm-charts
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: fluent-bit
+spec:
+  chart:
+    spec:
+      chart: fluent-bit
+      sourceRef:
+        kind: HelmRepository
+        name: fluent-bit
+      version: 0.54.0
+  interval: 1h
+  values:
+    config:
+      inputs: |
+        [INPUT]
+            Name tail
+            Path /var/log/containers/*.log
+            multiline.parser docker, cri
+            Tag kube.*
+            Mem_Buf_Limit 5MB
+            Skip_Long_Lines On
+      outputs: |-
+        [OUTPUT]
+            Name  http
+            Match kube.*
+            Host  victoria-logs-server.monitoring.svc.cluster.local
+            Port  9428
+            URI   /insert/jsonline?_stream_fields=kubernetes.namespace_name,kubernetes.container_name,stream&_msg_field=log,message,msg,log.message&_time_field=date&debug=1
+            Format            json_lines
+            json_date_format  iso8601
+            Compress          gzip
+    dashboards:
+      enabled: true
+    serviceMonitor:
+      enabled: true
+    logLevel: warn
