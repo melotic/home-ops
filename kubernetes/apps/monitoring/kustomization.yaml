@@ -12,4 +12,5 @@ resources:
   - ./kromgo/ks.yaml
   - ./loki/ks.yaml
   - ./unpoller/ks.yaml
+  - ./victoria-logs/ks.yaml
   - ./victoria-metrics-k8s-stack/ks.yaml
