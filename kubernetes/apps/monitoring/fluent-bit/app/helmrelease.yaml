@@ -32,13 +32,22 @@ spec:
             Tag kube.*
             Mem_Buf_Limit 5MB
             Skip_Long_Lines On
+      filters: |-
+        [FILTER]
+            Name kubernetes
+            Match kube.*
+            Merge_Log On
+            Keep_Log Off
+            K8S-Logging.Parser On
+            K8S-Logging.Exclude On
+            Buffer_Size 128k
       outputs: |-
         [OUTPUT]
             Name  http
             Match kube.*
             Host  victoria-logs-server.monitoring.svc.cluster.local
             Port  9428
-            URI   /insert/jsonline?_stream_fields=kubernetes.namespace_name,kubernetes.container_name,stream&_msg_field=log,message,msg,log.message&_time_field=date&debug=1
+            URI /insert/jsonline?_stream_fields=kubernetes.namespace_name,kubernetes.pod_name,kubernetes.container_name,stream&_msg_field=log,message,msg&_time_field=date
             Format            json_lines
             json_date_format  iso8601
             Compress          gzip
