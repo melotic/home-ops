@@ -7,7 +7,6 @@ radarr:
     delete_old_custom_formats: true
     replace_existing_custom_formats: true
     include:
-      - template: radarr-custom-formats-hd-bluray-web
       - template: radarr-custom-formats-uhd-bluray-web
       - template: radarr-quality-definition-movie
     custom_formats:
