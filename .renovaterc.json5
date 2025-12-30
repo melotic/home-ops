@@ -1,11 +1,15 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
-    "config:best-practices",
+    "config:recommended",
+    "abandonments:recommended",
     "docker:enableMajor",
+    "helpers:pinGitHubActionDigests",
+    "security:minimumReleaseAgeNpm",
     ":automergeBranch",
-    ":automergePatch",
+    ":configMigration",
     ":disableRateLimiting",
+    ":pinDevDependencies",
     ":semanticCommits",
   ],
   ignorePaths: ["**/*.sops.*"],
