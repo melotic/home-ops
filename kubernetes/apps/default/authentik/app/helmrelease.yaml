@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: authentik
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: authentik
+  interval: 1h
+  values:
+    authentik:
+      error_reporting:
+        enabled: false
+      postgresql:
+        host: psql-apps-cluster-rw.default.svc.cluster.local
+        user: file:///postgres-creds/username
+        password: file:///postgres-creds/password
+
+    prometheus:
+      rules:
+        enabled: true
+
+    server:
+      name: zion
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "sso.${SECRET_DOMAIN}"
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+      volumes: &volumes
+        - name: postgres-creds
+          secret:
+            secretName: psql-apps-cluster-app
+      volumeMounts: &volumeMounts
+        - name: postgres-creds
+          mountPath: /postgres-creds
+          readOnly: true
+
+    worker:
+      volumes: *volumes
+      volumeMounts: *volumeMounts
