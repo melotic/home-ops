@@ -23,7 +23,9 @@ spec:
         enabled: true
 
     server:
-      name: zion
+      envFrom:
+        - secretRef:
+            name: authentik-secret
       metrics:
         enabled: true
         serviceMonitor:
@@ -47,5 +49,8 @@ spec:
           readOnly: true
 
     worker:
+      envFrom:
+        - secretRef:
+            name: authentik-secret
       volumes: *volumes
       volumeMounts: *volumeMounts
