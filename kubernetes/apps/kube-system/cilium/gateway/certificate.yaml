@@ -6,6 +6,8 @@ metadata:
   name: "${SECRET_DOMAIN/./-}-production"
 spec:
   secretName: "${SECRET_DOMAIN/./-}-production-tls"
+  privateKey:
+    rotationPolicy: Always
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
@@ -19,6 +21,8 @@ metadata:
   name: "${SECRET_DOMAIN/./-}-staging"
 spec:
   secretName: "${SECRET_DOMAIN/./-}-staging-tls"
+  privateKey:
+    rotationPolicy: Always
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
