@@ -16,7 +16,6 @@ spec:
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
-    - name: psql-apps
   interval: 1h
   path: ./kubernetes/apps/default/tautulli/app
   postBuild:
