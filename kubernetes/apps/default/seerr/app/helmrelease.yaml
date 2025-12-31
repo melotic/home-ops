@@ -20,12 +20,12 @@ spec:
               repository: ghcr.io/fallenbagel/jellyseerr
               tag: 2.7.3
             env:
-              DB_HOST: psql-apps-cluster-rw
+              DB_HOST: postgres-cluster-rw.database.svc.cluster.local
               DB_NAME: seerr
               DB_TYPE: postgres
               DB_USER:
                 secretKeyRef:
-                  name: &pgsecret psql-apps-cluster-app
+                  name: &pgsecret postgres-cluster-app
                   key: user
               DB_PASS:
                 secretKeyRef:

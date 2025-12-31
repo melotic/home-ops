@@ -14,7 +14,7 @@ spec:
       error_reporting:
         enabled: false
       postgresql:
-        host: psql-apps-cluster-rw.default.svc.cluster.local
+        host: postgres-cluster-rw.database.svc.cluster.local
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
 
@@ -42,7 +42,7 @@ spec:
       volumes: &volumes
         - name: postgres-creds
           secret:
-            secretName: psql-apps-cluster-app
+            secretName: postgres-cluster-app
       volumeMounts: &volumeMounts
         - name: postgres-creds
           mountPath: /postgres-creds

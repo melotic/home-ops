@@ -26,11 +26,11 @@ spec:
               PROWLARR__AUTH__REQUIRED: DisabledForLocalAddresses
               PROWLARR__LOG__DBENABLED: "False"
               PROWLARR__LOG__LEVEL: info
-              PROWLARR__POSTGRES__HOST: psql-apps-cluster-rw
+              PROWLARR__POSTGRES__HOST: postgres-cluster-rw.database.svc.cluster.local
               PROWLARR__POSTGRES__MAINDB: prowlarr
               PROWLARR__POSTGRES__USER:
                 secretKeyRef:
-                  name: &pgsecret psql-apps-cluster-app
+                  name: &pgsecret postgres-cluster-app
                   key: user
               PROWLARR__POSTGRES__PASSWORD:
                 secretKeyRef:
