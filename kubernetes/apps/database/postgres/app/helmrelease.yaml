@@ -45,6 +45,15 @@ spec:
       instances: 3
       monitoring:
         enabled: true
+      roles:
+        - name: app
+          ensure: present
+          login: true
+          inRoles:
+            - pg_monitor
+            - pg_signal_backend
+          passwordSecret:
+            name: postgres-cluster-app
       storage:
         size: 16Gi
         storageClass: longhorn-cnpg-strict-local
