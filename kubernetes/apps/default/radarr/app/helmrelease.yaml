@@ -26,11 +26,11 @@ spec:
               RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
-              RADARR__POSTGRES__HOST: psql-apps-cluster-rw
+              RADARR__POSTGRES__HOST: postgres-cluster-rw.database.svc.cluster.local
               RADARR__POSTGRES__MAINDB: radarr
               RADARR__POSTGRES__USER:
                 secretKeyRef:
-                  name: &pgsecret psql-apps-cluster-app
+                  name: &pgsecret postgres-cluster-app
                   key: user
               RADARR__POSTGRES__PASSWORD:
                 secretKeyRef:
