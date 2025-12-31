@@ -31,7 +31,7 @@ spec:
       retries: 3
   values:
     type: postgresql
-    mode: replica
+    mode: recovery
     version:
       postgresql: "17"
     backups:
@@ -48,30 +48,24 @@ spec:
       storage:
         size: 16Gi
         storageClass: longhorn-cnpg-strict-local
-    replica:
-      self: postgres
-      primary: psql-apps-cluster
-      bootstrap:
-        source: psql-apps-cluster
-        database: "app"
-        owner: "app"
-        secret: "psql-apps-cluster-app"
-      origin:
-        pg_basebackup:
-          host: psql-apps-cluster-rw.default.svc
+    recovery:
+      method: pg_basebackup
+      pgBaseBackup:
+        database: app
+        owner: app
+        secretName: psql-apps-cluster-app
+        source:
+          host: psql-apps-cluster-rw.default.svc.cluster.local
           port: 5432
-          username: "streaming_replica"
-          database: "postgres"
-          sslMode: "verify-full"
+          username: streaming_replica
+          database: postgres
+          sslMode: verify-full
           sslRootCertSecret:
-            name: "psql-apps-cluster-ca"
-            key: "ca.crt"
+            name: psql-apps-cluster-ca
+            key: ca.crt
           sslCertSecret:
-            name: "psql-apps-cluster-replication"
-            key: "tls.crt"
+            name: psql-apps-cluster-replication
+            key: tls.crt
           sslKeySecret:
-            name: "psql-apps-cluster-replication"
-            key: "tls.key"
-          passwordSecret:
-            name: "psql-apps-cluster-replication"
-            key: "password"
+            name: psql-apps-cluster-replication
+            key: tls.key
