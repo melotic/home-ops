@@ -10,9 +10,11 @@ spec:
     kind: OCIRepository
     name: cilium
   install:
+    crds: CreateReplace
     remediation:
       retries: -1
   upgrade:
+    crds: CreateReplace
     cleanupOnFail: true
     remediation:
       retries: 3
