@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: postgres
+spec:
+  interval: 15m
+  url: https://cloudnative-pg.github.io/charts
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: postgres
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: cluster
+      sourceRef:
+        kind: HelmRepository
+        name: postgres
+      version: 0.5.0
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    type: postgresql
+    mode: replica
+    version:
+      postgresql: "17"
+    backups:
+      enabled: false
+    cluster:
+      affinity:
+        topologyKey: kubernetes.io/hostname
+      imageCatalogRef:
+        kind: ClusterImageCatalog
+        name: postgresql-minimal-trixie
+      instances: 3
+      monitoring:
+        enabled: true
+      storage:
+        size: 16Gi
+        storageClass: longhorn-cnpg-strict-local
+    replica:
+      self: postgres
+      primary: psql-apps-cluster
+      bootstrap:
+        source: psql-apps-cluster
+        database: "app"
+        owner: "app"
+        secret: "psql-apps-cluster-app"
+      origin:
+        pg_basebackup:
+          host: psql-apps-cluster-rw.default.svc
+          port: 5432
+          username: "streaming_replica"
+          database: "postgres"
+          sslMode: "verify-full"
+          sslRootCertSecret:
+            name: "psql-apps-cluster-ca"
+            key: "ca.crt"
+          sslCertSecret:
+            name: "psql-apps-cluster-replication"
+            key: "tls.crt"
+          sslKeySecret:
+            name: "psql-apps-cluster-replication"
+            key: "tls.key"
+          passwordSecret:
+            name: "psql-apps-cluster-replication"
+            key: "password"
