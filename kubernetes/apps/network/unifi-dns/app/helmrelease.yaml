@@ -21,7 +21,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: unifi-dns
-      version: 1.19.0
+      version: 1.20.0
   interval: 1h
   values:
     fullnameOverride: unifi-external-dns
