@@ -20,7 +20,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: fluent-bit
-      version: 0.54.0
+      version: 0.54.1
   interval: 1h
   values:
     config:
