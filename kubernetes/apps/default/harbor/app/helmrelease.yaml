@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: harbor
+spec:
+  url: https://helm.goharbor.io
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: harbor
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: harbor
+      sourceRef:
+        kind: HelmRepository
+        name: harbor
+      version: 1.18.1
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    expose:
+      type: route
+      route:
+        hosts:
+          - "harbor.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+    externalURL: "https://harbor.${SECRET_DOMAIN}"
+    persistence:
+      enabled: true
+      persistentVolumeClaim:
+        registry:
+          storageClass: nfs-construct
+    existingSecretAdminPassword: harbor
+    existingSecretSecretKey: harbor
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+    database:
+      type: external
+      external:
+        host: postgres-cluster-rw.database.svc.cluster.local
+        username: app
+        coreDatabase: harbor
+        existingSecret: postgres-cluster-app
