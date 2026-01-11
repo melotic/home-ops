@@ -33,7 +33,7 @@ spec:
       defaultDataEngine: v1
       defaultDataLocality: best-effort
       defaultDataPath: /var/mnt/longhorn
-      defaultReplicaCount: "2"
+      defaultReplicaCount: "3"
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       nodeDrainPolicy: block-if-contains-last-replica
       replicaAutoBalance: best-effort
@@ -47,6 +47,6 @@ spec:
         enabled: true
     persistence:
       defaultClass: true
-      defaultClassReplicaCount: 2
+      defaultClassReplicaCount: 3
       defaultDataLocality: best-effort
       defaultFsType: xfs
