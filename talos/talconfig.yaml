@@ -43,8 +43,9 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
-            - siderolabs/realtek-firmware
             - siderolabs/iscsi-tools
+            - siderolabs/nfs-utils
+            - siderolabs/realtek-firmware
             - siderolabs/util-linux-tools
 
   - hostname: "k8s-trinity"
@@ -72,6 +73,7 @@ nodes:
             - siderolabs/i915
             - siderolabs/intel-ucode
             - siderolabs/iscsi-tools
+            - siderolabs/nfs-utils
             - siderolabs/util-linux-tools
 
   - hostname: "k8s-ghost"
@@ -98,8 +100,9 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
-            - siderolabs/realtek-firmware
             - siderolabs/iscsi-tools
+            - siderolabs/nfs-utils
+            - siderolabs/realtek-firmware
             - siderolabs/util-linux-tools
 
 # Global patches
