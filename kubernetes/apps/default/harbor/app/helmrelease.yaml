@@ -31,6 +31,8 @@ spec:
   values:
     expose:
       type: route
+      tls:
+        enabled: false
       route:
         hosts:
           - "harbor.${SECRET_DOMAIN}"
