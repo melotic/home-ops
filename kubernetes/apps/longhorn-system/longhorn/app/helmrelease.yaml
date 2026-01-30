@@ -22,7 +22,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: longhorn
-      version: 1.10.1
+      version: 1.11.0
   interval: 5m
   values:
     defaultBackupStore:
@@ -40,6 +40,13 @@ spec:
       storageMinimalAvailablePercentage: "5"
       storageOverProvisioningPercentage: "100"
       storageReservedPercentageForDefaultDisk: "0"
+    httproute:
+      enabled: true
+      hostnames: ["longhorn.${SECRET_DOMAIN}"]
+      parentRefs:
+        - name: internal
+          namespace: kube-system
+          sectionName: https
     ingress:
       enabled: false
     metrics:
