@@ -22,8 +22,6 @@ spec:
   infrastructure:
     annotations:
       external-dns.alpha.kubernetes.io/hostname: "internal.${SECRET_DOMAIN}"
-      lbipam.cilium.io/sharing-key: "internal"
-      lbipam.cilium.io/sharing-cross-namespace: "default,kube-system"
   listeners:
     - name: http
       protocol: HTTP

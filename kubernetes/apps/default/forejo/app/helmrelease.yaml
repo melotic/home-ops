@@ -15,8 +15,7 @@ spec:
         type: LoadBalancer
         port: 22
         annotations:
-          lbipam.cilium.io/sharing-key: "internal"
-          lbipam.cilium.io/sharing-cross-namespace: "default,kube-system"
+          external-dns.alpha.kubernetes.io/hostname: "ssh.git.${SECRET_DOMAIN}"
 
     httpRoute:
       enabled: true
@@ -66,7 +65,7 @@ spec:
         server:
           DOMAIN: "git.${SECRET_DOMAIN}"
           ROOT_URL: "https://git.${SECRET_DOMAIN}/"
-          SSH_DOMAIN: "git.${SECRET_DOMAIN}"
+          SSH_DOMAIN: "ssh.git.${SECRET_DOMAIN}"
           SSH_PORT: 22
           SSH_LISTEN_PORT: 2222
         database:
