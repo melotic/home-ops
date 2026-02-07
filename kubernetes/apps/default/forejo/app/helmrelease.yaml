@@ -1,0 +1,92 @@
+---
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forejo
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: forejo
+  interval: 1h
+  values:
+    service:
+      http:
+        type: ClusterIP
+        port: 3000
+      ssh:
+        type: ClusterIP
+        port: 22
+
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: internal
+          namespace: kube-system
+          sectionName: https
+      hostnames:
+        - "git.${SECRET_DOMAIN}"
+      matches:
+        path:
+          type: PathPrefix
+          value: /
+
+    persistence:
+      enabled: true
+      size: 25Gi
+      storageClass: longhorn
+
+    deployment:
+      env:
+        - name: GITEA__DATABASE__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-cluster-app
+              key: password
+
+    gitea:
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      startupProbe:
+        enabled: true
+      oauth:
+        - name: authentik
+          provider: openidConnect
+          existingSecret: forejo-oidc
+          autoDiscoverUrl: "https://sso.melotic.dev/application/o/forejo/.well-known/openid-configuration"
+      config:
+        APP_NAME: Forejo
+        RUN_MODE: prod
+        server:
+          DOMAIN: "git.${SECRET_DOMAIN}"
+          ROOT_URL: "https://git.${SECRET_DOMAIN}/"
+          SSH_DOMAIN: "git.${SECRET_DOMAIN}"
+          SSH_PORT: 22
+          SSH_LISTEN_PORT: 2222
+        database:
+          DB_TYPE: postgres
+          HOST: postgres-cluster-rw.database.svc.cluster.local:5432
+          NAME: forejo
+          USER: app
+          SSL_MODE: disable
+        session:
+          SESSION_LIFE: 86400
+        picture:
+          DISABLE_GRAVATAR: false
+        mailer:
+          ENABLED: false
+        service:
+          REGISTER_EMAIL_CONFIRM: false
+          ENABLE_NOTIFY_MAIL: false
+        metrics:
+          ENABLED: true
+
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

@@ -17,7 +17,6 @@ spec:
     - name: cnpg
       namespace: cnpg-system
     - name: cnpg-image-catalogs
-      namespace: *namespace
   healthCheckExprs:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
