@@ -4,6 +4,7 @@ apiVersion: source.toolkit.fluxcd.io/v1
 kind: OCIRepository
 metadata:
   name: forejo
+  namespace: default
 spec:
   interval: 15m
   layerSelector:
