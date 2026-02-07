@@ -14,6 +14,10 @@ spec:
       ssh:
         type: LoadBalancer
         port: 22
+        ipFamilyPolicy: PreferDualStack
+        ipFamilies:
+          - IPv4
+          - IPv6
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "ssh.git.${SECRET_DOMAIN}"
 
@@ -48,8 +52,21 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
+      livenessProbe:
+        enabled: true
+        initialDelaySeconds: 30
+        periodSeconds: 10
+        failureThreshold: 10
+      readinessProbe:
+        enabled: true
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        failureThreshold: 3
       startupProbe:
         enabled: true
+        initialDelaySeconds: 10
+        periodSeconds: 5
+        failureThreshold: 30
       oauth:
         - name: authentik
           provider: openidConnect
