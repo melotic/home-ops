@@ -56,6 +56,8 @@ spec:
           provider: openidConnect
           existingSecret: forejo-oidc
           autoDiscoverUrl: "https://sso.melotic.dev/application/o/forejo/.well-known/openid-configuration"
+          adminGroup: forejo-admins
+          groupClaimName: groups
       config:
         APP_NAME: Forejo
         RUN_MODE: prod
