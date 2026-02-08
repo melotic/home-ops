@@ -24,8 +24,8 @@ spec:
     httpRoute:
       enabled: true
       parentRefs:
-        - name: internal
-          namespace: kube-system
+        - name: envoy-internal
+          namespace: network
           sectionName: https
       hostnames:
         - "git.${SECRET_DOMAIN}"
