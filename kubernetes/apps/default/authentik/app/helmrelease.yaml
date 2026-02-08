@@ -36,8 +36,8 @@ spec:
           hostnames:
             - "sso.${SECRET_DOMAIN}"
           parentRefs:
-            - name: internal
-              namespace: kube-system
+            - name: envoy-internal
+              namespace: network
               sectionName: https
       volumes: &volumes
         - name: postgres-creds
