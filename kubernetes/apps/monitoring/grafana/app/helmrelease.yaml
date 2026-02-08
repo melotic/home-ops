@@ -12,8 +12,12 @@ spec:
   values:
     deploymentStrategy:
       type: Recreate
-    admin:
-      existingSecret: grafana-admin-secret
+    extraSecretMounts:
+      - name: grafana-oauth-secret-mount
+        secretName: grafana-oauth-secret
+        defaultMode: 0440
+        mountPath: /etc/secrets/grafana_oauth
+        readOnly: true
     env:
       GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
       GF_EXPLORE_ENABLED: true
@@ -25,13 +29,29 @@ spec:
         check_for_updates: false
         check_for_plugin_updates: false
         reporting_enabled: false
+      auth:
+        signout_redirect_url: https://sso.${SECRET_DOMAIN}/application/o/grafana/end-session/
+        oauth_auto_login: true
       auth.anonymous:
         enabled: true
         org_id: 1
         org_name: Main Org.
         org_role: Viewer
+      auth.generic_oauth:
+        name: authentik
+        enabled: true
+        client_id: $__file{/etc/secrets/grafana_oauth/client_id}
+        client_secret: $__file{/etc/secrets/grafana_oauth/client_secret}
+        scopes: openid profile email
+        auth_url: https://sso.${SECRET_DOMAIN}/application/o/authorize/
+        token_url: https://sso.${SECRET_DOMAIN}/application/o/token/
+        api_url: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
+        role_attribute_path: contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
       news:
         news_feed_enabled: false
+      users:
+        auto_assign_org: true
+        auto_assign_org_id: 1
     datasources:
       datasources.yaml:
         apiVersion: 1
