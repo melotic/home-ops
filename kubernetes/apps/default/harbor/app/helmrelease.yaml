@@ -37,8 +37,8 @@ spec:
         hosts:
           - "harbor.${SECRET_DOMAIN}"
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: network
             sectionName: https
     externalURL: "https://harbor.${SECRET_DOMAIN}"
     persistence:
