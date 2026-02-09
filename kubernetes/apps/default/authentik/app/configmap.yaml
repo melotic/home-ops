@@ -1,0 +1,152 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/configmap.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authentik-blueprints
+data:
+  grafana.yaml: |
+    ---
+    version: 1
+    metadata:
+      name: Grafana OAuth2 Provider and Application
+    entries:
+      # OAuth2 Provider for Grafana
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: grafana
+        attrs:
+          name: grafana
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          client_type: confidential
+          client_id: !Env GRAFANA_CLIENT_ID
+          client_secret: !Env GRAFANA_CLIENT_SECRET
+          redirect_uris: |
+            https://grafana.{{ env "SECRET_DOMAIN" }}/login/generic_oauth
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+
+      # Application for Grafana
+      - model: authentik_core.application
+        identifiers:
+          slug: grafana
+        attrs:
+          name: Grafana
+          slug: grafana
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, grafana]]
+          policy_engine_mode: any
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/grafana.svg
+          meta_description: Metrics and dashboards
+          meta_publisher: Grafana Labs
+          open_in_new_tab: true
+
+      # Group for Grafana admins
+      - model: authentik_core.group
+        identifiers:
+          name: grafana-admins
+        attrs:
+          name: grafana-admins
+          is_superuser: false
+
+      # Group for Grafana editors
+      - model: authentik_core.group
+        identifiers:
+          name: grafana-editors
+        attrs:
+          name: grafana-editors
+          is_superuser: false
+
+  harbor.yaml: |
+    ---
+    version: 1
+    metadata:
+      name: Harbor OAuth2 Provider and Application
+    entries:
+      # OAuth2 Provider for Harbor
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: harbor
+        attrs:
+          name: harbor
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          client_type: confidential
+          client_id: !Env HARBOR_CLIENT_ID
+          client_secret: !Env HARBOR_CLIENT_SECRET
+          redirect_uris: |
+            https://harbor.{{ env "SECRET_DOMAIN" }}/c/oidc/callback
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+
+      # Application for Harbor
+      - model: authentik_core.application
+        identifiers:
+          slug: harbor
+        attrs:
+          name: Harbor
+          slug: harbor
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, harbor]]
+          policy_engine_mode: any
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/harbor.svg
+          meta_description: Container registry
+          meta_publisher: Harbor
+          open_in_new_tab: true
+
+      # Group for Harbor admins
+      - model: authentik_core.group
+        identifiers:
+          name: harbor-admins
+        attrs:
+          name: harbor-admins
+          is_superuser: false
+
+  forejo.yaml: |
+    ---
+    version: 1
+    metadata:
+      name: Forejo OAuth2 Provider and Application
+    entries:
+      # OAuth2 Provider for Forejo
+      - model: authentik_providers_oauth2.oauth2provider
+        identifiers:
+          name: forejo
+        attrs:
+          name: forejo
+          authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+          client_type: confidential
+          client_id: !Env FOREJO_CLIENT_ID
+          client_secret: !Env FOREJO_CLIENT_SECRET
+          redirect_uris: |
+            https://git.{{ env "SECRET_DOMAIN" }}/user/oauth2/authentik/callback
+          property_mappings:
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+            - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+          signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+
+      # Application for Forejo
+      - model: authentik_core.application
+        identifiers:
+          slug: forejo
+        attrs:
+          name: Forejo
+          slug: forejo
+          provider: !Find [authentik_providers_oauth2.oauth2provider, [name, forejo]]
+          policy_engine_mode: any
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/forgejo.svg
+          meta_description: Self-hosted Git service
+          meta_publisher: Forejo
+          open_in_new_tab: true
+
+      # Group for Forejo admins
+      - model: authentik_core.group
+        identifiers:
+          name: forejo-admins
+        attrs:
+          name: forejo-admins
+          is_superuser: false
