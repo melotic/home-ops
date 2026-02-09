@@ -8,7 +8,6 @@ Blueprints are declarative YAML files that automate the configuration of Authent
 
 ## Structure
 
-- `blueprints/` - Source blueprint YAML files (for reference/documentation)
 - `configmap.yaml` - Kubernetes ConfigMap containing all blueprints
 - `helmrelease.yaml` - Authentik Helm release configured to use blueprints
 
@@ -76,7 +75,6 @@ To add a new application:
        - model: authentik_core.application
          # ... application config
    ```
-
 2. Add the client ID/secret to the External Secret:
    - Store credentials in 1Password under a vault named `myapp`
    - Update `externalsecret.yaml` to extract these values

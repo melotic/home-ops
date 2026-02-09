@@ -138,7 +138,7 @@ data:
           slug: forejo
           provider: !Find [authentik_providers_oauth2.oauth2provider, [name, forejo]]
           policy_engine_mode: any
-          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/forgejo.svg
+          meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/forejo.svg
           meta_description: Self-hosted Git service
           meta_publisher: Forejo
           open_in_new_tab: true
