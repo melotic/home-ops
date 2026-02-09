@@ -3,7 +3,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./configmap.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+configMapGenerator:
+  - name: authentik-blueprints
+    files:
+      - grafana.yaml=./blueprints/grafana.yaml
+      - harbor.yaml=./blueprints/harbor.yaml
+      - forejo.yaml=./blueprints/forejo.yaml
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.toolkit.fluxcd.io/substitute: disabled
