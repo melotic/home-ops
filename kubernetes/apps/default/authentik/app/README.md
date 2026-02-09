@@ -33,17 +33,23 @@ Blueprints are declarative YAML files that automate the configuration of Authent
 
 Client IDs and secrets are stored in 1Password and injected via External Secrets Operator. The following keys must exist in 1Password:
 
-- **grafana** vault:
-  - `oauth_client_id`
-  - `oauth_client_secret`
+### Required 1Password Setup
 
-- **harbor** vault:
-  - `oauth_client_id`
-  - `oauth_client_secret`
+Before deploying, ensure the following vaults/items exist in 1Password:
 
-- **forejo** vault:
-  - `oauth_client_id`
-  - `oauth_client_secret`
+- **grafana** vault/item:
+  - `oauth_client_id` - Generate a random client ID or use a meaningful identifier
+  - `oauth_client_secret` - Generate a secure random secret (e.g., using `openssl rand -base64 32`)
+
+- **harbor** vault/item:
+  - `oauth_client_id` - Generate a random client ID or use a meaningful identifier
+  - `oauth_client_secret` - Generate a secure random secret (e.g., using `openssl rand -base64 32`)
+
+- **forejo** vault/item:
+  - `oauth_client_id` - Generate a random client ID or use a meaningful identifier
+  - `oauth_client_secret` - Generate a secure random secret (e.g., using `openssl rand -base64 32`)
+
+**Note**: The client IDs and secrets can be any secure random strings. They will be used by Authentik to configure the OAuth2 providers and by the applications to authenticate with Authentik.
 
 ## How It Works
 
