@@ -32,7 +32,7 @@ releases:
   - name: onepassword
     namespace: external-secrets
     chart: oci://ghcr.io/1password/connect
-    version: 2.2.1
+    version: 2.3.0
 
   - name: victoria-metrics-k8s-stack
     namespace: monitoring
