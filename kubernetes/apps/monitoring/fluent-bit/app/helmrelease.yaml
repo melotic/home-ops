@@ -23,6 +23,11 @@ spec:
       version: 0.55.0
   interval: 1h
   values:
+    extraPorts:
+      - name: syslog-udp
+        port: 5140
+        containerPort: 5140
+        protocol: UDP
     config:
       inputs: |
         [INPUT]
@@ -32,6 +37,14 @@ spec:
             Tag kube.*
             Mem_Buf_Limit 5MB
             Skip_Long_Lines On
+        [INPUT]
+            Name syslog
+            Tag syslog.*
+            Parser syslog-rfc3164
+            Listen 0.0.0.0
+            Port 5140
+            Mode udp
+            Buffer_Chunk_Size 64000
       filters: |-
         [FILTER]
             Name kubernetes
@@ -48,6 +61,15 @@ spec:
             Host  victoria-logs-server.monitoring.svc.cluster.local
             Port  9428
             URI /insert/jsonline?_stream_fields=kubernetes.namespace_name,kubernetes.pod_name,kubernetes.container_name,stream&_msg_field=log,message,msg&_time_field=date
+            Format            json_lines
+            json_date_format  iso8601
+            Compress          gzip
+        [OUTPUT]
+            Name  http
+            Match syslog.*
+            Host  victoria-logs-server.monitoring.svc.cluster.local
+            Port  9428
+            URI /insert/jsonline?_stream_fields=host,ident&_msg_field=message&_time_field=date
             Format            json_lines
             json_date_format  iso8601
             Compress          gzip
