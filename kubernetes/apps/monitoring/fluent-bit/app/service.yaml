@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0-standalone-strict/service.json
+apiVersion: v1
 kind: Service
 metadata:
   name: fluent-bit-syslog
