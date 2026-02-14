@@ -92,7 +92,7 @@ spec:
             Match                kube.*
             Host                 victoria-logs-server.monitoring.svc.cluster.local
             Port                 9428
-            URI                  /insert/jsonline?_stream_fields=stream,k_namespace_name,k_pod_name,k_container_name,app&_msg_field=log,message,msg&_time_field=date
+            URI                  /insert/jsonline?_stream_fields=stream,k_namespace_name,k_pod_name,k_container_name,app&_msg_field=log,message,msg,log_message&_time_field=date
             Format               json_lines
             json_date_format     iso8601
             Compress             gzip
