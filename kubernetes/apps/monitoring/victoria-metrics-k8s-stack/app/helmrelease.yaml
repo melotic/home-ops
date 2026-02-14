@@ -27,6 +27,11 @@ spec:
     defaultDashboards:
       enabled: true
 
+    defaultRules:
+      rules:
+        RecordingRulesNoData:
+          create: false
+
     vmsingle:
       enabled: true
       spec:
@@ -49,6 +54,7 @@ spec:
 
     alertmanager:
       enabled: true
+      useManagedConfig: true
       spec:
         externalURL: https://alertmanager.${SECRET_DOMAIN}
         storage:
@@ -61,46 +67,43 @@ spec:
                   storage: 1Gi
       config:
         route:
-          receiver: "blackhole"
-          group_by: ["alertname", "job"]
-          group_wait: 1m
-          group_interval: 10m
-          repeat_interval: 12h
+          receiver: blackhole
+          groupBy: ["alertname", "job"]
+          groupWait: 1m
+          groupInterval: 10m
+          repeatInterval: 12h
           routes:
-            - receiver: blackhole
-              matchers:
-                - name: alertname
-                  value: Watchdog
-                  matchType: =
-            - receiver: blackhole
-              matchers:
-                - name: alertname
-                  value: InfoInhibitor
-                  matchType: =
             - receiver: pushover
               matchers:
-                - name: severity
-                  value: critical
-                  matchType: =
-
-        inhibit_rules:
-          - equal:
-              - "alertname"
-              - "namespace"
+                - severity = critical
+            - receiver: pushover
+              matchers:
+                - severity = warning
+            - receiver: pushover
+              matchers:
+                - severity = error
+        inhibitRules:
+          - equal: ["namespace", "alertname"]
             sourceMatch:
               - name: severity
                 value: critical
-                matchType: =
+                matchType: "="
             targetMatch:
               - name: severity
-                value: warning
-                matchType: =
-
+                value: warning|info
+                matchType: "=~"
         receivers:
           - name: blackhole
           - name: pushover
             pushoverConfigs:
               - html: true
+                sendResolved: true
+                sound: gamelan
+                expire: 86400s
+                priority: '{{ if eq .Status "firing" }}1{{ else }}0{{ end }}'
+                title: >-
+                  [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
+                  {{ .CommonLabels.alertname }}
                 message: |-
                   {{- range .Alerts }}
                     {{- if ne .Annotations.description "" }}
@@ -120,19 +123,10 @@ spec:
                       </small>
                     {{- end }}
                   {{- end }}
-                monospace: false
-                priority: |-
-                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
-                sendResolved: true
-                sound: gamelan
-                title: >-
-                  [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
-                  {{ .CommonLabels.alertname }}
-                ttl: 86400s
                 token:
                   name: &secret alertmanager-secret
                   key: PUSHOVER_API_TOKEN
-                userKey:
+                user_key:
                   name: *secret
                   key: PUSHOVER_API_KEY
                 urlTitle: View in Alertmanager
