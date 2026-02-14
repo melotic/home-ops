@@ -29,50 +29,84 @@ spec:
         containerPort: 5140
         protocol: UDP
     config:
+      service: |-
+        [SERVICE]
+            daemon            off
+            flush             {{ .Values.flush }}
+            log_level         {{ .Values.logLevel }}
+            parsers_file      /fluent-bit/etc/parsers.conf
+            parsers_file      /fluent-bit/etc/conf/custom_parsers.conf
+            http_server       on
+            http_listen       0.0.0.0
+            http_port         {{ .Values.metricsPort }}
+            health_check      on
       inputs: |
         [INPUT]
-            Name tail
-            Path /var/log/containers/*.log
-            multiline.parser docker, cri
-            Tag kube.*
-            Mem_Buf_Limit 5MB
-            Skip_Long_Lines On
+            Name              tail
+            Path              /var/log/containers/*.log
+            multiline.parser  docker, cri
+            Tag               kube.*
+            Mem_Buf_Limit     5MB
+            Skip_Long_Lines   On
+            Skip_Empty_Lines  On
         [INPUT]
-            Name syslog
-            Tag syslog.*
-            Parser syslog-rfc3164
-            Listen 0.0.0.0
-            Port 5140
-            Mode udp
+            Name              syslog
+            Tag               syslog.*
+            Parser            syslog-rfc3164
+            Listen            0.0.0.0
+            Port              5140
+            Mode              udp
             Buffer_Chunk_Size 64000
       filters: |-
         [FILTER]
-            Name kubernetes
-            Match kube.*
-            Merge_Log On
-            Keep_Log Off
-            K8S-Logging.Parser On
+            Name                kubernetes
+            Match               kube.*
+            Merge_Log           On
+            Keep_Log            Off
+            K8S-Logging.Parser  On
             K8S-Logging.Exclude On
-            Buffer_Size 128k
+            Buffer_Size         128k
+            Annotations         Off
+            Namespace_Labels    Off
+        [FILTER]
+            Name                nest
+            Match               kube.*
+            Operation           lift
+            Nested_under        kubernetes
+            Add_prefix          k_
+        [FILTER]
+            Name                nest
+            Match               kube.*
+            Operation           lift
+            Nested_under        k_labels
+            Add_prefix          k_labels_
+        [FILTER]
+            Name                modify
+            Match               kube.*
+            Rename              k_labels_app.kubernetes.io/name app
+            Rename              k_labels_app app
+            Rename              k_labels_k8s-app app
       outputs: |-
         [OUTPUT]
-            Name  http
-            Match kube.*
-            Host  victoria-logs-server.monitoring.svc.cluster.local
-            Port  9428
-            URI /insert/jsonline?_stream_fields=kubernetes.namespace_name,kubernetes.pod_name,kubernetes.container_name,stream&_msg_field=log,message,msg&_time_field=date
-            Format            json_lines
-            json_date_format  iso8601
-            Compress          gzip
+            Name                 http
+            Match                kube.*
+            Host                 victoria-logs-server.monitoring.svc.cluster.local
+            Port                 9428
+            URI                  /insert/jsonline?_stream_fields=stream,k_namespace_name,k_pod_name,k_container_name,app&_msg_field=log,message,msg&_time_field=date
+            Format               json_lines
+            json_date_format     iso8601
+            Compress             gzip
+            Log_response_payload false
         [OUTPUT]
-            Name  http
-            Match syslog.*
-            Host  victoria-logs-server.monitoring.svc.cluster.local
-            Port  9428
-            URI /insert/jsonline?_stream_fields=host,ident&_msg_field=message&_time_field=date
-            Format            json_lines
-            json_date_format  iso8601
-            Compress          gzip
+            Name                 http
+            Match                syslog.*
+            Host                 victoria-logs-server.monitoring.svc.cluster.local
+            Port                 9428
+            URI                  /insert/jsonline?_stream_fields=host,ident&_msg_field=message&_time_field=date
+            Format               json_lines
+            json_date_format     iso8601
+            Compress             gzip
+            Log_response_payload false
     dashboards:
       enabled: true
     serviceMonitor:
