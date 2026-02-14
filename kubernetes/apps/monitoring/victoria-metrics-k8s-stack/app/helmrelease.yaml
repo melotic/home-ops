@@ -59,6 +59,83 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
+      config:
+        route:
+          receiver: "blackhole"
+          group_by: ["alertname", "job"]
+          group_wait: 1m
+          group_interval: 10m
+          repeat_interval: 12h
+          routes:
+            - receiver: blackhole
+              matchers:
+                - name: alertname
+                  value: Watchdog
+                  matchType: =
+            - receiver: blackhole
+              matchers:
+                - name: alertname
+                  value: InfoInhibitor
+                  matchType: =
+            - receiver: pushover
+              matchers:
+                - name: severity
+                  value: critical
+                  matchType: =
+
+        inhibit_rules:
+          - equal:
+              - "alertname"
+              - "namespace"
+            sourceMatch:
+              - name: severity
+                value: critical
+                matchType: =
+            targetMatch:
+              - name: severity
+                value: warning
+                matchType: =
+
+        receivers:
+          - name: blackhole
+          - name: pushover
+            pushoverConfigs:
+              - html: true
+                message: |-
+                  {{- range .Alerts }}
+                    {{- if ne .Annotations.description "" }}
+                      {{ .Annotations.description }}
+                    {{- else if ne .Annotations.summary "" }}
+                      {{ .Annotations.summary }}
+                    {{- else if ne .Annotations.message "" }}
+                      {{ .Annotations.message }}
+                    {{- else }}
+                      Alert description not available
+                    {{- end }}
+                    {{- if gt (len .Labels.SortedPairs) 0 }}
+                      <small>
+                        {{- range .Labels.SortedPairs }}
+                          <b>{{ .Name }}:</b> {{ .Value }}
+                        {{- end }}
+                      </small>
+                    {{- end }}
+                  {{- end }}
+                monospace: false
+                priority: |-
+                  {{ if eq .Status "firing" }}1{{ else }}0{{ end }}
+                sendResolved: true
+                sound: gamelan
+                title: >-
+                  [{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}]
+                  {{ .CommonLabels.alertname }}
+                ttl: 86400s
+                token:
+                  name: &secret alertmanager-secret
+                  key: PUSHOVER_API_TOKEN
+                userKey:
+                  name: *secret
+                  key: PUSHOVER_API_KEY
+                urlTitle: View in Alertmanager
 
       route:
         enabled: true
