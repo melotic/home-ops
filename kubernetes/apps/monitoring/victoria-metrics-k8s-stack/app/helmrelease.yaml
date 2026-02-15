@@ -35,7 +35,7 @@ spec:
     vmsingle:
       enabled: true
       spec:
-        retentionPeriod: "14d"
+        retentionPeriod: "31d"
         storage:
           storageClassName: longhorn
           accessModes: ["ReadWriteOnce"]
@@ -140,6 +140,32 @@ spec:
         hostnames:
           - alertmanager.${SECRET_DOMAIN}
 
+    kubeApiServer:
+      enabled: true
+      # -- Spec for VMServiceScrape CRD is [here](https://docs.victoriametrics.com/operator/api/#vmservicescrapespec)
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: https
+              scheme: https
+              tlsConfig:
+                caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                serverName: kubernetes
+              metricRelabelConfigs:
+                - action: drop
+                  regex: (etcd_request|apiserver_request_slo|apiserver_request_sli|apiserver_request)_duration_seconds_bucket;(0\.15|0\.2|0\.3|0\.35|0\.4|0\.45|0\.6|0\.7|0\.8|0\.9|1\.25|1\.5|1\.75|2|3|3\.5|4|4\.5|6|7|8|9|15|20|40|45|50)(\.0)?
+                  sourceLabels:
+                    - __name__
+                    - le
+          jobLabel: component
+          namespaceSelector:
+            matchNames:
+              - default
+          selector:
+            matchLabels:
+              component: apiserver
+              provider: kubernetes
     # Talos/cilium control plane: etcd is behind kube-apiserver static pods
     kubeEtcd:
       service:
