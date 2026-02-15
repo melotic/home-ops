@@ -45,6 +45,12 @@ spec:
       instances: 3
       monitoring:
         enabled: true
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
       roles:
         - name: app
           ensure: present
