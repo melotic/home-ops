@@ -37,6 +37,7 @@ spec:
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       nodeDrainPolicy: block-if-contains-last-replica
       replicaAutoBalance: best-effort
+      snapshotDataIntegrity: disabled
       storageMinimalAvailablePercentage: "5"
       storageOverProvisioningPercentage: "100"
       storageReservedPercentageForDefaultDisk: "0"

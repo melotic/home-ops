@@ -9,5 +9,5 @@ spec:
   cron: "0 0 * * *"
   groups:
     - default
-  retain: 90
+  retain: 30
   task: backup
