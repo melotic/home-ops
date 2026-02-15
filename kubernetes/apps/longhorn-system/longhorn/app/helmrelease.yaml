@@ -25,6 +25,18 @@ spec:
       version: 1.11.0
   interval: 5m
   values:
+    # HACK: v1.11.0 hotfix
+    preUpgradeChecker:
+      upgradeVersionCheck: false
+    image:
+      longhorn:
+        instanceManager:
+          repository: longhornio/longhorn-instance-manager
+          tag: v1.11.0-hotfix-1
+        manager:
+          repository: longhornio/longhorn-manager
+          tag: v1.11.0-hotfix-1
+
     defaultBackupStore:
       backupTarget: cifs://construct.${SECRET_DOMAIN}/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
       backupTargetCredentialSecret: cifs-secret
