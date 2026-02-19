@@ -10,6 +10,11 @@ spec:
     version: v1.12.4
   policy:
     rebootMode: powercycle
+  maintenance:
+    windows:
+      - duration: 8h
+        start: 0 0 * * 1-5
+        timezone: America/Chicago
   healthChecks:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
