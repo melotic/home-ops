@@ -8,6 +8,11 @@ spec:
   kubernetes:
     # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
     version: v1.35.1
+  maintenance:
+    windows:
+      - duration: 8h
+        start: 0 0 * * 1-5
+        timezone: America/Chicago
   healthChecks:
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
