@@ -57,13 +57,6 @@ spec:
           - { name: Loki, orgId: 1 }
           - { name: Prometheus, orgId: 1 }
         datasources:
-          - name: Loki
-            type: loki
-            uid: loki
-            access: proxy
-            url: http://loki-headless.monitoring.svc.cluster.local:3100
-            jsonData:
-              maxLines: 250
           - name: Alertmanager
             type: alertmanager
             uid: alertmanager
@@ -71,6 +64,11 @@ spec:
             url: http://vmalertmanager-vm-kube-stack.monitoring.svc.cluster.local:9093
             jsonData:
               implementation: prometheus
+          - name: VictoriaLogs
+            type: victoriametrics-logs-datasource
+            uid: victorialogs
+            access: proxy
+            url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
     dashboardProviders:
       dashboardproviders.yaml:
         apiVersion: 1
@@ -202,6 +200,7 @@ spec:
       - grafana-worldmap-panel
       - natel-discrete-panel
       - pr0ps-trackmap-panel
+      - victoriametrics-logs-datasource
       - vonage-status-panel
     serviceMonitor:
       enabled: true
