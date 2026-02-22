@@ -37,7 +37,7 @@ radarr:
 
     custom_format_groups:
       add:
-        - trash_id: 7fc2751eef7e6bdc70b74136e5e35c76 # [HDR Formats] DV (w/o HDR fallback)
+        # - trash_id: 7fc2751eef7e6bdc70b74136e5e35c76 # [HDR Formats] DV (w/o HDR fallback)
         - trash_id: 1616617ab3a14397a2b2321bcbda44d1 # [HDR Formats] DV Boost
         - trash_id: b29413a7487478fe98228ce79e5689e4 # [HDR Formats] HDR10+ Boost
         - trash_id: 9337080378236ce4c0b183e35790d2a7 # [Optional] Miscellaneous
