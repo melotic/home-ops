@@ -53,11 +53,13 @@ radarr:
             # - f537cf427b64c38c8e36298f657e4828 # Scene
             - 11cd1db7165d6a7ad9a83bc97b8b1060 # VC-1
             - ae4cfaa9283a4f2150ac3da08e388723 # VP9
-            - 2899d84dc9372de3408e6d8cc18e9666 # x264
-            - 9170d55c319f4fe40da8711ba9d8050d # x265
-            - 390455c22a9cac81a738f6cbad705c3c # x266
-        # - trash_id: f4f1474b963b24cf983455743aa9906c  # [Optional] Movie Versions
-        # - trash_id: 47f0d69750de9e16855915fa73bb7b08  # [Optional] SDR
+            # - 2899d84dc9372de3408e6d8cc18e9666 # x264
+            # - 9170d55c319f4fe40da8711ba9d8050d # x265
+            # - 390455c22a9cac81a738f6cbad705c3c # x266
+        - trash_id: f4f1474b963b24cf983455743aa9906c # [Optional] Movie Versions
+        - trash_id: 47f0d69750de9e16855915fa73bb7b08 # [Optional] SDR
+          select:
+            - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
         # - trash_id: 60f6d50cbd3cfc3e9a8c00e3a30c3114  # [Streaming Services] Anime
         # - trash_id: b22449f789b16a4163b59f1b70cbc580  # [Streaming Services] Asian
         # - trash_id: 088a792e0561c927fb396664b0db5c8f  # [Streaming Services] Dutch
@@ -103,9 +105,9 @@ sonarr:
             # - 1b3994c551cbb92a2c781af061f4ab44 # Scene
             - 7470a681e6205243983c4410ee4c920f # VC-1
             - 90501962793d580d011511155c97e4e5 # VP9
-            - cddfb4e32db826151d97352b8e37c648 # x264
-            - c9eafd50846d299b862ca9bb6ea91950 # x265
-            - 041d90b435ebd773271cea047a457a6a # x266
+            # - cddfb4e32db826151d97352b8e37c648 # x264
+            # - c9eafd50846d299b862ca9bb6ea91950 # x265
+            # - 041d90b435ebd773271cea047a457a6a # x266
         # - trash_id: 35fb4585dcd9e2a5ac732e4309f5a45a  # [Streaming Services] Asian
         # - trash_id: f60f4401ce880aad62e9d21c8bb6b91a  # [Streaming Services] Dutch
         # - trash_id: 848fd356c200568fc5a6248150e7e7ea  # [Streaming Services] French
