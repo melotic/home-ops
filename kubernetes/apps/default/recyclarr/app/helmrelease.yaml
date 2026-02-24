@@ -30,6 +30,7 @@ spec:
                   name: "recyclarr-secret"
             args:
               - sync
+              - --log
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
