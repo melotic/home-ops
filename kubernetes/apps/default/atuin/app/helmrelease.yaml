@@ -27,8 +27,7 @@ spec:
               - secretRef:
                   name: atuin-secret
             command:
-              - atuin
-              - server
+              - atuin-server
               - start
             probes:
               liveness: &probes
