@@ -18,6 +18,10 @@ spec:
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
 
+    blueprints:
+      configMaps:
+        - authentik-blueprints
+
     prometheus:
       rules:
         enabled: true
