@@ -10,6 +10,7 @@ spec:
     name: forejo-runner
   interval: 1h
   values:
+    fullnameOverride: forejo-runner
     runner:
       config:
         existingSecret: forejo-runner-token
