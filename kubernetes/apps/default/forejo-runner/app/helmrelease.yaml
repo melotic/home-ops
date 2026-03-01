@@ -22,9 +22,12 @@ spec:
           runner:
             capacity: 2
             timeout: 3h
+            force_pull: false
             labels:
-              - "ubuntu-latest:docker://ghcr.io/catthehacker/ubuntu:act-latest"
-              - "ubuntu-22.04:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
+              - "ubuntu-latest:docker://harbor.melotic.dev/ghcr/catthehacker/ubuntu:act-22.04"
+              - "ubuntu-22.04:docker://harbor.melotic.dev/ghcr/catthehacker/ubuntu:act-22.04"
+          cache:
+            enabled: true
           container:
             privileged: false
             network: host
