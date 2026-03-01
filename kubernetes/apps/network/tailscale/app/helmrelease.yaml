@@ -11,7 +11,7 @@ spec:
       sourceRef:
         name: tailscale
         kind: HelmRepository
-      version: 1.80.3
+      version: 1.94.2
   interval: 1h
   install:
     crds: CreateReplace
