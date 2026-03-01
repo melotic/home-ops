@@ -105,6 +105,8 @@ spec:
           REGISTER_EMAIL_CONFIRM: false
         metrics:
           ENABLED: true
+        webhook:
+          ALLOWED_HOST_LIST: 10.20.0.0/16,10.60.0.0/16
 
     resources:
       requests:
