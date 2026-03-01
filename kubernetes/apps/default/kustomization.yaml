@@ -11,6 +11,7 @@ resources:
   - ./authentik/ks.yaml
   - ./echo/ks.yaml
   - ./forejo/ks.yaml
+  - ./forejo-runner/ks.yaml
   - ./harbor/ks.yaml
   - ./home-assistant/ks.yaml
   - ./lidarr/ks.yaml
