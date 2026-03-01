@@ -31,7 +31,6 @@ spec:
             privileged: false
             network: host
             force_pull: false
-
     resources:
       requests:
         cpu: 100m
