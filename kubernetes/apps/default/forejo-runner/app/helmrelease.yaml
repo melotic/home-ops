@@ -23,11 +23,14 @@ spec:
             capacity: 2
             timeout: 3h
             labels:
-              - "ubuntu-latest:docker://harbor.melotic.dev/ghcr/catthehacker/ubuntu:act-latest"
+              - "ubuntu-latest:docker://harbor.melotic.dev/ghcr/catthehacker/ubuntu:act-22.04"
               - "ubuntu-22.04:docker://harbor.melotic.dev/ghcr/catthehacker/ubuntu:act-22.04"
+          cache:
+            enabled: true
           container:
             privileged: false
             network: host
+            force_pull: false
 
     resources:
       requests:
