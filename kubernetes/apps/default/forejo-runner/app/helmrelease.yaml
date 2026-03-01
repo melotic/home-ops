@@ -14,7 +14,7 @@ spec:
     runner:
       config:
         existingSecret: forejo-runner-token
-        instance: "https://git.${SECRET_DOMAIN}"
+        instance: "http://forejo-forgejo-http.default.svc.cluster.local:3000"
         name: home-ops-runner
         file:
           log:
@@ -27,7 +27,7 @@ spec:
               - "ubuntu-22.04:docker://ghcr.io/catthehacker/ubuntu:act-22.04"
           container:
             privileged: false
-            options: "--add-host=git.${SECRET_DOMAIN}:host-gateway"
+            network: host
 
     resources:
       requests:
