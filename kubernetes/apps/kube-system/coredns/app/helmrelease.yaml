@@ -33,6 +33,16 @@ spec:
     replicaCount: 2
     servers:
       - zones:
+          - zone: ts.net.
+            scheme: dns://
+        port: 53
+        plugins:
+          - name: errors
+          - name: forward
+            parameters: . 10.43.117.210
+          - name: cache
+            parameters: "30"
+      - zones:
           - zone: .
             scheme: dns://
             use_tcp: true
