@@ -15,6 +15,7 @@ spec:
       name: sops-age
   dependsOn:
     - name: dragonfly
+      namespace: database
     - name: longhorn
       namespace: longhorn-system
   interval: 1h

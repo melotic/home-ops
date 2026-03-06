@@ -31,7 +31,7 @@ spec:
                 secretKeyRef:
                   name: *pgsecret
                   key: password
-              PAPERLESS_REDIS: redis://dragonfly.default.svc.cluster.local:6379/0
+              PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379/0
               PAPERLESS_URL: "https://paperless.${SECRET_DOMAIN}"
               PAPERLESS_PORT: &port 8000
               PAPERLESS_OCR_LANGUAGE: eng
