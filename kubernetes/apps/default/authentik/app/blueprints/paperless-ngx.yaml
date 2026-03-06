@@ -1,0 +1,38 @@
+---
+version: 1
+metadata:
+  name: Paperless-ngx OAuth2 Provider and Application
+context:
+  authorization_flow: &authorization_flow !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+  property_mappings: &property_mappings
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
+    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
+  signing_key: &signing_key !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+entries:
+  - model: authentik_providers_oauth2.oauth2provider
+    identifiers:
+      name: paperless-ngx
+    attrs:
+      name: paperless-ngx
+      authorization_flow: *authorization_flow
+      client_type: confidential
+      client_id: !Env PAPERLESS_CLIENT_ID
+      client_secret: !Env PAPERLESS_CLIENT_SECRET
+      redirect_uris: |
+        https://paperless.{{ env "SECRET_DOMAIN" }}/accounts/oidc/authentik/login/callback/
+      property_mappings: *property_mappings
+      signing_key: *signing_key
+
+  - model: authentik_core.application
+    identifiers:
+      slug: paperless-ngx
+    attrs:
+      name: Paperless-ngx
+      slug: paperless-ngx
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, paperless-ngx]]
+      policy_engine_mode: any
+      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/paperless-ngx.svg
+      meta_description: Document management system
+      meta_publisher: Paperless-ngx
+      open_in_new_tab: true
