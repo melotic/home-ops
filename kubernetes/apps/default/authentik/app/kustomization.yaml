@@ -12,6 +12,7 @@ configMapGenerator:
       - grafana.yaml=./blueprints/grafana.yaml
       - harbor.yaml=./blueprints/harbor.yaml
       - forejo.yaml=./blueprints/forejo.yaml
+      - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
