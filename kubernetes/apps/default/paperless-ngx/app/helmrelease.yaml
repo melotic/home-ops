@@ -76,14 +76,20 @@ spec:
           tika:
             image:
               repository: apache/tika
-              tag: latest
+              tag: 3.2.3.0
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
             resources:
               limits:
                 memory: 512Mi
           gotenberg:
             image:
               repository: gotenberg/gotenberg
-              tag: "8"
+              tag: "8.27.0"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
             command:
               - gotenberg
               - --chromium-disable-javascript=true
