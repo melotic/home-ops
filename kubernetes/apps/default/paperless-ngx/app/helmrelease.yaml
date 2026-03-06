@@ -1,0 +1,146 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless-ngx
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: paperless-ngx
+  interval: 1h
+  values:
+    controllers:
+      paperless-ngx:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/paperless-ngx/paperless-ngx
+              tag: 2.14.7
+            env:
+              TZ: America/Chicago
+              PAPERLESS_DBHOST: postgres-cluster-rw.database.svc.cluster.local
+              PAPERLESS_DBNAME: paperless
+              PAPERLESS_DBUSER:
+                secretKeyRef:
+                  name: &pgsecret postgres-cluster-app
+                  key: user
+              PAPERLESS_DBPASS:
+                secretKeyRef:
+                  name: *pgsecret
+                  key: password
+              PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379/0
+              PAPERLESS_URL: "https://paperless.${SECRET_DOMAIN}"
+              PAPERLESS_PORT: &port 8000
+              PAPERLESS_OCR_LANGUAGE: eng
+              PAPERLESS_CONSUMER_POLLING: "60"
+              PAPERLESS_TASK_WORKERS: "2"
+              PAPERLESS_TIKA_ENABLED: "true"
+              PAPERLESS_TIKA_ENDPOINT: http://localhost:9998
+              PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://localhost:3000
+              PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+              PAPERLESS_LOGOUT_REDIRECT_URL: https://sso.melotic.dev/application/o/paperless-ngx/end-session/
+              PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
+              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "true"
+              PAPERLESS_SOCIALACCOUNT_PROVIDERS:
+                secretKeyRef:
+                  name: paperless-secret
+                  key: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+            envFrom:
+              - secretRef:
+                  name: paperless-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 2Gi
+          tika:
+            image:
+              repository: apache/tika
+              tag: 3.2.3.0
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              limits:
+                memory: 512Mi
+          gotenberg:
+            image:
+              repository: gotenberg/gotenberg
+              tag: "8.27.0"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+            command:
+              - gotenberg
+              - --chromium-disable-javascript=true
+              - --chromium-allow-list=file:///tmp/.*
+            resources:
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "paperless.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+    persistence:
+      data:
+        accessMode: ReadWriteOnce
+        size: 5Gi
+        storageClass: longhorn
+        globalMounts:
+          - path: /usr/src/paperless/data
+      media:
+        type: nfs
+        server: construct.${SECRET_DOMAIN}
+        path: /var/nfs/shared/k8s/paperless/media
+        globalMounts:
+          - path: /usr/src/paperless/media
+      consume:
+        type: nfs
+        server: construct.${SECRET_DOMAIN}
+        path: /var/nfs/shared/k8s/paperless/consume
+        globalMounts:
+          - path: /usr/src/paperless/consume
+      export:
+        type: nfs
+        server: construct.${SECRET_DOMAIN}
+        path: /var/nfs/shared/k8s/paperless/export
+        globalMounts:
+          - path: /usr/src/paperless/export
+      tmp:
+        type: emptyDir
