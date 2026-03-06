@@ -18,6 +18,8 @@ spec:
       namespace: database
     - name: longhorn
       namespace: longhorn-system
+    - name: postgres
+      namespace: database
   interval: 1h
   path: ./kubernetes/apps/default/paperless-ngx/app
   postBuild:
