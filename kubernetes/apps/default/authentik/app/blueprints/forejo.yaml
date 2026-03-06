@@ -4,6 +4,7 @@ metadata:
   name: Forejo OAuth2 Provider and Application
 context:
   authorization_flow: &authorization_flow !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+  invalidation_flow: &invalidation_flow !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
   property_mappings: &property_mappings
     - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
     - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
@@ -17,11 +18,13 @@ entries:
     attrs:
       name: forejo
       authorization_flow: *authorization_flow
+      invalidation_flow: *invalidation_flow
       client_type: confidential
       client_id: !Env FOREJO_CLIENT_ID
       client_secret: !Env FOREJO_CLIENT_SECRET
-      redirect_uris: |
-        https://git.{{ env "SECRET_DOMAIN" }}/user/oauth2/authentik/callback
+      redirect_uris:
+        - url: 'https://git.{{ env "SECRET_DOMAIN" }}/user/oauth2/authentik/callback'
+          matching_mode: strict
       property_mappings: *property_mappings
       signing_key: *signing_key
 
