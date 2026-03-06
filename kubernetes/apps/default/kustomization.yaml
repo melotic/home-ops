@@ -9,6 +9,7 @@ components:
 resources:
   - ./atuin/ks.yaml
   - ./authentik/ks.yaml
+  - ./dragonfly/ks.yaml
   - ./echo/ks.yaml
   - ./forejo/ks.yaml
   - ./forejo-runner/ks.yaml
