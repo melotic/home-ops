@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dragonfly
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: dragonfly
+  interval: 1h
+  values:
+    controllers:
+      dragonfly:
+        containers:
+          app:
+            image:
+              repository: docker.dragonflydb.io/dragonflydb/dragonfly
+              tag: v1.27.1
+            args:
+              - --dbnum
+              - "16"
+              - --maxmemory
+              - 512mb
+              - --proactor_threads
+              - "2"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 6379
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          redis:
+            port: *port
+    persistence:
+      data:
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        storageClass: longhorn
+        globalMounts:
+          - path: /data
+      tmp:
+        type: emptyDir
