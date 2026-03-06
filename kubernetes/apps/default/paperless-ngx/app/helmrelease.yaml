@@ -31,7 +31,7 @@ spec:
                 secretKeyRef:
                   name: *pgsecret
                   key: password
-              PAPERLESS_REDIS: redis://localhost:6379
+              PAPERLESS_REDIS: redis://dragonfly.default.svc.cluster.local:6379/0
               PAPERLESS_URL: "https://paperless.${SECRET_DOMAIN}"
               PAPERLESS_PORT: &port 8000
               PAPERLESS_OCR_LANGUAGE: eng
@@ -73,13 +73,6 @@ spec:
                 cpu: 100m
               limits:
                 memory: 2Gi
-          redis:
-            image:
-              repository: redis
-              tag: 7-alpine
-            resources:
-              limits:
-                memory: 128Mi
           tika:
             image:
               repository: apache/tika

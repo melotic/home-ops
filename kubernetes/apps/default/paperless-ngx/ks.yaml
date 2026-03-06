@@ -14,6 +14,7 @@ spec:
     secretRef:
       name: sops-age
   dependsOn:
+    - name: dragonfly
     - name: longhorn
       namespace: longhorn-system
   interval: 1h
