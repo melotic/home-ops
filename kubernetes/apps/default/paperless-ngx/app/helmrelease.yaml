@@ -22,6 +22,7 @@ spec:
             command: ["sh", "-c", "chown 1000:1000 /run"]
             securityContext:
               runAsUser: 0
+              runAsNonRoot: false
         containers:
           app:
             image:
