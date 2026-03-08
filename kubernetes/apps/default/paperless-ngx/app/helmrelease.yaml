@@ -34,6 +34,8 @@ spec:
               PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379/0
               PAPERLESS_URL: "https://paperless.${SECRET_DOMAIN}"
               PAPERLESS_PORT: &port 8000
+              USERMAP_UID: "1000"
+              USERMAP_GID: "1000"
               PAPERLESS_OCR_LANGUAGE: eng
               PAPERLESS_CONSUMER_POLLING: "60"
               PAPERLESS_TASK_WORKERS: "2"
@@ -65,7 +67,6 @@ spec:
                   failureThreshold: 3
               readiness: *probes
             securityContext:
-              runAsUser: 0
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
@@ -100,6 +101,9 @@ spec:
                 memory: 512Mi
     defaultPodOptions:
       securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
     service:
@@ -142,3 +146,7 @@ spec:
           - path: /usr/src/paperless/export
       tmp:
         type: emptyDir
+      run:
+        type: emptyDir
+        globalMounts:
+          - path: /run
