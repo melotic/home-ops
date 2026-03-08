@@ -14,6 +14,14 @@ spec:
       paperless-ngx:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          fix-run:
+            image:
+              repository: busybox
+              tag: latest
+            command: ["sh", "-c", "chown 1000:1000 /run"]
+            securityContext:
+              runAsUser: 0
         containers:
           app:
             image:
