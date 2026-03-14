@@ -52,7 +52,7 @@ spec:
               PAPERLESS_TIKA_ENDPOINT: http://localhost:9998
               PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://localhost:3000
               PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
-              PAPERLESS_LOGOUT_REDIRECT_URL: https://sso.melotic.dev/application/o/paperless-ngx/end-session/
+              PAPERLESS_LOGOUT_REDIRECT_URL: https://sso.melotic.dev/application/o/paperless/end-session/
               PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
               PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "true"
               PAPERLESS_SOCIALACCOUNT_PROVIDERS:
