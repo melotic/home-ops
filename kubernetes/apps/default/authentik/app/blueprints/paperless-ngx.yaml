@@ -29,10 +29,10 @@ entries:
 
   - model: authentik_core.application
     identifiers:
-      slug: paperless-ngx
+      slug: paperless
     attrs:
       name: Paperless-ngx
-      slug: paperless-ngx
+      slug: paperless
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, paperless-ngx]]
       policy_engine_mode: any
       meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/paperless-ngx.svg
