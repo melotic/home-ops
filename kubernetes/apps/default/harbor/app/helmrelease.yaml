@@ -52,6 +52,14 @@ spec:
       enabled: true
       serviceMonitor:
         enabled: true
+    redis:
+      type: external
+      external:
+        addr: "dragonfly.database.svc.cluster.local:6379"
+        coreDatabaseIndex: "1"
+        jobserviceDatabaseIndex: "2"
+        registryDatabaseIndex: "3"
+        trivyAdapterIndex: "4"
     database:
       type: external
       external:
