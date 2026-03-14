@@ -79,6 +79,16 @@ spec:
       config:
         APP_NAME: Forejo
         RUN_MODE: prod
+        cache:
+          ADAPTER: redis
+          HOST: redis://dragonfly.database.svc.cluster.local:6379/5?pool_size=100&idle_timeout=180s
+        session:
+          PROVIDER: redis
+          PROVIDER_CONFIG: redis://dragonfly.database.svc.cluster.local:6379/6?pool_size=100&idle_timeout=180s
+          SESSION_LIFE: 86400
+        queue:
+          TYPE: redis
+          CONN_STR: redis://dragonfly.database.svc.cluster.local:6379/7?pool_size=100&idle_timeout=180s
         server:
           DOMAIN: "git.${SECRET_DOMAIN}"
           ROOT_URL: "https://git.${SECRET_DOMAIN}/"
@@ -91,8 +101,6 @@ spec:
           NAME: forejo
           USER: app
           SSL_MODE: disable
-        session:
-          SESSION_LIFE: 86400
         picture:
           DISABLE_GRAVATAR: false
         mailer:
