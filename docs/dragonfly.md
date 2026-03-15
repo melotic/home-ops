@@ -1,11 +1,13 @@
 # Dragonfly (shared Redis)
 
-We run a single Dragonfly instance (`dragonfly.database.svc.cluster.local:6379`) instead of per-app Redis pods. Each service gets its own DB index so they don't step on each other.
+We run a single Dragonfly instance (`dragonfly.database.svc.cluster.local:6379`) instead of per-app Redis pods. Each component gets its own DB index so they don't step on each other.
+
+Dragonfly is configured with `--dbnum 16`, so valid indexes are **0–15**.
 
 ## DB Index Allocation
 
-| Index | Service | What it's used for |
-|-------|---------|-------------------|
+| Index | Service | Component |
+|-------|---------|-----------|
 | 0 | Paperless-ngx | Task queue, caching |
 | 1 | Harbor | Core |
 | 2 | Harbor | Job service |
@@ -15,11 +17,11 @@ We run a single Dragonfly instance (`dragonfly.database.svc.cluster.local:6379`)
 | 6 | Forgejo | Sessions |
 | 7 | Forgejo | Task queue |
 
-Next available: **8**
+Next available: **8** (max 15 — bump `--dbnum` in the Dragonfly HelmRelease if you need more)
 
 ## Adding a new service
 
-Pick the next available index and update this doc. Configure the service to point at `redis://dragonfly.database.svc.cluster.local:6379/<index>`.
+Pick the next available index and update this table. Point the service at `dragonfly.database.svc.cluster.local:6379` with the allocated index. How you set the index depends on the app — some take a `redis://` URL with the DB number in the path (e.g. Forgejo, Paperless), others use separate host/port and index fields (e.g. Harbor's `addr` + `*DatabaseIndex` values).
 
 ## Notes
 
