@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.20.10
+              tag: 2.20.11
             env:
               TZ: America/Chicago
               PAPERLESS_DBHOST: postgres-cluster-rw.database.svc.cluster.local
