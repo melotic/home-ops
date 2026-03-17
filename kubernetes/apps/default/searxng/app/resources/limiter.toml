@@ -1,0 +1,18 @@
+[botdetection]
+ipv4_prefix = 32
+ipv6_prefix = 48
+
+trusted_proxies = [
+  "127.0.0.0/8",
+  "::1",
+  "10.42.0.0/16",
+  "fd00:42::/56",
+]
+
+[botdetection.ip_limit]
+filter_link_local = false
+link_token = false
+
+[botdetection.ip_lists]
+block_ip = []
+pass_ip = []
