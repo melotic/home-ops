@@ -1,0 +1,8 @@
+use_default_settings: true
+server:
+  limiter: true
+  public_instance: false
+  image_proxy: true
+  method: "GET"
+search:
+  autocomplete: "duckduckgo"
