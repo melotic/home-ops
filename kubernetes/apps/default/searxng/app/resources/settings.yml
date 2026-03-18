@@ -8,3 +8,6 @@ valkey:
   url: "valkey://dragonfly.database.svc.cluster.local:6379/8"
 search:
   autocomplete: "duckduckgo"
+  formats:
+    - html
+    - json
