@@ -1,14 +1,6 @@
 use_default_settings: true
 general:
   instance_name: "melotic"
-  donation_url: false
-  privacypolicy_url: false
-  contact_url: false
-brand:
-  issue_url: false
-  docs_url: false
-  public_instances: false
-  wiki_url: false
 ui:
   center_alignment: true
   hotkeys: vim
