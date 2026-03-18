@@ -11,5 +11,10 @@ configMapGenerator:
     files:
       - settings.yml=./resources/settings.yml
       - limiter.toml=./resources/limiter.toml
+  - name: searxng-branding
+    files:
+      - searxng.svg=./resources/searxng.svg
+      - searxng.png=./resources/searxng.png
+      - favicon.png=./resources/favicon.png
 generatorOptions:
   disableNameSuffixHash: true

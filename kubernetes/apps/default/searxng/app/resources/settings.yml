@@ -1,4 +1,30 @@
 use_default_settings: true
+general:
+  instance_name: "melotic"
+  donation_url: false
+  privacypolicy_url: false
+  contact_url: false
+brand:
+  issue_url: false
+  docs_url: false
+  public_instances: false
+  wiki_url: false
+ui:
+  center_alignment: true
+  hotkeys: vim
+  query_in_title: false
+  results_on_new_tab: true
+  theme_args:
+    simple_style: black
+  url_formatting: full
+categories_as_tabs:
+  general:
+  it:
+  science:
+  news:
+  images:
+  videos:
+  files:
 server:
   limiter: false
   public_instance: false
@@ -18,6 +44,22 @@ outgoing:
   max_request_timeout: 15.0
   enable_http2: true
 engines:
+  # Bing as primary
+  - name: bing
+    disabled: false
+    weight: 1.5
+  - name: bing images
+    disabled: false
+    weight: 1.5
+  - name: bing news
+    disabled: false
+    weight: 1.5
+  - name: bing videos
+    disabled: false
+    weight: 1.5
+  # De-prioritize Google (still useful, just not primary)
+  - name: google
+    weight: 0.8
   # Security research & academic
   - name: arxiv
     disabled: false
