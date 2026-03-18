@@ -4,5 +4,7 @@ server:
   public_instance: false
   image_proxy: true
   method: "GET"
+valkey:
+  url: "valkey://dragonfly.database.svc.cluster.local:6379/8"
 search:
   autocomplete: "duckduckgo"

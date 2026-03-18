@@ -29,7 +29,6 @@ spec:
               tag: 2026.3.17-2bb8ac17c
             env:
               SEARXNG_BASE_URL: "https://searxng.${SECRET_DOMAIN}"
-              SEARXNG_VALKEY_URL: "valkey://dragonfly.database.svc.cluster.local:6379/8"
             envFrom:
               - secretRef:
                   name: searxng-secret
