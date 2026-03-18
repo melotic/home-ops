@@ -62,7 +62,7 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 405"]
+            conditions: ["[STATUS] == 200"]
         hostnames:
           - "kromgo.${SECRET_DOMAIN}"
         parentRefs:
