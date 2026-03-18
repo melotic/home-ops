@@ -145,6 +145,12 @@ spec:
                 url_secret:
                   name: alertmanager-webhook-secret
                   key: WEBHOOK_URL
+                http_config:
+                  authorization:
+                    type: Bearer
+                    credentials:
+                      name: alertmanager-webhook-secret
+                      key: WEBHOOK_TOKEN
 
       route:
         enabled: true
