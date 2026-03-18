@@ -8,3 +8,13 @@
 *.yml linguist-detectable linguist-language=YAML
 *.yaml linguist-detectable linguist-language=YAML
 *.yaml.j2 linguist-detectable linguist-language=YAML
+*.png binary
+*.ico binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
