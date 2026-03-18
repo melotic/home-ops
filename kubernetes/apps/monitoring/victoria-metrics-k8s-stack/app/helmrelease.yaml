@@ -57,6 +57,9 @@ spec:
       useManagedConfig: true
       spec:
         externalURL: https://alertmanager.${SECRET_DOMAIN}
+        securityContext:
+          runAsUser: 65534
+          fsGroup: 65534
         storage:
           volumeClaimTemplate:
             spec:
