@@ -23,7 +23,7 @@ entries:
       client_id: !Env FOREJO_CLIENT_ID
       client_secret: !Env FOREJO_CLIENT_SECRET
       redirect_uris:
-        - url: 'https://git.{{ env "SECRET_DOMAIN" }}/user/oauth2/authentik/callback'
+        - url: 'https://git.melotic.dev/user/oauth2/authentik/callback'
           matching_mode: strict
       property_mappings: *property_mappings
       signing_key: *signing_key
