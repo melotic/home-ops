@@ -3,11 +3,54 @@ server:
   limiter: false
   public_instance: false
   image_proxy: true
-  method: "GET"
+  method: "POST"
 valkey:
   url: "valkey://dragonfly.database.svc.cluster.local:6379/8"
 search:
   autocomplete: "duckduckgo"
+  safe_search: 0
+  default_lang: "en"
   formats:
     - html
     - json
+outgoing:
+  request_timeout: 5.0
+  max_request_timeout: 15.0
+  enable_http2: true
+engines:
+  # Security research & academic
+  - name: arxiv
+    disabled: false
+  - name: github
+    disabled: false
+  - name: gitlab
+    disabled: false
+  # Developer Q&A
+  - name: stackoverflow
+    disabled: false
+  - name: superuser
+    disabled: false
+  - name: askubuntu
+    disabled: false
+  # Package indexes
+  - name: crates.io
+    disabled: false
+  - name: pypi
+    disabled: false
+  - name: npm
+    disabled: false
+  # Linux documentation
+  - name: arch linux wiki
+    disabled: false
+  - name: gentoo
+    disabled: false
+  # Security/tech discussion
+  - name: hackernews
+    disabled: false
+  - name: lobste.rs
+    disabled: false
+  # Noise reduction
+  - name: pinterest
+    disabled: true
+  - name: 9gag
+    disabled: true
