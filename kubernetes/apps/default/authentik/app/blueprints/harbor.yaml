@@ -23,7 +23,7 @@ entries:
       client_id: !Env HARBOR_CLIENT_ID
       client_secret: !Env HARBOR_CLIENT_SECRET
       redirect_uris:
-        - url: 'https://harbor.{{ env "SECRET_DOMAIN" }}/c/oidc/callback'
+        - url: 'https://harbor.melotic.dev/c/oidc/callback'
           matching_mode: strict
       property_mappings: *property_mappings
       signing_key: *signing_key
