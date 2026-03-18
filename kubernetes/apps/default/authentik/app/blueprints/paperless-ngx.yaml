@@ -22,7 +22,7 @@ entries:
       client_id: !Env PAPERLESS_CLIENT_ID
       client_secret: !Env PAPERLESS_CLIENT_SECRET
       redirect_uris:
-        - url: 'https://paperless.{{ env "SECRET_DOMAIN" }}/accounts/oidc/authentik/login/callback/'
+        - url: 'https://paperless.melotic.dev/accounts/oidc/authentik/login/callback/'
           matching_mode: strict
       property_mappings: *property_mappings
       signing_key: *signing_key

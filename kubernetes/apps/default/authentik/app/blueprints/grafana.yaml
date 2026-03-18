@@ -23,7 +23,7 @@ entries:
       client_id: !Env GRAFANA_CLIENT_ID
       client_secret: !Env GRAFANA_CLIENT_SECRET
       redirect_uris:
-        - url: 'https://grafana.{{ env "SECRET_DOMAIN" }}/login/generic_oauth'
+        - url: 'https://grafana.melotic.dev/login/generic_oauth'
           matching_mode: strict
       property_mappings: *property_mappings
       signing_key: *signing_key
