@@ -3,6 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./branding-configmap.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
@@ -11,10 +12,5 @@ configMapGenerator:
     files:
       - settings.yml=./resources/settings.yml
       - limiter.toml=./resources/limiter.toml
-  - name: searxng-branding
-    files:
-      - searxng.svg=./resources/searxng.svg
-      - searxng.png=./resources/searxng.png
-      - favicon.png=./resources/favicon.png
 generatorOptions:
   disableNameSuffixHash: true
