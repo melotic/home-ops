@@ -79,12 +79,18 @@ spec:
             - receiver: pushover
               matchers:
                 - severity = critical
+              continue: true
             - receiver: pushover
               matchers:
                 - severity = warning
+              continue: true
             - receiver: pushover
               matchers:
                 - severity = error
+              continue: true
+            - receiver: webhook
+              matchers:
+                - severity =~ "critical|warning|error"
         inhibitRules:
           - equal: ["namespace", "alertname"]
             sourceMatch:
@@ -133,6 +139,12 @@ spec:
                   name: *secret
                   key: PUSHOVER_API_KEY
                 url_title: View in Alertmanager
+          - name: webhook
+            webhook_configs:
+              - send_resolved: true
+                url_secret:
+                  name: alertmanager-webhook-secret
+                  key: WEBHOOK_URL
 
       route:
         enabled: true
