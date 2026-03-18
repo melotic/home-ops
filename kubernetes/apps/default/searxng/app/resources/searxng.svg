@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Terminal prompt >_ logo — single accent color on transparent -->
+  <g fill="none" stroke="#8BE9FD" stroke-linecap="round" stroke-linejoin="round" stroke-width="36">
+    <!-- Rounded container -->
+    <rect x="56" y="56" width="400" height="400" rx="48" ry="48"/>
+    <!-- > chevron -->
+    <polyline points="152,176 256,256 152,336"/>
+    <!-- _ underscore/cursor -->
+    <line x1="280" y1="336" x2="376" y2="336"/>
+  </g>
+</svg>

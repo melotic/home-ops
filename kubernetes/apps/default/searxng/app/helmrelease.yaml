@@ -90,6 +90,19 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      branding:
+        type: configMap
+        name: searxng-branding
+        globalMounts:
+          - path: /usr/local/searxng/searx/static/themes/simple/img/searxng.svg
+            subPath: searxng.svg
+            readOnly: true
+          - path: /usr/local/searxng/searx/static/themes/simple/img/searxng.png
+            subPath: searxng.png
+            readOnly: true
+          - path: /usr/local/searxng/searx/static/themes/simple/img/favicon.png
+            subPath: favicon.png
+            readOnly: true
       cache:
         type: emptyDir
         globalMounts:
