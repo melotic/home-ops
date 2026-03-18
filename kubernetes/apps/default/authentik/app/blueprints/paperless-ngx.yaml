@@ -39,3 +39,10 @@ entries:
       meta_description: Document management system
       meta_publisher: Paperless-ngx
       open_in_new_tab: true
+
+  - model: authentik_core.group
+    identifiers:
+      name: paperless-admins
+    attrs:
+      name: paperless-admins
+      is_superuser: false
