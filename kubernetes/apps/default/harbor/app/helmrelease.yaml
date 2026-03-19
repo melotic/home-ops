@@ -69,3 +69,10 @@ spec:
         username: app
         coreDatabase: harbor
         existingSecret: postgres-cluster-app
+    core:
+      extraEnvVars:
+        - name: CONFIG_OVERWRITE_JSON
+          valueFrom:
+            secretKeyRef:
+              name: harbor-oidc-config
+              key: CONFIG_OVERWRITE_JSON
