@@ -29,9 +29,9 @@ spec:
       backupTarget: cifs://construct.${SECRET_DOMAIN}/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
       backupTargetCredentialSecret: cifs-secret
     defaultSettings:
-      autoCleanupRecurringJobBackupSnapshot: true
-      autoCleanupSnapshotAfterOnDemandBackupCompleted: true
-      autoCleanupSystemGeneratedSnapshot: true
+      autoCleanupRecurringJobBackupSnapshot: "true"
+      autoCleanupSnapshotAfterOnDemandBackupCompleted: "true"
+      autoCleanupSystemGeneratedSnapshot: "true"
       concurrentReplicaRebuildPerNodeLimit: "2"
       defaultDataEngine: v1
       defaultDataLocality: best-effort
