@@ -6,6 +6,7 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./referencegrant.yaml
 configMapGenerator:
   - name: authentik-blueprints
     files:
@@ -13,6 +14,11 @@ configMapGenerator:
       - harbor.yaml=./blueprints/harbor.yaml
       - forejo.yaml=./blueprints/forejo.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
+      - longhorn.yaml=./blueprints/longhorn.yaml
+      - victoria-metrics.yaml=./blueprints/victoria-metrics.yaml
+      - victoria-logs.yaml=./blueprints/victoria-logs.yaml
+      - alertmanager.yaml=./blueprints/alertmanager.yaml
+      - outpost.yaml=./blueprints/outpost.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

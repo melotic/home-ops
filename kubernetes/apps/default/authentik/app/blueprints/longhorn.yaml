@@ -1,0 +1,28 @@
+---
+version: 1
+metadata:
+  name: Longhorn Proxy Provider and Application
+context:
+  authorization_flow: &authorization_flow !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+  invalidation_flow: &invalidation_flow !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+entries:
+  - model: authentik_providers_proxy.proxyprovider
+    identifiers:
+      name: longhorn
+    attrs:
+      name: longhorn
+      authorization_flow: *authorization_flow
+      invalidation_flow: *invalidation_flow
+      mode: forward_single
+      external_host: https://longhorn.melotic.dev
+  - model: authentik_core.application
+    identifiers:
+      slug: longhorn
+    attrs:
+      name: Longhorn
+      slug: longhorn
+      provider: !Find [authentik_providers_proxy.proxyprovider, [name, longhorn]]
+      policy_engine_mode: any
+      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/longhorn.svg
+      meta_description: Distributed block storage
+      open_in_new_tab: true
