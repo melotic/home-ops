@@ -52,6 +52,8 @@ spec:
             port: 8123
     route:
       app:
+        labels:
+          authentik.home.arpa/enabled: "true"
         hostnames:
           - "{{ .Release.Name }}.${SECRET_DOMAIN}"
           - hass.${SECRET_DOMAIN}

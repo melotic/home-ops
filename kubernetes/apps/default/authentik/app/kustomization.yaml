@@ -6,6 +6,8 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+  - ./security-policy.yaml
+  - ./outpost-route.yaml
 configMapGenerator:
   - name: authentik-blueprints
     files:
@@ -13,6 +15,8 @@ configMapGenerator:
       - harbor.yaml=./blueprints/harbor.yaml
       - forejo.yaml=./blueprints/forejo.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
+      - home-assistant.yaml=./blueprints/home-assistant.yaml
+      - tautulli.yaml=./blueprints/tautulli.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

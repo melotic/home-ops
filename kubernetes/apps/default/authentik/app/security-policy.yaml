@@ -1,0 +1,21 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: authentik-forward-auth
+  namespace: default
+spec:
+  extAuth:
+    http:
+      backendRef:
+        name: authentik-server
+        namespace: default
+        port: 9000
+      headersToBackend:
+        - cookie
+        - authorization
+      path: "/outpost.goauthentik.io/auth/envoy"
+  targetSelectors:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      matchLabels:
+        authentik.home.arpa/enabled: "true"

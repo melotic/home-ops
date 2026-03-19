@@ -1,0 +1,26 @@
+---
+version: 1
+metadata:
+  name: Tautulli Proxy Provider and Application
+entries:
+  - model: authentik_providers_proxy.proxyprovider
+    identifiers:
+      name: tautulli
+    attrs:
+      name: tautulli
+      mode: forward_single
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      external_host: https://tautulli.melotic.dev
+      access_token_validity: hours=24
+
+  - model: authentik_core.application
+    identifiers:
+      slug: tautulli
+    attrs:
+      name: Tautulli
+      slug: tautulli
+      provider: !Find [authentik_providers_proxy.proxyprovider, [name, tautulli]]
+      policy_engine_mode: any
+      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/tautulli.svg
+      meta_description: Plex media server monitoring
+      open_in_new_tab: true
