@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: smartctl-exporter-rules
+spec:
+  groups:
+    - name: smartctl-exporter.rules
+      rules:
+        - alert: SmartDeviceHighTemperature
+          expr: |-
+            smartctl_device_temperature{temperature_type="current"} > 65
+          for: 5m
+          annotations:
+            summary: >-
+              SMART device {{ $labels.device }} on {{ $labels.instance }} has high temperature ({{ $value }}°C)
+          labels:
+            severity: critical
+
+        - alert: SmartDeviceTestFailed
+          expr: |-
+            smartctl_device_smart_status != 1
+          for: 5m
+          annotations:
+            summary: >-
+              SMART device {{ $labels.device }} on {{ $labels.instance }} has failed SMART test
+          labels:
+            severity: critical
+
+        - alert: SmartDeviceCriticalWarning
+          expr: |-
+            smartctl_device_nvme_critical_warning != 0
+          for: 5m
+          annotations:
+            summary: >-
+              SMART device {{ $labels.device }} on {{ $labels.instance }} has a critical warning
+          labels:
+            severity: critical
+
+        - alert: SmartDeviceMediaErrors
+          expr: |-
+            smartctl_device_nvme_media_errors != 0
+          for: 5m
+          annotations:
+            summary: >-
+              SMART device {{ $labels.device }} on {{ $labels.instance }} has media errors
+          labels:
+            severity: critical
+
+        - alert: SmartDeviceAvailableSpareUnderThreshold
+          expr: |-
+            smartctl_device_available_spare < smartctl_device_available_spare_threshold
+          for: 5m
+          annotations:
+            summary: >-
+              SMART device {{ $labels.device }} on {{ $labels.instance }} available spare is below threshold
+          labels:
+            severity: critical
+
+        - alert: SmartDeviceInterfaceSlow
+          expr: |-
+            smartctl_device_interface_speed{speed_type="current"} != on(device, instance, namespace, pod) smartctl_device_interface_speed{speed_type="max"}
+          for: 5m
+          annotations:
+            summary: >-
+              SMART device {{ $labels.device }} on {{ $labels.instance }} is running at a slower interface speed than maximum
+          labels:
+            severity: critical
