@@ -88,10 +88,28 @@ spec:
           gnetId: 20842
           revision: 3
           datasource: Prometheus
+        cilium-agent:
+          # renovate: depName="Cilium Agent"
+          gnetId: 16611
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        cilium-operator:
+          # renovate: depName="Cilium Operator"
+          gnetId: 16612
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         cloudflared:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457
           revision: 6
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
+        envoy-gateway-global:
+          # renovate: depName="Envoy Gateway Global"
+          gnetId: 24459
+          revision: 3
           datasource:
             - { name: DS_PROMETHEUS, value: Prometheus }
         external-dns:
@@ -99,6 +117,12 @@ spec:
           gnetId: 15038
           revision: 3
           datasource: Prometheus
+        flux:
+          # renovate: depName="Flux Cluster Stats"
+          gnetId: 22640
+          revision: 1
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         kubernetes-api-server:
           # renovate: depName="Kubernetes / System / API Server"
           gnetId: 15761
@@ -134,6 +158,12 @@ spec:
           gnetId: 11454
           revision: 14
           datasource: Prometheus
+        longhorn:
+          # renovate: depName="Longhorn"
+          gnetId: 13032
+          revision: 6
+          datasource:
+            - { name: DS_PROMETHEUS, value: Prometheus }
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
