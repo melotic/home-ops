@@ -7,20 +7,27 @@ metadata:
 spec:
   kubernetes:
     # renovate: datasource=docker depName=ghcr.io/siderolabs/kubelet
-    version: v1.35.3
+    version: v1.35.2
   maintenance:
     windows:
       - duration: 8h
         start: 0 0 * * 1-5
         timezone: America/Chicago
   healthChecks:
+    - apiVersion: v1
+      kind: Node
+      expr: |-
+        status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m
     - apiVersion: postgresql.cnpg.io/v1
       kind: Cluster
       expr: |-
         status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
+      timeout: 10m
     - apiVersion: longhorn.io/v1beta2
       kind: Volume
       namespace: longhorn-system
       expr: |-
         (status.state == "attached" && status.robustness == "healthy") ||
         (status.state != "attached")
+      timeout: 15m
