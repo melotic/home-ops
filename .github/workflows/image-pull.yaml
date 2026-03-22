@@ -58,6 +58,7 @@ jobs:
             get cluster
             --all-namespaces
             --path /github/workspace/kubernetes/flux/cluster
+            --skip-invalid-kustomization-paths
             --enable-images
             --only-images
             --output json
