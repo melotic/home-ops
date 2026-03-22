@@ -86,9 +86,7 @@ spec:
             sectionName: https
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: longhorn
+        existingClaim: radarr
       data:
         type: nfs
         server: construct.${SECRET_DOMAIN}
