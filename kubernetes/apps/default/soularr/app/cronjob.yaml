@@ -24,7 +24,7 @@ spec:
             fsGroup: 988
           containers:
             - name: soularr
-              image: ghcr.io/mrusse/soularr:v1.1.0
+              image: ghcr.io/mrusse/soularr:1.1.0
               command:
                 - python
                 - -u
