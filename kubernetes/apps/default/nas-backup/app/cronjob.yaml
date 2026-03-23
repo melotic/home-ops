@@ -34,6 +34,7 @@ spec:
                 - --transfers=4
                 - --checkers=8
                 - --fast-list
+                - --exclude=/pvc-*/**
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
