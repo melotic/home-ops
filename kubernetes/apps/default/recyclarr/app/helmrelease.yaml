@@ -43,6 +43,7 @@ spec:
         pod:
           restartPolicy: Never
     defaultPodOptions:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

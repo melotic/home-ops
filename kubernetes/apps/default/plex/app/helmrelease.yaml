@@ -57,6 +57,7 @@ spec:
               limits:
                 memory: 4Gi
     defaultPodOptions:
+      automountServiceAccountToken: false
       resourceClaims:
         - name: gpu
           resourceClaimTemplateName: plex

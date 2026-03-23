@@ -36,6 +36,7 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
+      automountServiceAccountToken: false
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       securityContext:
