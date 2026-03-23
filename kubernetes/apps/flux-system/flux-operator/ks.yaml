@@ -20,7 +20,6 @@ spec:
       namespace: *namespace
   interval: 1h
   path: ./kubernetes/apps/flux-system/flux-operator/app
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

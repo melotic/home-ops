@@ -20,7 +20,6 @@ spec:
       namespace: cnpg-system
   interval: 1h
   path: ./kubernetes/apps/cnpg-system/cnpg/app
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

@@ -15,7 +15,6 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kubernetes/apps/network/cloudflare-tunnel
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

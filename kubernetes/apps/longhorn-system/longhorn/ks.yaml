@@ -57,7 +57,6 @@ spec:
     - name: longhorn
   interval: 1h
   path: ./kubernetes/apps/longhorn-system/longhorn/jobs
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

@@ -15,7 +15,6 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kubernetes/apps/default/harbor/app
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

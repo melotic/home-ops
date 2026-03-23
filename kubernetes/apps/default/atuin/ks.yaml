@@ -18,7 +18,6 @@ spec:
       namespace: longhorn-system
   interval: 1h
   path: ./kubernetes/apps/default/atuin/app
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

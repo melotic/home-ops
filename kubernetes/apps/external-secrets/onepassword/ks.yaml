@@ -22,7 +22,6 @@ spec:
       current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
   interval: 1h
   path: ./kubernetes/apps/external-secrets/onepassword/app
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:

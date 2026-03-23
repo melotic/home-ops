@@ -20,7 +20,6 @@ spec:
       namespace: database
   interval: 1h
   path: ./kubernetes/apps/default/forejo/app
-  postBuild:
   prune: true
   retryInterval: 2m
   sourceRef:
