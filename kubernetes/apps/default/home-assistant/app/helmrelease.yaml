@@ -54,8 +54,8 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
-          - hass.${SECRET_DOMAIN}
+          - "{{ .Release.Name }}.melotic.dev"
+          - hass.melotic.dev
         parentRefs:
           - name: envoy-external
             namespace: network

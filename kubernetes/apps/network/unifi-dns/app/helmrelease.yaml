@@ -59,7 +59,7 @@ spec:
     txtOwnerId: zion
     txtPrefix: k8s.
     domainFilters:
-      - ${SECRET_DOMAIN}
+      - melotic.dev
     serviceMonitor:
       enabled: true
     podAnnotations:

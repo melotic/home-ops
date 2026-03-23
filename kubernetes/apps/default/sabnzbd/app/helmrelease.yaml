@@ -57,7 +57,7 @@ spec:
     route:
       app:
         hostnames:
-          - sabnzbd.${SECRET_DOMAIN}
+          - sabnzbd.melotic.dev
         parentRefs:
           - name: envoy-internal
             namespace: network
@@ -68,7 +68,7 @@ spec:
         size: 1Gi
       data:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/data
         globalMounts:
           - path: /data/usenet/

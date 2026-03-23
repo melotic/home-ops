@@ -19,9 +19,6 @@ spec:
     substitute:
       AUTH_POLICY_NAME: victoria-logs-auth
       AUTH_HTTPROUTE: victoria-logs-server
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

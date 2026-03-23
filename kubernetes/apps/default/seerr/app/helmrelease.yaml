@@ -75,7 +75,7 @@ spec:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
         hostnames:
-          - "seerr.${SECRET_DOMAIN}"
+          - "seerr.melotic.dev"
         parentRefs:
           - name: envoy-external
             namespace: network

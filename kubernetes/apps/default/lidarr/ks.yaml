@@ -26,9 +26,6 @@ spec:
     substitute:
       APP: lidarr
       VOLSYNC_CAPACITY: 5Gi
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

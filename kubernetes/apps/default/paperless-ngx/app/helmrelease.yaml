@@ -41,7 +41,7 @@ spec:
                   name: *pgsecret
                   key: password
               PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379/0
-              PAPERLESS_URL: "https://paperless.${SECRET_DOMAIN}"
+              PAPERLESS_URL: "https://paperless.melotic.dev"
               PAPERLESS_PORT: &port 8000
               USERMAP_UID: "1000"
               USERMAP_GID: "1000"
@@ -126,7 +126,7 @@ spec:
     route:
       app:
         hostnames:
-          - "paperless.${SECRET_DOMAIN}"
+          - "paperless.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network
@@ -140,19 +140,19 @@ spec:
           - path: /usr/src/paperless/data
       media:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/k8s/paperless/media
         globalMounts:
           - path: /usr/src/paperless/media
       consume:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/k8s/paperless/consume
         globalMounts:
           - path: /usr/src/paperless/consume
       export:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/k8s/paperless/export
         globalMounts:
           - path: /usr/src/paperless/export

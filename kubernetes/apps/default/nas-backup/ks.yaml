@@ -21,9 +21,6 @@ spec:
   postBuild:
     substitute:
       APP: nas-backup
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

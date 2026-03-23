@@ -80,7 +80,7 @@ spec:
     route:
       app:
         hostnames:
-          - "sonarr.${SECRET_DOMAIN}"
+          - "sonarr.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network
@@ -90,7 +90,7 @@ spec:
         existingClaim: sonarr
       data:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/data
         globalMounts:
           - path: /data

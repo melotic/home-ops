@@ -15,10 +15,6 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kubernetes/apps/system-upgrade/tuppr/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -47,10 +43,6 @@ spec:
     - name: tuppr
   interval: 1h
   path: ./kubernetes/apps/system-upgrade/tuppr/upgrades
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

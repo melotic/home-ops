@@ -84,7 +84,7 @@ spec:
         annotations:
           gatus.home-operations.com/enabled: "false"
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network

@@ -22,7 +22,7 @@ spec:
 
     external:
       grafana:
-        host: grafana.${SECRET_DOMAIN}
+        host: grafana.melotic.dev
 
     defaultDashboards:
       enabled: true
@@ -50,13 +50,13 @@ spec:
             namespace: network
             sectionName: https
         hostnames:
-          - vm.${SECRET_DOMAIN}
+          - vm.melotic.dev
 
     alertmanager:
       enabled: true
       useManagedConfig: true
       spec:
-        externalURL: https://alertmanager.${SECRET_DOMAIN}
+        externalURL: https://alertmanager.melotic.dev
         securityContext:
           runAsUser: 65534
           fsGroup: 65534
@@ -159,7 +159,7 @@ spec:
             namespace: network
             sectionName: https
         hostnames:
-          - alertmanager.${SECRET_DOMAIN}
+          - alertmanager.melotic.dev
 
     kubeApiServer:
       enabled: true

@@ -26,7 +26,7 @@ spec:
   interval: 5m
   values:
     defaultBackupStore:
-      backupTarget: cifs://construct.${SECRET_DOMAIN}/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
+      backupTarget: cifs://construct.melotic.dev/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
       backupTargetCredentialSecret: cifs-secret
     defaultSettings:
       autoCleanupRecurringJobBackupSnapshot: "true"
@@ -49,7 +49,7 @@ spec:
       storageReservedPercentageForDefaultDisk: "0"
     httproute:
       enabled: true
-      hostnames: ["longhorn.${SECRET_DOMAIN}"]
+      hostnames: ["longhorn.melotic.dev"]
       parentRefs:
         - name: envoy-internal
           namespace: network

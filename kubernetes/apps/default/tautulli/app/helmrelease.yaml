@@ -21,7 +21,7 @@ spec:
               tag: 2.16.1@sha256:492b201778383bc58ef061dbd2584d9c0e5cfbd5090a1d48340b65589e26b144
             env:
               TZ: America/Chicago
-              TAUTULLI_HTTP_BASE_URL: https://tautulli.${SECRET_DOMAIN}
+              TAUTULLI_HTTP_BASE_URL: https://tautulli.melotic.dev
               TAUTULLI_HTTP_PORT: &port 80
             envFrom:
               - secretRef:
@@ -64,7 +64,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - "{{ .Release.Name }}.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network
