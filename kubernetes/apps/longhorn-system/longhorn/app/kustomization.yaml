@@ -6,5 +6,6 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./prometheusrule.yaml
-  - ./securitypolicy.yaml
   - ./volumesnapshotclass.yaml
+components:
+  - ../../../../components/authentik-proxy

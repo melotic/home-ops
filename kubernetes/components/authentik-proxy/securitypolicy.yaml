@@ -2,13 +2,12 @@
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
-  name: longhorn-auth
-  namespace: longhorn-system
+  name: ${AUTH_POLICY_NAME}
 spec:
   targetRefs:
     - group: gateway.networking.k8s.io
       kind: HTTPRoute
-      name: longhorn-httproute
+      name: ${AUTH_HTTPROUTE}
   extAuth:
     headersToExtAuth:
       - cookie
