@@ -73,7 +73,8 @@ spec:
     route:
       app:
         annotations:
-          gatus.home-operations.com/enabled: "false"
+          gatus.home-operations.com/endpoint: |-
+            conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.melotic.dev"]
         parentRefs:
           - name: envoy-internal
