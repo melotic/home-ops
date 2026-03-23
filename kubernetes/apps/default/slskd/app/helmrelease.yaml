@@ -25,7 +25,6 @@ spec:
               SLSKD_HTTP_PORT: &port 5030
               SLSKD_DOWNLOADS_DIR: /data/soulseek/complete
               SLSKD_INCOMPLETE_DIR: /data/soulseek/incomplete
-              SLSKD_SHARED_DIR: /data/media/music
               SLSKD_NO_AUTH: "true"
             envFrom:
               - secretRef:
@@ -76,6 +75,13 @@ spec:
     persistence:
       config:
         existingClaim: slskd
+      slskd-config:
+        type: configMap
+        name: slskd-config
+        globalMounts:
+          - path: /app/slskd.yml
+            subPath: slskd.yml
+            readOnly: true
       data:
         type: nfs
         server: construct.melotic.dev

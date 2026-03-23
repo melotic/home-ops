@@ -1,0 +1,84 @@
+shares:
+  directories:
+    - /data/media/music
+  filters:
+    - \.ini$
+    - Thumbs.db$
+    - \.DS_Store$
+  cache:
+    storage_mode: memory
+    workers: 8
+global:
+  upload:
+    slots: 15
+    speed_limit: 2000
+  limits:
+    queued:
+      files: 500
+      megabytes: 5000
+    daily:
+      files: 1000
+      megabytes: 10000
+      failures: 200
+    weekly:
+      files: 5000
+      megabytes: 50000
+      failures: 1000
+  download:
+    slots: 500
+    speed_limit: 10000
+groups:
+  default:
+    upload:
+      priority: 500
+      strategy: roundrobin
+      slots: 10
+    limits:
+      queued:
+        files: 150
+        megabytes: 1500
+      daily:
+        files: 300
+        megabytes: 3000
+      weekly:
+        files: 1500
+        megabytes: 15000
+        failures: 150
+  leechers:
+    thresholds:
+      files: 1
+      directories: 1
+    upload:
+      priority: 999
+      strategy: roundrobin
+      slots: 1
+      speed_limit: 100
+    limits:
+      queued:
+        files: 15
+        megabytes: 150
+      daily:
+        files: 30
+        megabytes: 300
+        failures: 10
+      weekly:
+        files: 150
+        megabytes: 1500
+        failures: 30
+filters:
+  search:
+    request:
+      - ^.{1,2}$
+retention:
+  transfers:
+    upload:
+      succeeded: 1440
+      errored: 30
+      cancelled: 5
+    download:
+      succeeded: 1440
+      errored: 20160
+      cancelled: 5
+  files:
+    complete: 20160
+    incomplete: 43200
