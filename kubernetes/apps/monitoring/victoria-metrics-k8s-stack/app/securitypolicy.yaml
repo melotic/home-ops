@@ -10,6 +10,8 @@ spec:
       kind: HTTPRoute
       name: vmsingle-vm-kube-stack
   extAuth:
+    headersToExtAuth:
+      - cookie
     http:
       backendRef:
         name: authentik-server
@@ -36,6 +38,8 @@ spec:
       kind: HTTPRoute
       name: vmalertmanager-vm-kube-stack
   extAuth:
+    headersToExtAuth:
+      - cookie
     http:
       backendRef:
         name: authentik-server
