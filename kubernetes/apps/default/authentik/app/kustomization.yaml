@@ -18,6 +18,7 @@ configMapGenerator:
       - victoria-metrics.yaml=./blueprints/victoria-metrics.yaml
       - victoria-logs.yaml=./blueprints/victoria-logs.yaml
       - alertmanager.yaml=./blueprints/alertmanager.yaml
+      - slskd.yaml=./blueprints/slskd.yaml
       - outpost.yaml=./blueprints/outpost.yaml
 generatorOptions:
   disableNameSuffixHash: true

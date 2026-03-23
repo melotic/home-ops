@@ -26,6 +26,8 @@ spec:
     substitute:
       APP: slskd
       VOLSYNC_CAPACITY: 2Gi
+      AUTH_POLICY_NAME: slskd-auth
+      AUTH_HTTPROUTE: slskd
   prune: true
   retryInterval: 2m
   sourceRef:
