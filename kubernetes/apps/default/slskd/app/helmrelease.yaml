@@ -23,6 +23,9 @@ spec:
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
               TZ: Etc/UTC
               SLSKD_HTTP_PORT: &port 5030
+              SLSKD_DOWNLOADS_DIR: /data/soulseek/complete
+              SLSKD_INCOMPLETE_DIR: /data/soulseek/incomplete
+              SLSKD_SHARED_DIR: /data/media/music
             envFrom:
               - secretRef:
                   name: slskd-secret
