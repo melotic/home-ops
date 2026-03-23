@@ -51,6 +51,12 @@ spec:
               PAPERLESS_TIKA_ENABLED: "true"
               PAPERLESS_TIKA_ENDPOINT: http://localhost:9998
               PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://localhost:3000
+              PAPERLESS_EMAIL_HOST: smtp-relay.default.svc.cluster.local
+              PAPERLESS_EMAIL_PORT: "587"
+              PAPERLESS_EMAIL_HOST_USER: ""
+              PAPERLESS_EMAIL_HOST_PASSWORD: ""
+              PAPERLESS_EMAIL_USE_TLS: "false"
+              PAPERLESS_EMAIL_FROM: noreply@melotic.dev
               PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
               PAPERLESS_LOGOUT_REDIRECT_URL: https://sso.melotic.dev/application/o/paperless/end-session/
               PAPERLESS_SOCIAL_AUTO_SIGNUP: "true"
