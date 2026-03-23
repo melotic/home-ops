@@ -86,8 +86,6 @@ spec:
             sectionName: https
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: longhorn
+        existingClaim: prowlarr
       tmp:
         type: emptyDir

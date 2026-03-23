@@ -81,9 +81,7 @@ spec:
             sectionName: https
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: longhorn
+        existingClaim: seerr
         globalMounts:
           - path: /app/config
       tmp:
