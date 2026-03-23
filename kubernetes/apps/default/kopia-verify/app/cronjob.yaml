@@ -26,6 +26,8 @@ spec:
             - name: kopia
               image: kopia/kopia:0.22.3
               env:
+                - name: USER
+                  value: kopia
                 - name: KOPIA_PASSWORD
                   valueFrom:
                     secretKeyRef:
@@ -58,9 +60,9 @@ spec:
                 - name: tmp
                   mountPath: /tmp
                 - name: kopia-cache
-                  mountPath: /root/.cache
+                  mountPath: /app/cache
                 - name: kopia-config
-                  mountPath: /root/.config
+                  mountPath: /app/config
                 - name: kopia-logs
                   mountPath: /app/logs
               resources:
