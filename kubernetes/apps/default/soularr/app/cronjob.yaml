@@ -42,8 +42,7 @@ spec:
                   subPath: config.ini
                   readOnly: true
                 - name: nfs-data
-                  mountPath: /data/soulseek
-                  subPath: soulseek
+                  mountPath: /data
                 - name: tmp
                   mountPath: /tmp
               resources:
