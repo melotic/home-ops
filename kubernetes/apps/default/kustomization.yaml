@@ -26,6 +26,7 @@ resources:
   - ./searxng/ks.yaml
   - ./seerr/ks.yaml
   - ./slskd/ks.yaml
+  - ./soularr/ks.yaml
   - ./smtp-relay/ks.yaml
   - ./sonarr/ks.yaml
   - ./tautulli/ks.yaml
