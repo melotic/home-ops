@@ -1,0 +1,64 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: soularr
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 1800
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 977
+            runAsGroup: 988
+            fsGroup: 988
+          containers:
+            - name: soularr
+              image: ghcr.io/mrusse/soularr:v1.1.0
+              command:
+                - python
+                - -u
+                - /app/soularr.py
+                - --config-dir
+                - /config
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: config
+                  mountPath: /config/config.ini
+                  subPath: config.ini
+                  readOnly: true
+                - name: nfs-data
+                  mountPath: /data/soulseek
+                  subPath: soulseek
+                - name: tmp
+                  mountPath: /tmp
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 128Mi
+                limits:
+                  memory: 256Mi
+          volumes:
+            - name: config
+              secret:
+                secretName: soularr-secret
+            - name: nfs-data
+              nfs:
+                server: construct.melotic.dev
+                path: /var/nfs/shared/data
+            - name: tmp
+              emptyDir: {}
