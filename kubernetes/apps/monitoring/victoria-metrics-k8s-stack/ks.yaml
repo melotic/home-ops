@@ -39,6 +39,10 @@ metadata:
   name: victoria-metrics-alertmanager-auth
   namespace: &namespace monitoring
 spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   commonMetadata:
     labels:
       app.kubernetes.io/name: victoria-metrics-k8s-stack
