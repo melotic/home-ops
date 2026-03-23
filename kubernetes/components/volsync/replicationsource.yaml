@@ -21,7 +21,7 @@ spec:
       - mountPath: repository
         volumeSource:
           nfs:
-            path: /var/nfs/shared/k8s/volsync/${APP}
+            path: /var/nfs/shared/k8s/volsync
             server: construct.${SECRET_DOMAIN}
     parallelism: 2
     repository: ${APP}-volsync-secret

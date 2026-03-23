@@ -29,7 +29,7 @@ spec:
       - mountPath: repository
         volumeSource:
           nfs:
-            path: /var/nfs/shared/k8s/volsync/${APP}
+            path: /var/nfs/shared/k8s/volsync
             server: construct.${SECRET_DOMAIN}
     repository: ${APP}-volsync-secret
     sourceIdentity:
