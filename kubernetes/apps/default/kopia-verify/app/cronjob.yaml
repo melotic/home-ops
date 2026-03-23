@@ -1,0 +1,83 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kopia-verify
+spec:
+  schedule: "0 8 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 7200
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 977
+            runAsGroup: 988
+            fsGroup: 988
+          containers:
+            - name: kopia
+              image: kopia/kopia:0.19.0
+              env:
+                - name: KOPIA_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kopia-verify-secret
+                      key: KOPIA_PASSWORD
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "Connecting to kopia repository..."
+                  kopia repository connect filesystem \
+                    --path=/repository \
+                    --password="$KOPIA_PASSWORD" \
+                    --override-uid=977 \
+                    --override-gid=988
+                  echo "Running snapshot verification (5% of files)..."
+                  kopia snapshot verify --verify-files-percent=5 --file-parallelism=2
+                  VERIFY_EXIT=$?
+                  echo "Running blob verification..."
+                  kopia blob stats
+                  echo "Verification complete. Exit code: $VERIFY_EXIT"
+                  exit $VERIFY_EXIT
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: repository
+                  mountPath: /repository
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+                - name: kopia-cache
+                  mountPath: /root/.cache
+                - name: kopia-config
+                  mountPath: /root/.config
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 256Mi
+                limits:
+                  memory: 512Mi
+          volumes:
+            - name: repository
+              nfs:
+                server: construct.${SECRET_DOMAIN}
+                path: /var/nfs/shared/k8s/volsync
+                readOnly: true
+            - name: tmp
+              emptyDir: {}
+            - name: kopia-cache
+              emptyDir: {}
+            - name: kopia-config
+              emptyDir: {}
