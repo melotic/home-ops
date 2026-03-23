@@ -6,5 +6,11 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./ocirepository.yaml
+configMapGenerator:
+  - name: slskd-config
+    files:
+      - slskd.yml
+    options:
+      disableNameSuffixHash: true
 components:
   - ../../../../components/authentik-proxy
