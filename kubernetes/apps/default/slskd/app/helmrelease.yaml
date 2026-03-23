@@ -20,6 +20,7 @@ spec:
               repository: slskd/slskd
               tag: 0.24.5
             env:
+              DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
               TZ: Etc/UTC
               SLSKD_HTTP_PORT: &port 5030
             envFrom:
