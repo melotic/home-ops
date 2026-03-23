@@ -65,6 +65,7 @@ spec:
               limits:
                 memory: 4Gi
     defaultPodOptions:
+      automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
