@@ -22,9 +22,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/volsync-system/volsync/app
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

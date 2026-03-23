@@ -23,14 +23,14 @@ spec:
       GF_EXPLORE_ENABLED: true
       GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
       GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
-      GF_SERVER_ROOT_URL: https://grafana.${SECRET_DOMAIN}
+      GF_SERVER_ROOT_URL: https://grafana.melotic.dev
     grafana.ini:
       analytics:
         check_for_updates: false
         check_for_plugin_updates: false
         reporting_enabled: false
       auth:
-        signout_redirect_url: https://sso.${SECRET_DOMAIN}/application/o/grafana/end-session/
+        signout_redirect_url: https://sso.melotic.dev/application/o/grafana/end-session/
       auth.anonymous:
         enabled: false
       auth.generic_oauth:
@@ -40,9 +40,9 @@ spec:
         client_secret: $__file{/etc/secrets/grafana_oauth/client_secret}
         auto_login: true
         scopes: openid profile email
-        auth_url: https://sso.${SECRET_DOMAIN}/application/o/authorize/
-        token_url: https://sso.${SECRET_DOMAIN}/application/o/token/
-        api_url: https://sso.${SECRET_DOMAIN}/application/o/userinfo/
+        auth_url: https://sso.melotic.dev/application/o/authorize/
+        token_url: https://sso.melotic.dev/application/o/token/
+        api_url: https://sso.melotic.dev/application/o/userinfo/
         role_attribute_path: contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
       news:
         news_feed_enabled: false
@@ -238,7 +238,7 @@ spec:
       main:
         enabled: true
         hostnames:
-          - "grafana.${SECRET_DOMAIN}"
+          - "grafana.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network

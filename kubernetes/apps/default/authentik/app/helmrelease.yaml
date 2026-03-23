@@ -40,7 +40,7 @@ spec:
         main:
           enabled: true
           hostnames:
-            - "sso.${SECRET_DOMAIN}"
+            - "sso.melotic.dev"
           parentRefs:
             - name: envoy-internal
               namespace: network

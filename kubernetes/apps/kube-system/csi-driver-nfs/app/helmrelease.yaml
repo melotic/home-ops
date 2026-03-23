@@ -27,7 +27,7 @@ spec:
       create: true
       name: nfs-construct
       parameters:
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         share: /var/nfs/shared/k8s
       mountOptions:
         - nfsvers=3

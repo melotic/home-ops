@@ -6,6 +6,6 @@ metadata:
   name: cloudflare-tunnel
 spec:
   endpoints:
-    - dnsName: "external.${SECRET_DOMAIN}"
+    - dnsName: "external.melotic.dev"
       recordType: CNAME
       targets: ["f270490a-03cc-4947-bdb7-f828065c8304.cfargotunnel.com"]

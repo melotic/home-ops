@@ -64,7 +64,7 @@ spec:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
         hostnames:
-          - "kromgo.${SECRET_DOMAIN}"
+          - "kromgo.melotic.dev"
         parentRefs:
           - name: envoy-external
             namespace: network
