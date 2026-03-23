@@ -14,6 +14,6 @@ spec:
         name: cnpg-backup-azure-creds
         key: AZURE_STORAGE_SAS_TOKEN
     wal:
-      compression: gzip
+      compression: zstd
     data:
-      compression: gzip
+      compression: snappy
