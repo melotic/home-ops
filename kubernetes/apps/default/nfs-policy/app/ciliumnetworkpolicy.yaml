@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/CiliumProject/cilium/main/pkg/k8s/apis/cilium.io/client/crds/v2/ciliumnetworkpolicies.yaml
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: nfs-egress
+spec:
+  description: "Restrict NFS egress to NAS (construct.melotic.dev) to media/backup pods only"
+  endpointSelector:
+    matchExpressions:
+      - key: app.kubernetes.io/name
+        operator: In
+        values:
+          - kopia-verify
+          - lidarr
+          - nas-backup
+          - paperless-ngx
+          - plex
+          - radarr
+          - sabnzbd
+          - slskd
+          - sonarr
+          - soularr
+  egress:
+    # Allow DNS resolution
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system
+            "k8s:k8s-app": kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+    # Allow NFS to the NAS
+    - toCIDR:
+        - 10.60.10.20/32
+      toPorts:
+        - ports:
+            - port: "2049"
+              protocol: TCP
+    # Preserve all other egress — these apps need internet for
+    # downloads (sabnzbd), API calls (radarr/sonarr/lidarr),
+    # streaming (plex), P2P (slskd), etc.
+    - toEntities:
+        - world
+        - cluster
