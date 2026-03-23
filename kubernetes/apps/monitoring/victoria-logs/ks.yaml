@@ -16,6 +16,9 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/monitoring/victoria-logs/app
   postBuild:
+    substitute:
+      AUTH_POLICY_NAME: victoria-logs-auth
+      AUTH_HTTPROUTE: victoria-logs-server
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
