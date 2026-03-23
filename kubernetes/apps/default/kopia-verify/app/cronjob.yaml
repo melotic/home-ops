@@ -38,9 +38,7 @@ spec:
                   echo "Connecting to kopia repository..."
                   kopia repository connect filesystem \
                     --path=/repository \
-                    --password="$KOPIA_PASSWORD" \
-                    --override-uid=977 \
-                    --override-gid=988
+                    --password="$KOPIA_PASSWORD"
                   echo "Running snapshot verification (5% of files)..."
                   kopia snapshot verify --verify-files-percent=5 --file-parallelism=2
                   VERIFY_EXIT=$?
@@ -63,6 +61,8 @@ spec:
                   mountPath: /root/.cache
                 - name: kopia-config
                   mountPath: /root/.config
+                - name: kopia-logs
+                  mountPath: /app/logs
               resources:
                 requests:
                   cpu: 50m
@@ -80,4 +80,6 @@ spec:
             - name: kopia-cache
               emptyDir: {}
             - name: kopia-config
+              emptyDir: {}
+            - name: kopia-logs
               emptyDir: {}
