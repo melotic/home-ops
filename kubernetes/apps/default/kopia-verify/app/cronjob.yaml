@@ -31,16 +31,21 @@ spec:
                     secretKeyRef:
                       name: kopia-verify-secret
                       key: KOPIA_PASSWORD
+                - name: KOPIA_LOG_DIR
+                  value: /tmp/kopia-logs
+                - name: KOPIA_CACHE_DIRECTORY
+                  value: /tmp/kopia-cache
+                - name: KOPIA_CONFIG_PATH
+                  value: /tmp/kopia-config/repository.config
               command:
                 - /bin/sh
                 - -c
                 - |
+                  mkdir -p /tmp/kopia-logs /tmp/kopia-cache /tmp/kopia-config
                   echo "Connecting to kopia repository..."
                   kopia repository connect filesystem \
                     --path=/repository \
-                    --password="$KOPIA_PASSWORD" \
-                    --override-uid=977 \
-                    --override-gid=988
+                    --password="$KOPIA_PASSWORD"
                   echo "Running snapshot verification (5% of files)..."
                   kopia snapshot verify --verify-files-percent=5 --file-parallelism=2
                   VERIFY_EXIT=$?
@@ -59,10 +64,6 @@ spec:
                   readOnly: true
                 - name: tmp
                   mountPath: /tmp
-                - name: kopia-cache
-                  mountPath: /root/.cache
-                - name: kopia-config
-                  mountPath: /root/.config
               resources:
                 requests:
                   cpu: 50m
@@ -72,12 +73,8 @@ spec:
           volumes:
             - name: repository
               nfs:
-                server: construct.${SECRET_DOMAIN}
+                server: construct.melotic.dev
                 path: /var/nfs/shared/k8s/volsync
                 readOnly: true
             - name: tmp
-              emptyDir: {}
-            - name: kopia-cache
-              emptyDir: {}
-            - name: kopia-config
               emptyDir: {}
