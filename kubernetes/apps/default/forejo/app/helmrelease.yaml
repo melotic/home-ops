@@ -104,12 +104,16 @@ spec:
         picture:
           DISABLE_GRAVATAR: false
         mailer:
-          ENABLED: false
+          ENABLED: true
+          PROTOCOL: smtp
+          SMTP_ADDR: smtp-relay.default.svc.cluster.local
+          SMTP_PORT: "587"
+          FROM: "Forgejo <noreply@melotic.dev>"
         service:
           ALLOW_ONLY_EXTERNAL_REGISTRATION: true
           DISABLE_REGISTRATION: true
           REQUIRE_SIGNIN_VIEW: true
-          ENABLE_NOTIFY_MAIL: false
+          ENABLE_NOTIFY_MAIL: true
           ENABLE_OAUTH2_AUTO_REGISTER: true
           REGISTER_EMAIL_CONFIRM: false
         metrics:
