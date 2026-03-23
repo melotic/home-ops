@@ -22,9 +22,6 @@ spec:
   postBuild:
     substitute:
       APP: kopia-verify
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

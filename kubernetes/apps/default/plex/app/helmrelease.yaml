@@ -21,7 +21,7 @@ spec:
               tag: 1.43.0.10492@sha256:8cb062f2b0660bd7811387e6c799da0ce5f18112078fe21485c11adcc83a9c1c
             env:
               TZ: America/Chicago
-              PLEX_ADVERTISE_URL: https://plex.${SECRET_DOMAIN}:443,http://10.60.80.5:32400,http://plex.default.svc.cluster.local:32400
+              PLEX_ADVERTISE_URL: https://plex.melotic.dev:443,http://10.60.80.5:32400,http://plex.default.svc.cluster.local:32400
               PLEX_NO_AUTH_NETWORKS: 10.60.0.0/16,10.20.0.0/24,10.30.0.0/24
             probes:
               liveness:
@@ -82,7 +82,7 @@ spec:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
         hostnames:
-          - "plex.${SECRET_DOMAIN}"
+          - "plex.melotic.dev"
         parentRefs:
           - name: envoy-external
             namespace: network
@@ -98,7 +98,7 @@ spec:
         size: 50Gi
       media:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/data
         globalMounts:
           - path: /data/media

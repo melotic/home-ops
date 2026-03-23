@@ -12,9 +12,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/network/tailscale/app
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -40,9 +37,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/network/tailscale/config
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

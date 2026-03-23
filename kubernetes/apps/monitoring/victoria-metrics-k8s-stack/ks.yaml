@@ -19,9 +19,6 @@ spec:
     substitute:
       AUTH_POLICY_NAME: victoria-metrics-auth
       AUTH_HTTPROUTE: vmsingle-vm-kube-stack
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -54,9 +51,6 @@ spec:
     substitute:
       AUTH_POLICY_NAME: alertmanager-auth
       AUTH_HTTPROUTE: vmalertmanager-vm-kube-stack
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

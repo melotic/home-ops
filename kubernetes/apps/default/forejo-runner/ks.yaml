@@ -14,9 +14,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/default/forejo-runner/app
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

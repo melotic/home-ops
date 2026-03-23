@@ -2,12 +2,12 @@
 originRequest:
   http2Origin: true
   keepAliveTimeout: 3600s
-  originServerName: "external.${SECRET_DOMAIN}"
+  originServerName: "external.melotic.dev"
   tcpKeepAlive: 7200s
 
 ingress:
-  - hostname: "${SECRET_DOMAIN}"
+  - hostname: "melotic.dev"
     service: &svc https://envoy-external.network.svc.cluster.local
-  - hostname: "*.${SECRET_DOMAIN}"
+  - hostname: "*.melotic.dev"
     service: *svc
   - service: http_status:404

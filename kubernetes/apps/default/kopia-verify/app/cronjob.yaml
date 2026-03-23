@@ -72,7 +72,7 @@ spec:
           volumes:
             - name: repository
               nfs:
-                server: construct.${SECRET_DOMAIN}
+                server: construct.melotic.dev
                 path: /var/nfs/shared/k8s/volsync
                 readOnly: true
             - name: tmp

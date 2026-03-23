@@ -16,9 +16,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/network/certificates/export
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
@@ -46,9 +43,6 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/network/certificates/import
   postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

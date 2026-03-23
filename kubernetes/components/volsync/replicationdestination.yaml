@@ -30,7 +30,7 @@ spec:
         volumeSource:
           nfs:
             path: /var/nfs/shared/k8s/volsync
-            server: construct.${SECRET_DOMAIN}
+            server: construct.melotic.dev
     repository: ${APP}-volsync-secret
     sourceIdentity:
       sourceName: ${APP}

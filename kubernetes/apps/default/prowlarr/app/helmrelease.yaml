@@ -80,7 +80,7 @@ spec:
     route:
       app:
         hostnames:
-          - "prowlarr.${SECRET_DOMAIN}"
+          - "prowlarr.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network
