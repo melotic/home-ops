@@ -37,12 +37,12 @@ spec:
         enabled: false
       route:
         hosts:
-          - "harbor.${SECRET_DOMAIN}"
+          - "harbor.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network
             sectionName: https
-    externalURL: "https://harbor.${SECRET_DOMAIN}"
+    externalURL: "https://harbor.melotic.dev"
     persistence:
       enabled: true
       persistentVolumeClaim:

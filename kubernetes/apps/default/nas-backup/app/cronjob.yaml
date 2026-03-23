@@ -63,7 +63,7 @@ spec:
                     path: rclone.conf
             - name: nfs-source
               nfs:
-                server: construct.${SECRET_DOMAIN}
+                server: construct.melotic.dev
                 path: /var/nfs/shared/k8s
                 readOnly: true
             - name: tmp

@@ -17,7 +17,7 @@ spec:
               name: cert-manager-secret
               key: api-token
         selector:
-          dnsZones: ["${SECRET_DOMAIN}"]
+          dnsZones: ["melotic.dev"]
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/cert-manager.io/clusterissuer_v1.json
 apiVersion: cert-manager.io/v1
@@ -37,4 +37,4 @@ spec:
               name: cert-manager-secret
               key: api-token
         selector:
-          dnsZones: ["${SECRET_DOMAIN}"]
+          dnsZones: ["melotic.dev"]

@@ -19,7 +19,7 @@ spec:
           - IPv4
           - IPv6
         annotations:
-          external-dns.alpha.kubernetes.io/hostname: "ssh.git.${SECRET_DOMAIN}"
+          external-dns.alpha.kubernetes.io/hostname: "ssh.git.melotic.dev"
 
     httpRoute:
       enabled: true
@@ -28,7 +28,7 @@ spec:
           namespace: network
           sectionName: https
       hostnames:
-        - "git.${SECRET_DOMAIN}"
+        - "git.melotic.dev"
       matches:
         path:
           type: PathPrefix
@@ -90,9 +90,9 @@ spec:
           TYPE: redis
           CONN_STR: redis://dragonfly.database.svc.cluster.local:6379/7?pool_size=100&idle_timeout=180s
         server:
-          DOMAIN: "git.${SECRET_DOMAIN}"
-          ROOT_URL: "https://git.${SECRET_DOMAIN}/"
-          SSH_DOMAIN: "ssh.git.${SECRET_DOMAIN}"
+          DOMAIN: "git.melotic.dev"
+          ROOT_URL: "https://git.melotic.dev/"
+          SSH_DOMAIN: "ssh.git.melotic.dev"
           SSH_PORT: 22
           SSH_LISTEN_PORT: 2222
         database:

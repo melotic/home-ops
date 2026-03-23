@@ -20,10 +20,6 @@ spec:
       namespace: cnpg-system
   interval: 1h
   path: ./kubernetes/apps/cnpg-system/cnpg/app
-  postBuild:
-    substituteFrom:
-      - name: cluster-secrets
-        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:
