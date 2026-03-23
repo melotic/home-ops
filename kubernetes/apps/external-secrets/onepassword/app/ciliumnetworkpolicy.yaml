@@ -14,21 +14,24 @@ spec:
             app.kubernetes.io/name: external-secrets
             io.kubernetes.pod.namespace: external-secrets
   egress:
-    - toEntities:
-        - kube-apiserver
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system
+            "k8s:k8s-app": kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
     - toFQDNs:
         - matchPattern: "*.1password.com"
+        - matchPattern: "*.1passwordservices.com"
+        - matchPattern: "*.1passwordusercontent.com"
       toPorts:
         - ports:
             - port: "443"
               protocol: TCP
-    - toEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: kube-system
-            k8s-app: kube-dns
-      toPorts:
-        - ports:
-            - port: "53"
-              protocol: UDP
-            - port: "53"
-              protocol: TCP
+    - toEntities:
+        - kube-apiserver
