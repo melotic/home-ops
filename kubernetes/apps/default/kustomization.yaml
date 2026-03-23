@@ -14,6 +14,7 @@ resources:
   - ./forejo-runner/ks.yaml
   - ./harbor/ks.yaml
   - ./home-assistant/ks.yaml
+  - ./kopia-verify/ks.yaml
   - ./lidarr/ks.yaml
   - ./nas-backup/ks.yaml
   - ./paperless-ngx/ks.yaml
