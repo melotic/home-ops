@@ -64,8 +64,7 @@ spec:
             sectionName: https
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        size: 1Gi
+        existingClaim: sabnzbd
       data:
         type: nfs
         server: construct.melotic.dev
