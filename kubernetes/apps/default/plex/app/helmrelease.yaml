@@ -93,9 +93,7 @@ spec:
                 port: *port
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        storageClass: longhorn
-        size: 50Gi
+        existingClaim: plex
       media:
         type: nfs
         server: construct.melotic.dev

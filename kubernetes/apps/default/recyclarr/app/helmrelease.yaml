@@ -52,9 +52,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        size: 1Gi
-        storageClass: longhorn
+        existingClaim: recyclarr
       config-file:
         type: configMap
         name: "{{ .Release.Name }}-configmap"

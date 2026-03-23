@@ -9,6 +9,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   decryption:
     provider: sops
     secretRef:
@@ -18,8 +20,14 @@ spec:
       namespace: database
     - name: longhorn
       namespace: longhorn-system
+    - name: volsync
+      namespace: volsync-system
   interval: 1h
   path: ./kubernetes/apps/default/paperless-ngx/app
+  postBuild:
+    substitute:
+      APP: paperless-ngx
+      VOLSYNC_CAPACITY: 5Gi
   prune: true
   retryInterval: 2m
   sourceRef:

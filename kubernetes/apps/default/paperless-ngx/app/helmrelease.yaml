@@ -139,9 +139,7 @@ spec:
             sectionName: https
     persistence:
       data:
-        accessMode: ReadWriteOnce
-        size: 5Gi
-        storageClass: longhorn
+        existingClaim: paperless-ngx
         globalMounts:
           - path: /usr/src/paperless/data
       media:

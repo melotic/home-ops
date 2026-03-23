@@ -62,8 +62,6 @@ spec:
             sectionName: https
     persistence:
       config:
-        accessMode: ReadWriteOnce
-        size: 8Gi
-        storageClass: longhorn
+        existingClaim: home-assistant
       tmp:
         type: emptyDir
