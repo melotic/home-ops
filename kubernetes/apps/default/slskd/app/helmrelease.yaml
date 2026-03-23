@@ -63,7 +63,7 @@ spec:
     route:
       app:
         hostnames:
-          - "slskd.${SECRET_DOMAIN}"
+          - "slskd.melotic.dev"
         parentRefs:
           - name: envoy-internal
             namespace: network
@@ -73,7 +73,7 @@ spec:
         existingClaim: slskd
       data:
         type: nfs
-        server: construct.${SECRET_DOMAIN}
+        server: construct.melotic.dev
         path: /var/nfs/shared/data
         globalMounts:
           - path: /data
