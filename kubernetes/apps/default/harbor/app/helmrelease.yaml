@@ -48,6 +48,8 @@ spec:
       persistentVolumeClaim:
         registry:
           storageClass: nfs-construct
+        trivy:
+          size: 10Gi
     existingSecretAdminPassword: harbor
     existingSecretSecretKey: harbor
     metrics:
