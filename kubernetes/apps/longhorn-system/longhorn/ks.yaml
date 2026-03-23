@@ -26,6 +26,9 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/longhorn-system/longhorn/app
   postBuild:
+    substitute:
+      AUTH_POLICY_NAME: longhorn-auth
+      AUTH_HTTPROUTE: longhorn-httproute
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
