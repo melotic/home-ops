@@ -36,8 +36,7 @@ spec:
 
     persistence:
       enabled: true
-      size: 25Gi
-      storageClass: longhorn
+      existingClaim: forejo
 
     deployment:
       env:
