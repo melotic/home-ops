@@ -95,7 +95,7 @@ spec:
           tika:
             image:
               repository: apache/tika
-              tag: 3.2.3.0
+              tag: 3.3.0.0
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
