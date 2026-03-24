@@ -37,6 +37,7 @@ spec:
     persistence:
       enabled: true
       existingClaim: forejo
+      storageClass: longhorn
 
     deployment:
       env:
