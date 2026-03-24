@@ -1,0 +1,19 @@
+---
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: azure-blob-store
+spec:
+  configuration:
+    destinationPath: "https://homeopsbackup.blob.core.windows.net/cnpg-backup/"
+    azureCredentials:
+      storageAccount:
+        name: cnpg-backup-azure-creds
+        key: AZURE_STORAGE_ACCOUNT
+      storageSasToken:
+        name: cnpg-backup-azure-creds
+        key: AZURE_STORAGE_SAS_TOKEN
+    wal:
+      compression: zstd
+    data:
+      compression: snappy
