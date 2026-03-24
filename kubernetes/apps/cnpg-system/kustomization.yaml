@@ -7,4 +7,5 @@ components:
   - ../../components/alerts
   - ../../components/common
 resources:
+  - ./barman-cloud-plugin/ks.yaml
   - ./cnpg/ks.yaml

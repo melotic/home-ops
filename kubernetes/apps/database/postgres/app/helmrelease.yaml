@@ -29,6 +29,23 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Cluster
+              name: postgres-cluster
+            patch: |
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: postgres-cluster
+              spec:
+                plugins:
+                  - name: barman-cloud.cloudnative-pg.io
+                    isWALArchiver: true
+                    parameters:
+                      barmanObjectName: azure-blob-store
   values:
     type: postgresql
     mode: recovery
