@@ -1,14 +1,18 @@
 use_default_settings: true
+
 general:
   instance_name: "melotic"
+
 ui:
-  center_alignment: true
+  center_alignment: false
   hotkeys: vim
   query_in_title: false
   results_on_new_tab: true
+  search_on_category_select: true
   theme_args:
-    simple_style: black
+    simple_style: auto
   url_formatting: full
+
 categories_as_tabs:
   general:
   it:
@@ -17,48 +21,79 @@ categories_as_tabs:
   images:
   videos:
   files:
+
 server:
   limiter: false
   public_instance: false
   image_proxy: true
   method: "POST"
+
 valkey:
   url: "valkey://dragonfly.database.svc.cluster.local:6379/8"
+
 search:
   autocomplete: "duckduckgo"
   safe_search: 0
   default_lang: "en"
+  doi_resolver: "oadoi.org"
   formats:
     - html
     - json
+  # Defaults are 86400s (1 day) for access denied/CAPTCHA which is way too aggressive.
+  suspended_times:
+    SearxEngineAccessDenied: 60
+    SearxEngineCaptcha: 120
+    SearxEngineTooManyRequests: 30
+    cf_SearxEngineCaptcha: 1296000
+    cf_SearxEngineAccessDenied: 86400
+    recaptcha_SearxEngineCaptcha: 604800
+
 outgoing:
   request_timeout: 5.0
   max_request_timeout: 15.0
   enable_http2: true
+
 engines:
-  # Bing as primary
+  - name: brave
+    disabled: false
+
   - name: bing
     disabled: false
-    weight: 1.5
+    weight: 1.0
   - name: bing images
     disabled: false
-    weight: 1.5
+    weight: 1.0
   - name: bing news
     disabled: false
-    weight: 1.5
+    weight: 1.0
   - name: bing videos
     disabled: false
+    weight: 1.0
+
+  - name: startpage
+    disabled: false
     weight: 1.5
-  # De-prioritize Google (still useful, just not primary)
-  - name: google
+
+  - name: duckduckgo
+    disabled: false
+    weight: 1.0
+
+  # fallback
+  - name: qwant
+    disabled: false
     weight: 0.8
-  # Security research & academic
+
+  # always blocked
+  - name: google
+    disabled: true
+
   - name: arxiv
     disabled: false
   - name: github
     disabled: false
   - name: gitlab
     disabled: false
+
   # Developer Q&A
   - name: stackoverflow
     disabled: false
@@ -66,6 +101,7 @@ engines:
     disabled: false
   - name: askubuntu
     disabled: false
+
   # Package indexes
   - name: crates.io
     disabled: false
@@ -73,17 +109,28 @@ engines:
     disabled: false
   - name: npm
     disabled: false
+  - name: lib.rs
+    disabled: false
+    categories: it
+
+  # Docs
+  - name: microsoft learn
+    disabled: false
+    categories: it
+
   # Linux documentation
   - name: arch linux wiki
     disabled: false
   - name: gentoo
     disabled: false
+
   # Security/tech discussion
   - name: hackernews
     disabled: false
   - name: lobste.rs
     disabled: false
-  # Noise reduction
+
+  # who cares
   - name: pinterest
     disabled: true
   - name: 9gag
