@@ -55,6 +55,15 @@
       ignoreTests: true,
     },
     {
+      description: "Auto-merge Container Patch Updates",
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["patch"],
+      minimumReleaseAge: "3 days",
+      ignoreTests: true,
+    },
+    {
       description: "Auto-merge Mise Tools",
       matchManagers: ["mise"],
       automerge: true,
