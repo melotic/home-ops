@@ -36,7 +36,8 @@ spec:
 
     persistence:
       enabled: true
-      existingClaim: forejo
+      create: false
+      claimName: forejo
 
     deployment:
       env:
