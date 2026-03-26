@@ -75,6 +75,15 @@ spec:
         ports:
           http:
             port: *port
+      soulseek:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 10.60.80.6
+        externalTrafficPolicy: Local
+        ports:
+          soulseek-tcp:
+            port: ${SLSKD_SLSK_LISTEN_PORT}
+            protocol: TCP
     route:
       app:
         hostnames:
@@ -83,6 +92,10 @@ spec:
           - name: envoy-internal
             namespace: network
             sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
     persistence:
       config:
         existingClaim: slskd
