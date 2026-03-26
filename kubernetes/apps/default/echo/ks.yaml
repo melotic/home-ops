@@ -15,6 +15,10 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kubernetes/apps/default/echo/app
+  postBuild:
+    substitute:
+      AUTH_POLICY_NAME: echo-auth
+      AUTH_HTTPROUTE: echo
   prune: true
   retryInterval: 2m
   sourceRef:
