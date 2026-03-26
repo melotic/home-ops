@@ -21,6 +21,10 @@ spec:
   postBuild:
     substitute:
       APP: multi-scrobbler
+    substituteFrom:
+      - name: multi-scrobbler-secret
+        kind: Secret
+        optional: true
   prune: true
   retryInterval: 2m
   sourceRef:
