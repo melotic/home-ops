@@ -9,6 +9,6 @@ resources:
 configMapGenerator:
   - name: multi-scrobbler-config
     files:
-      - config.json
+      - ./resources/config.json
     options:
       disableNameSuffixHash: true

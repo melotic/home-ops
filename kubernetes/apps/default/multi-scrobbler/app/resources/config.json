@@ -4,7 +4,7 @@
       "type": "plex",
       "name": "plex",
       "data": {
-        "url": "https://plex.melotic.dev:32400",
+        "url": "http://plex.default.svc.cluster.local:32400",
         "token": "[[PLEX_TOKEN]]"
       }
     }
@@ -24,7 +24,7 @@
       "data": {
         "apiKey": "[[LASTFM_API_KEY]]",
         "secret": "[[LASTFM_SECRET]]",
-        "redirectUri": "http://localhost:9078/lastfm/callback"
+        "redirectUri": "http://multi-scrobbler.default.svc.cluster.local:9078/lastfm/callback"
       }
     }
   ]
