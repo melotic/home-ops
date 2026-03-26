@@ -13,12 +13,34 @@ spec:
             description:
               The actual space used by Longhorn volume {{$labels.volume}} on {{$labels.node}} is at {{$value}}% capacity for
               more than 5 minutes.
-            summary: The actual used space of Longhorn volume is over 90% of the capacity.
-          expr: (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 90
+            summary: The actual used space of Longhorn volume is over 70% of the capacity.
+          expr: (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 70
           for: 5m
           labels:
             issue: The actual used space of Longhorn volume {{$labels.volume}} on {{$labels.node}} is high.
             severity: warning
+        - alert: LonghornVolumeActualSpaceUsedApproachingCritical
+          annotations:
+            description:
+              The actual space used by Longhorn volume {{$labels.volume}} on {{$labels.node}} is at {{$value}}% capacity for
+              more than 5 minutes and is approaching critical levels.
+            summary: The actual used space of Longhorn volume is over 90% of the capacity and approaching critical.
+          expr: (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 90
+          for: 5m
+          labels:
+            issue: The actual used space of Longhorn volume {{$labels.volume}} on {{$labels.node}} is approaching critical.
+            severity: warning
+        - alert: LonghornVolumeActualSpaceUsedCritical
+          annotations:
+            description:
+              The actual space used by Longhorn volume {{$labels.volume}} on {{$labels.node}} is at {{$value}}% capacity for
+              more than 2 minutes. Immediate action is required to prevent data loss.
+            summary: The actual used space of Longhorn volume is over 95% of the capacity.
+          expr: (longhorn_volume_actual_size_bytes / longhorn_volume_capacity_bytes) * 100 > 95
+          for: 2m
+          labels:
+            issue: The actual used space of Longhorn volume {{$labels.volume}} on {{$labels.node}} is critically high.
+            severity: critical
         - alert: LonghornVolumeStatusCritical
           annotations:
             description:
