@@ -14,6 +14,9 @@ spec:
   postBuild:
     substitute:
       APP: beets
+    substituteFrom:
+      - name: beets-secret
+        kind: Secret
   prune: true
   retryInterval: 2m
   sourceRef:

@@ -22,7 +22,7 @@ data:
       auto: yes
 
     acoustid:
-      apikey: REPLACE_WITH_ACOUSTID_API_KEY
+      apikey: ${ACOUSTID_API_KEY}
 
     fetchart:
       auto: yes
