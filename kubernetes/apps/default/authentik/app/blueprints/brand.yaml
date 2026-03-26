@@ -118,17 +118,3 @@ entries:
         .pf-c-select.pf-m-align-right {
           display: none !important;
         }
-
-        /* Admin sidebar */
-        .pf-c-page__sidebar {
-          --pf-c-page__sidebar--BackgroundColor: #18181b;
-        }
-
-        .pf-c-nav__link {
-          --pf-c-nav__link--Color: #9b9c9d;
-          --pf-c-nav__link--hover--Color: #dadadb;
-        }
-
-        .pf-c-nav__link.pf-m-current {
-          --pf-c-nav__link--m-current--Color: #38bdf8;
-        }
