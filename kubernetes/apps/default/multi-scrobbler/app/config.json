@@ -1,0 +1,31 @@
+{
+  "sources": [
+    {
+      "type": "plex",
+      "name": "plex",
+      "data": {
+        "url": "https://plex.melotic.dev:32400",
+        "token": "[[PLEX_TOKEN]]"
+      }
+    }
+  ],
+  "clients": [
+    {
+      "type": "listenbrainz",
+      "name": "listenbrainz",
+      "data": {
+        "token": "[[LZ_TOKEN]]",
+        "username": "[[LZ_USER]]"
+      }
+    },
+    {
+      "type": "lastfm",
+      "name": "lastfm",
+      "data": {
+        "apiKey": "[[LASTFM_API_KEY]]",
+        "secret": "[[LASTFM_SECRET]]",
+        "redirectUri": "http://localhost:9078/lastfm/callback"
+      }
+    }
+  ]
+}
