@@ -30,8 +30,8 @@ entries:
       domain: sso.melotic.dev
       default: false
       branding_title: melotic
-      branding_logo: https://melotic.xyz/apple-touch-icon.png
-      branding_favicon: https://melotic.xyz/favicon.ico
+      branding_logo: ""
+      branding_favicon: ""
       flow_authentication: !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
       flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
       flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
@@ -112,6 +112,11 @@ entries:
         .pf-c-login__header,
         .pf-c-login__footer {
           color: #9b9c9d;
+        }
+
+        /* Hide broken logo — rely on branding_title text */
+        .pf-c-brand {
+          display: none !important;
         }
 
         /* Hide locale selector — single-user homelab */
