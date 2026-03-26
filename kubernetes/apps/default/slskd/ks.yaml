@@ -28,6 +28,10 @@ spec:
       VOLSYNC_CAPACITY: 2Gi
       AUTH_POLICY_NAME: slskd-auth
       AUTH_HTTPROUTE: slskd
+      SLSKD_SLSK_LISTEN_PORT: "50300"
+    substituteFrom:
+      - kind: Secret
+        name: slskd-secret
   prune: true
   retryInterval: 2m
   sourceRef:
