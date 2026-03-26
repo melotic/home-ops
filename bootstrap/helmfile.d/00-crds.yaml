@@ -24,10 +24,10 @@ releases:
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 2.2.0
 
-  - name: gateway-api-crds
+  - name: gateway-api
     namespace: kube-system
-    chart: oci://ghcr.io/wiremind/wiremind-helm-charts/gateway-api-crds
-    version: 1.4.0
+    chart: oci://ghcr.io/kubernetes-sigs/gateway-api/gateway-api
+    version: 1.4.1
 
   - name: onepassword
     namespace: external-secrets
