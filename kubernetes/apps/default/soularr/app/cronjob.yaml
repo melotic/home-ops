@@ -11,7 +11,7 @@ spec:
   jobTemplate:
     spec:
       activeDeadlineSeconds: 1800
-      backoffLimit: 1
+      backoffLimit: 3
       ttlSecondsAfterFinished: 86400
       template:
         spec:
@@ -22,6 +22,22 @@ spec:
             runAsUser: 977
             runAsGroup: 988
             fsGroup: 988
+          initContainers:
+            - name: wait-for-slskd
+              image: busybox:1.37.0
+              command:
+                - sh
+                - -c
+                - |
+                  until wget -q --spider --timeout=5 http://slskd.default.svc.cluster.local:5030/api/v0/application; do
+                    echo "Waiting for slskd to be ready..."
+                    sleep 5
+                  done
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
           containers:
             - name: soularr
               image: ghcr.io/mrusse/soularr:1.1.0
