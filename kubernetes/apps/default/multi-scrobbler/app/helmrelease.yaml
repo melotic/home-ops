@@ -85,5 +85,9 @@ spec:
           - path: /config/config.json
             subPath: config.json
             readOnly: true
+      run:
+        type: emptyDir
+        globalMounts:
+          - path: /run
       tmp:
         type: emptyDir
