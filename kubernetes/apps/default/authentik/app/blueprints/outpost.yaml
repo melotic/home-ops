@@ -16,3 +16,4 @@ entries:
         - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-logs]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, slskd]]
+        - !Find [authentik_providers_proxy.proxyprovider, [name, echo]]

@@ -1,0 +1,27 @@
+---
+version: 1
+metadata:
+  name: echo Proxy Provider and Application
+context:
+  authorization_flow: &authorization_flow !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+  invalidation_flow: &invalidation_flow !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+entries:
+  - model: authentik_providers_proxy.proxyprovider
+    identifiers:
+      name: echo
+    attrs:
+      name: echo
+      authorization_flow: *authorization_flow
+      invalidation_flow: *invalidation_flow
+      mode: forward_single
+      external_host: https://echo.melotic.dev
+  - model: authentik_core.application
+    identifiers:
+      slug: echo
+    attrs:
+      name: echo
+      slug: echo
+      provider: !Find [authentik_providers_proxy.proxyprovider, [name, echo]]
+      policy_engine_mode: any
+      meta_description: HTTP echo service
+      open_in_new_tab: true
