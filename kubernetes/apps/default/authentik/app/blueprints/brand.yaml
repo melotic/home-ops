@@ -1,0 +1,134 @@
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: melotic Brand
+  labels:
+    blueprints.goauthentik.io/description: "Dark-themed branding for sso.melotic.dev"
+entries:
+  # Apply auth flow blueprint first so the flow exists for the !Find below
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: melotic Authentication Flow
+      required: true
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - Invalidation flow
+      required: false
+  - model: authentik_blueprints.metaapplyblueprint
+    attrs:
+      identifiers:
+        name: Default - User settings flow
+      required: false
+
+  - model: authentik_brands.brand
+    identifiers:
+      domain: sso.melotic.dev
+    state: present
+    attrs:
+      domain: sso.melotic.dev
+      default: false
+      branding_title: melotic
+      branding_logo: https://melotic.xyz/apple-touch-icon.png
+      branding_favicon: https://melotic.xyz/favicon.ico
+      flow_authentication: !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
+      flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+      flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+      attributes:
+        settings:
+          theme:
+            base: dark
+      branding_custom_css: |
+        /* melotic brand — dark theme pulled from melotic.xyz
+         *
+         * Palette:
+         *   bg:      #1d1e20  (blog --theme)
+         *   card:    #2e2e33  (blog --entry)
+         *   border:  #333333  (blog --border)
+         *   text:    #dadadb  (blog --primary)
+         *   muted:   #9b9c9d  (blog --secondary)
+         *   accent:  #38bdf8  (sky-400, complements the gray palette)
+         */
+
+        :root {
+          color-scheme: dark;
+
+          /* PatternFly global overrides */
+          --pf-global--BackgroundColor--100: #1d1e20;
+          --pf-global--BackgroundColor--200: #18181b;
+          --pf-global--BackgroundColor--dark-100: #1d1e20;
+          --pf-global--BackgroundColor--dark-200: #18181b;
+          --pf-global--Color--100: #dadadb;
+          --pf-global--Color--200: #9b9c9d;
+          --pf-global--primary-color--100: #38bdf8;
+          --pf-global--primary-color--200: #0ea5e9;
+          --pf-global--link--Color: #38bdf8;
+          --pf-global--link--Color--hover: #7dd3fc;
+          --pf-global--link--Color--visited: #38bdf8;
+        }
+
+        /* Kill the default background image, go solid */
+        .pf-c-background-image {
+          --pf-c-background-image--BackgroundImage: none !important;
+          background: #1d1e20 !important;
+        }
+
+        /* Login card */
+        .pf-c-login__main {
+          background-color: #2e2e33 !important;
+          border: 1px solid #333;
+          border-radius: 12px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .pf-c-login__main-header {
+          padding-bottom: 0;
+        }
+
+        /* Primary action button */
+        .pf-c-button.pf-m-primary {
+          --pf-c-button--m-primary--BackgroundColor: #38bdf8;
+          --pf-c-button--m-primary--hover--BackgroundColor: #0ea5e9;
+          --pf-c-button--m-primary--active--BackgroundColor: #0284c7;
+          --pf-c-button--m-primary--Color: #0f172a;
+          border-radius: 6px;
+          font-weight: 600;
+        }
+
+        /* Form inputs */
+        .pf-c-form-control {
+          --pf-c-form-control--BackgroundColor: #1d1e20;
+          --pf-c-form-control--BorderBottomColor: #414244;
+          --pf-c-form-control--Color: #dadadb;
+          border-radius: 6px;
+        }
+
+        .pf-c-form-control:focus {
+          --pf-c-form-control--focus--BorderBottomColor: #38bdf8;
+        }
+
+        /* Tone down the header/footer on login page */
+        .pf-c-login__header,
+        .pf-c-login__footer {
+          color: #9b9c9d;
+        }
+
+        /* Hide locale selector — single-user homelab */
+        .pf-c-select.pf-m-align-right {
+          display: none !important;
+        }
+
+        /* Admin sidebar */
+        .pf-c-page__sidebar {
+          --pf-c-page__sidebar--BackgroundColor: #18181b;
+        }
+
+        .pf-c-nav__link {
+          --pf-c-nav__link--Color: #9b9c9d;
+          --pf-c-nav__link--hover--Color: #dadadb;
+        }
+
+        .pf-c-nav__link.pf-m-current {
+          --pf-c-nav__link--m-current--Color: #38bdf8;
+        }
