@@ -24,7 +24,7 @@ spec:
             fsGroup: 988
           containers:
             - name: beets
-              image: lscr.io/linuxserver/beets:2.2.0
+              image: lscr.io/linuxserver/beets:2.7.1
               command:
                 - /bin/bash
                 - -c
