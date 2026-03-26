@@ -4,6 +4,7 @@
     "config:recommended",
     "abandonments:recommended",
     "docker:enableMajor",
+    "docker:pinDigests",
     "helpers:pinGitHubActionDigests",
     "security:minimumReleaseAgeNpm",
     ":automergeBranch",
