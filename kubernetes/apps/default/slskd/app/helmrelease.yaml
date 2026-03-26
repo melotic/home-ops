@@ -23,6 +23,7 @@ spec:
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
               TZ: Etc/UTC
               SLSKD_HTTP_PORT: &port 5030
+              SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
               SLSKD_DOWNLOADS_DIR: /data/soulseek/complete
               SLSKD_INCOMPLETE_DIR: /data/soulseek/incomplete
               SLSKD_NO_AUTH: "true"
@@ -82,7 +83,7 @@ spec:
         externalTrafficPolicy: Local
         ports:
           soulseek-tcp:
-            port: ${SLSKD_SLSK_LISTEN_PORT}
+            port: *soulseekPort
             protocol: TCP
     route:
       app:
