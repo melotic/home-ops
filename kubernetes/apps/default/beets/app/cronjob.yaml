@@ -31,9 +31,9 @@ spec:
                 - |
                   set -e
                   export PATH="/lsiopy/bin:$PATH"
-                  mkdir -p /data/beets
+                  mkdir -p /data/media/beets
                   echo "[$(date)] Starting beets incremental import..."
-                  beet -c /config/config.yaml import -q /data/music
+                  beet -c /config/config.yaml import -q /data/media/music
                   echo "[$(date)] Beets import complete."
               securityContext:
                 allowPrivilegeEscalation: false
@@ -61,6 +61,6 @@ spec:
             - name: nfs-data
               nfs:
                 server: construct.melotic.dev
-                path: /var/nfs/shared/k8s
+                path: /var/nfs/shared/data
             - name: tmp
               emptyDir: {}

@@ -5,8 +5,8 @@ metadata:
   name: beets-config
 data:
   config.yaml: |
-    directory: /data/music
-    library: /data/beets/library.db
+    directory: /data/media/music
+    library: /data/media/beets/library.db
 
     import:
       incremental: yes
@@ -14,7 +14,7 @@ data:
       write: yes
       copy: no
       move: no
-      log: /data/beets/import.log
+      log: /data/media/beets/import.log
 
     plugins: chroma fetchart embedart lastgenre
 
