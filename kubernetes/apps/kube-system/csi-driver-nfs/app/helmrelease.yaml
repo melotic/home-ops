@@ -37,6 +37,6 @@ spec:
         - hard
         - timeo=600
         - retrans=2
-        - nconnect=4
+        - nconnect=8
       reclaimPolicy: Delete
       volumeBindingMode: Immediate
