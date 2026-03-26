@@ -19,7 +19,13 @@ spec:
             image:
               repository: busybox
               tag: latest
-            command: ["sh", "-c", "chown 1000:1000 /run"]
+            command:
+              - sh
+              - -c
+              - |
+                printf '#!/bin/sh\nexec true\n' > /lsiown-bin/lsiown
+                chmod +x /lsiown-bin/lsiown
+                chown 1000:1000 /run
             securityContext:
               runAsUser: 0
               runAsNonRoot: false
@@ -100,5 +106,14 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /run
+      lsiown-bin:
+        type: emptyDir
+        advancedMounts:
+          multi-scrobbler:
+            fix-run:
+              - path: /lsiown-bin
+            app:
+              - path: /usr/bin/lsiown
+                subPath: lsiown
       tmp:
         type: emptyDir
