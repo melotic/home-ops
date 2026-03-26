@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beets-config
+data:
+  config.yaml: |
+    directory: /data/music
+    library: /data/beets/library.db
+
+    import:
+      incremental: yes
+      quiet: yes
+      write: yes
+      copy: no
+      move: no
+      log: /data/beets/import.log
+
+    plugins: chroma fetchart embedart lastgenre
+
+    chroma:
+      auto: yes
+
+    acoustid:
+      apikey: REPLACE_WITH_ACOUSTID_API_KEY
+
+    fetchart:
+      auto: yes
+      minwidth: 500
+      maxwidth: 1200
+      sources: coverartarchive itunes amazon albumart wikipedia
+
+    embedart:
+      auto: yes
+      ifempty: yes
+      maxwidth: 500
+      remove_art_file: no
+
+    lastgenre:
+      auto: yes
+      count: 5
+      canonical: yes
+      prefer_specific: yes
+      source: album
+      min_weight: 10
