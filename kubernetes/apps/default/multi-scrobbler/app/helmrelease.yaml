@@ -14,26 +14,19 @@ spec:
       multi-scrobbler:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          fix-run:
-            image:
-              repository: busybox
-              tag: latest
-            command: ["sh", "-c", "chown 1000:1000 /run"]
-            securityContext:
-              runAsUser: 0
-              runAsNonRoot: false
         containers:
           app:
             image:
               repository: ghcr.io/foxxmd/multi-scrobbler
               tag: 0.12.0
+            command: ["/usr/bin/node"]
+            args: ["/app/node_modules/.bin/tsx", "src/backend/index.ts"]
             env:
               TZ: Etc/UTC
+              NODE_ENV: production
+              IS_DOCKER: "true"
               CONFIG_DIR: /config
               BASE_URL: "http://localhost:9078"
-              LSIO_READ_ONLY_FS: "1"
-              LSIO_NON_ROOT_USER: "1"
             envFrom:
               - secretRef:
                   name: multi-scrobbler-secret
@@ -96,9 +89,7 @@ spec:
           - path: /config/config.json
             subPath: config.json
             readOnly: true
-      run:
-        type: emptyDir
-        globalMounts:
-          - path: /run
       tmp:
         type: emptyDir
+        globalMounts:
+          - path: /tmp
