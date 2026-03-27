@@ -6,9 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./ocirepository.yaml
-configMapGenerator:
-  - name: multi-scrobbler-config
-    files:
-      - ./resources/config.json
-    options:
-      disableNameSuffixHash: true
