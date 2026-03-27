@@ -6,17 +6,19 @@ metadata:
 data:
   config.yaml: |
     directory: /data/media/music
-    library: /data/media/beets/library.db
+    library: /config/library.db
 
     import:
       incremental: yes
+      incremental_skip_later: yes
       quiet: yes
+      quiet_fallback: skip
       write: yes
       copy: no
       move: no
-      log: /data/media/beets/import.log
+      log: /config/import.log
 
-    plugins: chroma fetchart embedart lastgenre
+    plugins: chroma fetchart embedart lastgenre plexupdate
 
     chroma:
       auto: yes
@@ -43,3 +45,7 @@ data:
       prefer_specific: yes
       source: album
       min_weight: 10
+
+    plex:
+      host: plex.default.svc.cluster.local
+      token: ${PLEX_TOKEN}
