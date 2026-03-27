@@ -9,7 +9,13 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+    - name: volsync
+      namespace: volsync-system
     - name: onepassword
       namespace: external-secrets
   interval: 1h
@@ -17,6 +23,7 @@ spec:
   postBuild:
     substitute:
       APP: beets
+      VOLSYNC_CAPACITY: 1Gi
     substituteFrom:
       - name: beets-secret
         kind: Secret
