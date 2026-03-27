@@ -22,11 +22,13 @@ spec:
             command: ["/usr/bin/node"]
             args: ["/app/node_modules/.bin/tsx", "src/backend/index.ts"]
             env:
-              TZ: Etc/UTC
-              NODE_ENV: production
+              BASE_URL: https://scrobbler.melotic.dev
               IS_DOCKER: "true"
-              BASE_URL: "http://localhost:9078"
+              MB_PRESETS: default,sensible,native
+              NODE_ENV: production
+              PLEX_TRANSFORMS: musicbrainz
               PLEX_URL: "http://plex.default.svc.cluster.local:32400"
+              TZ: Etc/UTC
             envFrom:
               - secretRef:
                   name: multi-scrobbler-secret
@@ -77,6 +79,14 @@ spec:
         ports:
           http:
             port: *port
+    route:
+      app:
+        hostnames:
+          - scrobbler.melotic.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
     persistence:
       tmp:
         type: emptyDir
