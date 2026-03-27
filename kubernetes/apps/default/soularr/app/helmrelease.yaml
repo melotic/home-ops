@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: soularr
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: soularr
+  interval: 1h
+  values:
+    controllers:
+      soularr:
+        type: cronjob
+        cronjob:
+          schedule: "*/5 * * * *"
+          backoffLimit: 3
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 3
+          failedJobsHistory: 3
+          activeDeadlineSeconds: 1800
+          ttlSecondsAfterFinished: 86400
+        initContainers:
+          wait-for-slskd:
+            image:
+              repository: busybox
+              tag: 1.37.0
+            command:
+              - sh
+              - -c
+              - |
+                until wget -q --spider --timeout=5 http://slskd.default.svc.cluster.local:5030/api/v0/application; do
+                  echo "Waiting for slskd to be ready..."
+                  sleep 5
+                done
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+        containers:
+          app:
+            image:
+              repository: ghcr.io/mrusse/soularr
+              tag: 1.1.0
+            command:
+              - python
+              - -u
+              - /app/soularr.py
+              - --config-dir
+              - /config
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+        pod:
+          restartPolicy: Never
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 977
+        runAsGroup: 988
+        fsGroup: 988
+    persistence:
+      config:
+        type: secret
+        name: soularr-secret
+        advancedMounts:
+          soularr:
+            app:
+              - path: /config/config.ini
+                subPath: config.ini
+                readOnly: true
+      data:
+        type: nfs
+        server: construct.melotic.dev
+        path: /var/nfs/shared/data
+        advancedMounts:
+          soularr:
+            app:
+              - path: /data
+      tmp:
+        type: emptyDir
+        advancedMounts:
+          soularr:
+            app:
+              - path: /tmp
