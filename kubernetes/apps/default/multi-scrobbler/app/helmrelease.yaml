@@ -24,6 +24,7 @@ spec:
             env:
               BASE_URL: https://scrobbler.melotic.dev
               IS_DOCKER: "true"
+              MB_CONTACT: "hi@melotic.xyz"
               MB_PRESETS: default,sensible,native
               NODE_ENV: production
               PLEX_TRANSFORMS: musicbrainz
