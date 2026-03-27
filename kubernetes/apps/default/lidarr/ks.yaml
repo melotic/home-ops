@@ -25,7 +25,7 @@ spec:
   postBuild:
     substitute:
       APP: lidarr
-      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_CAPACITY: 16Gi
   prune: true
   retryInterval: 2m
   sourceRef:
