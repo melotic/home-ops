@@ -22,6 +22,24 @@ spec:
             runAsUser: 1000
             runAsGroup: 1000
             fsGroup: 988
+          initContainers:
+            - name: copy-config
+              image: busybox:1.37.0
+              command:
+                - sh
+                - -c
+                - cp /config-source/config.yaml /config/config.yaml
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: config-source
+                  mountPath: /config-source
+                  readOnly: true
+                - name: config-dir
+                  mountPath: /config
           containers:
             - name: beets
               image: lscr.io/linuxserver/beets:2.7.1
@@ -40,10 +58,8 @@ spec:
                 capabilities:
                   drop: ["ALL"]
               volumeMounts:
-                - name: config
-                  mountPath: /config/config.yaml
-                  subPath: config.yaml
-                  readOnly: true
+                - name: config-dir
+                  mountPath: /config
                 - name: nfs-data
                   mountPath: /data
                 - name: tmp
@@ -55,9 +71,11 @@ spec:
                 limits:
                   memory: 1Gi
           volumes:
-            - name: config
+            - name: config-source
               configMap:
                 name: beets-config
+            - name: config-dir
+              emptyDir: {}
             - name: nfs-data
               nfs:
                 server: construct.melotic.dev
