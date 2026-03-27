@@ -25,8 +25,8 @@ spec:
               TZ: Etc/UTC
               NODE_ENV: production
               IS_DOCKER: "true"
-              CONFIG_DIR: /config
               BASE_URL: "http://localhost:9078"
+              PLEX_URL: "http://plex.default.svc.cluster.local:32400"
             envFrom:
               - secretRef:
                   name: multi-scrobbler-secret
@@ -78,17 +78,6 @@ spec:
           http:
             port: *port
     persistence:
-      config:
-        type: emptyDir
-        globalMounts:
-          - path: /config
-      config-file:
-        type: configMap
-        name: multi-scrobbler-config
-        globalMounts:
-          - path: /config/config.json
-            subPath: config.json
-            readOnly: true
       tmp:
         type: emptyDir
         globalMounts:
