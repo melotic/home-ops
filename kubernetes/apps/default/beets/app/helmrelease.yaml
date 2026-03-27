@@ -41,7 +41,6 @@ spec:
               - |
                 set -e
                 export PATH="/lsiopy/bin:$PATH"
-                mkdir -p /data/media/beets
                 echo "[$(date)] Starting beets incremental import..."
                 beet -c /config/config.yaml import -q /data/media/music
                 echo "[$(date)] Beets import complete."
