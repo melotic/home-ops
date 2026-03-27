@@ -88,6 +88,10 @@ spec:
             namespace: network
             sectionName: https
     persistence:
+      config:
+        existingClaim: multi-scrobbler
+        globalMounts:
+          - path: /config
       tmp:
         type: emptyDir
         globalMounts:

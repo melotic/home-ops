@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: beets
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: beets
+  interval: 1h
+  values:
+    controllers:
+      beets:
+        type: cronjob
+        cronjob:
+          schedule: "0 */6 * * *"
+          concurrencyPolicy: Forbid
+          successfulJobsHistoryLimit: 3
+          failedJobsHistoryLimit: 3
+          backoffLimit: 1
+          activeDeadlineSeconds: 7200
+          ttlSecondsAfterFinished: 86400
+        pod:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 988
+            fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          copy-config:
+            image:
+              repository: busybox
+              tag: "1.37.0"
+            command: ["sh", "-c", "cp /config-source/config.yaml /config/config.yaml"]
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+        containers:
+          app:
+            image:
+              repository: lscr.io/linuxserver/beets
+              tag: 2.7.1
+            command:
+              - /bin/bash
+              - -c
+              - |
+                set -e
+                export PATH="/lsiopy/bin:$PATH"
+                mkdir -p /data/media/beets
+                echo "[$(date)] Starting beets incremental import..."
+                beet -c /config/config.yaml import -q /data/media/music
+                echo "[$(date)] Beets import complete."
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    persistence:
+      config:
+        existingClaim: beets
+        globalMounts:
+          - path: /config
+      config-source:
+        type: configMap
+        name: beets-config
+        advancedMounts:
+          beets:
+            copy-config:
+              - path: /config-source
+                readOnly: true
+      data:
+        type: nfs
+        server: construct.melotic.dev
+        path: /var/nfs/shared/data
+        globalMounts:
+          - path: /data
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
