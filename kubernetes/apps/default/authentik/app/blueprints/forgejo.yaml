@@ -14,9 +14,9 @@ entries:
   # OAuth2 Provider for Forgejo
   - model: authentik_providers_oauth2.oauth2provider
     identifiers:
-      name: forgejo
+      name: forejo
     attrs:
-      name: forgejo
+      name: forejo
       authorization_flow: *authorization_flow
       invalidation_flow: *invalidation_flow
       client_type: confidential
@@ -31,11 +31,11 @@ entries:
   # Application for Forgejo
   - model: authentik_core.application
     identifiers:
-      slug: forgejo
+      slug: forejo
     attrs:
       name: Forgejo
-      slug: forgejo
-      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, forgejo]]
+      slug: forejo
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, forejo]]
       policy_engine_mode: any
       meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/forgejo.svg
       meta_description: Self-hosted Git service
