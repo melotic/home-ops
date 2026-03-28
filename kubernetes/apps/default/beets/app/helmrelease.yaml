@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: lscr.io/linuxserver/beets
-              tag: 2.7.1
+              tag: 2.8.0
             command:
               - /bin/bash
               - -c
