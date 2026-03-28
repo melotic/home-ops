@@ -41,11 +41,3 @@ entries:
       meta_description: Container registry
       meta_publisher: Harbor
       open_in_new_tab: true
-
-  # Group for Harbor admins
-  - model: authentik_core.group
-    identifiers:
-      name: harbor-admins
-    attrs:
-      name: harbor-admins
-      is_superuser: false
