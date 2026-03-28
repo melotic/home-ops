@@ -14,7 +14,7 @@ spec:
     runner:
       config:
         existingSecret: forejo-runner-token
-        instance: "http://forejo-forgejo-http.default.svc.cluster.local:3000"
+        instance: "https://git.melotic.dev"
         name: home-ops-runner
         file:
           log:
