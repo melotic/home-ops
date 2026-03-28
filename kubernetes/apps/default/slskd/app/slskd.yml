@@ -25,7 +25,7 @@ global:
       megabytes: 50000
       failures: 1000
   download:
-    slots: 500
+    slots: 100
     speed_limit: 10000
 groups:
   default:
@@ -33,6 +33,7 @@ groups:
       priority: 500
       strategy: roundrobin
       slots: 10
+      speed_limit: 750
     limits:
       queued:
         files: 150
@@ -77,8 +78,8 @@ retention:
       cancelled: 5
     download:
       succeeded: 1440
-      errored: 20160
+      errored: 4320
       cancelled: 5
   files:
     complete: 20160
-    incomplete: 43200
+    incomplete: 10080
