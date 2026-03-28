@@ -12,7 +12,7 @@ configMapGenerator:
     files:
       - grafana.yaml=./blueprints/grafana.yaml
       - harbor.yaml=./blueprints/harbor.yaml
-      - forejo.yaml=./blueprints/forejo.yaml
+      - forgejo.yaml=./blueprints/forgejo.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
       - longhorn.yaml=./blueprints/longhorn.yaml
       - victoria-metrics.yaml=./blueprints/victoria-metrics.yaml

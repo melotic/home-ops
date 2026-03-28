@@ -41,19 +41,3 @@ entries:
       meta_description: Metrics and dashboards
       meta_publisher: Grafana Labs
       open_in_new_tab: true
-
-  # Group for Grafana admins
-  - model: authentik_core.group
-    identifiers:
-      name: grafana-admins
-    attrs:
-      name: grafana-admins
-      is_superuser: false
-
-  # Group for Grafana editors
-  - model: authentik_core.group
-    identifiers:
-      name: grafana-editors
-    attrs:
-      name: grafana-editors
-      is_superuser: false
