@@ -23,6 +23,6 @@ entries:
       slug: victoria-metrics
       provider: !Find [authentik_providers_proxy.proxyprovider, [name, victoria-metrics]]
       policy_engine_mode: any
-      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/victoria-metrics.svg
+      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/victoriametrics.svg
       meta_description: Time series database and monitoring
       open_in_new_tab: true
