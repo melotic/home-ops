@@ -120,6 +120,9 @@ spec:
           REQUIRE_SIGNIN_VIEW: true
           ENABLE_NOTIFY_MAIL: true
           REGISTER_EMAIL_CONFIRM: false
+        actions:
+          ENABLED: true
+          DEFAULT_ACTIONS_URL: github
         metrics:
           ENABLED: true
         webhook:
