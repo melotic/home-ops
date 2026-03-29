@@ -80,9 +80,12 @@ spec:
       downloads:
         type: nfs
         server: construct.melotic.dev
-        path: /var/nfs/shared/data/aurral-weekly-flow
-        globalMounts:
-          - path: /data/aurral-weekly-flow
+        path: /var/nfs/shared/data
+        advancedMounts:
+          aurral:
+            app:
+              - path: /data/aurral-weekly-flow
+                subPath: aurral-weekly-flow
       tmp:
         type: emptyDir
         globalMounts:
