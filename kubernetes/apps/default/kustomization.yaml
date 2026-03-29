@@ -17,6 +17,7 @@ resources:
   - ./home-assistant/ks.yaml
   - ./kopia-verify/ks.yaml
   - ./lidarr/ks.yaml
+  - ./listenbrainz-discovery/ks.yaml
   - ./multi-scrobbler/ks.yaml
   - ./nas-backup/ks.yaml
   - ./paperless-ngx/ks.yaml
