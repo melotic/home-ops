@@ -8,6 +8,7 @@ components:
   - ../../components/common
 resources:
   - ./atuin/ks.yaml
+  - ./aurral/ks.yaml
   - ./authentik/ks.yaml
   - ./beets/ks.yaml
   - ./echo/ks.yaml
