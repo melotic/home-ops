@@ -24,6 +24,7 @@ spec:
             env:
               BASE_URL: https://scrobbler.melotic.dev
               IS_DOCKER: "true"
+              LASTFM_REDIRECT_URI: https://scrobbler.melotic.dev/lastfm/callback
               MB_PRESETS: default,sensible,native
               NODE_ENV: production
               PLEX_TRANSFORMS: musicbrainz
