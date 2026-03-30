@@ -4,8 +4,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: multi-scrobbler
-  annotations:
-    fluxcd.io/force-sync: "2026-03-30"
 spec:
   chartRef:
     kind: OCIRepository
