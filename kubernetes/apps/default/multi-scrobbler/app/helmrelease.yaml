@@ -14,6 +14,16 @@ spec:
       multi-scrobbler:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          copy-app:
+            image:
+              repository: ghcr.io/foxxmd/multi-scrobbler
+              tag: 0.12.0
+            command: ["sh", "-c", "cp -a /app/. /mnt/app/"]
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
@@ -59,7 +69,7 @@ spec:
                   failureThreshold: 30
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
@@ -93,6 +103,14 @@ spec:
         existingClaim: multi-scrobbler
         globalMounts:
           - path: /config
+      app:
+        type: emptyDir
+        advancedMounts:
+          multi-scrobbler:
+            copy-app:
+              - path: /mnt/app
+            app:
+              - path: /app
       tmp:
         type: emptyDir
         globalMounts:
