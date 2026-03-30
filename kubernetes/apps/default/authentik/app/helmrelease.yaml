@@ -55,10 +55,15 @@ spec:
         - name: postgres-creds
           secret:
             secretName: postgres-cluster-app
+        - name: data
+          persistentVolumeClaim:
+            claimName: authentik-data
       volumeMounts: &volumeMounts
         - name: postgres-creds
           mountPath: /postgres-creds
           readOnly: true
+        - name: data
+          mountPath: /data
 
     worker:
       podAnnotations:
