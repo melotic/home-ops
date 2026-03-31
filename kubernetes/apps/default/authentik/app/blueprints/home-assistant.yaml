@@ -15,6 +15,10 @@ entries:
       invalidation_flow: *invalidation_flow
       mode: forward_single
       external_host: https://hass.melotic.dev
+      skip_path_regex: |
+        ^/api/.*
+        ^/auth/token
+        ^/local/.*
   - model: authentik_core.application
     identifiers:
       slug: home-assistant
