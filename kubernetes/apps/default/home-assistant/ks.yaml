@@ -20,6 +20,8 @@ spec:
       namespace: longhorn-system
     - name: volsync
       namespace: volsync-system
+    - name: authentik
+      namespace: default
   interval: 1h
   path: ./kubernetes/apps/default/home-assistant/app
   postBuild:
@@ -28,6 +30,8 @@ spec:
       VOLSYNC_CAPACITY: 8Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"
+      AUTH_POLICY_NAME: home-assistant-auth
+      AUTH_HTTPROUTE: home-assistant
   prune: true
   retryInterval: 2m
   sourceRef:
