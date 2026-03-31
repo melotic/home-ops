@@ -24,6 +24,13 @@ spec:
         user: file:///postgres-creds/username
         password: file:///postgres-creds/password
 
+    geoip:
+      enabled: true
+      existingSecret:
+        secretName: authentik-secret
+        accountId: MAXMIND_ACCOUNT_ID
+        licenseKey: MAXMIND_LICENSE_KEY
+
     blueprints:
       configMaps:
         - authentik-blueprints
