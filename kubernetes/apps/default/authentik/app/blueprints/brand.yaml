@@ -70,18 +70,23 @@ entries:
           --pf-global--link--Color--visited: #38bdf8;
         }
 
-        /* Kill the default background image completely */
-        .pf-c-background-image,
-        .pf-c-background-image::before {
+        /* Solid dark background — nuke the stock landscape */
+        .pf-c-background-image {
           --pf-c-background-image--BackgroundImage: none !important;
           --pf-c-background-image--BackgroundImage--sm: none !important;
           --pf-c-background-image--BackgroundImage--lg: none !important;
           --pf-c-background-image--BackgroundImage-2x: none !important;
-          --pf-c-background-image--BackgroundImage--sm-2x: none !important;
-          --pf-c-background-image--BackgroundImage--lg-2x: none !important;
           --pf-c-background-image--Filter: none !important;
           background-image: none !important;
           background: #1d1e20 !important;
+        }
+        .pf-c-background-image::before {
+          content: none !important;
+          display: none !important;
+        }
+        /* Authentik Lit shadow DOM variable */
+        :root, :host {
+          --ak-flow-background: none;
         }
 
         /* Login card */
@@ -93,7 +98,22 @@ entries:
         }
 
         .pf-c-login__main-header {
-          padding-bottom: 0;
+          padding: 2rem 2.5rem 0 !important;
+        }
+
+        .pf-c-login__main-body {
+          padding: 2rem 2.5rem !important;
+        }
+
+        .pf-c-login__main-footer {
+          padding: 0 2.5rem 2rem !important;
+        }
+
+        /* Logo — constrain Zion SVG */
+        .pf-c-brand {
+          content: "";
+          width: 140px;
+          height: 34px;
         }
 
         /* Primary action button */
