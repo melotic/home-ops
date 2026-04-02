@@ -6,6 +6,8 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./prometheusrule.yaml
+components:
+  - ../../../../components/authentik-proxy
 configMapGenerator:
   - name: gatus-configmap
     files:

@@ -15,6 +15,10 @@ spec:
       name: sops-age
   interval: 1h
   path: ./kubernetes/apps/monitoring/gatus/app
+  postBuild:
+    substitute:
+      AUTH_POLICY_NAME: gatus-auth
+      AUTH_HTTPROUTE: gatus
   prune: true
   retryInterval: 2m
   sourceRef:
