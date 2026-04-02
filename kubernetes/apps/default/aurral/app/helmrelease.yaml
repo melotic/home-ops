@@ -21,6 +21,7 @@ spec:
               tag: latest
             env:
               TZ: America/Chicago
+              NODE_OPTIONS: "--max-old-space-size=768"
               DOWNLOAD_FOLDER: /data/aurral-weekly-flow
               WEEKLY_FLOW_FOLDER: /app/backend/data/weekly-flow
               LIDARR_URL: http://lidarr.default.svc.cluster.local
