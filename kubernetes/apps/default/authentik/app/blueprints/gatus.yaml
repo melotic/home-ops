@@ -1,0 +1,27 @@
+---
+version: 1
+metadata:
+  name: gatus Proxy Provider and Application
+context:
+  authorization_flow: &authorization_flow !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+  invalidation_flow: &invalidation_flow !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
+entries:
+  - model: authentik_providers_proxy.proxyprovider
+    identifiers:
+      name: gatus
+    attrs:
+      name: gatus
+      authorization_flow: *authorization_flow
+      invalidation_flow: *invalidation_flow
+      mode: forward_single
+      external_host: https://gatus.melotic.dev
+  - model: authentik_core.application
+    identifiers:
+      slug: gatus
+    attrs:
+      name: gatus
+      slug: gatus
+      provider: !Find [authentik_providers_proxy.proxyprovider, [name, gatus]]
+      policy_engine_mode: any
+      meta_description: Uptime monitoring
+      open_in_new_tab: true

@@ -21,6 +21,7 @@ configMapGenerator:
       - alertmanager.yaml=./blueprints/alertmanager.yaml
       - slskd.yaml=./blueprints/slskd.yaml
       - echo.yaml=./blueprints/echo.yaml
+      - gatus.yaml=./blueprints/gatus.yaml
       - outpost.yaml=./blueprints/outpost.yaml
       - flow-login.yaml=./blueprints/flow-login.yaml
       - brand.yaml=./blueprints/brand.yaml
