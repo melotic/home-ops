@@ -22,6 +22,7 @@ spec:
             env:
               TZ: America/Chicago
               DOWNLOAD_FOLDER: /data/aurral-weekly-flow
+              WEEKLY_FLOW_FOLDER: /app/backend/data/weekly-flow
               LIDARR_URL: http://lidarr.default.svc.cluster.local
               MUSICBRAINZ_CONTACT: hi@melotic.xyz
             envFrom:
