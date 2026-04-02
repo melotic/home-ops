@@ -22,6 +22,7 @@ spec:
             env:
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
               TZ: Etc/UTC
+              SLSKD_APP_DIR: /config
               SLSKD_HTTP_PORT: &port 5030
               SLSKD_SLSK_LISTEN_PORT: &soulseekPort 50300
               SLSKD_DOWNLOADS_DIR: /data/soulseek/complete
@@ -107,7 +108,7 @@ spec:
         type: configMap
         name: slskd-config
         globalMounts:
-          - path: /app/slskd.yml
+          - path: /config/slskd.yml
             subPath: slskd.yml
             readOnly: true
       data:
