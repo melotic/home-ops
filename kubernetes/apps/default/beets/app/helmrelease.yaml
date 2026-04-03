@@ -14,7 +14,7 @@ spec:
       beets:
         type: cronjob
         cronjob:
-          schedule: "0 */6 * * *"
+          schedule: "0 3 * * *"
           concurrencyPolicy: Forbid
           successfulJobsHistory: 3
           failedJobsHistory: 3
@@ -41,8 +41,13 @@ spec:
               - |
                 set -e
                 export PATH="/lsiopy/bin:$PATH"
-                echo "[$(date)] Starting beets incremental import..."
-                beet -c /config/config.yaml import -q /data/media/music
+                echo "[$(date)] Starting beets import from inbox..."
+                mkdir -p /data/media/music-import
+                if [ -z "$(ls -A /data/media/music-import 2>/dev/null)" ]; then
+                  echo "[$(date)] Import inbox is empty, nothing to do."
+                  exit 0
+                fi
+                beet -c /config/config.yaml import -q /data/media/music-import
                 echo "[$(date)] Beets import complete."
             securityContext:
               allowPrivilegeEscalation: false

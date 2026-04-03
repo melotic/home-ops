@@ -15,7 +15,7 @@ data:
       quiet_fallback: skip
       write: yes
       copy: no
-      move: no
+      move: yes
       log: /config/import.log
 
     plugins: chroma fetchart embedart lastgenre plexupdate
