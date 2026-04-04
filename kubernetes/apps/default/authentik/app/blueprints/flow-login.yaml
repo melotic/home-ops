@@ -60,8 +60,8 @@ entries:
     identifiers:
       name: melotic-captcha-turnstile
     attrs:
-      public_key: !Env [TURNSTILE_SITE_KEY]
-      private_key: !Env [TURNSTILE_SECRET_KEY]
+      public_key: !Env TURNSTILE_SITE_KEY
+      private_key: !Env TURNSTILE_SECRET_KEY
       js_url: https://challenges.cloudflare.com/turnstile/v0/api.js
       api_url: https://challenges.cloudflare.com/turnstile/v0/siteverify
       interactive: true
