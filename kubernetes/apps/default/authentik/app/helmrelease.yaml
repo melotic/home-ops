@@ -12,36 +12,30 @@ spec:
   values:
     authentik:
       email:
+        from: noreply@melotic.dev
         host: smtp-relay.default.svc.cluster.local
         port: 587
-        use_tls: false
         use_ssl: false
-        from: noreply@melotic.dev
+        use_tls: false
       error_reporting:
         enabled: false
       postgresql:
         host: postgres-cluster-rw.database.svc.cluster.local
-        user: file:///postgres-creds/username
         password: file:///postgres-creds/password
-
-    geoip:
-      enabled: true
-      existingSecret:
-        secretName: authentik-secret
-        accountId: MAXMIND_ACCOUNT_ID
-        licenseKey: MAXMIND_LICENSE_KEY
-
+        user: file:///postgres-creds/username
     blueprints:
       configMaps:
         - authentik-blueprints
-
+    geoip:
+      enabled: true
+      existingSecret:
+        accountId: MAXMIND_ACCOUNT_ID
+        licenseKey: MAXMIND_LICENSE_KEY
+        secretName: authentik-secret
     prometheus:
       rules:
         enabled: true
-
     server:
-      podAnnotations:
-        reloader.stakater.com/auto: "true"
       envFrom:
         - secretRef:
             name: authentik-secret
@@ -49,15 +43,23 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
+      podAnnotations:
+        reloader.stakater.com/auto: "true"
       route:
         main:
           enabled: true
           hostnames:
-            - "sso.melotic.dev"
+            - sso.melotic.dev
           parentRefs:
             - name: envoy-internal
               namespace: network
               sectionName: https
+      volumeMounts: &volumeMounts
+        - mountPath: /postgres-creds
+          name: postgres-creds
+          readOnly: true
+        - mountPath: /data
+          name: data
       volumes: &volumes
         - name: postgres-creds
           secret:
@@ -65,18 +67,11 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: authentik-data
-      volumeMounts: &volumeMounts
-        - name: postgres-creds
-          mountPath: /postgres-creds
-          readOnly: true
-        - name: data
-          mountPath: /data
-
     worker:
-      podAnnotations:
-        reloader.stakater.com/auto: "true"
       envFrom:
         - secretRef:
             name: authentik-secret
-      volumes: *volumes
+      podAnnotations:
+        reloader.stakater.com/auto: "true"
       volumeMounts: *volumeMounts
+      volumes: *volumes
