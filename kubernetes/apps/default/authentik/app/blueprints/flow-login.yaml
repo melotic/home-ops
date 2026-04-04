@@ -1,9 +1,10 @@
+---
 # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
 version: 1
 metadata:
   name: melotic Authentication Flow
   labels:
-    blueprints.goauthentik.io/description: "Custom authentication flow with MFA enforcement"
+    blueprints.goauthentik.io/description: "Custom authentication flow with MFA enforcement, Cloudflare Turnstile, and GeoIP restriction"
 entries:
   # Ensure default MFA setup flows exist (shipped with Authentik)
   - model: authentik_blueprints.metaapplyblueprint
@@ -34,23 +35,11 @@ entries:
       slug: melotic-authentication-flow
     attrs:
       name: Sign in
-      title: Sign in to melotic
+      title: Sign in to zion
       designation: authentication
       authentication: none
 
   # --- Stages ---
-
-  # Identification: accept email or username
-  - model: authentik_stages_identification.identificationstage
-    id: identification
-    identifiers:
-      name: melotic-identification
-    attrs:
-      user_fields:
-        - email
-        - username
-      show_matched_user: true
-      show_source_labels: true
 
   # Password verification
   - model: authentik_stages_password.passwordstage
@@ -61,7 +50,36 @@ entries:
       backends:
         - authentik.core.auth.InbuiltBackend
         - authentik.core.auth.TokenBackend
-      configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
+      configure_flow:
+        !Find [authentik_flows.flow, [slug, default-password-change]]
+
+  # Cloudflare Turnstile CAPTCHA (Invisible mode)
+  # Set AUTHENTIK_TURNSTILE_SITE_KEY and AUTHENTIK_TURNSTILE_SECRET_KEY in your env
+  - model: authentik_stages_captcha.captchastage
+    id: captcha
+    identifiers:
+      name: melotic-captcha-turnstile
+    attrs:
+      public_key: !Env [TURNSTILE_SITE_KEY]
+      private_key: !Env [TURNSTILE_SECRET_KEY]
+      js_url: https://challenges.cloudflare.com/turnstile/v0/api.js
+      api_url: https://challenges.cloudflare.com/turnstile/v0/siteverify
+      interactive: true
+
+  # Identification: single-page login with inline password + Turnstile
+  # password_stage and captcha_stage are inline — they must NOT also be bound to the flow
+  - model: authentik_stages_identification.identificationstage
+    id: identification
+    identifiers:
+      name: melotic-identification
+    attrs:
+      password_stage: !KeyOf password
+      captcha_stage: !KeyOf captcha
+      user_fields:
+        - email
+        - username
+      show_matched_user: true
+      show_source_labels: true
 
   # MFA validation — enforced, not optional
   # not_configured_action: configure forces MFA setup on first login
@@ -76,9 +94,18 @@ entries:
         - webauthn
         - static
       configuration_stages:
-        - !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, default-authenticator-totp-setup]]
-        - !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]
-        - !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-authenticator-static-setup]]
+        - !Find [
+            authentik_stages_authenticator_totp.authenticatortotpstage,
+            [name, default-authenticator-totp-setup],
+          ]
+        - !Find [
+            authentik_stages_authenticator_webauthn.authenticatorwebauthnstage,
+            [name, default-authenticator-webauthn-setup],
+          ]
+        - !Find [
+            authentik_stages_authenticator_static.authenticatorstaticstage,
+            [name, default-authenticator-static-setup],
+          ]
 
   # Login: create the session
   - model: authentik_stages_user_login.userloginstage
@@ -95,15 +122,6 @@ entries:
       order: 10
 
   - model: authentik_flows.flowstagebinding
-    id: password-binding
-    identifiers:
-      target: !KeyOf flow
-      stage: !KeyOf password
-      order: 20
-    attrs:
-      re_evaluate_policies: true
-
-  - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf flow
       stage: !KeyOf mfa
@@ -117,22 +135,21 @@ entries:
 
   # --- Policies ---
 
-  # Skip password stage if already authenticated (e.g. via passwordless WebAuthn)
-  - model: authentik_policies_expression.expressionpolicy
-    id: password-optional-policy
+  # GeoIP: restrict logins to allowed countries + impossible travel detection
+  - model: authentik_policies_geoip.geoippolicy
+    id: geoip-policy
     identifiers:
-      name: melotic-password-stage-optional
+      name: melotic-geoip-restriction
     attrs:
-      expression: |
-        flow_plan = request.context.get("flow_plan")
-        if not flow_plan:
-            return True
-        return not hasattr(flow_plan.context.get("pending_user"), "backend")
+      countries:
+        - US
+      check_impossible_travel: true
+      impossible_tolerance_km: 100
+      check_history_distance: false
 
+  # Bind GeoIP policy to the flow — denies the entire flow if it fails
   - model: authentik_policies.policybinding
     identifiers:
-      order: 10
-      target: !KeyOf password-binding
-      policy: !KeyOf password-optional-policy
-    attrs:
-      failure_result: true
+      order: 0
+      target: !KeyOf flow
+      policy: !KeyOf geoip-policy

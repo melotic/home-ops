@@ -1,4 +1,5 @@
 ---
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
 version: 1
 metadata:
   name: Embedded Proxy Outpost
@@ -12,7 +13,10 @@ entries:
       managed: "goauthentik.io/outposts/embedded"
       providers:
         - !Find [authentik_providers_proxy.proxyprovider, [name, longhorn]]
-        - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-metrics]]
+        - !Find [
+            authentik_providers_proxy.proxyprovider,
+            [name, victoria-metrics],
+          ]
         - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-logs]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, slskd]]
