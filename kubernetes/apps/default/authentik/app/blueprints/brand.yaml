@@ -1,3 +1,4 @@
+---
 # yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
 version: 1
 metadata:
@@ -32,11 +33,14 @@ entries:
       branding_title: melotic
       branding_logo: "zion.svg"
       branding_favicon: "zion.svg"
-      branding_default_flow_background: ""
+      branding_default_flow_background: {}
 
-      flow_authentication: !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
-      flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
-      flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+      flow_authentication:
+        !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
+      flow_invalidation:
+        !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+      flow_user_settings:
+        !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
       attributes:
         settings:
           theme:
