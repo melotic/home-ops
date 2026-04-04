@@ -14,7 +14,7 @@ spec:
       soularr:
         type: cronjob
         cronjob:
-          schedule: "*/5 * * * *"
+          schedule: "*/15 * * * *"
           backoffLimit: 3
           concurrencyPolicy: Forbid
           successfulJobsHistory: 3
