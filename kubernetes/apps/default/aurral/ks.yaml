@@ -23,6 +23,7 @@ spec:
   postBuild:
     substitute:
       APP: aurral
+      VOLSYNC_CAPACITY: 5Gi
   prune: true
   retryInterval: 2m
   sourceRef:
