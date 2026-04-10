@@ -9,11 +9,17 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
   decryption:
     provider: sops
     secretRef:
       name: sops-age
   dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+    - name: volsync
+      namespace: volsync-system
     - name: onepassword
       namespace: external-secrets
     - name: lidarr
