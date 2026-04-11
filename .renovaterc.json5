@@ -5,7 +5,6 @@
     "abandonments:recommended",
     "docker:enableMajor",
     "helpers:pinGitHubActionDigests",
-    "security:minimumReleaseAgeNpm",
     ":automergeBranch",
     ":configMigration",
     ":disableRateLimiting",
