@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: docker.dragonflydb.io/dragonflydb/dragonfly
-              tag: v1.37.0
+              tag: v1.37.2
             args:
               - --dbnum
               - "16"
