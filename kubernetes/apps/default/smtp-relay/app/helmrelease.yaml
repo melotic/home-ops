@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: ghcr.io/foxcpp/maddy
-              tag: 0.9.1@sha256:11056270636d4804329ed152520298238de6dc753fabf864a3aec6c39812a2ab
+              tag: 0.9.3@sha256:2ce7ce6343816c8c96056776dd06660987d97ada96d31163cdd968d62e496a12
             env:
               SMTP_RELAY_SMTP_PORT: &port 587
             envFrom:
