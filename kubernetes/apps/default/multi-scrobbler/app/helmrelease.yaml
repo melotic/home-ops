@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/foxxmd/multi-scrobbler
-              tag: 0.13.0
+              tag: 0.13.1
             command: ["/usr/bin/node"]
             args: ["/app/node_modules/.bin/tsx", "src/backend/index.ts"]
             env:
