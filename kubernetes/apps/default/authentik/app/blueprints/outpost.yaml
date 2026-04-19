@@ -43,8 +43,9 @@ entries:
         kubernetes_json_patches:
           service:
             - op: add
-              path: /metadata/annotations/external-dns.alpha.kubernetes.io~1hostname
-              value: ghidra-ldap.melotic.dev
+              path: /metadata/annotations
+              value:
+                external-dns.alpha.kubernetes.io/hostname: ghidra-ldap.melotic.dev
             - op: add
               path: /spec/loadBalancerSourceRanges
               value:
