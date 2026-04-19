@@ -1,0 +1,121 @@
+---
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: Ghidra LDAP Provider and Application
+context:
+  authorization_flow:
+    !Find &authorization_flow [
+      authentik_flows.flow,
+      [slug, default-provider-authorization-implicit-consent],
+    ]
+  invalidation_flow:
+    !Find &invalidation_flow [
+      authentik_flows.flow,
+      [slug, default-provider-invalidation-flow],
+    ]
+entries:
+  - model: authentik_core.group
+    id: ghidra-users
+    identifiers:
+      name: ghidra-users
+    attrs:
+      name: ghidra-users
+
+  - model: authentik_crypto.certificatekeypair
+    id: ghidra-ldap-tls-certificate
+    identifiers:
+      name: ghidra-ldap-tls
+    attrs:
+      name: ghidra-ldap-tls
+      certificate_data: !Env GHIDRA_LDAP_TLS_CERTIFICATE_DATA
+      key_data: !Env GHIDRA_LDAP_TLS_KEY_DATA
+
+  - model: authentik_stages_password.passwordstage
+    id: ghidra-ldap-password
+    identifiers:
+      name: ghidra-ldap-password
+    attrs:
+      backends:
+        - authentik.core.auth.InbuiltBackend
+        - authentik.core.auth.TokenBackend
+      configure_flow:
+        !Find [authentik_flows.flow, [slug, default-password-change]]
+
+  - model: authentik_stages_identification.identificationstage
+    id: ghidra-ldap-identification
+    identifiers:
+      name: ghidra-ldap-identification
+    attrs:
+      password_stage: !KeyOf ghidra-ldap-password
+      user_fields:
+        - username
+        - email
+      case_insensitive_matching: true
+      pretend_user_exists: true
+      show_matched_user: true
+
+  - model: authentik_stages_user_login.userloginstage
+    id: ghidra-ldap-login
+    identifiers:
+      name: ghidra-ldap-login
+
+  - model: authentik_flows.flow
+    id: ghidra-ldap-authentication-flow
+    identifiers:
+      slug: ghidra-ldap-authentication-flow
+    attrs:
+      name: Ghidra LDAP authentication
+      title: Ghidra LDAP authentication
+      designation: authentication
+      authentication: none
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf ghidra-ldap-authentication-flow
+      stage: !KeyOf ghidra-ldap-identification
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf ghidra-ldap-authentication-flow
+      stage: !KeyOf ghidra-ldap-login
+      order: 30
+
+  - model: authentik_providers_ldap.ldapprovider
+    id: ghidra-ldap-provider
+    identifiers:
+      name: ghidra-ldap
+    attrs:
+      name: ghidra-ldap
+      authentication_flow: !KeyOf ghidra-ldap-authentication-flow
+      authorization_flow: *authorization_flow
+      invalidation_flow: *invalidation_flow
+      base_dn: OU=ghidra,DC=ldap,DC=melotic,DC=dev
+      bind_mode: direct
+      certificate: !KeyOf ghidra-ldap-tls-certificate
+      search_mode: direct
+      mfa_support: false
+      tls_server_name: ghidra-ldap.melotic.dev
+
+  - model: authentik_core.application
+    id: ghidra-ldap-application
+    identifiers:
+      slug: ghidra-ldap
+    attrs:
+      name: Ghidra LDAP
+      slug: ghidra-ldap
+      provider: !KeyOf ghidra-ldap-provider
+      policy_engine_mode: any
+      meta_description: Ghidra Server LDAP access
+      meta_publisher: Ghidra
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      target: !KeyOf ghidra-ldap-application
+      group: !KeyOf ghidra-users
+    attrs:
+      target: !KeyOf ghidra-ldap-application
+      group: !KeyOf ghidra-users
+      enabled: true
+      order: 0
