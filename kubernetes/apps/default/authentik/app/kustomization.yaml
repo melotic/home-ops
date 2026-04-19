@@ -22,6 +22,7 @@ configMapGenerator:
       - slskd.yaml=./blueprints/slskd.yaml
       - echo.yaml=./blueprints/echo.yaml
       - gatus.yaml=./blueprints/gatus.yaml
+      - ghidra-server.yaml=./blueprints/ghidra-server.yaml
       - outpost.yaml=./blueprints/outpost.yaml
       - flow-login.yaml=./blueprints/flow-login.yaml
       - brand.yaml=./blueprints/brand.yaml

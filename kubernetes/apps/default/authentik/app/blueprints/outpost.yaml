@@ -22,3 +22,34 @@ entries:
         - !Find [authentik_providers_proxy.proxyprovider, [name, slskd]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, echo]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, gatus]]
+
+  - model: authentik_outposts.outpost
+    identifiers:
+      name: ghidra-server-ldap
+    attrs:
+      name: ghidra-server-ldap
+      type: ldap
+      service_connection:
+        !Find [
+          authentik_outposts.outpostserviceconnection,
+          [name, "Local Kubernetes Cluster"],
+        ]
+      providers:
+        - !Find [authentik_core.provider, [name, ghidra-ldap]]
+      config:
+        log_level: info
+        authentik_host: https://sso.melotic.dev
+        object_naming_template: ak-outpost-%(name)s
+        kubernetes_json_patches:
+          service:
+            - op: add
+              path: /metadata/annotations/external-dns.alpha.kubernetes.io~1hostname
+              value: ghidra-ldap.melotic.dev
+            - op: add
+              path: /spec/loadBalancerSourceRanges
+              value:
+                - 10.42.0.0/16
+                - 10.60.0.0/16
+        kubernetes_namespace: default
+        kubernetes_replicas: 1
+        kubernetes_service_type: LoadBalancer
