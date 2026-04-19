@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app ghidra-server
+  namespace: &namespace default
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/volsync
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  dependsOn:
+    - name: longhorn
+      namespace: longhorn-system
+    - name: volsync
+      namespace: volsync-system
+    - name: authentik
+      namespace: default
+  interval: 1h
+  path: ./kubernetes/apps/default/ghidra-server/app
+  postBuild:
+    substitute:
+      APP: ghidra-server
+      VOLSYNC_CAPACITY: 20Gi
+      GHIDRA_SERVER_IP: 10.60.80.7
+      AUTHENTIK_LDAP_HOST: ghidra-ldap.melotic.dev
+      AUTHENTIK_LDAP_BASE_DN: OU=ghidra,DC=ldap,DC=melotic,DC=dev
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false

@@ -1,0 +1,110 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ghidra-server
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: ghidra-server
+  interval: 1h
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  dependsOn:
+    - name: authentik
+      namespace: default
+  values:
+    controllers:
+      ghidra-server:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: harbor.melotic.dev/library/ghidra
+              tag: 12.0.4_PUBLIC
+            env:
+              MODE: ghidra-server
+            probes:
+              liveness: &tcpProbe
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 13100
+                  initialDelaySeconds: 20
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 6
+              readiness: *tcpProbe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 18
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "${GHIDRA_SERVER_IP}"
+        externalTrafficPolicy: Local
+        loadBalancerSourceRanges:
+          - 10.60.0.0/16
+        ports:
+          ghidra:
+            port: *port
+          ghidra-rmi-1:
+            port: 13101
+          ghidra-rmi-2:
+            port: 13102
+    persistence:
+      ghidra-config:
+        type: configMap
+        name: ghidra-server-config
+        advancedMounts:
+          ghidra-server:
+            app:
+              - path: /ghidra/server/server.conf
+                subPath: server.conf
+                readOnly: true
+              - path: /ghidra/server/jaas.conf
+                subPath: jaas.conf
+                readOnly: true
+      repositories:
+        existingClaim: ghidra-server
+        globalMounts:
+          - path: /ghidra/repositories
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
