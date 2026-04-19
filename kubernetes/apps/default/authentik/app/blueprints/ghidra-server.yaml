@@ -73,7 +73,7 @@ entries:
   - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf ghidra-ldap-authentication-flow
-      stage: !KeyOf ghidra-ldap-identification
+      stage: !KeyOf ghidra-ldap-password
       order: 10
 
   - model: authentik_flows.flowstagebinding
