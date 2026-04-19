@@ -4,11 +4,6 @@ version: 1
 metadata:
   name: Ghidra LDAP Provider and Application
 context:
-  authorization_flow:
-    !Find &authorization_flow [
-      authentik_flows.flow,
-      [slug, default-provider-authorization-implicit-consent],
-    ]
   invalidation_flow:
     !Find &invalidation_flow [
       authentik_flows.flow,
@@ -47,7 +42,6 @@ entries:
     identifiers:
       name: ghidra-ldap-identification
     attrs:
-      password_stage: !KeyOf ghidra-ldap-password
       user_fields:
         - username
         - email
@@ -71,10 +65,23 @@ entries:
       authentication: none
 
   - model: authentik_flows.flowstagebinding
+    state: absent
+    identifiers:
+      target: !KeyOf ghidra-ldap-authentication-flow
+      stage: !KeyOf ghidra-ldap-password
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
     identifiers:
       target: !KeyOf ghidra-ldap-authentication-flow
       stage: !KeyOf ghidra-ldap-identification
       order: 10
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf ghidra-ldap-authentication-flow
+      stage: !KeyOf ghidra-ldap-password
+      order: 20
 
   - model: authentik_flows.flowstagebinding
     identifiers:
@@ -88,8 +95,9 @@ entries:
       name: ghidra-ldap
     attrs:
       name: ghidra-ldap
+      # LDAP outposts use authorization_flow as the bind flow.
       authentication_flow: !KeyOf ghidra-ldap-authentication-flow
-      authorization_flow: *authorization_flow
+      authorization_flow: !KeyOf ghidra-ldap-authentication-flow
       invalidation_flow: *invalidation_flow
       base_dn: OU=ghidra,DC=ldap,DC=melotic,DC=dev
       bind_mode: direct
