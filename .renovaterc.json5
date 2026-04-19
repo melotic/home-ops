@@ -12,6 +12,7 @@
     ":semanticCommits",
   ],
   ignorePaths: ["**/*.sops.*"],
+  ignoreDeps: ["harbor.melotic.dev/library/ghidra"],
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
   },
