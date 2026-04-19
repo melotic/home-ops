@@ -14,7 +14,7 @@ spec:
       beets:
         type: cronjob
         cronjob:
-          schedule: "0 */6 * * *"
+          schedule: "0 12 * * *"
           concurrencyPolicy: Forbid
           successfulJobsHistory: 3
           failedJobsHistory: 3
