@@ -8,25 +8,25 @@ shares:
   cache:
     storage_mode: memory
     workers: 8
-global:
+transfers:
   upload:
     slots: 15
     speed_limit: 1500
+    limits:
+      queued:
+        files: 500
+        megabytes: 5000
+      daily:
+        files: 1000
+        megabytes: 10000
+        failures: 200
+      weekly:
+        files: 5000
+        megabytes: 50000
+        failures: 1000
   download:
     slots: 500
     speed_limit: 50000
-  limits:
-    queued:
-      files: 500
-      megabytes: 5000
-    daily:
-      files: 1000
-      megabytes: 10000
-      failures: 200
-    weekly:
-      files: 5000
-      megabytes: 50000
-      failures: 1000
 groups:
   default:
     upload:
@@ -34,17 +34,17 @@ groups:
       strategy: roundrobin
       slots: 10
       speed_limit: 750
-    limits:
-      queued:
-        files: 200
-        megabytes: 2000
-      daily:
-        files: 500
-        megabytes: 5000
-      weekly:
-        files: 2500
-        megabytes: 20000
-        failures: 150
+      limits:
+        queued:
+          files: 200
+          megabytes: 2000
+        daily:
+          files: 500
+          megabytes: 5000
+        weekly:
+          files: 2500
+          megabytes: 20000
+          failures: 150
   leechers:
     thresholds:
       files: 100
@@ -54,18 +54,18 @@ groups:
       strategy: roundrobin
       slots: 1
       speed_limit: 10
-    limits:
-      queued:
-        files: 1
-        megabytes: 10
-      daily:
-        files: 3
-        megabytes: 30
-        failures: 5
-      weekly:
-        files: 10
-        megabytes: 100
-        failures: 10
+      limits:
+        queued:
+          files: 1
+          megabytes: 10
+        daily:
+          files: 3
+          megabytes: 30
+          failures: 5
+        weekly:
+          files: 10
+          megabytes: 100
+          failures: 10
 filters:
   search:
     request:
