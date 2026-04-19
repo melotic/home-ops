@@ -78,8 +78,6 @@ spec:
         annotations:
           lbipam.cilium.io/ips: "${GHIDRA_SERVER_IP}"
         externalTrafficPolicy: Local
-        loadBalancerSourceRanges:
-          - 10.60.0.0/16
         ports:
           ghidra:
             port: *port
