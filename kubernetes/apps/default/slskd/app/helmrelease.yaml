@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: slskd/slskd
-              tag: 0.25.0
+              tag: 0.25.1
             env:
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net
               TZ: Etc/UTC
