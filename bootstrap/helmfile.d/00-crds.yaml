@@ -24,10 +24,6 @@ releases:
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 2.3.0
 
-  # Gateway API CRDs are managed by envoy-gateway (crds: CreateReplace).
-  # For fresh bootstraps, install manually:
-  #   kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.5.0/standard-install.yaml
-
   - name: onepassword
     namespace: external-secrets
     chart: oci://ghcr.io/1password/connect
