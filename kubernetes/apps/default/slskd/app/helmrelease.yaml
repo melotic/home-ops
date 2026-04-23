@@ -9,9 +9,18 @@ spec:
     kind: OCIRepository
     name: slskd
   interval: 1h
+  timeout: 10m
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
     controllers:
       slskd:
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
