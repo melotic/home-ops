@@ -147,9 +147,49 @@ entries:
       impossible_tolerance_km: 100
       check_history_distance: false
 
-  # Bind GeoIP policy to the flow — denies the entire flow if it fails
+  # Expression wrapper: skip GeoIP for private/RFC1918 IPs (which have no
+  # MaxMind record) and delegate to the GeoIP policy for public IPs.
+  - model: authentik_policies_expression.expressionpolicy
+    id: geoip-wrapper
+    identifiers:
+      name: melotic-geoip-private-bypass
+    attrs:
+      expression: |
+        import ipaddress
+
+        PRIVATE_NETWORKS = [
+            ipaddress.ip_network("10.0.0.0/8"),
+            ipaddress.ip_network("172.16.0.0/12"),
+            ipaddress.ip_network("192.168.0.0/16"),
+            ipaddress.ip_network("127.0.0.0/8"),
+            ipaddress.ip_network("169.254.0.0/16"),
+            ipaddress.ip_network("100.64.0.0/10"),
+            ipaddress.ip_network("::1/128"),
+            ipaddress.ip_network("fc00::/7"),
+            ipaddress.ip_network("fe80::/10"),
+        ]
+
+        try:
+            ip = ipaddress.ip_address(ak_client_ip)
+            if any(ip in net for net in PRIVATE_NETWORKS):
+                return True
+        except (ValueError, TypeError):
+            return False
+
+        result = ak_call_policy("melotic-geoip-restriction")
+        return result.passing
+
+  # Tombstone: remove the old direct GeoIP binding (replaced by wrapper)
   - model: authentik_policies.policybinding
+    state: absent
     identifiers:
       order: 0
       target: !KeyOf flow
       policy: !KeyOf geoip-policy
+
+  # Bind the wrapper (not the raw GeoIP policy) to the flow
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf flow
+      policy: !KeyOf geoip-wrapper
