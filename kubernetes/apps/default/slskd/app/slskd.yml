@@ -27,45 +27,45 @@ transfers:
   download:
     slots: 500
     speed_limit: 50000
-groups:
-  default:
-    upload:
-      priority: 500
-      strategy: roundrobin
-      slots: 10
-      speed_limit: 750
-      limits:
-        queued:
-          files: 200
-          megabytes: 2000
-        daily:
-          files: 500
-          megabytes: 5000
-        weekly:
-          files: 2500
-          megabytes: 20000
-          failures: 150
-  leechers:
-    thresholds:
-      files: 100
-      directories: 5
-    upload:
-      priority: 999
-      strategy: roundrobin
-      slots: 1
-      speed_limit: 10
-      limits:
-        queued:
-          files: 1
-          megabytes: 10
-        daily:
-          files: 3
-          megabytes: 30
-          failures: 5
-        weekly:
-          files: 10
-          megabytes: 100
-          failures: 10
+  groups:
+    default:
+      upload:
+        priority: 500
+        strategy: roundrobin
+        slots: 10
+        speed_limit: 750
+        limits:
+          queued:
+            files: 200
+            megabytes: 2000
+          daily:
+            files: 500
+            megabytes: 5000
+          weekly:
+            files: 2500
+            megabytes: 20000
+            failures: 150
+    leechers:
+      thresholds:
+        files: 100
+        directories: 5
+      upload:
+        priority: 999
+        strategy: roundrobin
+        slots: 1
+        speed_limit: 10
+        limits:
+          queued:
+            files: 1
+            megabytes: 10
+          daily:
+            files: 3
+            megabytes: 30
+            failures: 5
+          weekly:
+            files: 10
+            megabytes: 100
+            failures: 10
 filters:
   search:
     request:
