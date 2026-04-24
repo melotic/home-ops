@@ -9,24 +9,16 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: onepassword
       namespace: external-secrets
-  interval: 1h
   path: ./kubernetes/apps/default/nas-backup/app
   postBuild:
     substitute:
       APP: nas-backup
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false

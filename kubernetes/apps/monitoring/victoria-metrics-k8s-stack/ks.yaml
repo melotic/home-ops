@@ -9,24 +9,16 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
-  interval: 1h
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/app
   postBuild:
     substitute:
       AUTH_POLICY_NAME: victoria-metrics-auth
       AUTH_HTTPROUTE: vmsingle-vm-kube-stack
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -36,27 +28,19 @@ metadata:
   name: victoria-metrics-alertmanager-auth
   namespace: &namespace monitoring
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   commonMetadata:
     labels:
       app.kubernetes.io/name: victoria-metrics-k8s-stack
   dependsOn:
     - name: victoria-metrics-k8s-stack
-  interval: 1h
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/alertmanager-auth
   postBuild:
     substitute:
       AUTH_POLICY_NAME: alertmanager-auth
       AUTH_HTTPROUTE: vmalertmanager-vm-kube-stack
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false
