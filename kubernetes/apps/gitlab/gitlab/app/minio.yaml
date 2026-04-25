@@ -51,6 +51,8 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         runAsNonRoot: true
         runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: minio
           image: quay.io/minio/minio:RELEASE.2025-04-08T15-41-24Z
@@ -112,7 +114,8 @@ spec:
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
-        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: mc
           image: quay.io/minio/mc:RELEASE.2025-04-03T17-07-56Z
