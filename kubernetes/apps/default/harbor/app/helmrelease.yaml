@@ -29,6 +29,7 @@ spec:
     remediation:
       retries: 3
   values:
+    priorityClassName: app-high
     updateStrategy:
       type: Recreate
     expose:
@@ -72,9 +73,43 @@ spec:
         coreDatabase: harbor
         existingSecret: postgres-cluster-app
     core:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
       extraEnvVars:
         - name: CONFIG_OVERWRITE_JSON
           valueFrom:
             secretKeyRef:
               name: harbor-oidc-config
               key: CONFIG_OVERWRITE_JSON
+    registry:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+    jobservice:
+      resources:
+        requests:
+          cpu: 30m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+    trivy:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+    portal:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi

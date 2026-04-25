@@ -54,6 +54,7 @@ spec:
     backups:
       enabled: false
     cluster:
+      priorityClassName: cluster-critical
       affinity:
         topologyKey: kubernetes.io/hostname
       imageCatalogRef:
@@ -64,8 +65,8 @@ spec:
         enabled: true
       resources:
         requests:
-          memory: 1Gi
           cpu: 100m
+          memory: 512Mi
         limits:
           memory: 1Gi
       roles:

@@ -36,6 +36,13 @@ spec:
       rules:
         enabled: true
     server:
+      priorityClassName: cluster-critical
+      resources:
+        requests:
+          cpu: 50m
+          memory: 512Mi
+        limits:
+          memory: 1Gi
       envFrom:
         - secretRef:
             name: authentik-secret
@@ -68,6 +75,13 @@ spec:
           persistentVolumeClaim:
             claimName: authentik-data
     worker:
+      priorityClassName: cluster-critical
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
       envFrom:
         - secretRef:
             name: authentik-secret
