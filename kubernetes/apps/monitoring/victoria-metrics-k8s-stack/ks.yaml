@@ -9,7 +9,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  interval: 1h
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/app
+  prune: true
   postBuild:
     substitute:
       AUTH_POLICY_NAME: victoria-metrics-auth
@@ -33,7 +35,9 @@ spec:
       app.kubernetes.io/name: victoria-metrics-k8s-stack
   dependsOn:
     - name: victoria-metrics-k8s-stack
+  interval: 1h
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/alertmanager-auth
+  prune: true
   postBuild:
     substitute:
       AUTH_POLICY_NAME: alertmanager-auth

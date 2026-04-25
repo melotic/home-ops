@@ -18,7 +18,9 @@ spec:
       namespace: volsync-system
     - name: onepassword
       namespace: external-secrets
+  interval: 1h
   path: ./kubernetes/apps/default/beets/app
+  prune: true
   postBuild:
     substitute:
       APP: beets

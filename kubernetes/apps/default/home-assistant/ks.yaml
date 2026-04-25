@@ -16,7 +16,9 @@ spec:
       namespace: longhorn-system
     - name: volsync
       namespace: volsync-system
+  interval: 1h
   path: ./kubernetes/apps/default/home-assistant/app
+  prune: true
   postBuild:
     substitute:
       APP: home-assistant

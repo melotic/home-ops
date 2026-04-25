@@ -19,7 +19,9 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: *namespace
+  interval: 1h
   path: ./kubernetes/apps/volsync-system/volsync/app
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

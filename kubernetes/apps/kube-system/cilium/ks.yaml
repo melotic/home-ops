@@ -9,7 +9,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  interval: 1h
   path: ./kubernetes/apps/kube-system/cilium/app
+  prune: true
   postBuild:
     substituteFrom:
       - name: cluster-secrets
