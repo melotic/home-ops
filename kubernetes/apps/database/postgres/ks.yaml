@@ -20,7 +20,9 @@ spec:
       kind: Cluster
       failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
       current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
+  interval: 1h
   path: ./kubernetes/apps/database/postgres/app
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -53,7 +55,9 @@ spec:
   dependsOn:
     - name: cnpg
       namespace: cnpg-system
+  interval: 1h
   path: ./image-catalogs
+  prune: true
   sourceRef:
     kind: GitRepository
     name: cnpg-artifacts

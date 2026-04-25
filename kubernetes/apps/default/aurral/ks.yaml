@@ -20,7 +20,9 @@ spec:
       namespace: external-secrets
     - name: lidarr
       namespace: default
+  interval: 1h
   path: ./kubernetes/apps/default/aurral/app
+  prune: true
   postBuild:
     substitute:
       APP: aurral

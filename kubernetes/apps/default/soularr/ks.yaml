@@ -16,7 +16,9 @@ spec:
       namespace: default
     - name: slskd
       namespace: default
+  interval: 1h
   path: ./kubernetes/apps/default/soularr/app
+  prune: true
   postBuild:
     substitute:
       APP: soularr
