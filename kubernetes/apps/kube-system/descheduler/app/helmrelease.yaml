@@ -23,6 +23,12 @@ spec:
   interval: 1h
   values:
     kind: Deployment
+    resources:
+      requests:
+        cpu: 25m
+        memory: 64Mi
+      limits:
+        memory: 128Mi
     deschedulerPolicyAPIVersion: descheduler/v1alpha2
     deschedulerPolicy:
       metricsProviders:
@@ -34,7 +40,7 @@ spec:
               args:
                 evictFailedBarePods: true
                 evictLocalStoragePods: true
-                evictSystemCriticalPods: true
+                evictSystemCriticalPods: false
                 nodeFit: true
                 labelSelector:
                   matchExpressions:
@@ -47,12 +53,10 @@ spec:
                 thresholds:
                   cpu: 20
                   memory: 20
-                  pods: 20
                 targetThresholds:
-                  cpu: 50
-                  memory: 50
-                  pods: 50
-                useDeviationThresholds: true
+                  cpu: 60
+                  memory: 60
+                useDeviationThresholds: false
             - name: RemoveFailedPods
               args:
                 reasons:

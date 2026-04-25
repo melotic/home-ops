@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/scheduling.k8s.io/priorityclass_v1.json
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cluster-critical
+value: 1000000
+globalDefault: false
+description: "Database and core infrastructure (postgres, dragonfly, authentik)"
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/scheduling.k8s.io/priorityclass_v1.json
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: app-high
+value: 100000
+globalDefault: false
+description: "User-facing apps that should survive resource pressure (media stack, home-assistant)"
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/scheduling.k8s.io/priorityclass_v1.json
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: app-normal
+value: 0
+globalDefault: true
+description: "Default priority for all other workloads"

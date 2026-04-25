@@ -61,10 +61,12 @@ spec:
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 100m
+                cpu: 30m
+                memory: 256Mi
               limits:
-                memory: 4Gi
+                memory: 512Mi
     defaultPodOptions:
+      priorityClassName: app-high
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
