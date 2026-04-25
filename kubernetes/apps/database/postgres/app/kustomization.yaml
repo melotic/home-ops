@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - ./databases/harbor.yaml
   - ./databases/forejo.yaml
+  - ./databases/gitlab.yaml
   - ./databases/paperless.yaml
   - ./externalsecret.yaml
   - ./externalsecret-backup.yaml
