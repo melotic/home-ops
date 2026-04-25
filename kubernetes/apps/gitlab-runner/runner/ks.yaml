@@ -15,6 +15,10 @@ spec:
   interval: 1h
   path: ./kubernetes/apps/gitlab-runner/runner/app
   prune: true
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
