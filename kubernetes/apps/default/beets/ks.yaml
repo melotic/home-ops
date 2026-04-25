@@ -18,7 +18,6 @@ spec:
       namespace: volsync-system
     - name: onepassword
       namespace: external-secrets
-  interval: 1h
   path: ./kubernetes/apps/default/beets/app
   postBuild:
     substitute:
@@ -28,12 +27,9 @@ spec:
       - name: beets-secret
         kind: Secret
         optional: true
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false
