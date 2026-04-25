@@ -11,10 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
@@ -24,18 +20,14 @@ spec:
       namespace: external-secrets
     - name: lidarr
       namespace: default
-  interval: 1h
   path: ./kubernetes/apps/default/aurral/app
   postBuild:
     substitute:
       APP: aurral
       VOLSYNC_CAPACITY: 5Gi
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false

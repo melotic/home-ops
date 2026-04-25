@@ -9,10 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: onepassword
       namespace: external-secrets
@@ -20,17 +16,13 @@ spec:
       namespace: default
     - name: slskd
       namespace: default
-  interval: 1h
   path: ./kubernetes/apps/default/soularr/app
   postBuild:
     substitute:
       APP: soularr
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false

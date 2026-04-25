@@ -11,27 +11,19 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
     - name: volsync
       namespace: volsync-system
-  interval: 1h
   path: ./kubernetes/apps/default/sonarr/app
   postBuild:
     substitute:
       APP: sonarr
       VOLSYNC_CAPACITY: 5Gi
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false

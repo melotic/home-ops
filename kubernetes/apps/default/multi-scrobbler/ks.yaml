@@ -11,10 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
@@ -22,18 +18,14 @@ spec:
       namespace: volsync-system
     - name: onepassword
       namespace: external-secrets
-  interval: 1h
   path: ./kubernetes/apps/default/multi-scrobbler/app
   postBuild:
     substitute:
       APP: multi-scrobbler
       VOLSYNC_CAPACITY: 1Gi
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false

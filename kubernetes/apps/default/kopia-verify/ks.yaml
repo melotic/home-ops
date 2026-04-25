@@ -8,26 +8,18 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: onepassword
       namespace: external-secrets
     - name: volsync
       namespace: volsync-system
-  interval: 1h
   path: ./kubernetes/apps/default/kopia-verify/app
   postBuild:
     substitute:
       APP: kopia-verify
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false

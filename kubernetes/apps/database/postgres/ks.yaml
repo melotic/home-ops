@@ -9,10 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: cnpg
       namespace: cnpg-system
@@ -24,16 +20,12 @@ spec:
       kind: Cluster
       failed: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'False')
       current: status.conditions.filter(e, e.type == 'Ready').all(e, e.status == 'True')
-  interval: 1h
   path: ./kubernetes/apps/database/postgres/app
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: false
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/source.toolkit.fluxcd.io/gitrepository_v1.json
@@ -61,13 +53,9 @@ spec:
   dependsOn:
     - name: cnpg
       namespace: cnpg-system
-  interval: 1h
   path: ./image-catalogs
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: cnpg-artifacts
   targetNamespace: *namespace
-  timeout: 5m
   wait: false
