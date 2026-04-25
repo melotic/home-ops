@@ -5,7 +5,7 @@ metadata:
   name: azure-blob-store
 spec:
   configuration:
-    destinationPath: "https://homeopsbackup.blob.core.windows.net/cnpg-backup/"
+    destinationPath: "https://sthomeopsbackup.blob.core.windows.net/cnpg-backup/"
     azureCredentials:
       storageAccount:
         name: cnpg-backup-azure-creds
