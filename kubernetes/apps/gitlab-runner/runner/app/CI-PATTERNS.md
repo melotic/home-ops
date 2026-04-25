@@ -101,10 +101,27 @@ build-image-buildah:
   stage: build
   image: quay.io/buildah/stable:latest
   script:
-    - buildah --isolation=chroot bud -t "$HARBOR_IMAGE_PREFIX/$CI_PROJECT_NAME:$CI_COMMIT_SHA" .
+    - set +x  # don't echo HARBOR_PASSWORD into job trace before login
     - echo "$HARBOR_PASSWORD" | buildah login -u "$HARBOR_USER" --password-stdin "$HARBOR_REGISTRY"
+    - set -x
+    - buildah --isolation=chroot bud -t "$HARBOR_IMAGE_PREFIX/$CI_PROJECT_NAME:$CI_COMMIT_SHA" .
     - buildah push "$HARBOR_IMAGE_PREFIX/$CI_PROJECT_NAME:$CI_COMMIT_SHA"
 ```
+
+## Debugging caveats
+
+- **Do NOT enable `CI_DEBUG_TRACE: "true"` on jobs that touch `HARBOR_PASSWORD`
+  or any other Masked variable.** GitLab variable masking redacts values in
+  normal job logs but does **not** cover xtrace output produced by
+  `set -x` / `CI_DEBUG_TRACE`. Treating Masked vars as private requires
+  keeping trace mode off (or wrapping sensitive blocks with `set +x` ... `set -x`).
+- Prefer `--password-stdin` over inline `-p "$PASSWORD"` so the password
+  never appears in the process argv (visible to other pods in the same node
+  via `/proc` if PSS is relaxed).
+- The Kaniko snippet above pipes `printf '%s:%s' "$HARBOR_USER" "$HARBOR_PASSWORD"`
+  through `base64`. The literal password is on stdin only, but the surrounding
+  heredoc is a shell command — wrap with `set +x` before the heredoc if the
+  job otherwise enables xtrace.
 
 ## FORBIDDEN patterns — will fail at admission
 
