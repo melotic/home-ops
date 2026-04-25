@@ -194,9 +194,12 @@ spec:
           type: LoadBalancer
           annotations:
             external-dns.alpha.kubernetes.io/hostname: ssh.gitlab.${SECRET_DOMAIN}
-            # Operator: replace placeholder below with the LBIPAM IPv4 reserved
-            # for ssh.gitlab.melotic.dev before first apply (see SUMMARY).
-            lbipam.cilium.io/ips: "REPLACE-WITH-RESERVED-LBIPAM-IPv4"
+            # Operator pre-flight: to pin a specific LBIPAM IPv4, add a
+            # `lbipam.cilium.io/ips: "<reserved-ipv4>"` annotation here (or
+            # promote the value to cluster-secrets and substitute in via
+            # `${GITLAB_SHELL_LB_IP}`). Without an explicit IP, Cilium LBIPAM
+            # auto-assigns from the default pool — operator must update DNS /
+            # external-dns target accordingly.
           port: 22
           targetPort: 2222
         resources:
