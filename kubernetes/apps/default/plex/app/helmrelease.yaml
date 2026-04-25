@@ -54,9 +54,11 @@ spec:
                 - name: gpu
               requests:
                 cpu: 100m
+                memory: 512Mi
               limits:
-                memory: 4Gi
+                memory: 2Gi
     defaultPodOptions:
+      priorityClassName: app-high
       automountServiceAccountToken: false
       resourceClaims:
         - name: gpu
