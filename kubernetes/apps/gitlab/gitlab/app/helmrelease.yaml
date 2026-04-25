@@ -200,8 +200,10 @@ spec:
             # `${GITLAB_SHELL_LB_IP}`). Without an explicit IP, Cilium LBIPAM
             # auto-assigns from the default pool — operator must update DNS /
             # external-dns target accordingly.
-          port: 22
-          targetPort: 2222
+          # gitlab-shell subchart uses `internalPort` (2222) for the pod port.
+          # External port 22 comes from `global.shell.port` above. The
+          # bjw-s-style `port`/`targetPort` keys are NOT honored by this chart.
+          internalPort: 2222
         resources:
           requests:
             cpu: 50m
