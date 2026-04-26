@@ -21,6 +21,39 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  postRenderers:
+    - kustomize:
+        patches:
+          # Inject postStart lifecycle hook on the webservice container to run
+          # the sensitive setup script against the same /srv/gitlab as puma.
+          # Must redeclare preStop so the strategic merge does not drop the
+          # chart's hardcoded graceful-shutdown hook.
+          - target:
+              kind: Deployment
+              name: gitlab-webservice-default
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: gitlab-webservice-default
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: webservice
+                        lifecycle:
+                          postStart:
+                            exec:
+                              command:
+                                - /bin/bash
+                                - -c
+                                - bash /var/run/secrets/gitlab-setup/setup.sh
+                          preStop:
+                            exec:
+                              command:
+                                - /bin/bash
+                                - -c
+                                - pkill -SIGINT -o ruby
   values:
     global:
       edition: ee
@@ -151,6 +184,19 @@ spec:
           limits:
             cpu: 2
             memory: 3Gi
+        extraVolumes: |
+          - name: gitlab-setup-script
+            secret:
+              secretName: gitlab-webservice-setup-script
+              defaultMode: 0500
+              items:
+                - key: setup.sh
+                  path: setup.sh
+        extraVolumeMounts: |
+          - name: gitlab-setup-script
+            mountPath: /var/run/secrets/gitlab-setup/setup.sh
+            subPath: setup.sh
+            readOnly: true
       sidekiq:
         minReplicas: 1
         maxReplicas: 1
