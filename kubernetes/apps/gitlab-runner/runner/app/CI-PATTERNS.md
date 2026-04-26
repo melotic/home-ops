@@ -7,10 +7,10 @@ AND `runners.kubernetes.privileged = false` at the runner config level.
 Privileged containers are structurally impossible. Build images via Kaniko or
 rootless Buildah. Document any exception with a security review.
 
-Container images push to the **cluster Harbor** at `harbor.melotic.dev`
-(per CONTEXT D-04). GitLab's built-in container registry is disabled —
-`$CI_REGISTRY*` variables ARE NOT POPULATED. CI jobs use the Harbor
-group-level CI/CD variables described below.
+Container images push to the **cluster Harbor** at `harbor.melotic.dev`.
+GitLab's built-in container registry is disabled — `$CI_REGISTRY*` variables
+ARE NOT POPULATED. CI jobs use the Harbor group-level CI/CD variables
+described below.
 
 ---
 
@@ -58,7 +58,7 @@ secret setup.
 
 ### Robot token rotation runbook
 
-Quarterly, OR on suspicion of leak (T-03-03-12 mitigation):
+Quarterly, OR on suspicion of leak:
 
 1. Harbor → project → Robot Accounts → revoke old robot.
 2. Mint new robot (same name + `ci` suffix is fine — Harbor allows reuse
@@ -67,8 +67,8 @@ Quarterly, OR on suspicion of leak (T-03-03-12 mitigation):
 4. Update GitLab group CI/CD variable `HARBOR_PASSWORD` (paste new token).
 5. Re-run any in-flight pipelines that failed during the swap.
 
-NOT in Phase 3 scope: automated provisioning of Harbor projects and robots
-(e.g. via `terraform-provider-harbor`). Tracked as a Phase-N improvement.
+Out of scope: automated provisioning of Harbor projects and robots
+(e.g. via `terraform-provider-harbor`). Tracked as a future improvement.
 
 ---
 
@@ -142,8 +142,8 @@ variables:
   (`KUBERNETES_CPU_REQUEST`, etc.).
 - Runner controller `concurrent: 4` — at most 4 simultaneous CI pods cluster-wide.
 - `helper_image` is the chart-default stock `gitlab/gitlab-runner-helper`. No
-  kitchen-sink image (D-14). If a job needs `kubectl` / `flux` / `helm`, the JOB
+  kitchen-sink image. If a job needs `kubectl` / `flux` / `helm`, the JOB
   image brings them.
-- `$CI_REGISTRY*` predefined variables are UNPOPULATED (D-04: GitLab built-in
+- `$CI_REGISTRY*` predefined variables are UNPOPULATED (GitLab built-in
   registry disabled). Always use `$HARBOR_*` variables; jobs that reference
   `$CI_REGISTRY*` will silently push nowhere.

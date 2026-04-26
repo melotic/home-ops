@@ -22,17 +22,14 @@ spec:
     remediation:
       retries: 3
   values:
-    gitlabUrl: https://gitlab.${SECRET_DOMAIN}/
-    # `secret` references the ExternalSecret target. Chart reads token
-    # from Secret keys `runner-registration-token` (legacy) and
-    # `runner-token` (GitLab 16+). Leave the inline values empty.
+    gitlabUrl: https://gitlab.melotic.dev/
     secret: gitlab-runner-token
     runnerRegistrationToken: ""
     runnerToken: ""
 
     rbac:
       create: true
-      clusterWideAccess: false      # SEC-02: Role/RoleBinding only, never ClusterRole
+      clusterWideAccess: false
       rules:
         - apiGroups: [""]
           resources: [pods, pods/exec, pods/log, pods/attach]
@@ -48,7 +45,7 @@ spec:
       create: true
       name: gitlab-runner
 
-    # Controller pod (gitlab-runner manager). RO root, drop ALL caps.
+    # Controller pod (gitlab-runner manager).
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1000
@@ -81,8 +78,8 @@ spec:
           [runners.kubernetes]
             namespace = "gitlab-runner"
             image = "alpine:3.20"
-            helper_image = ""                 # chart default: stock gitlab/gitlab-runner-helper (D-14)
-            privileged = false                # SEC-02 / D-15 — defense in depth alongside PSS=restricted
+            helper_image = ""
+            privileged = false
             poll_timeout = 600
             service_account = "gitlab-runner"
             allow_privilege_escalation = false
@@ -91,8 +88,8 @@ spec:
               run_as_user = 1000
               fs_group = 1000
             [runners.kubernetes.build_container_security_context]
-              # read_only_root_filesystem = false: Kaniko writes to /kaniko + /tmp
-              # (RESEARCH P3 / T-03-03-08 accepted exception). Helper container stays RO.
+              # Kaniko writes to /kaniko + /tmp, so build container is not RO.
+              # Helper container stays RO (see helper_container_security_context below).
               allow_privilege_escalation = false
               read_only_root_filesystem = false
               run_as_non_root = true
