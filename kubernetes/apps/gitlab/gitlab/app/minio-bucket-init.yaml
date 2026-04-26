@@ -1,17 +1,14 @@
 ---
-# One-shot bucket creator. Idempotent. Re-run via `kubectl delete job
-# gitlab-minio-bucket-init -n gitlab` followed by Flux reconcile.
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: gitlab-minio-bucket-init
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   backoffLimit: 6
-  ttlSecondsAfterFinished: 3600
+  activeDeadlineSeconds: 600
   template:
-    metadata:
-      annotations:
-        reloader.stakater.com/auto: "true"
     spec:
       restartPolicy: OnFailure
       automountServiceAccountToken: false
@@ -38,16 +35,19 @@ spec:
             - |
               set -euo pipefail
               export HOME=/tmp
-              until mc alias set local http://gitlab-minio.gitlab.svc.cluster.local:9000 \
-                  "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
-                sleep 3
+              for i in $(seq 1 60); do
+                if mc alias set local http://gitlab-minio.gitlab.svc.cluster.local:9000 \
+                    "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; then
+                  break
+                fi
+                sleep 5
               done
+              mc alias list local >/dev/null
               for b in gitlab-artifacts gitlab-lfs gitlab-uploads gitlab-packages \
                        gitlab-mr-diffs gitlab-tf-state gitlab-ci-secure \
                        gitlab-dep-proxy gitlab-backups gitlab-tmp; do
                 mc mb -p "local/$b" || true
               done
-              mc ls local
           volumeMounts:
             - name: tmp
               mountPath: /tmp
