@@ -3,12 +3,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./databases/harbor.yaml
-  - ./databases/forejo.yaml
-  - ./databases/gitlab.yaml
-  - ./databases/paperless.yaml
   - ./externalsecret.yaml
-  - ./externalsecret-backup.yaml
   - ./helmrelease.yaml
-  - ./objectstore.yaml
-  - ./scheduledbackup.yaml
+  - ./helmrepository.yaml
