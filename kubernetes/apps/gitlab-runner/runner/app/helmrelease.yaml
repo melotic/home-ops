@@ -55,6 +55,8 @@ spec:
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
       runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
       capabilities:
         drop: [ALL]
 
@@ -87,20 +89,24 @@ spec:
               run_as_non_root = true
               run_as_user = 1000
               fs_group = 1000
+            [runners.kubernetes.pod_security_context.seccomp_profile]
+              type = "RuntimeDefault"
             [runners.kubernetes.build_container_security_context]
-              # Kaniko writes to /kaniko + /tmp, so build container is not RO.
-              # Helper container stays RO (see helper_container_security_context below).
               allow_privilege_escalation = false
               read_only_root_filesystem = false
               run_as_non_root = true
               [runners.kubernetes.build_container_security_context.capabilities]
                 drop = ["ALL"]
+              [runners.kubernetes.build_container_security_context.seccomp_profile]
+                type = "RuntimeDefault"
             [runners.kubernetes.helper_container_security_context]
               allow_privilege_escalation = false
               read_only_root_filesystem = true
               run_as_non_root = true
               [runners.kubernetes.helper_container_security_context.capabilities]
                 drop = ["ALL"]
+              [runners.kubernetes.helper_container_security_context.seccomp_profile]
+                type = "RuntimeDefault"
             [[runners.kubernetes.volumes.empty_dir]]
               name = "build-tmp"
               mount_path = "/builds"
