@@ -1,0 +1,56 @@
+---
+# One-shot bucket creator. Idempotent. Re-run via `kubectl delete job
+# gitlab-minio-bucket-init -n gitlab` followed by Flux reconcile.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitlab-minio-bucket-init
+spec:
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    spec:
+      restartPolicy: OnFailure
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: mc
+          image: quay.io/minio/mc:RELEASE.2025-04-03T17-07-56Z
+          envFrom:
+            - secretRef:
+                name: gitlab-minio-creds
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              export HOME=/tmp
+              until mc alias set local http://gitlab-minio.gitlab.svc.cluster.local:9000 \
+                  "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD"; do
+                sleep 3
+              done
+              for b in gitlab-artifacts gitlab-lfs gitlab-uploads gitlab-packages \
+                       gitlab-mr-diffs gitlab-tf-state gitlab-ci-secure \
+                       gitlab-dep-proxy gitlab-backups gitlab-tmp; do
+                mc mb -p "local/$b" || true
+              done
+              mc ls local
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: tmp
+          emptyDir: {}
