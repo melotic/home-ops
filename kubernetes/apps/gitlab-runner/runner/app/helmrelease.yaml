@@ -137,6 +137,17 @@ spec:
                 drop = ["ALL"]
               [runners.kubernetes.helper_container_security_context.seccomp_profile]
                 type = "RuntimeDefault"
+            # The auto-injected init-permissions container only drops NET_RAW by
+            # default, which violates the namespace's restricted PSS. Mirror the
+            # helper container's hardened context so build pods are admitted.
+            [runners.kubernetes.init_permissions_container_security_context]
+              allow_privilege_escalation = false
+              read_only_root_filesystem = true
+              run_as_non_root = true
+              [runners.kubernetes.init_permissions_container_security_context.capabilities]
+                drop = ["ALL"]
+              [runners.kubernetes.init_permissions_container_security_context.seccomp_profile]
+                type = "RuntimeDefault"
             [[runners.kubernetes.volumes.empty_dir]]
               name = "build-tmp"
               mount_path = "/builds"
