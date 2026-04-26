@@ -23,9 +23,25 @@ spec:
       retries: 3
   values:
     gitlabUrl: https://gitlab.melotic.dev/
-    secret: gitlab-runner-token
+    # The chart's singular `secret:` value does NOT mount the named Secret
+    # at /secrets/. Use the plural `secrets:` list (documented mechanism
+    # for projecting external secrets) so /secrets/runner-token is populated
+    # from the ExternalSecret-managed Secret. The entrypoint then exports
+    # CI_SERVER_TOKEN before calling `gitlab-runner register`.
+    secrets:
+      - name: gitlab-runner-token
     runnerRegistrationToken: ""
     runnerToken: ""
+
+    # The runner CLI is non-root (uid 1000) and resolves its default
+    # state_file and config.toml under $HOME/.gitlab-runner/. Without HOME
+    # set, it defaults to /.gitlab-runner/ which is blocked by
+    # readOnlyRootFilesystem: true (observed: "Couldn't save new system ID
+    # on state file" warning). The chart already mounts an emptyDir at
+    # /home/gitlab-runner/.gitlab-runner, so setting HOME there makes all
+    # default writes land on a writable volume — keeping ROFS enabled.
+    extraEnv:
+      HOME: /home/gitlab-runner
 
     rbac:
       create: true
