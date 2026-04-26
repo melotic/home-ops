@@ -92,6 +92,8 @@ spec:
       config: |
         [[runners]]
           executor = "kubernetes"
+          # Avoid long-polling request bottleneck (chart logs WARNING when =1).
+          request_concurrency = 4
           environment = ["FF_USE_FASTZIP=true"]
           [runners.kubernetes]
             namespace = "gitlab-runner"
