@@ -131,7 +131,10 @@ spec:
                 type = "RuntimeDefault"
             [runners.kubernetes.helper_container_security_context]
               allow_privilege_escalation = false
-              read_only_root_filesystem = true
+              # The helper container runs `git` which writes ~/.gitconfig.
+              # Under PSS run_as_non_root the runtime UID has no /etc/passwd
+              # entry, so HOME resolves to "/", which fails with ROFS.
+              read_only_root_filesystem = false
               run_as_non_root = true
               [runners.kubernetes.helper_container_security_context.capabilities]
                 drop = ["ALL"]
