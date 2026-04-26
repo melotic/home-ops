@@ -14,8 +14,13 @@ Single Dragonfly instance replacing per-app Redis pods. Configured with `--dbnum
 | 5 | Forgejo | Cache |
 | 6 | Forgejo | Sessions |
 | 7 | Forgejo | Task queue |
+| 8 | SearxNG | Valkey cache |
+| 9 | GitLab | Rails cache |
+| 10 | GitLab | Sidekiq queues |
+| 11 | GitLab | Shared state |
+| 12 | GitLab | Sessions |
 
-Next available: **8** (bump `--dbnum` in the HelmRelease if you need more than 16)
+Next available: **13** (bump `--dbnum` in the HelmRelease if you need more than 16)
 
 ## Adding a new service
 

@@ -1,0 +1,15 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: gitlab
+spec:
+  name: gitlab
+  owner: app
+  cluster:
+    name: postgres-cluster
+  extensions:
+    - name: pg_trgm
+      ensure: present
+    - name: btree_gist
+      ensure: present
