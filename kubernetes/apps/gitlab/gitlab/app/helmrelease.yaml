@@ -25,12 +25,12 @@ spec:
     global:
       edition: ce
       hosts:
-        domain: ${SECRET_DOMAIN}
+        domain: melotic.dev
         https: true
         externalIP: ""
         gitlab:
-          name: gitlab.${SECRET_DOMAIN}
-        ssh: ssh.gitlab.${SECRET_DOMAIN}
+          name: gitlab.melotic.dev
+        ssh: ssh.gitlab.melotic.dev
       ingress:
         configureCertmanager: false
         provider: none
@@ -69,7 +69,7 @@ spec:
       minio:
         enabled: false
       registry:
-        enabled: false   # D-04: built-in registry DISABLED; CI pushes to harbor.melotic.dev
+        enabled: false
       appConfig:
         object_store:
           enabled: true
@@ -123,8 +123,7 @@ spec:
         port: 22
       kas:
         enabled: false
-    # --- Subchart toggles: turn off everything we replace ---
-    installCertmanager: false   # disables aliased cert-manager subchart (Chart.yaml condition)
+    installCertmanager: false
     nginx-ingress:
       enabled: false
     prometheus:
@@ -137,7 +136,6 @@ spec:
       install: false
     gitlab-runner:
       install: false
-    # --- Keep these — they ARE GitLab itself ---
     gitlab:
       webservice:
         ingress:
@@ -193,16 +191,7 @@ spec:
         service:
           type: LoadBalancer
           annotations:
-            external-dns.alpha.kubernetes.io/hostname: ssh.gitlab.${SECRET_DOMAIN}
-            # Operator pre-flight: to pin a specific LBIPAM IPv4, add a
-            # `lbipam.cilium.io/ips: "<reserved-ipv4>"` annotation here (or
-            # promote the value to cluster-secrets and substitute in via
-            # `${GITLAB_SHELL_LB_IP}`). Without an explicit IP, Cilium LBIPAM
-            # auto-assigns from the default pool — operator must update DNS /
-            # external-dns target accordingly.
-          # gitlab-shell subchart uses `internalPort` (2222) for the pod port.
-          # External port 22 comes from `global.shell.port` above. The
-          # bjw-s-style `port`/`targetPort` keys are NOT honored by this chart.
+            external-dns.alpha.kubernetes.io/hostname: ssh.gitlab.melotic.dev
           internalPort: 2222
         resources:
           requests:
@@ -211,7 +200,5 @@ spec:
           limits:
             cpu: 200m
             memory: 256Mi
-    # D-04: built-in registry DISABLED — CI pushes to harbor.melotic.dev via per-group robot accounts.
-    # No PVC, no HPA, no Service, no HTTPRoute for this subchart.
     registry:
       enabled: false

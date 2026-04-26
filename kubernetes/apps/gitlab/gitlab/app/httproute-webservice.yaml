@@ -10,7 +10,7 @@ spec:
       namespace: network
       sectionName: https
   hostnames:
-    - gitlab.${SECRET_DOMAIN}
+    - gitlab.melotic.dev
   rules:
     - matches:
         - path:
@@ -18,4 +18,4 @@ spec:
             value: /
       backendRefs:
         - name: gitlab-webservice-default
-          port: 8181   # workhorse external port (verified against chart 9.11.1 webservice/values.yaml)
+          port: 8181
