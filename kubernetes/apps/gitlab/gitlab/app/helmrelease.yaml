@@ -23,7 +23,7 @@ spec:
       retries: 3
   values:
     global:
-      edition: ce
+      edition: ee
       hosts:
         domain: melotic.dev
         https: true
