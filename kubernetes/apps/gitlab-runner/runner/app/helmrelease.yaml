@@ -79,6 +79,18 @@ spec:
     podAnnotations:
       reloader.stakater.com/auto: "true"
 
+    # readOnlyRootFilesystem: true blocks the runner manager from buffering
+    # job traces, which it writes under /tmp/trace* before shipping to the
+    # GitLab API. Without a writable /tmp, jobs fail with "create job trace:
+    # open /tmp/traceXXXX: read-only file system" and surface to the user as
+    # "There has been a runner system failure, please try again."
+    volumes:
+      - name: tmp
+        emptyDir: {}
+    volumeMounts:
+      - name: tmp
+        mountPath: /tmp
+
     resources:
       requests:
         cpu: 50m
