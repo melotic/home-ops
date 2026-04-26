@@ -14,42 +14,21 @@ context:
       authentik_flows.flow,
       [slug, default-provider-invalidation-flow],
     ]
+  # GitLab CE silently ignores admin_groups (EE-only feature). Use
+  # `bin/rails runner "u=User.find_by_username(...); u.admin=true; u.save!"`
+  # against the gitlab-webservice pod for admin promotion. See debug session
+  # gitlab-sso-not-admin. Do not re-add a groups scope mapping until the
+  # GitLab Helm release is switched to the EE edition.
   property_mappings: &property_mappings
     - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
     - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
     - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
-  groups_scope_mapping: &groups_scope_mapping
-    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, openid]]
-    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, email]]
-    - !Find [authentik_providers_oauth2.scopemapping, [scope_name, profile]]
-    - !KeyOf gitlab-groups-scope
   signing_key:
     !Find &signing_key [
       authentik_crypto.certificatekeypair,
       [name, authentik Self-signed Certificate],
     ]
 entries:
-  # Custom scope mapping to emit groups claim
-  - model: authentik_providers_oauth2.scopemapping
-    id: gitlab-groups-scope
-    identifiers:
-      name: gitlab-groups
-    attrs:
-      name: gitlab-groups
-      scope_name: groups
-      expression: |
-        return {
-          "groups": [group.name for group in user.ak_groups.all()]
-        }
-
-  # GitLab administrators group
-  - model: authentik_core.group
-    id: gitlab-admins-group
-    identifiers:
-      name: gitlab-admins
-    attrs:
-      name: gitlab-admins
-
   # OAuth2 Provider for GitLab
   - model: authentik_providers_oauth2.oauth2provider
     identifiers:
@@ -64,7 +43,7 @@ entries:
       redirect_uris:
         - url: "https://gitlab.melotic.dev/users/auth/openid_connect/callback"
           matching_mode: strict
-      property_mappings: *groups_scope_mapping
+      property_mappings: *property_mappings
       signing_key: *signing_key
 
   # Application for GitLab
