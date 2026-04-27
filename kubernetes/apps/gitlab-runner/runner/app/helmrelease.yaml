@@ -111,6 +111,15 @@ spec:
             namespace = "gitlab-runner"
             image = "alpine:3.20"
             helper_image = ""
+            # The default (alpine) helper image has no /etc/passwd entry for
+            # uid 1000, so glibc's getpwuid(1000) returns NULL and git's
+            # global-config lookup falls back to HOME='/'. Git then tries to
+            # lock '//.gitconfig', which fails with EACCES (or EROFS, depending
+            # on whether helper rootfs is read-only). The ubuntu-flavored
+            # helper image ships an `ubuntu:x:1000:1000:Ubuntu:/home/ubuntu`
+            # entry with /home/ubuntu pre-created (mode 0750, owner 1000:1000),
+            # giving uid 1000 a real, writable HOME.
+            helper_image_flavor = "ubuntu"
             privileged = false
             poll_timeout = 600
             service_account = "gitlab-runner"
