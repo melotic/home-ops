@@ -106,7 +106,18 @@ spec:
           executor = "kubernetes"
           # Avoid long-polling request bottleneck (chart logs WARNING when =1).
           request_concurrency = 4
-          environment = ["FF_USE_FASTZIP=true"]
+          # FF_USE_FASTZIP: faster artifact upload (chart-recommended).
+          # DOCKER_CONFIG: defense-in-depth default for Kaniko/Buildah jobs.
+          # The build pod runs as uid 1000 (PSS=restricted), but the kaniko
+          # image's /kaniko directory is root-owned 0755 — so writing Docker
+          # auth to the default /kaniko/.docker/config.json fails with
+          # `Permission denied` in step_script. /tmp is mounted as a
+          # writable emptyDir on every build pod, and kaniko's executor
+          # honors $DOCKER_CONFIG ahead of its /kaniko/.docker default.
+          # Setting this at the runner level means CI snippets that copy/paste
+          # the upstream kaniko docs verbatim still work; CI-PATTERNS.md
+          # additionally sets it per-job for explicitness.
+          environment = ["FF_USE_FASTZIP=true", "DOCKER_CONFIG=/tmp/.docker"]
           [runners.kubernetes]
             namespace = "gitlab-runner"
             image = "alpine:3.20"
