@@ -1,78 +1,93 @@
 # CI Patterns — home-ops GitLab runner
 
-Last updated: 2026-04-25.
+Last updated: 2026-04-27.
 
 This runner enforces restricted Pod Security Standard at the namespace level
 AND `runners.kubernetes.privileged = false` at the runner config level.
-Privileged containers are structurally impossible. Build images via Kaniko or
-rootless Buildah. Document any exception with a security review.
+Privileged containers are structurally impossible. Build images via Kaniko
+(see "Known limitation" below) or rootless Buildah. Document any exception
+with a security review.
 
 Container images push to the **cluster Harbor** at `harbor.melotic.dev`.
 GitLab's built-in container registry is disabled — `$CI_REGISTRY*` variables
-ARE NOT POPULATED. CI jobs use the Harbor group-level CI/CD variables
-described below.
+ARE NOT POPULATED. CI jobs use the **GitLab Harbor integration** to inject
+Harbor credentials and registry coordinates, as described below.
 
 ---
 
-## Harbor CI Integration — Operator One-Time Setup per GitLab Group
+## Harbor CI Integration — Operator Setup per GitLab Project
 
-For each GitLab top-level group that needs to push container images, the
-operator performs this 4-step setup ONCE:
+GitLab EE ships a built-in Harbor integration that auto-injects six CI/CD
+variables into every job in the project:
+
+| Variable           | Source                              |
+|--------------------|-------------------------------------|
+| `HARBOR_URL`       | Full URL (`https://harbor.melotic.dev`) |
+| `HARBOR_HOST`      | Host without scheme (`harbor.melotic.dev`) |
+| `HARBOR_OCI`       | OCI URL (`oci://harbor.melotic.dev`) |
+| `HARBOR_PROJECT`   | Configured Harbor project name      |
+| `HARBOR_USERNAME`  | Configured robot account name       |
+| `HARBOR_PASSWORD`  | Robot account secret token (masked) |
+
+### One-time setup per GitLab project
+
+For each GitLab project that needs to push container images:
 
 1. **Create a Harbor project.** In Harbor (`https://harbor.melotic.dev`),
-   create a project whose name matches the GitLab top-level group name
-   exactly (e.g., GitLab group `acme` → Harbor project `acme`). Visibility:
-   private. Storage quota: per-operator policy.
+   create a project. Typical convention: name the project after the GitLab
+   group/namespace (e.g., GitLab namespace `acme` → Harbor project `acme`).
+   Visibility: private. Storage quota: per-operator policy.
 2. **Mint a Harbor robot account.** In the Harbor project →
-   **Robot Accounts → New Robot Account**. Name suffix: `ci`
-   (so the full account name becomes `robot$<group>+ci`, e.g.
-   `robot$acme+ci`). Permissions: `push` and `pull` on Repository,
-   `pull` on Artifact (no admin, no delete). Expiration: per-operator
-   policy (recommend 90 days; see rotation runbook below). Copy the
-   generated secret token immediately — Harbor only shows it once.
-3. **Store credentials in 1Password.** Create a new 1Password item named
-   `harbor-gitlab-<group>` (e.g. `harbor-gitlab-acme`) with these fields:
-   - `name`         → `robot$<group>+ci` (the robot account name)
-   - `secret`       → the Harbor robot token
-   - `registry`     → `harbor.melotic.dev` (constant)
-   - `image_prefix` → `harbor.melotic.dev/<group>` (e.g. `harbor.melotic.dev/acme`)
-4. **Set GitLab group-level CI/CD variables.** In GitLab UI → Group →
-   **Settings → CI/CD → Variables → Add variable**. Add four group-scoped
-   variables (NOT project-scoped — that's the whole point of this model):
+   **Robot Accounts → New Robot Account**. Permissions: `push` AND `pull`
+   on Repository, `pull` on Artifact (no admin, no delete). Expiration:
+   per-operator policy (recommend 90 days; see rotation runbook below).
+   Copy the generated secret token immediately — Harbor only shows it once.
+3. **Store credentials in 1Password.** Create a 1Password item named
+   `harbor-gitlab-<group>` (e.g. `harbor-gitlab-acme`) in the `Zion` vault
+   with these fields:
+   - `name`     → `robot$<project>+<robot-suffix>` (the robot account name)
+   - `secret`   → the Harbor robot token
+   - `project`  → Harbor project name
+4. **Activate the GitLab Harbor integration on the project.** In GitLab UI →
+   Project → **Settings → Integrations → Harbor**:
+   - URL: `https://harbor.melotic.dev`
+   - Project name: matches Harbor project (step 1)
+   - Username: robot account name from step 2
+   - Password: robot token from step 2
+   - **Save changes**.
+5. **Verify variable injection.** Run any pipeline; `$HARBOR_HOST`,
+   `$HARBOR_PROJECT`, `$HARBOR_USERNAME`, `$HARBOR_PASSWORD` etc. are now
+   available to all jobs in the project. No project-level CI/CD variables
+   need to be set.
 
-   | Key                   | Value (from 1Password)        | Type     | Flags                  |
-   |-----------------------|-------------------------------|----------|------------------------|
-   | `HARBOR_REGISTRY`     | `harbor.melotic.dev`          | Variable | Protected (optional)   |
-   | `HARBOR_USER`         | `robot$<group>+ci`            | Variable | Protected (optional)   |
-   | `HARBOR_PASSWORD`     | <robot token>                 | Variable | **Masked + Protected** |
-   | `HARBOR_IMAGE_PREFIX` | `harbor.melotic.dev/<group>`  | Variable | Protected (optional)   |
+> **EE only.** The Harbor integration ships only in GitLab Enterprise
+> Edition. The home-ops cluster runs `gitlab-webservice-ee:v18.11.1` so this
+> is satisfied. CE installations must fall back to manual project-level
+> CI/CD variables.
 
-   `Masked` requires the token to satisfy GitLab's masking rules
-   (≥ 8 chars, base64-friendly alphabet) — Harbor robot tokens do.
-   `Protected` restricts the variable to protected branches/tags only;
-   set per the operator's branch-protection policy.
-
-That's it. Every project in that GitLab group automatically inherits
-these four variables and CI jobs can push to Harbor with no per-project
-secret setup.
+> **Trailing whitespace quirk.** GitLab stores `HARBOR_USERNAME` from the
+> integration form with trailing whitespace from the input field. Pipelines
+> MUST trim whitespace before constructing the docker auth payload — see the
+> Kaniko sample below. Without trimming, Harbor returns `UNAUTHORIZED`.
 
 ### Robot token rotation runbook
 
 Quarterly, OR on suspicion of leak:
 
 1. Harbor → project → Robot Accounts → revoke old robot.
-2. Mint new robot (same name + `ci` suffix is fine — Harbor allows reuse
-   after revoke; if not, append a numeric suffix and update everywhere).
-3. Update 1Password item `harbor-gitlab-<group>` field `secret`.
-4. Update GitLab group CI/CD variable `HARBOR_PASSWORD` (paste new token).
+2. Mint new robot. Copy the new token.
+3. Update the 1Password item (`harbor-gitlab-<group>`) `secret` field.
+4. GitLab UI → Project → Settings → Integrations → Harbor → paste new
+   token in `Password` field, **Save changes**.
 5. Re-run any in-flight pipelines that failed during the swap.
 
-Out of scope: automated provisioning of Harbor projects and robots
-(e.g. via `terraform-provider-harbor`). Tracked as a future improvement.
+Out of scope: automated provisioning of Harbor projects, robots, and the
+GitLab integration record (e.g. via `terraform-provider-harbor`). Tracked
+as a future improvement.
 
 ---
 
-## Image build via Kaniko (recommended)
+## Image build via Kaniko (with restricted-PSS workaround)
 
 ```yaml
 build-image:
@@ -92,14 +107,19 @@ build-image:
     DOCKER_CONFIG: "/tmp/.docker"
   script:
     - mkdir -p "$DOCKER_CONFIG"
+    # Trim whitespace from integration-injected vars (HARBOR_USERNAME has
+    # trailing whitespace; harmless to trim HARBOR_PASSWORD too).
+    - HARBOR_USERNAME_TRIM=$(printf '%s' "$HARBOR_USERNAME" | tr -d '[:space:]')
+    - HARBOR_PASSWORD_TRIM=$(printf '%s' "$HARBOR_PASSWORD" | tr -d '[:space:]')
+    - AUTH_B64=$(printf '%s:%s' "$HARBOR_USERNAME_TRIM" "$HARBOR_PASSWORD_TRIM" | base64 | tr -d '\n')
     - |
       cat > "$DOCKER_CONFIG/config.json" <<EOF
-      { "auths": { "$HARBOR_REGISTRY": { "auth": "$(printf '%s:%s' "$HARBOR_USER" "$HARBOR_PASSWORD" | base64)" } } }
+      { "auths": { "$HARBOR_HOST": { "auth": "$AUTH_B64" } } }
       EOF
     - /kaniko/executor
         --context "${CI_PROJECT_DIR}"
         --dockerfile "${CI_PROJECT_DIR}/Dockerfile"
-        --destination "${HARBOR_IMAGE_PREFIX}/${CI_PROJECT_NAME}:${CI_COMMIT_SHA}"
+        --destination "${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}:${CI_COMMIT_SHA}"
 ```
 
 Use the `:debug` tag (has `/busybox/sh`).
@@ -113,6 +133,38 @@ the pod's `fs_group=1000`, giving uid 1000 write access. Kaniko's executor
 loads credentials from `$DOCKER_CONFIG` if set, then `$HOME/.docker`, then
 `/kaniko/.docker` — so the redirect is transparent to the rest of the build.
 
+### Known limitation: kaniko + restricted PSS
+
+Kaniko unconditionally calls `chown` while unpacking image rootfs to the
+build sandbox, which requires `CAP_CHOWN`. Restricted PSS strips ALL
+capabilities, so kaniko fails image *build* (not auth, not push) with:
+
+```
+error building image: error building stage: failed to get filesystem from image:
+chown /bin: operation not permitted
+```
+
+This is a fundamental kaniko design constraint — kaniko's docs state it
+"must run as root inside the container," which is incompatible with our
+namespace policy. The integration path (auth + push) is verified working;
+only the build itself is gated.
+
+**Workarounds** (none deployed in home-ops; tracked as a backlog item):
+
+- **BuildKit rootless** (`moby/buildkit:rootless`) is purpose-built for
+  restricted environments and uses user namespaces instead of capabilities.
+  Recommended migration path.
+- A **separate namespace with PSS=baseline** scoped only to ephemeral
+  build pods (e.g. `gitlab-runner-builds`), with the runner controller
+  remaining in `gitlab-runner` (PSS=restricted). Narrower deviation but
+  more moving parts.
+- Relaxing the `gitlab-runner` namespace PSS — **rejected** by repo
+  conventions (`AGENTS.md` security context section).
+
+Until that work lands, image-build pipelines using kaniko in this cluster
+will succeed at auth/push but fail at unpack. Bring your own builder image
+or wait for the migration.
+
 ## Image build via rootless Buildah (alternative)
 
 ```yaml
@@ -121,11 +173,16 @@ build-image-buildah:
   image: quay.io/buildah/stable:latest
   script:
     - set +x  # don't echo HARBOR_PASSWORD into job trace before login
-    - echo "$HARBOR_PASSWORD" | buildah login -u "$HARBOR_USER" --password-stdin "$HARBOR_REGISTRY"
+    - HARBOR_USERNAME_TRIM=$(printf '%s' "$HARBOR_USERNAME" | tr -d '[:space:]')
+    - HARBOR_PASSWORD_TRIM=$(printf '%s' "$HARBOR_PASSWORD" | tr -d '[:space:]')
+    - echo "$HARBOR_PASSWORD_TRIM" | buildah login -u "$HARBOR_USERNAME_TRIM" --password-stdin "$HARBOR_HOST"
     - set -x
-    - buildah --isolation=chroot bud -t "$HARBOR_IMAGE_PREFIX/$CI_PROJECT_NAME:$CI_COMMIT_SHA" .
-    - buildah push "$HARBOR_IMAGE_PREFIX/$CI_PROJECT_NAME:$CI_COMMIT_SHA"
+    - buildah --isolation=chroot bud -t "$HARBOR_HOST/$HARBOR_PROJECT/$CI_PROJECT_NAME:$CI_COMMIT_SHA" .
+    - buildah push "$HARBOR_HOST/$HARBOR_PROJECT/$CI_PROJECT_NAME:$CI_COMMIT_SHA"
 ```
+
+Buildah rootless has the same fundamental capability requirements as kaniko
+under restricted PSS — listed here for documentation completeness only.
 
 ## Debugging caveats
 
@@ -137,7 +194,7 @@ build-image-buildah:
 - Prefer `--password-stdin` over inline `-p "$PASSWORD"` so the password
   never appears in the process argv (visible to other pods in the same node
   via `/proc` if PSS is relaxed).
-- The Kaniko snippet above pipes `printf '%s:%s' "$HARBOR_USER" "$HARBOR_PASSWORD"`
+- The Kaniko snippet above pipes `printf '%s:%s' "$HARBOR_USERNAME_TRIM" "$HARBOR_PASSWORD_TRIM"`
   through `base64`. The literal password is on stdin only, but the surrounding
   heredoc is a shell command — wrap with `set +x` before the heredoc if the
   job otherwise enables xtrace.
