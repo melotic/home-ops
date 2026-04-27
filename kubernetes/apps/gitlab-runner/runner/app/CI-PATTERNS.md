@@ -80,10 +80,20 @@ build-image:
   image:
     name: gcr.io/kaniko-project/executor:v1.23.2-debug
     entrypoint: [""]
+  variables:
+    # The kaniko image's /kaniko directory is root-owned 0755 and unwritable
+    # by the build pod's uid 1000 (enforced by namespace PSS=restricted +
+    # pod_security_context.run_as_user=1000). Redirect Docker auth to /tmp,
+    # which the runner mounts as an emptyDir writable by uid 1000.
+    # Kaniko's executor honors $DOCKER_CONFIG ahead of its /kaniko/.docker
+    # default discovery path. Note: the gitlab-runner config also exports
+    # this same DOCKER_CONFIG default at the runner level (defense in depth)
+    # so jobs that omit this `variables:` block still work.
+    DOCKER_CONFIG: "/tmp/.docker"
   script:
-    - mkdir -p /kaniko/.docker
+    - mkdir -p "$DOCKER_CONFIG"
     - |
-      cat > /kaniko/.docker/config.json <<EOF
+      cat > "$DOCKER_CONFIG/config.json" <<EOF
       { "auths": { "$HARBOR_REGISTRY": { "auth": "$(printf '%s:%s' "$HARBOR_USER" "$HARBOR_PASSWORD" | base64)" } } }
       EOF
     - /kaniko/executor
@@ -93,6 +103,15 @@ build-image:
 ```
 
 Use the `:debug` tag (has `/busybox/sh`).
+
+**Why `DOCKER_CONFIG=/tmp/.docker` and not `/kaniko/.docker`:** the runner
+namespace enforces restricted Pod Security Standard, so all build pods must
+run as non-root (`run_as_user=1000`). The kaniko image's `/kaniko` directory
+is root-owned `0755`, so writing the auth config to its default location
+fails with `Permission denied`. `/tmp` is mounted as a per-job emptyDir with
+the pod's `fs_group=1000`, giving uid 1000 write access. Kaniko's executor
+loads credentials from `$DOCKER_CONFIG` if set, then `$HOME/.docker`, then
+`/kaniko/.docker` — so the redirect is transparent to the rest of the build.
 
 ## Image build via rootless Buildah (alternative)
 
