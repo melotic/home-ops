@@ -39,9 +39,9 @@ spec:
       defaultReplicaCount: "3"
       nodeDownPodDeletionPolicy: delete-both-statefulset-and-deployment-pod
       nodeDrainPolicy: block-if-contains-last-replica
-      offlineReplicaRebuilding: enabled
+      offlineReplicaRebuilding: "true"
       orphanResourceAutoDeletion: "replica-data;instance"
-      removeSnapshotsDuringFilesystemTrim: enabled
+      removeSnapshotsDuringFilesystemTrim: "true"
       replicaAutoBalance: best-effort
       snapshotDataIntegrity: disabled
       storageMinimalAvailablePercentage: "5"
