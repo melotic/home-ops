@@ -143,15 +143,29 @@ jobs:
       - name: Compute diff-only failure set
         id: diff
         run: |
-          set -uo pipefail
+          set -euo pipefail
 
           extract_failures() {
             local manifest="$1"
-            kyverno apply pr/kubernetes/apps/kyverno/policies/app/ \
-              --resource "${manifest}" \
-              --policy-report --output-format json 2>/dev/null \
-              | jq -r '.. | objects | select(has("results")) | .results[]? | select(.result=="fail") | "\(.policy)::\(.resources[0].kind)/\(.resources[0].namespace)/\(.resources[0].name)"' \
-              | sort -u
+            if [[ ! -s "${manifest}" ]]; then
+              echo "ERROR: ${manifest} missing or empty (flux-local render failed?)" >&2
+              exit 1
+            fi
+
+            local out
+            if ! out=$(kyverno apply pr/kubernetes/apps/kyverno/policies/app/ \
+                  --resource "${GITHUB_WORKSPACE}/${manifest}" \
+                  --policy-report --output-format json); then
+              echo "ERROR: kyverno apply failed for ${manifest}" >&2
+              echo "${out}" >&2
+              exit 1
+            fi
+
+            jq -r 'if type == "array" then .[] else . end
+                   | .results[]?
+                   | select(.result=="fail")
+                   | "\(.policy)::\(.resources[0].kind)/\(.resources[0].namespace)/\(.resources[0].name)"' \
+              <<<"${out}" | sort -u
           }
 
           extract_failures rendered-pr.yaml   > fails-pr.txt
