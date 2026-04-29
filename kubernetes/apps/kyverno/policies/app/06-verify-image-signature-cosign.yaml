@@ -45,6 +45,14 @@ spec:
           required: false       # Audit-only mode; flip to true to Enforce
           attestors:
             - entries:
+                # WARNING (WR-06): the wildcards below accept signatures from ANY
+                # GitHub repo via the public Sigstore Fulcio CA + Rekor — including
+                # attacker-owned forks that successfully run a signing workflow.
+                # DO NOT flip `required: true` or `validationFailureAction: Enforce`
+                # until `subject:` is narrowed to specific orgs/repos
+                # (e.g. https://github.com/melotic/* and https://github.com/kyverno/*).
+                # See https://kyverno.io/policies/?policytypes=Verify%2520images for
+                # canonical scoped examples.
                 - keyless:
                     subject: "https://github.com/*"
                     issuer: "https://token.actions.githubusercontent.com"
