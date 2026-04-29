@@ -1,0 +1,265 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Kyverno"
+
+on:
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-job:
+    name: Kyverno Pre-Job
+    runs-on: ubuntu-latest
+    outputs:
+      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Get Changed Files
+        id: changed-files
+        uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
+        with:
+          files: |
+            kubernetes/**
+            .github/workflows/kyverno.yaml
+
+  # Layer A — kyverno test against per-policy fixtures (BLOCKING).
+  # Fast unit test of policy authoring; catches policy bugs before render.
+  test:
+    name: Kyverno Test (Layer A)
+    needs: pre-job
+    runs-on: ubuntu-latest
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@fcee92fca5c883169ef9927acf543e0b5fc58289 # v0.2.0
+        with:
+          release: v1.17.2
+
+      - name: Run kyverno test
+        run: kyverno test kubernetes/apps/kyverno/policies/tests/
+
+  # Layer B — kyverno apply on rendered manifests (INFORMATIONAL).
+  # Full violation table for the PR's manifests; does NOT block merge per CONTEXT D-11
+  # (would block any PR touching a namespace with pre-existing violations).
+  apply:
+    name: Kyverno Apply (Layer B)
+    needs: pre-job
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@fcee92fca5c883169ef9927acf543e0b5fc58289 # v0.2.0
+        with:
+          release: v1.17.2
+
+      - name: Render manifests with flux-local
+        uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
+        with:
+          args: >-
+            build all
+            --enable-helm
+            --skip-invalid-kustomization-paths
+            --output-file /github/workspace/rendered.yaml
+            --path /github/workspace/kubernetes/flux/cluster
+
+      - name: Run kyverno apply (informational)
+        id: apply
+        continue-on-error: true
+        run: |
+          set +e
+          kyverno apply kubernetes/apps/kyverno/policies/app/ \
+            --resource rendered.yaml \
+            --table 2>&1 | tee apply-output.txt
+          echo "rc=${PIPESTATUS[0]}" >> "${GITHUB_OUTPUT}"
+          {
+            echo "### Kyverno Apply (Layer B — informational)"
+            echo ''
+            echo '```'
+            cat apply-output.txt
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Comment PR with apply results
+        if: ${{ always() }}
+        continue-on-error: true
+        uses: mshick/add-pr-comment@8e4927817251f1ff60c001f04568532b38e0b4a0 # v3.11
+        with:
+          message-id: "${{ github.event.pull_request.number }}/kyverno/apply"
+          message-failure: "Kyverno apply step did not run successfully (informational only)."
+          message: |
+            ### Kyverno Apply (Layer B — informational)
+
+            ```
+            (see workflow Job Summary for full output)
+            ```
+
+            This is informational only. The blocking gate is the **Diff-Only** job.
+
+  # Layer C — diff-only against main (BLOCKING gate per CONTEXT D-11/D-12).
+  # Fail only on NEW violations introduced by this PR. Logic ported inline from
+  # .planning/spikes/004-kyverno-ci-feedback/scripts/ci-diff-only.sh.
+  diff-only:
+    name: Kyverno Diff-Only (Layer C)
+    needs: pre-job
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          path: pr
+
+      - name: Checkout main
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: "${{ github.event.repository.default_branch }}"
+          path: main
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@fcee92fca5c883169ef9927acf543e0b5fc58289 # v0.2.0
+        with:
+          release: v1.17.2
+
+      - name: Render PR HEAD with flux-local
+        uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
+        with:
+          args: >-
+            build all
+            --enable-helm
+            --skip-invalid-kustomization-paths
+            --output-file /github/workspace/rendered-pr.yaml
+            --path /github/workspace/pr/kubernetes/flux/cluster
+
+      - name: Render main with flux-local
+        uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
+        with:
+          args: >-
+            build all
+            --enable-helm
+            --skip-invalid-kustomization-paths
+            --output-file /github/workspace/rendered-main.yaml
+            --path /github/workspace/main/kubernetes/flux/cluster
+
+      - name: Compute diff-only failure set
+        id: diff
+        run: |
+          set -uo pipefail
+
+          extract_failures() {
+            local manifest="$1"
+            kyverno apply pr/kubernetes/apps/kyverno/policies/app/ \
+              --resource "${manifest}" \
+              --policy-report --output-format json 2>/dev/null \
+              | jq -r '.[] | .results[]? | select(.result=="fail") | "\(.policy)::\(.resources[0].kind)/\(.resources[0].namespace)/\(.resources[0].name)"' \
+              | sort -u
+          }
+
+          extract_failures rendered-pr.yaml   > fails-pr.txt
+          extract_failures rendered-main.yaml > fails-main.txt
+
+          comm -23 fails-pr.txt fails-main.txt > new-fails.txt
+          comm -13 fails-pr.txt fails-main.txt > fixed-fails.txt
+
+          PRE_EXISTING=$(wc -l < fails-main.txt)
+          PR_TOTAL=$(wc -l < fails-pr.txt)
+          NEW_COUNT=$(wc -l < new-fails.txt)
+          FIXED_COUNT=$(wc -l < fixed-fails.txt)
+
+          {
+            echo "### Kyverno Diff-Only (Layer C — BLOCKING)"
+            echo ''
+            echo "- Pre-existing violations on main: ${PRE_EXISTING}"
+            echo "- Total violations on PR:          ${PR_TOTAL}"
+            echo "- Fixed by this PR:                ${FIXED_COUNT}"
+            echo "- NEW violations introduced:       ${NEW_COUNT}"
+            echo ''
+            if [ "${NEW_COUNT}" -gt 0 ]; then
+              echo '#### NEW violations'
+              echo '```'
+              cat new-fails.txt
+              echo '```'
+            fi
+            if [ "${FIXED_COUNT}" -gt 0 ]; then
+              echo '#### Fixed by this PR'
+              echo '```'
+              head -20 fixed-fails.txt
+              echo '```'
+            fi
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+          echo "new_count=${NEW_COUNT}" >> "${GITHUB_OUTPUT}"
+          {
+            echo 'new_fails<<EOF'
+            cat new-fails.txt
+            echo EOF
+          } >> "${GITHUB_OUTPUT}"
+          {
+            echo 'fixed_fails<<EOF'
+            head -20 fixed-fails.txt
+            echo EOF
+          } >> "${GITHUB_OUTPUT}"
+
+      - name: Comment PR (success — no new violations)
+        if: ${{ steps.diff.outputs.new_count == '0' }}
+        continue-on-error: true
+        uses: mshick/add-pr-comment@8e4927817251f1ff60c001f04568532b38e0b4a0 # v3.11
+        with:
+          message-id: "${{ github.event.pull_request.number }}/kyverno/diff-only"
+          message: |
+            ✅ No new Kyverno violations introduced by this PR.
+
+            (Pre-existing violations on `main` are not gated; see the Job Summary for diff-only details.)
+
+      - name: Comment PR (failure — new violations)
+        if: ${{ steps.diff.outputs.new_count != '0' }}
+        continue-on-error: true
+        uses: mshick/add-pr-comment@8e4927817251f1ff60c001f04568532b38e0b4a0 # v3.11
+        with:
+          message-id: "${{ github.event.pull_request.number }}/kyverno/diff-only"
+          message: |
+            ❌ This PR introduces **${{ steps.diff.outputs.new_count }}** new Kyverno violation(s):
+
+            ```
+            ${{ steps.diff.outputs.new_fails }}
+            ```
+
+            Either fix the offending resources or, if the violation is intentional and accepted,
+            add a Kyverno PolicyException CR (see `kubernetes/apps/kyverno/policies/`).
+
+      - name: Fail on new violations
+        if: ${{ steps.diff.outputs.new_count != '0' }}
+        run: |
+          echo "Diff-only gate FAILED: ${{ steps.diff.outputs.new_count }} new violation(s)."
+          exit 1
+
+  kyverno-status:
+    name: Kyverno Success
+    needs: ["test", "apply", "diff-only"]
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Any jobs failed?
+        if: ${{ contains(needs.*.result, 'failure') }}
+        run: exit 1
+
+      - name: All jobs passed or skipped?
+        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        run: echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
