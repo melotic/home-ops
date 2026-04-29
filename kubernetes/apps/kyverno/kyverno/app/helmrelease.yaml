@@ -29,7 +29,10 @@ spec:
           memory: 512Mi
       podSecurityContext:
         runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containerSecurityContext:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
@@ -45,7 +48,10 @@ spec:
           memory: 384Mi
       podSecurityContext:
         runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containerSecurityContext:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
@@ -55,7 +61,10 @@ spec:
       replicas: 1
       podSecurityContext:
         runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containerSecurityContext:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
@@ -65,7 +74,10 @@ spec:
       replicas: 1
       podSecurityContext:
         runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
         fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containerSecurityContext:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
