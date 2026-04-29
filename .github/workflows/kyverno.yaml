@@ -82,11 +82,18 @@ jobs:
         run: |
           set +e
           kyverno apply kubernetes/apps/kyverno/policies/app/ \
-            --resource rendered.yaml \
+            --resource "${GITHUB_WORKSPACE}/rendered.yaml" \
             --table 2>&1 | tee apply-output.txt
-          echo "rc=${PIPESTATUS[0]}" >> "${GITHUB_OUTPUT}"
+          rc=${PIPESTATUS[0]}
+          echo "rc=${rc}" >> "${GITHUB_OUTPUT}"
           {
             echo "### Kyverno Apply"
+            echo ''
+            echo "kyverno apply exited with rc=${rc} (informational; non-blocking per CONTEXT D-11)."
+            if [ "${rc}" -ne 0 ]; then
+              echo ''
+              echo "> :warning: non-zero exit — investigate before relying on the table below."
+            fi
             echo ''
             echo '```'
             cat apply-output.txt
