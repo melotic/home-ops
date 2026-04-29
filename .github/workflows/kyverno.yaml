@@ -28,10 +28,9 @@ jobs:
             kubernetes/**
             .github/workflows/kyverno.yaml
 
-  # Layer A — kyverno test against per-policy fixtures (BLOCKING).
-  # Fast unit test of policy authoring; catches policy bugs before render.
+  # Unit test policies against per-policy fixtures (BLOCKING).
   test:
-    name: Kyverno Test (Layer A)
+    name: Kyverno Test
     needs: pre-job
     runs-on: ubuntu-latest
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
@@ -47,11 +46,11 @@ jobs:
       - name: Run kyverno test
         run: kyverno test kubernetes/apps/kyverno/policies/tests/
 
-  # Layer B — kyverno apply on rendered manifests (INFORMATIONAL).
-  # Full violation table for the PR's manifests; does NOT block merge per CONTEXT D-11
-  # (would block any PR touching a namespace with pre-existing violations).
+  # Apply policies to rendered manifests (INFORMATIONAL — full violation table for the PR).
+  # Does NOT block merge per CONTEXT D-11 (would block any PR touching a namespace with
+  # pre-existing violations). The diff job is the blocking gate.
   apply:
-    name: Kyverno Apply (Layer B)
+    name: Kyverno Apply
     needs: pre-job
     runs-on: ubuntu-latest
     permissions:
@@ -87,34 +86,17 @@ jobs:
             --table 2>&1 | tee apply-output.txt
           echo "rc=${PIPESTATUS[0]}" >> "${GITHUB_OUTPUT}"
           {
-            echo "### Kyverno Apply (Layer B — informational)"
+            echo "### Kyverno Apply"
             echo ''
             echo '```'
             cat apply-output.txt
             echo '```'
           } >> "${GITHUB_STEP_SUMMARY}"
 
-      - name: Comment PR with apply results
-        if: ${{ always() }}
-        continue-on-error: true
-        uses: mshick/add-pr-comment@8e4927817251f1ff60c001f04568532b38e0b4a0 # v3.11
-        with:
-          message-id: "${{ github.event.pull_request.number }}/kyverno/apply"
-          message-failure: "Kyverno apply step did not run successfully (informational only)."
-          message: |
-            ### Kyverno Apply (Layer B — informational)
-
-            ```
-            (see workflow Job Summary for full output)
-            ```
-
-            This is informational only. The blocking gate is the **Diff-Only** job.
-
-  # Layer C — diff-only against main (BLOCKING gate per CONTEXT D-11/D-12).
-  # Fail only on NEW violations introduced by this PR. Logic ported inline from
-  # .planning/spikes/004-kyverno-ci-feedback/scripts/ci-diff-only.sh.
+  # Diff against main — fail only on NEW violations introduced by this PR (BLOCKING).
+  # Per CONTEXT D-11/D-12. Logic ported from .planning/spikes/004-kyverno-ci-feedback/scripts/ci-diff-only.sh.
   diff-only:
-    name: Kyverno Diff-Only (Layer C)
+    name: Kyverno Diff (vs main)
     needs: pre-job
     runs-on: ubuntu-latest
     permissions:
@@ -168,7 +150,7 @@ jobs:
             kyverno apply pr/kubernetes/apps/kyverno/policies/app/ \
               --resource "${manifest}" \
               --policy-report --output-format json 2>/dev/null \
-              | jq -r '.[] | .results[]? | select(.result=="fail") | "\(.policy)::\(.resources[0].kind)/\(.resources[0].namespace)/\(.resources[0].name)"' \
+              | jq -r '.. | objects | select(has("results")) | .results[]? | select(.result=="fail") | "\(.policy)::\(.resources[0].kind)/\(.resources[0].namespace)/\(.resources[0].name)"' \
               | sort -u
           }
 
@@ -184,7 +166,7 @@ jobs:
           FIXED_COUNT=$(wc -l < fixed-fails.txt)
 
           {
-            echo "### Kyverno Diff-Only (Layer C — BLOCKING)"
+            echo "### Kyverno Diff (vs main)"
             echo ''
             echo "- Pre-existing violations on main: ${PRE_EXISTING}"
             echo "- Total violations on PR:          ${PR_TOTAL}"
