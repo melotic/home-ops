@@ -10,7 +10,6 @@
     ":semanticCommits",
   ],
   dependencyDashboard: true,
-  schedule: ["every weekend"],
   ignorePaths: ["**/*.sops.*"],
   ignoreDeps: ["harbor.melotic.dev/library/ghidra"],
   flux: {
