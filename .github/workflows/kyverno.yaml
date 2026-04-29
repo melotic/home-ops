@@ -177,8 +177,12 @@ jobs:
             out=$(kyverno apply pr/kubernetes/apps/kyverno/policies/app/ \
                   --resource "${GITHUB_WORKSPACE}/${manifest}" \
                   --policy-report --output-format json 2>"${err}") || rc=$?
-            if [ "${rc}" -ne 0 ]; then
-              echo "ERROR: kyverno apply failed for ${manifest} (rc=${rc})" >&2
+
+            # kyverno apply exits non-zero whenever any policy result is "fail".
+            # That's expected — we want to count those failures, not abort.
+            # Only treat as a real crash if the JSON output is empty/invalid.
+            if ! jq -e . >/dev/null 2>&1 <<<"${out}"; then
+              echo "ERROR: kyverno apply produced no parseable JSON for ${manifest} (rc=${rc})" >&2
               echo "--- kyverno stderr ---" >&2
               cat "${err}" >&2
               echo "--- kyverno stdout ---" >&2
