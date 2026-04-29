@@ -32,7 +32,7 @@ spec:
             deny:
               conditions:
                 any:
-                  - key: "{{ element.securityContext.runAsNonRoot || `false` }}"
+                  - key: "{{ element.securityContext.runAsNonRoot || request.object.spec.securityContext.runAsNonRoot || `false` }}"
                     operator: NotEquals
                     value: true
                   - key: "{{ element.securityContext.readOnlyRootFilesystem || `false` }}"
