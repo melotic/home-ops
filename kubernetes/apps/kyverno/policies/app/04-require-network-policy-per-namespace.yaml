@@ -1,0 +1,55 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 3 — New policy. Ship as Audit, observe ~7 days, then Enforce.
+# Forces explicit east-west traffic decisions per namespace.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-network-policy-per-namespace
+  annotations:
+    policies.kyverno.io/title: Require NetworkPolicy per Namespace
+    policies.kyverno.io/category: Network
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Every user namespace must have at least one NetworkPolicy (or CiliumNetworkPolicy).
+      Default-deny is preferred but not enforced here; this is the floor.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: check-namespace-has-netpol
+      match:
+        any:
+          - resources:
+              kinds: [Namespace]
+      exclude:
+        any:
+          - resources:
+              names:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - default
+                - cilium-secrets
+      context:
+        - name: netpols
+          apiCall:
+            urlPath: "/apis/networking.k8s.io/v1/namespaces/{{request.object.metadata.name}}/networkpolicies"
+            jmesPath: "items | length(@)"
+        - name: cilium_netpols
+          apiCall:
+            urlPath: "/apis/cilium.io/v2/namespaces/{{request.object.metadata.name}}/ciliumnetworkpolicies"
+            jmesPath: "items | length(@)"
+      validate:
+        message: "Namespace must have at least one NetworkPolicy or CiliumNetworkPolicy"
+        deny:
+          conditions:
+            all:
+              - key: "{{ netpols }}"
+                operator: Equals
+                value: 0
+              - key: "{{ cilium_netpols }}"
+                operator: Equals
+                value: 0

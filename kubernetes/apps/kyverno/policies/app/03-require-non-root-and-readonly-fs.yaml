@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 2 — Stays in Audit. 326 existing violations; per-namespace exclusion likely needed.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-non-root-and-readonly-fs
+  annotations:
+    policies.kyverno.io/title: Require Non-Root + Read-Only Root FS
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Containers must run non-root with a read-only root filesystem. Audit-only:
+      surfaces apps that need a writable tmp emptyDir or non-root user.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: check-non-root
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system, longhorn-system]
+      validate:
+        message: "Container must set securityContext.runAsNonRoot=true and readOnlyRootFilesystem=true"
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.securityContext.runAsNonRoot || `false` }}"
+                    operator: NotEquals
+                    value: true
+                  - key: "{{ element.securityContext.readOnlyRootFilesystem || `false` }}"
+                    operator: NotEquals
+                    value: true

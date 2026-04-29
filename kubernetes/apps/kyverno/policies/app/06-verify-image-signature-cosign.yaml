@@ -1,0 +1,52 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 3 — Cosign signature verification. Audit indefinitely; require explicit
+# allow-list for unsigned images (e.g., prompp until Spike 002 gating conditions met).
+#
+# Note: requires Kyverno's verifyImages rule which talks to a key/keyless verifier.
+# This is a SKELETON — production version needs a real key (cosign.pub from the
+# vendors we trust) and a tested verifier endpoint. Ship as Audit only until the
+# trust roots are nailed down.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: verify-image-signature-cosign
+  annotations:
+    policies.kyverno.io/title: Verify Image Signatures (cosign)
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Container images from approved registries must carry a valid cosign signature.
+      Hard exclusion for prompp images until Spike 002's signature/SBOM gating
+      conditions are met.
+spec:
+  validationFailureAction: Audit
+  webhookConfiguration:
+    failurePolicy: Ignore   # Don't block when verifier endpoint is down
+  rules:
+    - name: verify-trusted-registries
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+          # prompp explicitly excluded — see Spike 002 (image-provenance) gating conditions
+          - resources:
+              namespaces: [spike-prompp]
+      verifyImages:
+        - imageReferences:
+            - "ghcr.io/*"
+            - "registry.k8s.io/*"
+          mutateDigest: false   # Don't auto-mutate; that's Renovate's job
+          verifyDigest: false
+          required: false       # Audit-only mode; flip to true to Enforce
+          attestors:
+            - entries:
+                - keyless:
+                    subject: "https://github.com/*"
+                    issuer: "https://token.actions.githubusercontent.com"
+                    rekor:
+                      url: "https://rekor.sigstore.dev"
