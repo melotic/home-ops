@@ -35,18 +35,11 @@ spec:
           Container image must come from an allowlisted registry
           (ghcr.io, docker.io, index.docker.io, quay.io, registry.k8s.io,
           mirror.gcr.io, lscr.io, docker.dragonflydb.io, harbor.melotic.dev).
-        foreach:
-          - list: "request.object.spec.containers"
-            deny:
-              conditions:
-                all:
-                  - key: "{{ element.image | regex_match('^(ghcr.io|quay.io|mirror.gcr.io|docker.io|index.docker.io|lscr.io|docker.dragonflydb.io|harbor.melotic.dev|registry.k8s.io)/', @) }}"
-                    operator: Equals
-                    value: false
-          - list: "request.object.spec.initContainers || `[]`"
-            deny:
-              conditions:
-                all:
-                  - key: "{{ element.image | regex_match('^(ghcr.io|quay.io|mirror.gcr.io|docker.io|index.docker.io|lscr.io|docker.dragonflydb.io|harbor.melotic.dev|registry.k8s.io)/', @) }}"
-                    operator: Equals
-                    value: false
+        pattern:
+          spec:
+            =(ephemeralContainers):
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/*"
+            =(initContainers):
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/*"
+            containers:
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/*"
