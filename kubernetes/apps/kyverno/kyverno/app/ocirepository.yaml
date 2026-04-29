@@ -11,5 +11,5 @@ spec:
     operation: copy
   ref:
     # renovate: datasource=docker depName=ghcr.io/kyverno/charts/kyverno
-    tag: 3.7.2
+    tag: 3.8.0
   url: oci://ghcr.io/kyverno/charts/kyverno
