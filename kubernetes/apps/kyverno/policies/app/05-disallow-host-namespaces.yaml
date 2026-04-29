@@ -29,6 +29,6 @@ spec:
         message: "Pod must not set spec.hostNetwork, spec.hostPID, or spec.hostIPC"
         pattern:
           spec:
-            =(hostNetwork): "false"
-            =(hostPID): "false"
-            =(hostIPC): "false"
+            =(hostNetwork): false
+            =(hostPID): false
+            =(hostIPC): false
