@@ -45,3 +45,10 @@ spec:
                   - key: "{{ element.image | contains(@, '@sha256:') }}"
                     operator: NotEquals
                     value: true
+          - list: "request.object.spec.ephemeralContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | contains(@, '@sha256:') }}"
+                    operator: NotEquals
+                    value: true

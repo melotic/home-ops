@@ -47,3 +47,10 @@ spec:
                   - key: "{{ element.image | regex_match('(^|/)(prompp|vmstorage-prompp)(:|@|$)', @) }}"
                     operator: Equals
                     value: true
+          - list: "request.object.spec.ephemeralContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | regex_match('(^|/)(prompp|vmstorage-prompp)(:|@|$)', @) }}"
+                    operator: Equals
+                    value: true
