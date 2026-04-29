@@ -75,7 +75,7 @@ jobs:
             --enable-helm
             --skip-invalid-kustomization-paths
             --output-file /github/workspace/rendered.yaml
-            --path /github/workspace/kubernetes/flux/cluster
+            /github/workspace/kubernetes/flux/cluster
 
       - name: Run kyverno apply (informational)
         id: apply
@@ -146,7 +146,7 @@ jobs:
             --enable-helm
             --skip-invalid-kustomization-paths
             --output-file /github/workspace/rendered-pr.yaml
-            --path /github/workspace/pr/kubernetes/flux/cluster
+            /github/workspace/pr/kubernetes/flux/cluster
 
       - name: Render main with flux-local
         uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
@@ -156,7 +156,7 @@ jobs:
             --enable-helm
             --skip-invalid-kustomization-paths
             --output-file /github/workspace/rendered-main.yaml
-            --path /github/workspace/main/kubernetes/flux/cluster
+            /github/workspace/main/kubernetes/flux/cluster
 
       - name: Compute diff-only failure set
         id: diff
