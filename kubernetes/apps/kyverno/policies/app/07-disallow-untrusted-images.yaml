@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 1 — SEC-04 image denylist. Ships Audit per D-07/D-10; Enforce flip in plan 04-06.
+# Spike 002 REJECT of prompp is final (CONTEXT D-02). Adding to or removing from the
+# denylist requires a tracked PR — process IS the gate per D-09.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-untrusted-images
+  annotations:
+    policies.kyverno.io/title: Disallow Untrusted Images
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Container images whose name matches the denylist are blocked from running.
+      Initial denylist entries (prompp, vmstorage-prompp) reflect Spike 002's REJECT
+      decision on observability-prompp. Adding to the denylist requires a PR.
+spec:
+  validationFailureAction: Audit  # Tier 1 — Enforce flip in plan 04-06
+  background: true
+  rules:
+    - name: check-image-denylist
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+      validate:
+        message: >-
+          Image name matches denylist (currently: prompp, vmstorage-prompp).
+          Adding to the allow-exception requires a PR.
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | regex_match('(prompp|vmstorage-prompp)', @) }}"
+                    operator: Equals
+                    value: true
+          - list: "request.object.spec.initContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | regex_match('(prompp|vmstorage-prompp)', @) }}"
+                    operator: Equals
+                    value: true
