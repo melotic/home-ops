@@ -1,0 +1,21 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: require-namespace-psa-labels-test
+policies:
+  - ../../app/01-require-namespace-psa-labels.yaml
+resources:
+  - fixtures/good-namespace.yaml
+  - fixtures/bad-namespace.yaml
+results:
+  - policy: require-namespace-psa-labels
+    rule: check-psa-enforce-label
+    resources: [example-good]
+    kind: Namespace
+    result: pass
+  - policy: require-namespace-psa-labels
+    rule: check-psa-enforce-label
+    resources: [example-bad]
+    kind: Namespace
+    result: fail
