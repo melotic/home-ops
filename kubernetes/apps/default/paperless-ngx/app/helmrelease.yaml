@@ -113,7 +113,7 @@ spec:
           gotenberg:
             image:
               repository: docker.io/gotenberg/gotenberg
-              tag: "8.31.0"
+              tag: "8.32.0"
             securityContext:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
