@@ -1,0 +1,16 @@
+---
+# Bad fixture — explicit container runAsNonRoot=false overrides pod-level true
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-container-nonroot-false
+  namespace: default
+spec:
+  securityContext:
+    runAsNonRoot: true
+  containers:
+    - name: app
+      image: ghcr.io/kyverno/kyverno:v1.17.2
+      securityContext:
+        runAsNonRoot: false
+        readOnlyRootFilesystem: true

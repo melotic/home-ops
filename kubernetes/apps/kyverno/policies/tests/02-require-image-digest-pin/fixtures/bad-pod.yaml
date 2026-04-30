@@ -1,0 +1,11 @@
+---
+# Bad fixture — image uses a floating tag
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: ghcr.io/kyverno/kyverno:v1.17.2

@@ -8,6 +8,7 @@ policies:
 resources:
   - fixtures/good-pod.yaml
   - fixtures/bad-pod.yaml
+  - fixtures/helper-pod.yaml
 results:
   - policy: disallow-untrusted-images
     rule: check-image-denylist
@@ -19,3 +20,8 @@ results:
     resources: [bad-pod]
     kind: Pod
     result: fail
+  - policy: disallow-untrusted-images
+    rule: check-image-denylist
+    resources: [helper-pod]
+    kind: Pod
+    result: pass

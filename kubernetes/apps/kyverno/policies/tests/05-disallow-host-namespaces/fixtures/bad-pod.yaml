@@ -1,0 +1,12 @@
+---
+# Bad fixture — hostNetwork is true
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
+  namespace: default
+spec:
+  hostNetwork: true
+  containers:
+    - name: app
+      image: ghcr.io/kyverno/kyverno:v1.17.2

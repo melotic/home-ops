@@ -1,0 +1,11 @@
+---
+# Good fixture — image pinned by SHA256 digest
+apiVersion: v1
+kind: Pod
+metadata:
+  name: good-pod
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: ghcr.io/kyverno/kyverno@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

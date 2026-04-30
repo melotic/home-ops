@@ -1,0 +1,11 @@
+---
+# Good fixture — substring match is not enough to hit the segment-bounded denylist
+apiVersion: v1
+kind: Pod
+metadata:
+  name: helper-pod
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: ghcr.io/example/my-prompp-helper:latest

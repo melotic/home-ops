@@ -8,6 +8,7 @@ policies:
 resources:
   - fixtures/good-namespace.yaml
   - fixtures/bad-namespace.yaml
+  - fixtures/invalid-namespace.yaml
 results:
   - policy: require-namespace-psa-labels
     rule: check-psa-enforce-label
@@ -17,5 +18,10 @@ results:
   - policy: require-namespace-psa-labels
     rule: check-psa-enforce-label
     resources: [example-bad]
+    kind: Namespace
+    result: fail
+  - policy: require-namespace-psa-labels
+    rule: check-psa-enforce-label
+    resources: [example-invalid]
     kind: Namespace
     result: fail
