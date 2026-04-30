@@ -37,17 +37,17 @@ spec:
                 - /bin/sh
                 - -c
                 - |
+                  set -eu
+
                   echo "Connecting to kopia repository..."
                   kopia repository connect filesystem \
                     --path=/repository \
                     --password="$KOPIA_PASSWORD"
                   echo "Running snapshot verification (5% of files)..."
                   kopia snapshot verify --verify-files-percent=5 --file-parallelism=2
-                  VERIFY_EXIT=$?
                   echo "Running blob verification..."
                   kopia blob stats
-                  echo "Verification complete. Exit code: $VERIFY_EXIT"
-                  exit $VERIFY_EXIT
+                  echo "Verification complete."
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true
