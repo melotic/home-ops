@@ -12,6 +12,8 @@ spec:
   values:
     fullnameOverride: victoria-logs
     server:
+      image:
+        registry: docker.io
       persistentVolume:
         enabled: true
         storageClassName: longhorn
