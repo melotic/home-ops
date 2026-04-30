@@ -73,6 +73,8 @@ spec:
         coreDatabase: harbor
         existingSecret: postgres-cluster-app
     core:
+      image:
+        repository: docker.io/goharbor/harbor-core
       resources:
         requests:
           cpu: 50m
@@ -86,6 +88,12 @@ spec:
               name: harbor-oidc-config
               key: CONFIG_OVERWRITE_JSON
     registry:
+      registry:
+        image:
+          repository: docker.io/goharbor/registry-photon
+      controller:
+        image:
+          repository: docker.io/goharbor/harbor-registryctl
       resources:
         requests:
           cpu: 50m
@@ -93,6 +101,8 @@ spec:
         limits:
           memory: 512Mi
     jobservice:
+      image:
+        repository: docker.io/goharbor/harbor-jobservice
       resources:
         requests:
           cpu: 30m
@@ -100,6 +110,8 @@ spec:
         limits:
           memory: 256Mi
     trivy:
+      image:
+        repository: docker.io/goharbor/trivy-adapter-photon
       resources:
         requests:
           cpu: 50m
@@ -107,9 +119,14 @@ spec:
         limits:
           memory: 512Mi
     portal:
+      image:
+        repository: docker.io/goharbor/harbor-portal
       resources:
         requests:
           cpu: 10m
           memory: 64Mi
         limits:
           memory: 128Mi
+    exporter:
+      image:
+        repository: docker.io/goharbor/harbor-exporter
