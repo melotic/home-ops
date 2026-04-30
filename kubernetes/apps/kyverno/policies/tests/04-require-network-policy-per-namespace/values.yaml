@@ -1,0 +1,26 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Values
+policies:
+  - name: require-network-policy-per-namespace
+    resources:
+      - name: namespace-netpol
+        values:
+          request.operation: BACKGROUND
+          netpols: 1
+          cilium_netpols: 0
+      - name: namespace-cilium-netpol
+        values:
+          request.operation: BACKGROUND
+          netpols: 0
+          cilium_netpols: 1
+      - name: namespace-no-netpol
+        values:
+          request.operation: BACKGROUND
+          netpols: 0
+          cilium_netpols: 0
+      - name: namespace-create
+        values:
+          request.operation: CREATE
+          netpols: 0
+          cilium_netpols: 0

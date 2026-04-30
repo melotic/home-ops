@@ -1,0 +1,8 @@
+---
+# Bad fixture — fails require-namespace-psa-labels (no PSA enforce label)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-bad
+  labels:
+    app.kubernetes.io/name: example

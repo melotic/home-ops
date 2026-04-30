@@ -1,0 +1,10 @@
+---
+# Good fixture — passes require-namespace-psa-labels
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-good
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted

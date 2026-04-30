@@ -1,0 +1,11 @@
+---
+# Bad fixture — image from non-allowlisted registry
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: evil.example.com/foo:latest

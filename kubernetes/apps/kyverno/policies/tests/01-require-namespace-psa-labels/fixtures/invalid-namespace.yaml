@@ -1,0 +1,8 @@
+---
+# Bad fixture — non-empty but invalid PSA enforce level
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-invalid
+  labels:
+    pod-security.kubernetes.io/enforce: permissive

@@ -1,0 +1,21 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: require-image-digest-pin-test
+policies:
+  - ../../app/02-require-image-digest-pin.yaml
+resources:
+  - fixtures/good-pod.yaml
+  - fixtures/bad-pod.yaml
+results:
+  - policy: require-image-digest-pin
+    rule: check-image-digest
+    resources: [good-pod]
+    kind: Pod
+    result: pass
+  - policy: require-image-digest-pin
+    rule: check-image-digest
+    resources: [bad-pod]
+    kind: Pod
+    result: fail

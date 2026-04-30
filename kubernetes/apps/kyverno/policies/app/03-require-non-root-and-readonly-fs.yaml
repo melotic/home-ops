@@ -1,0 +1,89 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 2 — Stays in Audit. 326 existing violations; per-namespace exclusion likely needed.
+#
+# Split into two named rules (check-runAsNonRoot, check-readOnlyRootFilesystem) so
+# PolicyReport entries pinpoint which control was violated. With one combined rule
+# and `any: [cond1, cond2]`, the report only surfaces a generic message without
+# saying which condition fired — making 326 audit entries hard to triage.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-non-root-and-readonly-fs
+  annotations:
+    policies.kyverno.io/title: Require Non-Root + Read-Only Root FS
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Containers must run non-root with a read-only root filesystem. Audit-only:
+      surfaces apps that need a writable tmp emptyDir or non-root user.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: check-runAsNonRoot
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system, longhorn-system]
+      validate:
+        message: "Container must set securityContext.runAsNonRoot=true"
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ not_null(element.securityContext.runAsNonRoot, request.object.spec.securityContext.runAsNonRoot, `false`) }}"
+                    operator: NotEquals
+                    value: true
+          - list: "request.object.spec.initContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ not_null(element.securityContext.runAsNonRoot, request.object.spec.securityContext.runAsNonRoot, `false`) }}"
+                    operator: NotEquals
+                    value: true
+          - list: "request.object.spec.ephemeralContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ not_null(element.securityContext.runAsNonRoot, request.object.spec.securityContext.runAsNonRoot, `false`) }}"
+                    operator: NotEquals
+                    value: true
+    - name: check-readOnlyRootFilesystem
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system, longhorn-system]
+      validate:
+        message: "Container must set securityContext.readOnlyRootFilesystem=true"
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.securityContext.readOnlyRootFilesystem || `false` }}"
+                    operator: NotEquals
+                    value: true
+          - list: "request.object.spec.initContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.securityContext.readOnlyRootFilesystem || `false` }}"
+                    operator: NotEquals
+                    value: true
+          - list: "request.object.spec.ephemeralContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.securityContext.readOnlyRootFilesystem || `false` }}"
+                    operator: NotEquals
+                    value: true

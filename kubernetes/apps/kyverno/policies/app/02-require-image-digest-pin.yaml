@@ -1,0 +1,54 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 2 — Stays in Audit indefinitely. Renovate enforces drift; this surfaces gaps.
+# Why not Enforce: 325 existing violations across upstream charts that don't pin digests.
+# Flipping to Enforce would block every Helm chart upgrade.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-image-digest-pin
+  annotations:
+    policies.kyverno.io/title: Require Image Digest Pin
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Container images must be pinned by SHA256 digest, not floating tags.
+      Surfaces tag-rewrite supply-chain risk via PolicyReports; remediation is
+      Renovate's `pinDigests: true` feature.
+spec:
+  validationFailureAction: Audit  # Stays in Audit; this is a metrics-only policy
+  background: true
+  rules:
+    - name: check-image-digest
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+      validate:
+        message: "Container image must be pinned by digest (image@sha256:...)"
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | contains(@, '@sha256:') }}"
+                    operator: NotEquals
+                    value: true
+          - list: "request.object.spec.initContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | contains(@, '@sha256:') }}"
+                    operator: NotEquals
+                    value: true
+          - list: "request.object.spec.ephemeralContainers || `[]`"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image | contains(@, '@sha256:') }}"
+                    operator: NotEquals
+                    value: true

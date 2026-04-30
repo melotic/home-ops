@@ -1,0 +1,34 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: require-network-policy-per-namespace-test
+policies:
+  - ../../app/04-require-network-policy-per-namespace.yaml
+resources:
+  - fixtures/namespace-netpol.yaml
+  - fixtures/namespace-cilium-netpol.yaml
+  - fixtures/namespace-no-netpol.yaml
+  - fixtures/namespace-create.yaml
+variables: values.yaml
+results:
+  - policy: require-network-policy-per-namespace
+    rule: check-namespace-has-netpol
+    resources: [namespace-netpol]
+    kind: Namespace
+    result: pass
+  - policy: require-network-policy-per-namespace
+    rule: check-namespace-has-netpol
+    resources: [namespace-cilium-netpol]
+    kind: Namespace
+    result: pass
+  - policy: require-network-policy-per-namespace
+    rule: check-namespace-has-netpol
+    resources: [namespace-no-netpol]
+    kind: Namespace
+    result: fail
+  - policy: require-network-policy-per-namespace
+    rule: check-namespace-has-netpol
+    resources: [namespace-create]
+    kind: Namespace
+    result: skip
