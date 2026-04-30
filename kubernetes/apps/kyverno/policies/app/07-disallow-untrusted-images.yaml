@@ -31,7 +31,7 @@ spec:
       validate:
         message: >-
           Image name matches denylist (currently: prompp, vmstorage-prompp).
-          Adding to the allow-exception requires a PR.
+          Changes to the denylist require a PR.
         foreach:
           - list: "request.object.spec.containers"
             deny:

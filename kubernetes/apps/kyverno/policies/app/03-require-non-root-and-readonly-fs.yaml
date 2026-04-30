@@ -31,27 +31,27 @@ spec:
           - resources:
               namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system, longhorn-system]
       validate:
-        message: "Container must set securityContext.runAsNonRoot=true (or runAsUser != 0)"
+        message: "Container must set securityContext.runAsNonRoot=true"
         foreach:
           - list: "request.object.spec.containers"
             deny:
               conditions:
                 any:
-                  - key: "{{ element.securityContext.runAsNonRoot || request.object.spec.securityContext.runAsNonRoot || `false` }}"
+                  - key: "{{ not_null(element.securityContext.runAsNonRoot, request.object.spec.securityContext.runAsNonRoot, `false`) }}"
                     operator: NotEquals
                     value: true
           - list: "request.object.spec.initContainers || `[]`"
             deny:
               conditions:
                 any:
-                  - key: "{{ element.securityContext.runAsNonRoot || request.object.spec.securityContext.runAsNonRoot || `false` }}"
+                  - key: "{{ not_null(element.securityContext.runAsNonRoot, request.object.spec.securityContext.runAsNonRoot, `false`) }}"
                     operator: NotEquals
                     value: true
           - list: "request.object.spec.ephemeralContainers || `[]`"
             deny:
               conditions:
                 any:
-                  - key: "{{ element.securityContext.runAsNonRoot || request.object.spec.securityContext.runAsNonRoot || `false` }}"
+                  - key: "{{ not_null(element.securityContext.runAsNonRoot, request.object.spec.securityContext.runAsNonRoot, `false`) }}"
                     operator: NotEquals
                     value: true
     - name: check-readOnlyRootFilesystem

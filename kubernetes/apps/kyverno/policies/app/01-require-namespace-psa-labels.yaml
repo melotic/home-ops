@@ -39,4 +39,4 @@ spec:
         pattern:
           metadata:
             labels:
-              pod-security.kubernetes.io/enforce: "?*"
+              pod-security.kubernetes.io/enforce: "restricted | baseline | privileged"
