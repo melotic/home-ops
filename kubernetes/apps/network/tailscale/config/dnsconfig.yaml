@@ -6,5 +6,5 @@ metadata:
 spec:
   nameserver:
     image:
-      repo: tailscale/k8s-nameserver
+      repo: ghcr.io/tailscale/k8s-nameserver
       tag: unstable

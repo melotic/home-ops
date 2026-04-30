@@ -120,7 +120,7 @@ spec:
           environment = ["FF_USE_FASTZIP=true", "DOCKER_CONFIG=/tmp/.docker"]
           [runners.kubernetes]
             namespace = "gitlab-runner"
-            image = "alpine:3.20"
+            image = "docker.io/library/alpine:3.20"
             helper_image = ""
             # The default (alpine) helper image has no /etc/passwd entry for
             # uid 1000, so glibc's getpwuid(1000) returns NULL and git's

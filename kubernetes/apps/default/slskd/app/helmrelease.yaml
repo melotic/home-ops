@@ -26,7 +26,7 @@ spec:
         containers:
           app:
             image:
-              repository: slskd/slskd
+              repository: docker.io/slskd/slskd
               tag: 0.25.1
             env:
               DOTNET_BUNDLE_EXTRACT_BASE_DIR: /tmp/.net

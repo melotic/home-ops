@@ -24,7 +24,7 @@ spec:
             fsGroup: 65534
           containers:
             - name: rclone
-              image: rclone/rclone:1.73.5
+              image: docker.io/rclone/rclone:1.73.5
               args:
                 - copy
                 - /source

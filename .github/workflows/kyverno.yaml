@@ -30,7 +30,12 @@ jobs:
           set -euo pipefail
           git fetch --no-tags origin "${BASE_REF}:refs/remotes/origin/${BASE_REF}"
           if git diff --name-only "origin/${BASE_REF}..HEAD" -- \
-                'kubernetes/apps/kyverno/**' '.github/workflows/kyverno.yaml' \
+                'kubernetes/**' \
+                'talos/**' \
+                'bootstrap/**' \
+                'cluster*.yaml' \
+                'nodes*.yaml' \
+                '.github/workflows/kyverno.yaml' \
                 | grep -q .; then
             echo "any_changed=true" >> "${GITHUB_OUTPUT}"
           else
@@ -78,13 +83,9 @@ jobs:
             --output-file /github/workspace/rendered.yaml
             /github/workspace/kubernetes/flux/cluster
 
-      # --audit-warn downgrades audit-policy fails to warnings; --warn-exit-code 0
-      # makes warnings rc=0. So rc=1 only on real engine errors or enforce-mode
-      # failures (we have none today). Audit findings appear in the table for
-      # visibility without gating — see kubernetes/apps/kyverno/policies/.
       - name: Run kyverno apply
         run: |
-          set -o pipefail
+          set -euo pipefail
           {
             echo '### Kyverno Validate'
             echo ''
@@ -95,6 +96,22 @@ jobs:
             --audit-warn \
             --warn-exit-code 0 \
             --continue-on-fail \
+            --table \
+            --remove-color \
+            | tee -a "${GITHUB_STEP_SUMMARY}"
+          echo '```' >> "${GITHUB_STEP_SUMMARY}"
+
+      - name: Run registry allowlist gate
+        run: |
+          set -euo pipefail
+          {
+            echo ''
+            echo '### Registry Allowlist Gate'
+            echo ''
+            echo '```'
+          } >> "${GITHUB_STEP_SUMMARY}"
+          kyverno apply kubernetes/apps/kyverno/policies/app/08-require-image-registry-allowlist.yaml \
+            --resource "${GITHUB_WORKSPACE}/rendered.yaml" \
             --table \
             --remove-color \
             | tee -a "${GITHUB_STEP_SUMMARY}"

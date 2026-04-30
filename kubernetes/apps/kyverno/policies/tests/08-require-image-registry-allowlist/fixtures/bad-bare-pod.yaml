@@ -1,0 +1,11 @@
+---
+# Bad fixture — bare Docker Hub image remains denied.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-bare-pod
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: busybox:latest
