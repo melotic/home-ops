@@ -25,8 +25,7 @@ spec:
       crds:
         cleanup:
           image:
-            registry: registry.k8s.io
-            repository: kubectl
+            repository: registry.k8s.io/kubectl
       operator:
         disable_prometheus_converter: false
         enable_converter_ownership: true
