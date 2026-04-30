@@ -24,7 +24,7 @@ spec:
             fsGroup: 988
           containers:
             - name: kopia
-              image: kopia/kopia:0.22.3
+              image: docker.io/kopia/kopia:0.22.3
               env:
                 - name: USER
                   value: kopia
