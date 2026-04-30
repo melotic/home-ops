@@ -1,0 +1,14 @@
+---
+# Good fixture — host namespace fields are false
+apiVersion: v1
+kind: Pod
+metadata:
+  name: good-pod
+  namespace: default
+spec:
+  hostNetwork: false
+  hostPID: false
+  hostIPC: false
+  containers:
+    - name: app
+      image: ghcr.io/kyverno/kyverno:v1.17.2

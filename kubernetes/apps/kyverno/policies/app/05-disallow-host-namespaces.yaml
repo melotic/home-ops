@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 3 — Defense-in-depth. Block hostNetwork/hostPID/hostIPC pods.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-host-namespaces
+  annotations:
+    policies.kyverno.io/title: Disallow Host Namespaces
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Pods must not use hostNetwork, hostPID, or hostIPC. Equivalent to PSS Baseline.
+      Excludes system addons (Cilium, kubelet pods, etc.) that legitimately need it.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: check-no-host-namespaces
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      exclude:
+        any:
+          - resources:
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+      validate:
+        message: "Pod must not set spec.hostNetwork, spec.hostPID, or spec.hostIPC"
+        pattern:
+          spec:
+            =(hostNetwork): false
+            =(hostPID): false
+            =(hostIPC): false

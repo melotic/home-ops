@@ -1,0 +1,8 @@
+---
+# Skipped fixture — admission CREATE is outside this background-scan-only policy
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: namespace-create
+  labels:
+    pod-security.kubernetes.io/enforce: restricted

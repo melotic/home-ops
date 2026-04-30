@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 1 — Ready for Enforce after remediation PR for 12 namespaces.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-namespace-psa-labels
+  annotations:
+    policies.kyverno.io/title: Require Namespace PSA Labels
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Every user namespace must declare pod-security.kubernetes.io/enforce. This is
+      defense-in-depth alongside Kyverno itself; if Kyverno is ever removed, PSA still
+      blocks the worst classes of pod misconfigurations.
+spec:
+  validationFailureAction: Audit  # Flip to Enforce after remediation PRs land
+  background: true
+  rules:
+    - name: check-psa-enforce-label
+      match:
+        any:
+          - resources:
+              kinds: [Namespace]
+              names: ["*"]
+      exclude:
+        any:
+          - resources:
+              names:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - default
+                - cilium-secrets    # Cilium-managed, no user pods
+      validate:
+        message: "Namespace must set label pod-security.kubernetes.io/enforce (restricted | baseline | privileged)"
+        pattern:
+          metadata:
+            labels:
+              pod-security.kubernetes.io/enforce: "restricted | baseline | privileged"

@@ -1,0 +1,8 @@
+---
+# Good fixture — mocked CiliumNetworkPolicy count is non-zero
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: namespace-cilium-netpol
+  labels:
+    pod-security.kubernetes.io/enforce: restricted

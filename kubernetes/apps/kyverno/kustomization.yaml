@@ -8,3 +8,4 @@ components:
   - ../../components/common
 resources:
   - ./kyverno/ks.yaml
+  - ./policies/ks.yaml

@@ -1,0 +1,77 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Tier 3 — BACKGROUND-SCAN ONLY. See WARNING below.
+#
+# WARNING (CR-02): This policy CANNOT be flipped to validationFailureAction: Enforce.
+# At admission time, a Namespace is admitted as a single object before any
+# NetworkPolicy can possibly exist inside it (NetworkPolicies require an existing
+# namespace as their parent). The apiCall to list NetworkPolicies in
+# request.object.metadata.name will always return zero on CREATE admission, so an
+# Enforce flip would permanently block all namespace creation in the cluster.
+#
+# To prevent false-positive PolicyReports on every new namespace admission, the
+# rule is gated by a precondition that skips admission events; useful signal
+# comes solely from background scans of namespaces that already exist.
+# Reference: https://kyverno.io/docs/writing-policies/preconditions/ and
+#            https://kyverno.io/docs/writing-policies/background/
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-network-policy-per-namespace
+  annotations:
+    policies.kyverno.io/title: Require NetworkPolicy per Namespace
+    policies.kyverno.io/category: Network
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Every user namespace must have at least one NetworkPolicy (or CiliumNetworkPolicy).
+      Default-deny is preferred but not enforced here; this is the floor.
+      BACKGROUND-SCAN ONLY — see WARNING in file header; cannot be Enforced.
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: check-namespace-has-netpol
+      match:
+        any:
+          - resources:
+              kinds: [Namespace]
+      exclude:
+        any:
+          - resources:
+              names:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - default
+                - cilium-secrets
+      preconditions:
+        all:
+          # Skip admission events (CREATE/UPDATE/DELETE/CONNECT). Background scans
+          # do not set request.operation, so the `|| 'BACKGROUND'` default keeps
+          # them in scope. Without this gate, every Namespace CREATE would emit a
+          # false-positive PolicyReport since no NetworkPolicy can exist yet.
+          - key: "{{ request.operation || 'BACKGROUND' }}"
+            operator: Equals
+            value: BACKGROUND
+      context:
+        - name: netpols
+          apiCall:
+            urlPath: "/apis/networking.k8s.io/v1/namespaces/{{request.object.metadata.name}}/networkpolicies"
+            jmesPath: "items | length(@)"
+        - name: cilium_netpols
+          apiCall:
+            urlPath: "/apis/cilium.io/v2/namespaces/{{request.object.metadata.name}}/ciliumnetworkpolicies"
+            jmesPath: "items | length(@)"
+      validate:
+        message: "Namespace must have at least one NetworkPolicy or CiliumNetworkPolicy"
+        deny:
+          conditions:
+            all:
+              - key: "{{ netpols }}"
+                operator: Equals
+                value: 0
+              - key: "{{ cilium_netpols }}"
+                operator: Equals
+                value: 0

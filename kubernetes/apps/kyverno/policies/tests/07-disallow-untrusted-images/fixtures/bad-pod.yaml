@@ -1,0 +1,11 @@
+---
+# Bad fixture — image name matches denylist (prompp)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bad-pod
+  namespace: default
+spec:
+  containers:
+    - name: app
+      image: prompp:latest

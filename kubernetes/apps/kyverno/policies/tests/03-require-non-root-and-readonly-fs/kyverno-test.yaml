@@ -1,0 +1,53 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: require-non-root-and-readonly-fs-test
+policies:
+  - ../../app/03-require-non-root-and-readonly-fs.yaml
+resources:
+  - fixtures/good-pod-level-nonroot.yaml
+  - fixtures/bad-container-nonroot-false.yaml
+  - fixtures/bad-readonly-false.yaml
+  - fixtures/bad-readonly-missing.yaml
+results:
+  - policy: require-non-root-and-readonly-fs
+    rule: check-runAsNonRoot
+    resources: [good-pod-level-nonroot]
+    kind: Pod
+    result: pass
+  - policy: require-non-root-and-readonly-fs
+    rule: check-readOnlyRootFilesystem
+    resources: [good-pod-level-nonroot]
+    kind: Pod
+    result: pass
+  - policy: require-non-root-and-readonly-fs
+    rule: check-runAsNonRoot
+    resources: [bad-container-nonroot-false]
+    kind: Pod
+    result: fail
+  - policy: require-non-root-and-readonly-fs
+    rule: check-readOnlyRootFilesystem
+    resources: [bad-container-nonroot-false]
+    kind: Pod
+    result: pass
+  - policy: require-non-root-and-readonly-fs
+    rule: check-runAsNonRoot
+    resources: [bad-readonly-false]
+    kind: Pod
+    result: pass
+  - policy: require-non-root-and-readonly-fs
+    rule: check-readOnlyRootFilesystem
+    resources: [bad-readonly-false]
+    kind: Pod
+    result: fail
+  - policy: require-non-root-and-readonly-fs
+    rule: check-runAsNonRoot
+    resources: [bad-readonly-missing]
+    kind: Pod
+    result: pass
+  - policy: require-non-root-and-readonly-fs
+    rule: check-readOnlyRootFilesystem
+    resources: [bad-readonly-missing]
+    kind: Pod
+    result: fail
