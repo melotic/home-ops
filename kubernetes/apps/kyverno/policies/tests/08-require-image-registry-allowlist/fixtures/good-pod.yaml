@@ -8,4 +8,4 @@ metadata:
 spec:
   containers:
     - name: app
-      image: ghcr.io/kyverno/kyverno:v1.17.2
+      image: ghcr.io/kyverno/kyverno:v1.18.0
