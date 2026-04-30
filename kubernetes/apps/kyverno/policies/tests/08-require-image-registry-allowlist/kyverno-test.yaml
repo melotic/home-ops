@@ -7,7 +7,8 @@ policies:
   - ../../app/08-require-image-registry-allowlist.yaml
 resources:
   - fixtures/good-pod.yaml
-  - fixtures/bad-pod.yaml
+  - fixtures/bad-bare-pod.yaml
+  - fixtures/bad-registry-pod.yaml
 results:
   - policy: require-image-registry-allowlist
     rule: check-registry-allowlist
@@ -16,6 +17,11 @@ results:
     result: pass
   - policy: require-image-registry-allowlist
     rule: check-registry-allowlist
-    resources: [bad-pod]
+    resources: [bad-bare-pod]
+    kind: Pod
+    result: fail
+  - policy: require-image-registry-allowlist
+    rule: check-registry-allowlist
+    resources: [bad-registry-pod]
     kind: Pod
     result: fail

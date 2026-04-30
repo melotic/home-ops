@@ -12,6 +12,20 @@ spec:
   values:
     fullnameOverride: vm-kube-stack
     victoria-metrics-operator:
+      global:
+        image:
+          registry: docker.io
+      image:
+        registry: docker.io
+      configReloader:
+        image:
+          registry: docker.io
+          repository: victoriametrics/operator
+          tag: config-reloader-v0.69.0
+      crds:
+        cleanup:
+          image:
+            repository: registry.k8s.io/kubectl
       operator:
         disable_prometheus_converter: false
         enable_converter_ownership: true

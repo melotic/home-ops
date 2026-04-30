@@ -24,7 +24,7 @@ spec:
         initContainers:
           wait-for-slskd:
             image:
-              repository: busybox
+              repository: docker.io/library/busybox
               tag: 1.37.0
             command:
               - sh
