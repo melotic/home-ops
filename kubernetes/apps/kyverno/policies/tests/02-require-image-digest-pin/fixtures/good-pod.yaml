@@ -8,4 +8,4 @@ metadata:
 spec:
   containers:
     - name: app
-      image: ghcr.io/kyverno/kyverno@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+      image: ghcr.io/kyverno/kyverno@sha256:e20bdcd5c4d0ca5e069b013d9f68aaa83b1619b8c274dd3a3da3b50a361477fd
