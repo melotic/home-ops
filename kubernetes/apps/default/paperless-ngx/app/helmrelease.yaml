@@ -17,7 +17,7 @@ spec:
         initContainers:
           fix-run:
             image:
-              repository: docker.io/busybox
+              repository: docker.io/library/busybox
               tag: latest
             command: ["sh", "-c", "chown 1000:1000 /run"]
             securityContext:
