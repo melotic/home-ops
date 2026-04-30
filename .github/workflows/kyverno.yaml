@@ -102,14 +102,14 @@ jobs:
 
   kyverno-status:
     name: Kyverno Success
-    needs: ["test", "validate"]
+    needs: ["pre-job", "test", "validate"]
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
-      - name: Any jobs failed?
-        if: ${{ contains(needs.*.result, 'failure') }}
+      - name: Required jobs passed?
+        if: ${{ needs.pre-job.result != 'success' || (needs.pre-job.outputs.any_changed == 'true' && (needs.test.result != 'success' || needs.validate.result != 'success')) }}
         run: exit 1
 
-      - name: All jobs passed or skipped?
-        if: ${{ !(contains(needs.*.result, 'failure')) }}
+      - name: Kyverno checks complete
+        if: ${{ needs.pre-job.result == 'success' && (needs.pre-job.outputs.any_changed != 'true' || (needs.test.result == 'success' && needs.validate.result == 'success')) }}
         run: echo "${{ toJSON(needs.*.result) }}"
