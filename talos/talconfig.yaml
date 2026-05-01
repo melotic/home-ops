@@ -92,6 +92,11 @@ nodes:
           - network: "0.0.0.0/0"
             gateway: "10.60.0.1"
         mtu: 1500
+        vlans:
+          - vlanId: 30
+            mtu: 1500
+          - vlanId: 25
+            mtu: 1500
         vip:
           ip: "10.60.8.10"
     schematic:
