@@ -62,8 +62,14 @@ spec:
     defaultPodOptions:
       priorityClassName: app-high
       automountServiceAccountToken: false
-      dnsPolicy: ClusterFirstWithHostNet
-      hostNetwork: true
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |-
+          [{
+            "name": "iot",
+            "namespace": "kube-system",
+            "ips": ["10.30.0.20/24"],
+            "mac": "02:30:00:00:00:20"
+          }]
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
