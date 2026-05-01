@@ -17,4 +17,4 @@ spec:
       image: code.forgejo.org/forgejo/forgejo:15.0.1-rootless
       command: ["sh", "-c", "sleep 3600"]
     - name: fluent-bit
-      image: cr.fluentbit.io/fluent/fluent-bit:5.0.3
+      image: cr.fluentbit.io/fluent/fluent-bit:5.0.4
