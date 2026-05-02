@@ -1,0 +1,11 @@
+---
+apiVersion: tailscale.com/v1alpha1
+kind: Connector
+metadata:
+  name: &name ts-srv-zion
+spec:
+  replicas: 1
+  hostnamePrefix: *name
+  subnetRouter:
+    advertiseRoutes:
+      - 10.60.0.0/16
