@@ -18,9 +18,7 @@ spec:
       namespace: volsync-system
     - name: postgres
       namespace: database
-  interval: 1h
   path: ./kubernetes/apps/default/forejo/app
-  prune: true
   postBuild:
     substitute:
       APP: forejo

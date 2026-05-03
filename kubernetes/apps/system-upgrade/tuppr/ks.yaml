@@ -9,9 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 1h
   path: ./kubernetes/apps/system-upgrade/tuppr/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -31,9 +29,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: tuppr
-  interval: 1h
   path: ./kubernetes/apps/system-upgrade/tuppr/upgrades
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

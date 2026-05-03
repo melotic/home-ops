@@ -18,9 +18,7 @@ spec:
       namespace: volsync-system
     - name: authentik
       namespace: default
-  interval: 1h
   path: ./kubernetes/apps/default/ghidra-server/app
-  prune: true
   postBuild:
     substitute:
       APP: ghidra-server
