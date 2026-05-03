@@ -33,19 +33,11 @@ radarr:
             qualities:
               - WEBDL-1080p
               - WEBRip-1080p
-          - name: Bluray-720p
 
     custom_format_groups:
-      ################################################################################
-      ## These groups are NOT synced by default. Uncomment to enable. Use `select:` to
-      ## choose specific CFs within a group.
-      ##
-      ## https://recyclarr.dev/guide/cf-groups/
-      ################################################################################
       add:
         - trash_id: ff204bbcecdd487d1cefcefdbf0c278d # [Optional] Golden Rule UHD
           select:
-            # - dc98083864ea246d05a42df0d05f81cc  # x265 (HD)
             - 839bea857ed2c0a8e084f3cbdbd65ecb # x265 (no HDR/DV)
         - trash_id: a3ac6af01d78e4f21fcb75f601ac96df # [Unwanted] Unwanted Formats
           select:
@@ -58,33 +50,26 @@ radarr:
             - e6886871085226c3da1830830146846c # Generated Dynamic HDR
             - 90a6f9a284dff5103f6346090e6280c8 # LQ
             - e204b80c87be9497a8a6eaff48f72905 # LQ (Release Title)
+            - 712d74cd88bceb883ee32f773656b1f5 # Sing-Along Versions
+            - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
             # - ae9b7c9ebde1f3bd336a8cbd1ec4c5e5  # No-RlsGroup
             # - 7357cf5161efbf8c4d5d0c30b4815ee2  # Obfuscated
             # - 5c44f52a8714fdd79bb4d98e2673be1f  # Retags
             # - f537cf427b64c38c8e36298f657e4828  # Scene
-            - 712d74cd88bceb883ee32f773656b1f5 # Sing-Along Versions
-            - bfd8eb01832d646a0a89c4deb46f8564 # Upscaled
-        # - trash_id: 7fc2751eef7e6bdc70b74136e5e35c76  # [HDR Formats] DV (w/o HDR fallback)
         - trash_id: 1616617ab3a14397a2b2321bcbda44d1 # [HDR Formats] DV Boost
         - trash_id: b29413a7487478fe98228ce79e5689e4 # [HDR Formats] HDR10+ Boost
         # - trash_id: f993ad37540147e4d00e66503545d81b  # [Streaming Services] Anime
         # - trash_id: b22449f789b16a4163b59f1b70cbc580  # [Streaming Services] Asian
         # - trash_id: 088a792e0561c927fb396664b0db5c8f  # [Streaming Services] Dutch
         # - trash_id: f737e18b5824d6ebb2d57b957ae2fd6c  # [Streaming Services] UK
-        # - trash_id: bc3c13e52f2971319bc1748ffa3d1078  # [Optional] Accessibility
-        #   select:
-        #     - 127bdbadcf3e4463a8c707759fbaad75  # WiTH AD
-        #     - 09c60ba54fadb511c6986a7edec4da4b  # WiTH ASL
-        #     - 41e4baea7b10ddefc6609d52f742dacd  # WiTH BASL
-        #     - e205c5ba6be76b472903f4aec97fdb4b  # WiTH BSL
         - trash_id: 9337080378236ce4c0b183e35790d2a7 # [Optional] Miscellaneous
           select:
             - f700d29429c023a5734505e77daeaea7 # DV (Disk)
-            #     - 0d91270a7255a1e388fa85e959f359d8  # FreeLeech
             - 73613461ac2cea99d52c4cd6e177ab82 # HFR
+            - 4b900e171accbfb172729b63323ea8ca # MULTi
             - 182fa1c42a2468f8488e6dcf75a81b81 # INTERNAL
+        #     - 0d91270a7255a1e388fa85e959f359d8  # FreeLeech
         #     - ff86c4326018682f817830ced463332b  # MPEG2
-        #     - 4b900e171accbfb172729b63323ea8ca  # MULTi
         #     - 80f51de4636a294e31552e90d2e1decb  # P2P Internal
         #     - 11cd1db7165d6a7ad9a83bc97b8b1060  # VC-1
         #     - ae4cfaa9283a4f2150ac3da08e388723  # VP9
@@ -99,14 +84,13 @@ radarr:
             - eecf3a857724171f968a66cb5719e152 # IMAX
             - 9f6cbff8cfe4ebbc1bde14c7b7bec0de # IMAX Enhanced
             - 9d27d9d2181838f76dee150882bdc58c # Masters of Cinema
-            #     - 09d9dd29a0fc958f9796e65c2a8864b4  # Open Matte
+            - 09d9dd29a0fc958f9796e65c2a8864b4 # Open Matte
             - 570bc9ebecd92723d2d21500f4be314c # Remaster
-        #     - 957d0f44b592285f26449575e8b1167e  # Special Edition
-        #     - e9001909a4c88013a359d0b9920d7bea  # Theatrical Cut
-        #     - db9b4c4b53d312a3ca5f1378f6440fc9  # Vinegar Syndrome
+            - 957d0f44b592285f26449575e8b1167e # Special Edition
+            - e9001909a4c88013a359d0b9920d7bea # Theatrical Cut
+            - db9b4c4b53d312a3ca5f1378f6440fc9 # Vinegar Syndrome
         - trash_id: 47f0d69750de9e16855915fa73bb7b08 # [Optional] SDR
           select:
-            #     - 9c38ebb7384dada637be8899efa68e6f  # SDR
             - 25c12f78430a3a23413652cbd1d48d77 # SDR (no WEBDL)
         - trash_id: 9fc645b3cef52b149ec13ba3972245d1 # [Streaming Services] Miscellaneous
           select:
@@ -116,15 +100,11 @@ radarr:
         #     - fbca986396c5e695ef7b2def3c755d01  # OViD
         #     - ab56ccdc473a1f2897c76187ea365be2  # STRP
 
-        ################################################################################
-        ## These groups ARE synced by default. Uncomment to disable.
-        ##
-        ## https://recyclarr.dev/guide/cf-groups/
-        ################################################################################
       skip:
         # - 9d5acd8f1da78dfbae788182f7605200  # [Audio] Audio Formats
         # - ef20e67b95a381fb3bc6d1f06ea24f46  # [HDR Formats] HDR
         # - d9cc9a504e5ede6294c8b973aad4f028  # [Streaming Services] General
+
     media_naming:
       folder: plex-tmdb
       movie:
@@ -147,18 +127,14 @@ sonarr:
       - trash_id: 9d142234e45d6143785ac55f5a9e8dc9 # WEB-1080p (Alternative)
         reset_unmatched_scores:
           enabled: true
+      - trash_id: dfa5eaae7894077ad6449169b6eb03e0 # WEB-2160p (Alternative)
+        reset_unmatched_scores:
+          enabled: true
 
     custom_format_groups:
-      ################################################################################
-      ## These groups are NOT synced by default. Uncomment to enable. Use `select:` to
-      ## choose specific CFs within a group.
-      ##
-      ## https://recyclarr.dev/guide/cf-groups/
-      ################################################################################
       add:
-        - trash_id: 158188097a58d7687dee647e04af0da3 # [Optional] Golden Rule HD
+        - trash_id: e3f37512790f00d0e89e54fe5e790d1c # [Optional] Golden Rule UHD
           select:
-            # - 47435ece6b99a0b477caf360e79ba0bb # x265 (HD)
             - 9b64dff695c2115facf1b6ea59c9bd07 # x265 (no HDR/DV)
         - trash_id: 85fae4a2294965b75710ef2989c850eb # [Streaming Services] HD/UHD boost
           select:
@@ -173,43 +149,24 @@ sonarr:
             - fbcb31d8dabd2a319072b84fc0b7249c # Extras
             - 9c11cd3f07101cdba90a2d81cf0e56b4 # LQ
             - e2315f990da2e2cbfc9fa5b7a6fcfe48 # LQ (Release Title)
+            - 23297a736ca77c0fc8e70f8edd7ee56c # Upscaled
             # - 82d40da2bc6923f41e14394075dd4b03  # No-RlsGroup
             # - e1a997ddb54e3ecbfe06341ad323c458  # Obfuscated
             # - 06d66ab109d4d2eddb2794d21526d140  # Retags
             # - 1b3994c551cbb92a2c781af061f4ab44  # Scene
-            - 23297a736ca77c0fc8e70f8edd7ee56c # Upscaled
         - trash_id: e9a1944a254e6f8a9da63083f7ae15cb # [Audio] Audio Formats
+        - trash_id: e0b2774083df4265f25c9e5bc6c80940 # [HDR Formats] DV Boost
+        - trash_id: 7d366c213e5c23a052b157356fac1921 # [HDR Formats] HDR10+ Boost
         - trash_id: d920fd959d220306888f40b6f38e1578 # [Optional] Season Packs
-        # - trash_id: 35fb4585dcd9e2a5ac732e4309f5a45a  # [Streaming Services] Asian
-        # - trash_id: f60f4401ce880aad62e9d21c8bb6b91a  # [Streaming Services] Dutch
-        # - trash_id: 848fd356c200568fc5a6248150e7e7ea  # [Streaming Services] French
         - trash_id: ddab3095a5d2f436f369263840af34f9 # [Streaming Services] UK
-        # - trash_id: bad5bc85573a0134e1e1987c46f67e98  # [Optional] Accessibility
-        #   select:
-        #     - 44ccbcbc74506f208973e1463b11705f  # WiTH AD
-        #     - c196536ea8122397c5854040d01f2aa7  # WiTH ASL
-        #     - b40dc2e630723745aab9f1b94f4aab74  # WiTH BASL
-        #     - 0aef382c4ed4c5eb5d40109dfd351b72  # WiTH BSL
-        # - trash_id: 74aff4168620ed49dcc67e92b2c2a5b4  # [Optional] Language Profiles
-        #   select:
-        #     - 8a9fcdbb445f2add0505926df3bb7b8a  # German
-        #     - ed51973a811f51985f14e2f6f290e47a  # German DL
-        #     - c5dd0fd675f85487ad5bdf97159180bd  # German DL (undefined)
-        #     - 21d4ae0976f7a4c251884d26fc46183c  # German Subbed
-        #     - 69aa1e159f97d860440b04cd6d590c4f  # Language: Not English
-        #     - 322fca6f8f3694acc1401ddb530fd33d  # Language: Not French
-        #     - 10e77b96ae4770a7de645a91a53ce29a  # Language: Original + French
-        #     - 133589380b89f8f8394320901529bac1  # Not German or English
-        #     - 51ba9721e1d951e9ffccb3d939831941  # Not German, Japanese or English
-        #     - 1d1481d01b60a0274d81685b3ccbf7d0  # Not German, Japanese, Korean, Chinese or English
         - trash_id: f4a0410a1df109a66d6e47dcadcce014 # [Optional] Miscellaneous
           select:
             - ef4963043b0987f8485bc9106f16db38 # DV (Disk)
-            #     - d7c747094a7c65f4c2de083c24899e8b  # FreeLeech
-            #     - 1bd69272e23c5e6c5b1d6c8a36fce95e  # HFR
+            - 1bd69272e23c5e6c5b1d6c8a36fce95e # HFR
             - 5ab46ff851b76c337e13e81a4353875f # INTERNAL
-            #     - 4aee45b0868229c4fbd8bad3e315f1d0  # MPEG2
             - 7ba05c6e0e14e793538174c679126996 # MULTi
+        #     - d7c747094a7c65f4c2de083c24899e8b  # FreeLeech
+        #     - 4aee45b0868229c4fbd8bad3e315f1d0  # MPEG2
         #     - 4a20cfb76b5f92a8ca22b894b32e71be  # Multi-Episode
         #     - 09654d13ce1f0453496546dfd875b2a5  # P2P Internal
         #     - e0c1a67f23908a55b6ae9834e8ed6727  # Single Episode
@@ -218,6 +175,9 @@ sonarr:
         #     - cddfb4e32db826151d97352b8e37c648  # x264
         #     - c9eafd50846d299b862ca9bb6ea91950  # x265
         #     - 041d90b435ebd773271cea047a457a6a  # x266
+        - trash_id: e1053c0ef622df3749fa43c22865663a # [Optional] SDR
+          select:
+            - 83304f261cf516bb208c18c54c0adf97 # SDR (no WEBDL)
         - trash_id: f54985e5e96747cef58731f1cf4c9181 # [Streaming Services] Anime
           select:
             - a370d974bc7b80374de1d9ba7519760b # ABEMA
@@ -239,12 +199,9 @@ sonarr:
             - fe4062eac43d4ea75955f8ae48adcf1e # STRP
             - c30d2958827d1867c73318a5a2957eb1 # RED
             - 3ac5d84fce98bab1b531393e9c82f467 # QIBI
-        ################################################################################
-        ## These groups ARE synced by default. Uncomment to disable.
-        ##
-        ## https://recyclarr.dev/guide/cf-groups/
-        ################################################################################
+
       skip:
+        # - 7e1724c5da59e7474803ad25be98f6a3  # [HDR Formats] HDR
         # - abe720fab2d27682adc2a735136cec02  # [Streaming Services] General
 
     media_naming:
