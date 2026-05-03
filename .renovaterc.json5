@@ -10,7 +10,7 @@
     ":semanticCommits",
   ],
   dependencyDashboard: true,
-  ignorePaths: ["**/*.sops.*"],
+  ignorePaths: ["**/*.sops.*", "kubernetes/apps/kyverno/policies/tests/"],
   ignoreDeps: ["harbor.melotic.dev/library/ghidra"],
   flux: {
     managerFilePatterns: ["/(^|/)kubernetes/.+\\.ya?ml(?:\\.j2)?$/"],
