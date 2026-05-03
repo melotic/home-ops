@@ -29,6 +29,17 @@ spec:
         - "10.43.0.10"
         - "fd00:43::a"
     replicaCount: 2
+    podDisruptionBudget:
+      minAvailable: 1
+    topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/instance: coredns
+            app.kubernetes.io/name: coredns
+            k8s-app: kube-dns
+        maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
     servers:
       - zones:
           - zone: ts.net.
