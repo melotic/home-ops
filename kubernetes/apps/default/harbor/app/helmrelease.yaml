@@ -25,7 +25,6 @@ spec:
     remediation:
       retries: -1
   values:
-    priorityClassName: app-high
     updateStrategy:
       type: Recreate
     expose:
@@ -69,6 +68,7 @@ spec:
         coreDatabase: harbor
         existingSecret: postgres-cluster-app
     core:
+      priorityClassName: app-high
       image:
         repository: docker.io/goharbor/harbor-core
       resources:
@@ -84,19 +84,27 @@ spec:
               name: harbor-oidc-config
               key: CONFIG_OVERWRITE_JSON
     registry:
+      priorityClassName: app-high
       registry:
         image:
           repository: docker.io/goharbor/registry-photon
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 512Mi
       controller:
         image:
           repository: docker.io/goharbor/harbor-registryctl
-      resources:
-        requests:
-          cpu: 50m
-          memory: 256Mi
-        limits:
-          memory: 512Mi
+        resources:
+          requests:
+            cpu: 50m
+            memory: 256Mi
+          limits:
+            memory: 512Mi
     jobservice:
+      priorityClassName: app-high
       image:
         repository: docker.io/goharbor/harbor-jobservice
       resources:
@@ -106,6 +114,7 @@ spec:
         limits:
           memory: 256Mi
     trivy:
+      priorityClassName: app-high
       image:
         repository: docker.io/goharbor/trivy-adapter-photon
       resources:
@@ -113,8 +122,10 @@ spec:
           cpu: 50m
           memory: 256Mi
         limits:
+          cpu: null
           memory: 512Mi
     portal:
+      priorityClassName: app-high
       image:
         repository: docker.io/goharbor/harbor-portal
       resources:
@@ -124,5 +135,12 @@ spec:
         limits:
           memory: 128Mi
     exporter:
+      priorityClassName: app-high
       image:
         repository: docker.io/goharbor/harbor-exporter
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
