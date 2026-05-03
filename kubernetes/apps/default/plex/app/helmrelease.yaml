@@ -51,11 +51,11 @@ spec:
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 100m
-                memory: 512Mi
+                cpu: 500m
+                memory: 768Mi
                 squat.ai/video: 1
               limits:
-                memory: 2Gi
+                memory: 3Gi
                 squat.ai/video: 1
     defaultPodOptions:
       priorityClassName: app-high
