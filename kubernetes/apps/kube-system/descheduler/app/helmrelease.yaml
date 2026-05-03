@@ -87,6 +87,32 @@ spec:
                 - RemovePodsViolatingInterPodAntiAffinity
                 - RemovePodsViolatingNodeAffinity
                 - RemovePodsViolatingNodeTaints
+        - name: plex-preferred-affinity
+          pluginConfig:
+            - name: DefaultEvictor
+              args:
+                evictFailedBarePods: true
+                evictLocalStoragePods: true
+                evictSystemCriticalPods: false
+                nodeFit: true
+                labelSelector:
+                  matchExpressions:
+                    - key: cnpg.io/cluster
+                      operator: DoesNotExist
+            - name: RemovePodsViolatingNodeAffinity
+              args:
+                nodeAffinityType:
+                  - preferredDuringSchedulingIgnoredDuringExecution
+                namespaces:
+                  include:
+                    - default
+                labelSelector:
+                  matchLabels:
+                    app.kubernetes.io/name: plex
+          plugins:
+            deschedule:
+              enabled:
+                - RemovePodsViolatingNodeAffinity
     service:
       enabled: true
     serviceMonitor:

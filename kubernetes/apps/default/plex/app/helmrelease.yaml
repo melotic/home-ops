@@ -50,8 +50,6 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
             resources:
-              claims:
-                - name: gpu
               requests:
                 cpu: 100m
                 memory: 512Mi
@@ -60,9 +58,21 @@ spec:
     defaultPodOptions:
       priorityClassName: app-high
       automountServiceAccountToken: false
-      resourceClaims:
-        - name: gpu
-          resourceClaimTemplateName: plex
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: [k8s-trinity]
+            - weight: 50
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values: [k8s-niobe, k8s-ghost]
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -104,5 +114,10 @@ spec:
           - path: /data/media
             subPath: media
             readOnly: true
+      dri:
+        type: hostPath
+        hostPath: /dev/dri
+        globalMounts:
+          - path: /dev/dri
       tmp:
         type: emptyDir
