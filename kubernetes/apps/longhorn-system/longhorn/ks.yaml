@@ -19,9 +19,7 @@ spec:
       kind: InstanceManager
       current: status.currentState == 'running'
       failed: status.currentState == 'error'
-  interval: 1h
   path: ./kubernetes/apps/longhorn-system/longhorn/app
-  prune: true
   postBuild:
     substitute:
       AUTH_POLICY_NAME: longhorn-auth
@@ -45,9 +43,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: longhorn
-  interval: 1h
   path: ./kubernetes/apps/longhorn-system/longhorn/jobs
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

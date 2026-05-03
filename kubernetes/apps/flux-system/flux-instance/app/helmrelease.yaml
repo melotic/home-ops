@@ -13,10 +13,8 @@ spec:
     remediation:
       retries: -1
   upgrade:
-    cleanupOnFail: true
     remediation:
       strategy: rollback
-      retries: 3
   dependsOn:
     - name: flux-operator
       namespace: flux-system

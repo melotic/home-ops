@@ -18,9 +18,7 @@ spec:
       namespace: database
     - name: authentik
       namespace: default
-  interval: 1h
   path: ./kubernetes/apps/gitlab/gitlab/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -17,10 +17,6 @@ spec:
   install:
     remediation:
       retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     gitlabUrl: https://gitlab.melotic.dev/
     # The chart's singular `secret:` value does NOT mount the named Secret

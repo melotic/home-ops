@@ -9,9 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 1h
   path: ./kubernetes/apps/network/certificates/export
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -29,9 +27,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 1h
   path: ./kubernetes/apps/network/certificates/import
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

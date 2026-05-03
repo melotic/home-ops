@@ -12,9 +12,7 @@ spec:
   dependsOn:
     - name: longhorn
       namespace: longhorn-system
-  interval: 1h
   path: ./kubernetes/apps/database/dragonfly/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
