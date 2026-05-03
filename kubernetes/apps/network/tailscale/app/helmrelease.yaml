@@ -14,14 +14,8 @@ spec:
       version: 1.96.5
   interval: 1h
   install:
-    crds: CreateReplace
     remediation:
       retries: -1
-  upgrade:
-    crds: CreateReplace
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     operatorConfig:
       hostname: homelab-operator

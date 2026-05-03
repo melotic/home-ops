@@ -16,9 +16,7 @@ spec:
       namespace: longhorn-system
     - name: volsync
       namespace: volsync-system
-  interval: 1h
   path: ./kubernetes/apps/default/plex/app
-  prune: true
   postBuild:
     substitute:
       APP: plex

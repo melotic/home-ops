@@ -9,9 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 1h
   path: ./kubernetes/apps/monitoring/gatus/app
-  prune: true
   postBuild:
     substitute:
       AUTH_POLICY_NAME: gatus-auth

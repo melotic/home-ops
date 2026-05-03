@@ -12,9 +12,7 @@ spec:
   dependsOn:
     - name: onepassword
       namespace: external-secrets
-  interval: 1h
   path: ./kubernetes/apps/default/nas-backup/app
-  prune: true
   postBuild:
     substitute:
       APP: nas-backup

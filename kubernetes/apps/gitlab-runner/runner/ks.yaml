@@ -14,9 +14,7 @@ spec:
       namespace: gitlab
     - name: harbor
       namespace: default
-  interval: 1h
   path: ./kubernetes/apps/gitlab-runner/runner/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

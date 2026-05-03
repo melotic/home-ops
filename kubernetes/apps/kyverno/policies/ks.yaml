@@ -17,9 +17,7 @@ spec:
       kind: HelmRelease
       name: kyverno
       namespace: kyverno
-  interval: 1h
   path: ./kubernetes/apps/kyverno/policies/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

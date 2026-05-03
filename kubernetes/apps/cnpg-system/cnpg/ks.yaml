@@ -14,9 +14,7 @@ spec:
       kind: HelmRelease
       name: cloudnative-pg
       namespace: cnpg-system
-  interval: 1h
   path: ./kubernetes/apps/cnpg-system/cnpg/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
