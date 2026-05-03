@@ -53,8 +53,10 @@ spec:
               requests:
                 cpu: 100m
                 memory: 512Mi
+                squat.ai/video: 1
               limits:
                 memory: 2Gi
+                squat.ai/video: 1
     defaultPodOptions:
       priorityClassName: app-high
       automountServiceAccountToken: false
