@@ -43,6 +43,8 @@ spec:
                 evictLocalStoragePods: true
                 evictSystemCriticalPods: false
                 nodeFit: true
+                priorityThreshold:
+                  name: cluster-critical
                 labelSelector:
                   matchExpressions:
                     - key: cnpg.io/cluster
