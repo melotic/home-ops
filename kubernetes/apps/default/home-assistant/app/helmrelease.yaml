@@ -32,10 +32,10 @@ spec:
               capabilities: { drop: ["ALL"] }
             resources:
               requests:
-                cpu: 50m
-                memory: 256Mi
-              limits:
+                cpu: 100m
                 memory: 512Mi
+              limits:
+                memory: 768Mi
             probes:
               liveness:
                 enabled: true
