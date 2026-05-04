@@ -32,11 +32,25 @@ spec:
         accountId: MAXMIND_ACCOUNT_ID
         licenseKey: MAXMIND_LICENSE_KEY
         secretName: authentik-secret
+      volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      resources:
+        requests:
+          cpu: 5m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
+      containerSecurityContext: &containerSecurityContext
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities: { drop: ["ALL"] }
     prometheus:
       rules:
         enabled: true
     server:
       priorityClassName: cluster-critical
+      containerSecurityContext: *containerSecurityContext
       resources:
         requests:
           cpu: 100m
@@ -67,6 +81,8 @@ spec:
           readOnly: true
         - mountPath: /data
           name: data
+        - mountPath: /tmp
+          name: tmp
       volumes: &volumes
         - name: postgres-creds
           secret:
@@ -74,8 +90,11 @@ spec:
         - name: data
           persistentVolumeClaim:
             claimName: authentik-data
+        - name: tmp
+          emptyDir: {}
     worker:
       priorityClassName: cluster-critical
+      containerSecurityContext: *containerSecurityContext
       resources:
         requests:
           cpu: 150m
