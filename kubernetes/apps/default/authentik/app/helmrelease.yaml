@@ -42,6 +42,7 @@ spec:
         limits:
           memory: 128Mi
       containerSecurityContext: &containerSecurityContext
+        runAsNonRoot: true
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities: { drop: ["ALL"] }
@@ -50,6 +51,12 @@ spec:
         enabled: true
     server:
       priorityClassName: cluster-critical
+      securityContext: &podSecurityContext
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
       containerSecurityContext: *containerSecurityContext
       resources:
         requests:
@@ -94,6 +101,7 @@ spec:
           emptyDir: {}
     worker:
       priorityClassName: cluster-critical
+      securityContext: *podSecurityContext
       containerSecurityContext: *containerSecurityContext
       resources:
         requests:
