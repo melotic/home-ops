@@ -3,247 +3,29 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: grafana
+  name: grafana-operator
 spec:
   chartRef:
     kind: OCIRepository
-    name: grafana
+    name: grafana-operator
   interval: 1h
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
   values:
-    deploymentStrategy:
-      type: Recreate
-    extraSecretMounts:
-      - name: grafana-oauth-secret-mount
-        secretName: grafana-oauth-secret
-        defaultMode: 0440
-        mountPath: /etc/secrets/grafana_oauth
-        readOnly: true
-    env:
-      GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
-      GF_EXPLORE_ENABLED: true
-      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
-      GF_SECURITY_ANGULAR_SUPPORT_ENABLED: true
-      GF_SERVER_ROOT_URL: https://grafana.melotic.dev
-    grafana.ini:
-      analytics:
-        check_for_updates: false
-        check_for_plugin_updates: false
-        reporting_enabled: false
-      auth:
-        signout_redirect_url: https://sso.melotic.dev/application/o/grafana/end-session/
-      auth.anonymous:
-        enabled: false
-      auth.generic_oauth:
-        name: authentik
-        enabled: true
-        client_id: $__file{/etc/secrets/grafana_oauth/client_id}
-        client_secret: $__file{/etc/secrets/grafana_oauth/client_secret}
-        auto_login: true
-        scopes: openid profile email
-        auth_url: https://sso.melotic.dev/application/o/authorize/
-        token_url: https://sso.melotic.dev/application/o/token/
-        api_url: https://sso.melotic.dev/application/o/userinfo/
-        role_attribute_path: contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
-      news:
-        news_feed_enabled: false
-      users:
-        auto_assign_org: true
-        auto_assign_org_id: 1
-    datasources:
-      datasources.yaml:
-        apiVersion: 1
-        deleteDatasources:
-          - { name: Alertmanager, orgId: 1 }
-          - { name: Loki, orgId: 1 }
-          - { name: Prometheus, orgId: 1 }
-        datasources:
-          - name: Alertmanager
-            type: alertmanager
-            uid: alertmanager
-            access: proxy
-            url: http://vmalertmanager-vm-kube-stack.monitoring.svc.cluster.local:9093
-            jsonData:
-              implementation: prometheus
-          - name: VictoriaLogs
-            type: victoriametrics-logs-datasource
-            uid: victorialogs
-            access: proxy
-            url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
-    dashboardProviders:
-      dashboardproviders.yaml:
-        apiVersion: 1
-        providers:
-          - name: default
-            orgId: 1
-            folder: ""
-            type: file
-            disableDeletion: false
-            editable: true
-            options:
-              path: /var/lib/grafana/dashboards/default
-    dashboards:
-      default:
-        cert-manager:
-          # renovate: depName="Cert-manager-Kubernetes"
-          gnetId: 20842
-          revision: 3
-          datasource: Prometheus
-        cilium-agent:
-          # renovate: depName="Cilium Agent"
-          gnetId: 16611
-          revision: 1
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        cilium-operator:
-          # renovate: depName="Cilium Operator"
-          gnetId: 16612
-          revision: 1
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        cloudflared:
-          # renovate: depName="Cloudflare Tunnels (cloudflared)"
-          gnetId: 17457
-          revision: 6
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        envoy-gateway-global:
-          # renovate: depName="Envoy Gateway Global"
-          gnetId: 24459
-          revision: 3
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        external-dns:
-          # renovate: depName="External-dns"
-          gnetId: 15038
-          revision: 3
-          datasource: Prometheus
-        flux:
-          # renovate: depName="Flux Cluster Stats"
-          gnetId: 22640
-          revision: 1
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        kubernetes-api-server:
-          # renovate: depName="Kubernetes / System / API Server"
-          gnetId: 15761
-          revision: 19
-          datasource: Prometheus
-        kubernetes-coredns:
-          # renovate: depName="Kubernetes / System / CoreDNS"
-          gnetId: 15762
-          revision: 21
-          datasource: Prometheus
-        kubernetes-global:
-          # renovate: depName="Kubernetes / Views / Global"
-          gnetId: 15757
-          revision: 43
-          datasource: Prometheus
-        kubernetes-namespaces:
-          # renovate: depName="Kubernetes / Views / Namespaces"
-          gnetId: 15758
-          revision: 42
-          datasource: Prometheus
-        kubernetes-nodes:
-          # renovate: depName="Kubernetes / Views / Nodes"
-          gnetId: 15759
-          revision: 37
-          datasource: Prometheus
-        kubernetes-pods:
-          # renovate: depName="Kubernetes / Views / Pods"
-          gnetId: 15760
-          revision: 36
-          datasource: Prometheus
-        kubernetes-volumes:
-          # renovate: depName="K8s / Storage / Volumes / Cluster"
-          gnetId: 11454
-          revision: 14
-          datasource: Prometheus
-        longhorn:
-          # renovate: depName="Longhorn"
-          gnetId: 13032
-          revision: 6
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        node-exporter-full:
-          # renovate: depName="Node Exporter Full"
-          gnetId: 1860
-          revision: 42
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        prometheus:
-          # renovate: depName="Prometheus"
-          gnetId: 19105
-          revision: 7
-          datasource: Prometheus
-        smartctl-exporter:
-          # renovate: depName="SMARTctl Exporter Dashboard"
-          gnetId: 22604
-          revision: 2
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        unifi-pdu:
-          # renovate: depName="UniFi-Poller: PDU Insights - Prometheus"
-          gnetId: 23027
-          revision: 1
-          datasource:
-            - { name: DS_PROMETHEUS, value: Prometheus }
-        unifi-insights:
-          # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
-          gnetId: 11315
-          revision: 9
-          datasource: Prometheus
-        unifi-network-sites:
-          # renovate: depName="UniFi-Poller: Network Sites - Prometheus"
-          gnetId: 11311
-          revision: 5
-          datasource: Prometheus
-        unifi-uap:
-          # renovate: depName="UniFi-Poller: UAP Insights - Prometheus"
-          gnetId: 11314
-          revision: 10
-          datasource: Prometheus
-        unifi-usw:
-          # renovate: depName="UniFi-Poller: USW Insights - Prometheus"
-          gnetId: 11312
-          revision: 9
-          datasource: Prometheus
-    sidecar:
-      image:
-        registry: ghcr.io
-        repository: home-operations/k8s-sidecar
-        tag: 2.7.1@sha256:11b5f116b05ccc27870df8f9ca61c114a6fd0d3d6672427d67b10b400fe5c931
-      dashboards:
-        enabled: true
-        searchNamespace: ALL
-        label: grafana_dashboard
-        folderAnnotation: grafana_folder
-        provider:
-          disableDelete: true
-          foldersFromFilesStructure: true
-      datasources:
-        enabled: true
-        searchNamespace: ALL
-        labelValue: ""
-    plugins:
-      - grafana-clock-panel
-      - grafana-piechart-panel
-      - grafana-worldmap-panel
-      - natel-discrete-panel
-      - pr0ps-trackmap-panel
-      - victoriametrics-logs-datasource
-      - vonage-status-panel
+    dashboard:
+      enabled: true
     serviceMonitor:
       enabled: true
-    route:
-      main:
-        enabled: true
-        hostnames:
-          - "grafana.melotic.dev"
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-            sectionName: https
-    persistence:
-      enabled: false
-    testFramework:
-      enabled: false
+    # D-10: P95 requests, P99×1.25 memory limit, NO CPU LIMIT on operator workloads
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 256Mi
+        # cpu: intentionally omitted per D-10 (no CPU limits on monitoring/operator workloads)
