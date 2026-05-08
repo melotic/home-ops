@@ -15,4 +15,4 @@ resources:
   - ./grafanadashboards/kubernetes-pods.yaml
   - ./grafanadashboards/kubernetes-volumes.yaml
   - ./grafanadashboards/node-exporter-full.yaml
-  - ./grafanadashboards/prometheus.yaml
+  - ./grafanadashboards/vm-stack.yaml
