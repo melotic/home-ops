@@ -1,0 +1,22 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: grafana
+spec:
+  # VERIFIED: grafana-operator propagates Grafana CR metadata.labels to the managed Service.
+  # Since Grafana CR has labels.dashboards: grafana, the Service carries this label.
+  # Confirmed by onedr0p's live servicemonitor.yaml using identical selector pattern.
+  selector:
+    matchLabels:
+      dashboards: grafana
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  endpoints:
+    - port: grafana
+      interval: 1m
+      path: /metrics
+      honorLabels: true
+  jobLabel: grafana
