@@ -12,9 +12,29 @@ spec:
   dependsOn:
     - name: flux-operator
       namespace: *namespace
+  path: ./kubernetes/apps/flux-system/flux-instance/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  wait: false
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flux-instance-dashboards
+  namespace: &namespace flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: flux-instance
+  dependsOn:
+    - name: flux-instance
     - name: grafana
       namespace: monitoring
-  path: ./kubernetes/apps/flux-system/flux-instance/app
+  path: ./kubernetes/apps/flux-system/flux-instance/dashboards
   sourceRef:
     kind: GitRepository
     name: flux-system

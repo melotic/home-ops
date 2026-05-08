@@ -4,10 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./externalsecret.yaml
-  - ./grafanadashboard-insights.yaml
-  - ./grafanadashboard-pdu.yaml
-  - ./grafanadashboard-sites.yaml
-  - ./grafanadashboard-uap.yaml
-  - ./grafanadashboard-usw.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
