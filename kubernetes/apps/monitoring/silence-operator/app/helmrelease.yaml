@@ -1,0 +1,24 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: silence-operator
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: silence-operator
+  interval: 1h
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    # CRITICAL: Our fullnameOverride is vm-kube-stack, NOT victoria-metrics (onedr0p).
+    # Live-verified: kubectl get svc -n monitoring | grep vmalertmanager
+    alertmanagerAddress: http://vmalertmanager-vm-kube-stack.monitoring.svc.cluster.local:9093
+    networkPolicy:
+      enabled: false

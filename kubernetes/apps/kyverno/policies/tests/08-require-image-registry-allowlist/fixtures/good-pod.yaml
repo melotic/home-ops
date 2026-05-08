@@ -18,3 +18,6 @@ spec:
       command: ["sh", "-c", "sleep 3600"]
     - name: fluent-bit
       image: cr.fluentbit.io/fluent/fluent-bit:5.0.4
+    - name: silence-operator
+      image: gsoci.azurecr.io/giantswarm/silence-operator:0.20.1
+      command: ["sh", "-c", "sleep 3600"]

@@ -4,6 +4,8 @@
 # 12-registry list per CONTEXT D-17 / RESEARCH.md §324-356 — matches every registry
 # currently in use across kubernetes/apps/. Adding a registry requires a tracked PR
 # (process IS the gate per D-09).
+# gsoci.azurecr.io added in Phase 08 PR-1 for silence-operator (Giant Swarm)
+# D-11 process gate satisfied: tracked in 08-01-PLAN.md planning.
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -35,12 +37,12 @@ spec:
           Container image must come from an allowlisted registry
           (ghcr.io, quay.io, mirror.gcr.io, docker.io, index.docker.io,
           lscr.io, docker.dragonflydb.io, harbor.melotic.dev, registry.k8s.io,
-          registry.gitlab.com, code.forgejo.org, cr.fluentbit.io).
+          registry.gitlab.com, code.forgejo.org, cr.fluentbit.io, gsoci.azurecr.io).
         pattern:
           spec:
             =(ephemeralContainers):
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/*"
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/*"
             =(initContainers):
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/*"
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/*"
             containers:
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/*"
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/*"
