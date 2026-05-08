@@ -32,14 +32,25 @@ spec:
 
     grafana:
       enabled: false
-      forceDeployDatasource: true
-
-    external:
-      grafana:
-        host: grafana.melotic.dev
 
     defaultDashboards:
       enabled: true
+      grafanaOperator:
+        enabled: true
+        spec:
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
+          allowCrossNamespaceImport: true
+
+    defaultDatasources:
+      grafanaOperator:
+        enabled: true
+        spec:
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
+          allowCrossNamespaceImport: true
 
     defaultRules:
       rules:

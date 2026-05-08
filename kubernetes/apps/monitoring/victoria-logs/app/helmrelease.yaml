@@ -44,3 +44,10 @@ spec:
       enabled: true
       labels:
         grafana_dashboard: "1"
+      grafanaOperator:
+        enabled: true
+        spec:
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
+          allowCrossNamespaceImport: true

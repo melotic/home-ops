@@ -9,6 +9,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: prometheus-operator-crds
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/app
   postBuild:
     substitute:
