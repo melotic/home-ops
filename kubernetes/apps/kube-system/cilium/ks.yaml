@@ -9,6 +9,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: grafana
+      namespace: monitoring
   path: ./kubernetes/apps/kube-system/cilium/app
   postBuild:
     substituteFrom:

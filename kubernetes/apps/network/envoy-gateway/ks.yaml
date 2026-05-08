@@ -11,6 +11,8 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: certificates-import
+    - name: grafana
+      namespace: monitoring
   path: ./kubernetes/apps/network/envoy-gateway/app
   postBuild:
     substituteFrom:

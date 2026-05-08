@@ -12,6 +12,8 @@ spec:
   dependsOn:
     - name: flux-operator
       namespace: *namespace
+    - name: grafana
+      namespace: monitoring
   path: ./kubernetes/apps/flux-system/flux-instance/app
   sourceRef:
     kind: GitRepository

@@ -11,6 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: prometheus-operator-crds
+    - name: grafana
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/app
   postBuild:
     substitute:
