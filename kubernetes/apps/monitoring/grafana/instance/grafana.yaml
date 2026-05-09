@@ -61,7 +61,7 @@ spec:
                       name: grafana-oauth-secret
                       key: client_secret
                 - name: GF_INSTALL_PLUGINS
-                  value: "grafana-clock-panel,grafana-piechart-panel,grafana-worldmap-panel,natel-discrete-panel,pr0ps-trackmap-panel,victoriametrics-logs-datasource,vonage-status-panel"
+                  value: "grafana-clock-panel,grafana-piechart-panel,grafana-worldmap-panel,natel-discrete-panel,pr0ps-trackmap-panel,victoriametrics-logs-datasource,victoriametrics-metrics-datasource,vonage-status-panel"
               volumeMounts:
                 - name: tmp
                   mountPath: /tmp
