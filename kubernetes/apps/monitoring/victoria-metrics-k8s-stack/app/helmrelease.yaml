@@ -234,9 +234,6 @@ spec:
                 - action: drop
                   regex: workqueue_work_duration_seconds_bucket
                   sourceLabels: [__name__]
-                - action: drop
-                  regex: scheduler_plugin_execution_duration_seconds_bucket
-                  sourceLabels: [__name__]
           jobLabel: component
           namespaceSelector:
             matchNames:
@@ -265,27 +262,6 @@ spec:
                   sourceLabels:
                     - __name__
                     - le
-                - action: drop
-                  regex: apiserver_request_body_size_bytes_bucket
-                  sourceLabels: [__name__]
-                - action: drop
-                  regex: apiserver_watch_list_duration_seconds_bucket
-                  sourceLabels: [__name__]
-                - action: drop
-                  regex: apiserver_watch_cache_read_wait_seconds_bucket
-                  sourceLabels: [__name__]
-                - action: drop
-                  regex: apiserver_response_sizes_bucket
-                  sourceLabels: [__name__]
-                - action: drop
-                  regex: apiserver_watch_events_sizes_bucket
-                  sourceLabels: [__name__]
-                - action: drop
-                  regex: workqueue_work_duration_seconds_bucket
-                  sourceLabels: [__name__]
-                - action: drop
-                  regex: scheduler_plugin_execution_duration_seconds_bucket
-                  sourceLabels: [__name__]
 
     kubeScheduler:
       vmScrape:
@@ -299,6 +275,13 @@ spec:
               tlsConfig:
                 caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                 insecureSkipVerify: true
+              metricRelabelConfigs:
+                - action: drop
+                  regex: workqueue_work_duration_seconds_bucket
+                  sourceLabels: [__name__]
+                - action: drop
+                  regex: scheduler_plugin_execution_duration_seconds_bucket
+                  sourceLabels: [__name__]
 
     kubeControllerManager:
       vmScrape:
@@ -312,6 +295,10 @@ spec:
               tlsConfig:
                 caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                 insecureSkipVerify: true
+              metricRelabelConfigs:
+                - action: drop
+                  regex: workqueue_work_duration_seconds_bucket
+                  sourceLabels: [__name__]
 
     prometheus-node-exporter:
       fullnameOverride: node-exporter
