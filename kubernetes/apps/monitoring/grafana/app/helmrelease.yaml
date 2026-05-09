@@ -21,11 +21,9 @@ spec:
       enabled: true
     serviceMonitor:
       enabled: true
-    # D-10: P95 requests, P99×1.25 memory limit, NO CPU LIMIT on operator workloads
     resources:
       requests:
         cpu: 10m
         memory: 128Mi
       limits:
         memory: 256Mi
-        # cpu: intentionally omitted per D-10 (no CPU limits on monitoring/operator workloads)

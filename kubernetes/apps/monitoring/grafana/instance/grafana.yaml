@@ -71,14 +71,12 @@ spec:
                 capabilities:
                   drop:
                     - ALL
-              # D-10: P95 requests, P99×1.25 memory limit, NO CPU LIMIT on Grafana application container
               resources:
                 requests:
                   cpu: 50m
                   memory: 256Mi
                 limits:
                   memory: 512Mi
-                  # cpu: intentionally omitted per D-10 (no CPU limits on monitoring workloads)
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000

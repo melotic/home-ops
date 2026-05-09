@@ -1,5 +1,4 @@
 ---
-# Good fixture — images from allowlisted registries.
 apiVersion: v1
 kind: Pod
 metadata:
