@@ -3,7 +3,7 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: envoy-overview
+  name: cilium
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -12,13 +12,15 @@ spec:
   datasources:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
-  url: https://grafana.com/api/dashboards/24459/revisions/3/download
+  configMapRef:
+    name: cilium-dashboard
+    key: cilium-dashboard.json
 ---
 # yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: envoy-upstream
+  name: cilium-operator
 spec:
   allowCrossNamespaceImport: true
   instanceSelector:
@@ -27,19 +29,6 @@ spec:
   datasources:
     - datasourceName: VictoriaMetrics
       inputName: DS_PROMETHEUS
-  url: https://grafana.com/api/dashboards/24457/revisions/4/download
----
-# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/grafana.integreatly.org/grafanadashboard_v1beta1.json
-apiVersion: grafana.integreatly.org/v1beta1
-kind: GrafanaDashboard
-metadata:
-  name: envoy-downstream
-spec:
-  allowCrossNamespaceImport: true
-  instanceSelector:
-    matchLabels:
-      dashboards: grafana
-  datasources:
-    - datasourceName: VictoriaMetrics
-      inputName: DS_PROMETHEUS
-  url: https://grafana.com/api/dashboards/24458/revisions/3/download
+  configMapRef:
+    name: cilium-operator-dashboard
+    key: cilium-operator-dashboard.json
