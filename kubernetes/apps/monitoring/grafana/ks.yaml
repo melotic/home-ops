@@ -9,7 +9,34 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: prometheus-operator-crds
   path: ./kubernetes/apps/monitoring/grafana/app
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  wait: true
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: grafana-instance
+  namespace: &namespace monitoring
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: grafana
+  dependsOn:
+    - name: grafana
+    - name: victoria-metrics-k8s-stack
+  path: ./kubernetes/apps/monitoring/grafana/instance
+  postBuild:
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system

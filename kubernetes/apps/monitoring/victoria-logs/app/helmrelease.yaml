@@ -26,6 +26,7 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: network
+            sectionName: https
         extraRules:
           - filters:
               - type: RequestRedirect
@@ -42,5 +43,10 @@ spec:
         enabled: true
     dashboards:
       enabled: true
-      labels:
-        grafana_dashboard: "1"
+      grafanaOperator:
+        enabled: true
+        spec:
+          instanceSelector:
+            matchLabels:
+              dashboards: grafana
+          allowCrossNamespaceImport: true
