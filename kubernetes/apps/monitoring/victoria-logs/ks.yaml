@@ -9,6 +9,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: grafana
   path: ./kubernetes/apps/monitoring/victoria-logs/app
   postBuild:
     substitute:
