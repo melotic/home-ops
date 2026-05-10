@@ -19,6 +19,8 @@ spec:
   values:
     dashboard:
       enabled: true
+    image:
+      tag: v5.22.2@sha256:d45fc24e8f43d83286d81625ee8d919d0fc88255a6500b63f68d7966a4f9e9af
     serviceMonitor:
       enabled: true
     resources:
