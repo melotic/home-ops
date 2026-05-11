@@ -6,6 +6,7 @@ metadata:
   name: kubernetes-global
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana

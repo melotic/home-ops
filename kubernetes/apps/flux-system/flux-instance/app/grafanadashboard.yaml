@@ -6,6 +6,7 @@ metadata:
   name: flux-k8s-api-performance
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -21,6 +22,7 @@ metadata:
   name: flux-performance
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -36,6 +38,7 @@ metadata:
   name: flux-cluster
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -51,6 +54,7 @@ metadata:
   name: flux-control-plane
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana

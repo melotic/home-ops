@@ -6,6 +6,7 @@ metadata:
   name: kubernetes-coredns
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
