@@ -6,6 +6,7 @@ metadata:
   name: envoy-overview
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -21,6 +22,7 @@ metadata:
   name: envoy-upstream
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
@@ -36,6 +38,7 @@ metadata:
   name: envoy-downstream
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
