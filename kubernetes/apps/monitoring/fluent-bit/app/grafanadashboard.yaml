@@ -6,6 +6,7 @@ metadata:
   name: fluent-bit
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana

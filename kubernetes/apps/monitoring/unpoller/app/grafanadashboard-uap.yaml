@@ -6,6 +6,7 @@ metadata:
   name: unifi-uap
 spec:
   allowCrossNamespaceImport: true
+  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
