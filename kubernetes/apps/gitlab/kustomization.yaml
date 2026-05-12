@@ -6,10 +6,6 @@ namespace: gitlab
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./gitlab/ks.yaml
-patches:
-  - path: ../../components/common/namespace-pss-restricted.yaml
-    target:
-      kind: Namespace
-      name: not-used

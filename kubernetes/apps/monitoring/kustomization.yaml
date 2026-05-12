@@ -6,6 +6,7 @@ namespace: monitoring
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/privileged
 resources:
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
@@ -17,8 +18,3 @@ resources:
   - ./unpoller/ks.yaml
   - ./victoria-logs/ks.yaml
   - ./victoria-metrics-k8s-stack/ks.yaml
-patches:
-  - path: ../../components/common/namespace-pss-restricted.yaml
-    target:
-      kind: Namespace
-      name: not-used

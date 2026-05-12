@@ -6,6 +6,7 @@ namespace: network
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/privileged
 resources:
   - ./certificates/ks.yaml
   - ./cloudflare-dns/ks.yaml
@@ -13,8 +14,3 @@ resources:
   - ./envoy-gateway/ks.yaml
   - ./tailscale/ks.yaml
   - ./unifi-dns/ks.yaml
-patches:
-  - path: ../../components/common/namespace-pss-restricted.yaml
-    target:
-      kind: Namespace
-      name: not-used
