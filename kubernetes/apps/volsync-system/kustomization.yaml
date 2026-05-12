@@ -8,3 +8,8 @@ components:
   - ../../components/common
 resources:
   - ./volsync/ks.yaml
+patches:
+  - path: ../../components/common/namespace-pss-restricted.yaml
+    target:
+      kind: Namespace
+      name: not-used

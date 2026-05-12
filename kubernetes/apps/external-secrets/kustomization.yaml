@@ -9,3 +9,8 @@ components:
 resources:
   - ./external-secrets/ks.yaml
   - ./onepassword/ks.yaml
+patches:
+  - path: ../../components/common/namespace-pss-restricted.yaml
+    target:
+      kind: Namespace
+      name: not-used

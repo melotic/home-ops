@@ -9,3 +9,8 @@ components:
 resources:
   - ./barman-cloud-plugin/ks.yaml
   - ./cnpg/ks.yaml
+patches:
+  - path: ../../components/common/namespace-pss-restricted.yaml
+    target:
+      kind: Namespace
+      name: not-used

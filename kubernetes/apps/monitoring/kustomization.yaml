@@ -17,3 +17,8 @@ resources:
   - ./unpoller/ks.yaml
   - ./victoria-logs/ks.yaml
   - ./victoria-metrics-k8s-stack/ks.yaml
+patches:
+  - path: ../../components/common/namespace-pss-restricted.yaml
+    target:
+      kind: Namespace
+      name: not-used
