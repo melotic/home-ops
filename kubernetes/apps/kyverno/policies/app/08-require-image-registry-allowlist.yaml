@@ -14,7 +14,7 @@ metadata:
       are implicitly denied — Renovate normalizes to docker.io/... so no real workload
       regression is expected.
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: check-registry-allowlist

@@ -6,5 +6,6 @@ namespace: volsync-system
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./volsync/ks.yaml

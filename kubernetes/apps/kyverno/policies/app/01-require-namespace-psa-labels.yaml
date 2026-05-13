@@ -1,6 +1,5 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
-# Tier 1 — Ready for Enforce after remediation PR for 12 namespaces.
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
@@ -14,7 +13,7 @@ metadata:
       defense-in-depth alongside Kyverno itself; if Kyverno is ever removed, PSA still
       blocks the worst classes of pod misconfigurations.
 spec:
-  validationFailureAction: Audit  # Flip to Enforce after remediation PRs land
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: check-psa-enforce-label

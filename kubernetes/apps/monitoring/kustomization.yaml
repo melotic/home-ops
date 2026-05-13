@@ -6,6 +6,7 @@ namespace: monitoring
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/privileged
 resources:
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml

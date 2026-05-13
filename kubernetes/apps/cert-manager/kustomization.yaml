@@ -6,5 +6,6 @@ namespace: cert-manager
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./cert-manager/ks.yaml

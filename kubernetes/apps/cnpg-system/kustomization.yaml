@@ -6,6 +6,7 @@ namespace: cnpg-system
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./barman-cloud-plugin/ks.yaml
   - ./cnpg/ks.yaml

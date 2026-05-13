@@ -6,6 +6,7 @@ namespace: external-secrets
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./external-secrets/ks.yaml
   - ./onepassword/ks.yaml

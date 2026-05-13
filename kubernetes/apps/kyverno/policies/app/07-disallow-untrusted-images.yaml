@@ -1,6 +1,5 @@
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
-# Tier 1 — SEC-04 image denylist. Ships Audit per D-07/D-10; Enforce flip in plan 04-06.
 # Spike 002 REJECT of prompp is final (CONTEXT D-02). Adding to or removing from the
 # denylist requires a tracked PR — process IS the gate per D-09.
 apiVersion: kyverno.io/v1
@@ -16,7 +15,7 @@ metadata:
       Initial denylist entries (prompp, vmstorage-prompp) reflect Spike 002's REJECT
       decision on observability-prompp. Adding to the denylist requires a PR.
 spec:
-  validationFailureAction: Audit  # Tier 1 — Enforce flip in plan 04-06
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: check-image-denylist

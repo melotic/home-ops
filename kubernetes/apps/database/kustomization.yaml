@@ -6,6 +6,7 @@ namespace: database
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./dragonfly/ks.yaml
   - ./postgres/ks.yaml
