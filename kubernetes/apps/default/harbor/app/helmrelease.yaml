@@ -45,7 +45,7 @@ spec:
         registry:
           storageClass: nfs-construct
         trivy:
-          size: 10Gi
+          size: 16Gi
     existingSecretAdminPassword: harbor
     existingSecretSecretKey: harbor
     metrics:
