@@ -6,10 +6,6 @@ namespace: gitlab-runner
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/restricted
 resources:
   - ./runner/ks.yaml
-patches:
-  - path: ./runner/namespace-pss.yaml
-    target:
-      kind: Namespace
-      name: not-used

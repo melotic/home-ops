@@ -6,5 +6,6 @@ namespace: system-upgrade
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./tuppr/ks.yaml

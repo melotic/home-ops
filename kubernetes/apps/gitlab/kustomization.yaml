@@ -6,5 +6,6 @@ namespace: gitlab
 components:
   - ../../components/alerts
   - ../../components/common
+  - ../../components/psa/baseline
 resources:
   - ./gitlab/ks.yaml
