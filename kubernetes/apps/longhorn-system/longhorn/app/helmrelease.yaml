@@ -33,6 +33,7 @@ spec:
       autoCleanupSnapshotAfterOnDemandBackupCompleted: "true"
       autoCleanupSystemGeneratedSnapshot: "true"
       concurrentReplicaRebuildPerNodeLimit: "2"
+      csiAllowedTopologyKeys: kubernetes.io/hostname
       defaultDataEngine: v1
       defaultDataLocality: best-effort
       defaultDataPath: /var/mnt/longhorn
