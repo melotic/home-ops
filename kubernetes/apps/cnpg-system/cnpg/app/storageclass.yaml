@@ -26,5 +26,6 @@ volumeBindingMode: WaitForFirstConsumer
 parameters:
   numberOfReplicas: "1"
   dataLocality: "strict-local"
+  strictTopology: "true"
   staleReplicaTimeout: "2880"
   replicaAutoBalance: "ignored"
