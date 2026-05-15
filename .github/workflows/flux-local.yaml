@@ -5,6 +5,8 @@ name: "Flux Local"
 on:
   pull_request:
     branches: ["main"]
+  push:
+    branches: ["renovate/**"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -19,12 +21,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
 
       - name: Get Changed Files
         id: changed-files
         uses: tj-actions/changed-files@9426d40962ed5378910ee2e21d5f8c6fcbf2dd96 # v47.0.6
         with:
-          files: kubernetes/**
+          files: |
+            kubernetes/**
+            .github/workflows/flux-local.yaml
 
   test:
     name: Flux Local Test
@@ -40,6 +46,35 @@ jobs:
         with:
           args: test --enable-helm --all-namespaces --path /github/workspace/kubernetes/flux/cluster -v --sources flux-system
 
+  kubeconform:
+    name: Flux Local Kubeconform
+    needs: pre-job
+    runs-on: ubuntu-latest
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Render manifests with flux-local
+        uses: docker://ghcr.io/allenporter/flux-local:v8.2.0
+        with:
+          args: >-
+            build all
+            --enable-helm
+            --skip-invalid-kustomization-paths
+            --output-file /github/workspace/rendered.yaml
+            /github/workspace/kubernetes/flux/cluster
+
+      - name: Run kubeconform
+        uses: docker://ghcr.io/yannh/kubeconform:v0.7.0
+        with:
+          entrypoint: /kubeconform
+          args: >-
+            -strict
+            -summary
+            -ignore-missing-schemas
+            /github/workspace/rendered.yaml
+
   diff:
     name: Flux Local Diff
     needs: pre-job
@@ -52,7 +87,7 @@ jobs:
         resources: ["helmrelease", "kustomization"]
       max-parallel: 4
       fail-fast: false
-    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    if: ${{ github.event_name == 'pull_request' && needs.pre-job.outputs.any_changed == 'true' }}
     steps:
       - name: Checkout Pull Request Branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -109,14 +144,14 @@ jobs:
 
   flux-local-status:
     name: Flux Local Success
-    needs: ["test", "diff"]
+    needs: ["pre-job", "test", "kubeconform", "diff"]
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
-      - name: Any jobs failed?
-        if: ${{ contains(needs.*.result, 'failure') }}
+      - name: Required jobs passed?
+        if: ${{ needs.pre-job.result != 'success' || (needs.pre-job.outputs.any_changed == 'true' && (needs.test.result != 'success' || needs.kubeconform.result != 'success' || (github.event_name == 'pull_request' && needs.diff.result != 'success'))) }}
         run: exit 1
 
       - name: All jobs passed or skipped?
-        if: ${{ !(contains(needs.*.result, 'failure')) }}
+        if: ${{ needs.pre-job.result == 'success' && (needs.pre-job.outputs.any_changed != 'true' || (needs.test.result == 'success' && needs.kubeconform.result == 'success' && (github.event_name != 'pull_request' || needs.diff.result == 'success'))) }}
         run: echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
