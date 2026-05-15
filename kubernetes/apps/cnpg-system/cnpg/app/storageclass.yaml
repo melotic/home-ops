@@ -29,3 +29,19 @@ parameters:
   strictTopology: "true"
   staleReplicaTimeout: "2880"
   replicaAutoBalance: "ignored"
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.34.1/storageclass.json
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-cnpg-wffc-1replica
+allowVolumeExpansion: true
+provisioner: driver.longhorn.io
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  numberOfReplicas: "1"
+  dataLocality: "best-effort"
+  strictTopology: "true"
+  staleReplicaTimeout: "2880"
+  replicaAutoBalance: "ignored"

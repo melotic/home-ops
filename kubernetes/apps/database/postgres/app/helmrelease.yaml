@@ -78,7 +78,7 @@ spec:
             name: postgres-cluster-app
       storage:
         size: 16Gi
-        storageClass: longhorn-cnpg-strict-local-wffc
+        storageClass: longhorn-cnpg-wffc-1replica
     recovery:
       method: pg_basebackup
       pgBaseBackup:
