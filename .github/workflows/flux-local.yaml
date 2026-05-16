@@ -81,6 +81,8 @@ jobs:
             -ignore-missing-schemas
             -schema-location default
             -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
+            -skip
+            volsync.backube/v1alpha1/ReplicationDestination,volsync.backube/v1alpha1/ReplicationSource,cilium.io/v2/CiliumBGPClusterConfig,tuppr.home-operations.com/v1alpha1/KubernetesUpgrade,tuppr.home-operations.com/v1alpha1/TalosUpgrade,postgresql.cnpg.io/v1/Cluster,operator.victoriametrics.com/v1beta1/VMAlertmanagerConfig
             /github/workspace/rendered.yaml
 
   diff:
