@@ -12,6 +12,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   pre-job:
     name: Flux Local Pre-Job
@@ -22,31 +26,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 0
+          fetch-depth: 20
 
       - name: Get Changed Files
         id: changed-files
-        run: |
-          set -euo pipefail
-          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            BASE_REF="${{ github.event.pull_request.base.ref }}"
-          else
-            BASE_REF="${{ github.event.repository.default_branch }}"
-          fi
-          git fetch --no-tags origin "${BASE_REF}:refs/remotes/origin/${BASE_REF}"
-          set +e
-          git diff --quiet --exit-code "origin/${BASE_REF}..HEAD" -- \
-            'kubernetes/**' \
-            '.github/workflows/flux-local.yaml'
-          diff_status=$?
-          set -e
-          if [[ "${diff_status}" -eq 1 ]]; then
-            echo "any_changed=true" >> "${GITHUB_OUTPUT}"
-          elif [[ "${diff_status}" -eq 0 ]]; then
-            echo "any_changed=false" >> "${GITHUB_OUTPUT}"
-          else
-            exit "${diff_status}"
-          fi
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
+        with:
+          base: ${{ github.event.repository.default_branch }}
+          filters: |
+            any_changed:
+              - "kubernetes/**"
+              - ".github/workflows/flux-local.yaml"
 
   test:
     name: Flux Local Test
@@ -169,5 +159,4 @@ jobs:
         run: exit 1
 
       - name: All jobs passed or skipped?
-        if: ${{ needs.pre-job.result == 'success' && (needs.pre-job.outputs.any_changed != 'true' || (needs.test.result == 'success' && needs.kubeconform.result == 'success' && (github.event_name != 'pull_request' || needs.diff.result == 'success'))) }}
         run: echo "All jobs passed or skipped" && echo "${{ toJSON(needs.*.result) }}"
