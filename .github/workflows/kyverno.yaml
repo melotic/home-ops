@@ -5,10 +5,16 @@ name: "Kyverno"
 on:
   pull_request:
     branches: ["main"]
+  push:
+    branches: ["renovate/**"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
   cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
 
 jobs:
   pre-job:
@@ -20,27 +26,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          fetch-depth: 0
+          fetch-depth: 20
 
       - name: Get Changed Files
         id: changed
-        env:
-          BASE_REF: ${{ github.event.pull_request.base.ref }}
-        run: |
-          set -euo pipefail
-          git fetch --no-tags origin "${BASE_REF}:refs/remotes/origin/${BASE_REF}"
-          if git diff --name-only "origin/${BASE_REF}..HEAD" -- \
-                'kubernetes/**' \
-                'talos/**' \
-                'bootstrap/**' \
-                'cluster*.yaml' \
-                'nodes*.yaml' \
-                '.github/workflows/kyverno.yaml' \
-                | grep -q .; then
-            echo "any_changed=true" >> "${GITHUB_OUTPUT}"
-          else
-            echo "any_changed=false" >> "${GITHUB_OUTPUT}"
-          fi
+        uses: dorny/paths-filter@d1c1ffe0248fe513906c8e24db8ea791d46f8590 # v3.0.3
+        with:
+          base: ${{ github.event.repository.default_branch }}
+          filters: |
+            any_changed:
+              - "kubernetes/**"
+              - "talos/**"
+              - "bootstrap/**"
+              - "cluster*.yaml"
+              - "nodes*.yaml"
+              - ".github/workflows/kyverno.yaml"
 
   test:
     name: Kyverno Test
@@ -128,5 +128,4 @@ jobs:
         run: exit 1
 
       - name: Kyverno checks complete
-        if: ${{ needs.pre-job.result == 'success' && (needs.pre-job.outputs.any_changed != 'true' || (needs.test.result == 'success' && needs.validate.result == 'success')) }}
         run: echo "${{ toJSON(needs.*.result) }}"
