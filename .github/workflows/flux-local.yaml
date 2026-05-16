@@ -79,6 +79,8 @@ jobs:
             -strict
             -summary
             -ignore-missing-schemas
+            -schema-location default
+            -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
             /github/workspace/rendered.yaml
 
   diff:
