@@ -38,6 +38,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
+    - name: volsync
+      namespace: volsync-system
   interval: 1h
   path: ./kubernetes/apps/volsync-system/volsync/maintenance
   prune: true
