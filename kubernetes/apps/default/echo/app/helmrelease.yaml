@@ -59,6 +59,8 @@ spec:
         runAsGroup: 65534
     service:
       app:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
         ports:
           http:
             port: *port
