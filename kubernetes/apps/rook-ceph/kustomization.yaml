@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: rook-ceph
+components:
+  - ../../components/common
+  - ../../components/psa/privileged
+patches:
+  - path: ./namespace.yaml
+    target:
+      kind: Namespace
+      name: not-used
+resources:
+  - ./rook-ceph/ks.yaml
