@@ -12,7 +12,7 @@ spec:
   values:
     cephClusterSpec:
       cephVersion:
-        image: quay.io/ceph/ceph:v19.2.3
+        image: quay.io/ceph/ceph:v20.2.1
       cleanupPolicy:
         wipeDevicesFromOtherClusters: false
       crashCollector:
