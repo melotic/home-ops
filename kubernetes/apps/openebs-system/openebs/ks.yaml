@@ -21,6 +21,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  suspend: true
+  suspend: false
   targetNamespace: *namespace
   wait: true
