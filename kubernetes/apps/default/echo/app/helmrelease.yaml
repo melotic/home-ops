@@ -72,7 +72,7 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 302"]
+            conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.melotic.dev"]
         parentRefs:
           - name: envoy-external
