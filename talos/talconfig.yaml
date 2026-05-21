@@ -25,6 +25,21 @@ nodes:
     machineSpec:
       secureboot: false
     controlPlane: true
+    userVolumes:
+      - name: local-hostpath
+        provisioning:
+          diskSelector:
+            match: system_disk
+          grow: false
+          minSize: 32GiB
+          maxSize: 32GiB
+      - name: longhorn
+        provisioning:
+          diskSelector:
+            match: disk.transport == 'nvme'
+          grow: true
+          minSize: 128GiB
+          maxSize: 1TiB
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "00:24:27:88:e6:a8"
@@ -59,6 +74,21 @@ nodes:
     machineSpec:
       secureboot: true
     controlPlane: true
+    userVolumes:
+      - name: local-hostpath
+        provisioning:
+          diskSelector:
+            match: system_disk
+          grow: false
+          minSize: 32GiB
+          maxSize: 32GiB
+      - name: longhorn
+        provisioning:
+          diskSelector:
+            match: disk.transport == 'nvme'
+          grow: true
+          minSize: 128GiB
+          maxSize: 1TiB
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "04:0e:3c:92:31:01"
@@ -92,6 +122,21 @@ nodes:
     machineSpec:
       secureboot: true
     controlPlane: true
+    userVolumes:
+      - name: local-hostpath
+        provisioning:
+          diskSelector:
+            match: system_disk
+          grow: false
+          minSize: 32GiB
+          maxSize: 32GiB
+      - name: longhorn
+        provisioning:
+          diskSelector:
+            match: disk.transport == 'nvme'
+          grow: true
+          minSize: 128GiB
+          maxSize: 1TiB
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "58:47:ca:71:21:77"
@@ -132,14 +177,6 @@ patches:
 
 # Controller patches
 controlPlane:
-  userVolumes:
-    - name: longhorn
-      provisioning:
-        diskSelector:
-          match: disk.transport == 'nvme'
-        grow: true
-        minSize: 128GiB
-        maxSize: 1TiB
   volumes:
     - name: EPHEMERAL
       provisioning:
