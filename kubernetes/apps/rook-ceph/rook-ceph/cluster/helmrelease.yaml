@@ -10,9 +10,11 @@ spec:
     name: rook-ceph-cluster
   interval: 1h
   values:
+    cephImage:
+      repository: quay.io/ceph/ceph
+      tag: v20.2.1
+      allowUnsupported: false
     cephClusterSpec:
-      cephVersion:
-        image: quay.io/ceph/ceph:v20.2.1
       cleanupPolicy:
         wipeDevicesFromOtherClusters: false
       crashCollector:
@@ -51,7 +53,7 @@ spec:
     route:
       dashboard:
         host:
-          name: rook.${SECRET_DOMAIN}
+          name: rook.melotic.dev
           path: /
           pathType: PathPrefix
         parentRefs:
