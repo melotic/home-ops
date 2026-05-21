@@ -12,7 +12,7 @@ spec:
   values:
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v20.2.1
+      tag: v19.2.3-20250717
       allowUnsupported: false
     cephClusterSpec:
       cleanupPolicy:
