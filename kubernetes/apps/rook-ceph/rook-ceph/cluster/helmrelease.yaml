@@ -15,6 +15,12 @@ spec:
       tag: v19.2.3-20250717
       allowUnsupported: false
     cephClusterSpec:
+      cephConfig:
+        global:
+          osd_pool_default_min_size: "1"
+          osd_pool_default_size: "1"
+        mon:
+          mon_data_avail_warn: "20"
       cleanupPolicy:
         wipeDevicesFromOtherClusters: false
       crashCollector:
