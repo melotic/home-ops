@@ -51,6 +51,9 @@ spec:
           - name: k8s-niobe
             devices:
               - name: /dev/disk/by-partlabel/r-rook-osd
+          - name: k8s-trinity
+            devices:
+              - name: /dev/disk/by-partlabel/r-rook-osd
     monitoring:
       enabled: true
       createPrometheusRules: true
@@ -71,7 +74,7 @@ spec:
         spec:
           failureDomain: host
           replicated:
-            size: 1
+            size: 2
         storageClass:
           enabled: true
           name: ceph-block
