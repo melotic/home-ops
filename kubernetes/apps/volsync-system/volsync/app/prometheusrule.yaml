@@ -26,9 +26,9 @@ spec:
               {{ $labels.obj_namespace }}/{{ $labels.obj_name }} volume is out of sync
           for: 5m
           labels:
-            severity: critical
+            severity: warning
 
-        - alert: VolSyncBackupFailed
+        - alert: VolSyncMissedInterval
           expr: |-
             increase(volsync_missed_intervals_total{role="source"}[13h]) > 0
           annotations:
@@ -36,9 +36,9 @@ spec:
               {{ $labels.obj_namespace }}/{{ $labels.obj_name }} missed a scheduled VolSync backup interval
           for: 15m
           labels:
-            severity: critical
+            severity: warning
 
-        - alert: VolSyncBackupStale
+        - alert: VolSyncSourceBackupStale
           expr: |-
             volsync_volume_out_of_sync{role="source"} == 1
           annotations:
@@ -47,3 +47,33 @@ spec:
           for: 1h
           labels:
             severity: critical
+
+        - alert: KopiaAzureSyncFailed
+          expr: |-
+            kube_job_status_failed{namespace="default", job_name=~"kopia-azure-sync-.*"} > 0
+          annotations:
+            summary: >-
+              Kopia Azure sync job {{ $labels.job_name }} failed
+          for: 10m
+          labels:
+            severity: critical
+
+        - alert: KopiaAzureSyncStale
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="kopia-azure-sync"} > 172800
+          annotations:
+            summary: >-
+              Kopia Azure sync has not completed successfully in more than 48 hours
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: KopiaMaintenanceJobFailed
+          expr: |-
+            kube_job_status_failed{namespace="volsync-system", job_name=~"kopia-maint-.*"} > 0
+          annotations:
+            summary: >-
+              Kopia maintenance job {{ $labels.job_name }} failed
+          for: 10m
+          labels:
+            severity: warning

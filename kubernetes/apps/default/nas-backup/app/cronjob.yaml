@@ -10,7 +10,7 @@ spec:
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
-      activeDeadlineSeconds: 14400
+      activeDeadlineSeconds: 28800
       backoffLimit: 3
       ttlSecondsAfterFinished: 86400
       template:
@@ -19,9 +19,9 @@ spec:
           restartPolicy: OnFailure
           securityContext:
             runAsNonRoot: true
-            runAsUser: 65534
-            runAsGroup: 65534
-            fsGroup: 65534
+            runAsUser: 977
+            runAsGroup: 988
+            fsGroup: 988
           containers:
             - name: rclone
               image: docker.io/rclone/rclone:1.74.1

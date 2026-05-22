@@ -12,7 +12,7 @@ spec:
   jobTemplate:
     spec:
       activeDeadlineSeconds: 28800
-      backoffLimit: 1
+      backoffLimit: 0
       ttlSecondsAfterFinished: 86400
       template:
         spec:
@@ -55,7 +55,6 @@ spec:
                     --path=/repository \
                     --password="$KOPIA_PASSWORD"
                   echo "Syncing kopia repository to Azure..."
-                  # Kopia 0.23 implements the plan's --no-delete-destination intent as --no-delete.
                   kopia repository sync-to azure \
                     --container=nas-backup \
                     --prefix=k8s/volsync \
