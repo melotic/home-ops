@@ -14,8 +14,8 @@ spec:
   dependsOn:
     - name: dragonfly
       namespace: database
-    - name: longhorn
-      namespace: longhorn-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
   path: ./kubernetes/apps/default/paperless-ngx/app
@@ -23,6 +23,8 @@ spec:
     substitute:
       APP: paperless-ngx
       VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_SNAPSHOTCLASS: csi-ceph-blockpool
+      VOLSYNC_STORAGECLASS: ceph-block
   sourceRef:
     kind: GitRepository
     name: flux-system

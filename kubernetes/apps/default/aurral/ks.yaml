@@ -12,8 +12,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
-    - name: longhorn
-      namespace: longhorn-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
     - name: onepassword
@@ -25,6 +25,8 @@ spec:
     substitute:
       APP: aurral
       VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_SNAPSHOTCLASS: csi-ceph-blockpool
+      VOLSYNC_STORAGECLASS: ceph-block
   sourceRef:
     kind: GitRepository
     name: flux-system
