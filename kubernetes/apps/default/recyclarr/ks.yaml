@@ -12,8 +12,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
-    - name: longhorn
-      namespace: longhorn-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
   path: ./kubernetes/apps/default/recyclarr/app
@@ -23,6 +23,8 @@ spec:
       VOLSYNC_CAPACITY: 1Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"
+      VOLSYNC_SNAPSHOTCLASS: csi-ceph-blockpool
+      VOLSYNC_STORAGECLASS: ceph-block
   sourceRef:
     kind: GitRepository
     name: flux-system
