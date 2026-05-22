@@ -33,13 +33,8 @@ nodes:
           grow: false
           minSize: 32GiB
           maxSize: 32GiB
-      - name: longhorn
-        provisioning:
-          diskSelector:
-            match: disk.transport == 'nvme'
-          grow: true
-          minSize: 128GiB
-          maxSize: 1TiB
+    patches:
+      - "@./patches/k8s-niobe/storage-reshape.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "00:24:27:88:e6:a8"
@@ -82,13 +77,8 @@ nodes:
           grow: false
           minSize: 32GiB
           maxSize: 32GiB
-      - name: longhorn
-        provisioning:
-          diskSelector:
-            match: disk.transport == 'nvme'
-          grow: true
-          minSize: 128GiB
-          maxSize: 1TiB
+    patches:
+      - "@./patches/k8s-trinity/storage-reshape.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "04:0e:3c:92:31:01"
