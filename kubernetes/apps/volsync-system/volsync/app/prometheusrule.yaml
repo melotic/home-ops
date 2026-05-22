@@ -27,3 +27,23 @@ spec:
           for: 5m
           labels:
             severity: critical
+
+        - alert: VolSyncBackupFailed
+          expr: |-
+            increase(volsync_missed_intervals_total{role="source"}[13h]) > 0
+          annotations:
+            summary: >-
+              {{ $labels.obj_namespace }}/{{ $labels.obj_name }} missed a scheduled VolSync backup interval
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: VolSyncBackupStale
+          expr: |-
+            volsync_volume_out_of_sync{role="source"} == 1
+          annotations:
+            summary: >-
+              {{ $labels.obj_namespace }}/{{ $labels.obj_name }} VolSync backup has been stale for more than 1 hour
+          for: 1h
+          labels:
+            severity: critical
