@@ -45,6 +45,7 @@ spec:
         registry:
           storageClass: nfs-construct
         trivy:
+          storageClass: ceph-block
           size: 16Gi
     existingSecretAdminPassword: harbor
     existingSecretSecretKey: harbor
