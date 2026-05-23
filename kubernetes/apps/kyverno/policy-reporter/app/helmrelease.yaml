@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: policy-reporter
+spec:
+  chart:
+    spec:
+      chart: policy-reporter
+      sourceRef:
+        name: policy-reporter
+        kind: HelmRepository
+      version: 3.7.4
+  interval: 1h
+  install:
+    remediation:
+      retries: -1
+  values:
+    ui:
+      enabled: true
+    plugin:
+      kyverno:
+        enabled: true
+    monitoring:
+      enabled: true

@@ -21,6 +21,7 @@ entries:
         - !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, slskd]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, gatus]]
+        - !Find [authentik_providers_proxy.proxyprovider, [name, policy-reporter]]
 
   - model: authentik_outposts.outpost
     identifiers:
