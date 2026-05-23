@@ -81,7 +81,7 @@ jobs:
             -schema-location https://k8s-schemas.home-operations.com/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
             -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
             -skip
-            cilium.io/v2/CiliumBGPClusterConfig,postgresql.cnpg.io/v1/Cluster,operator.victoriametrics.com/v1beta1/VMAlertmanagerConfig
+            cilium.io/v2/CiliumBGPClusterConfig,postgresql.cnpg.io/v1/Cluster,operator.victoriametrics.com/v1beta1/VMAlertmanagerConfig,volsync.backube/v1alpha1/ReplicationSource,volsync.backube/v1alpha1/ReplicationDestination
             /github/workspace/rendered.yaml
 
   diff:
