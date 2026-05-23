@@ -44,6 +44,9 @@ spec:
       persistentVolumeClaim:
         registry:
           storageClass: nfs-construct
+        jobservice:
+          jobLog:
+            storageClass: ceph-block
         trivy:
           storageClass: ceph-block
           size: 16Gi

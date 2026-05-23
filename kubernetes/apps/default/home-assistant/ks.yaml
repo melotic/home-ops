@@ -14,8 +14,8 @@ spec:
   dependsOn:
     - name: multus-networks
       namespace: kube-system
-    - name: longhorn
-      namespace: longhorn-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: volsync
       namespace: volsync-system
   path: ./kubernetes/apps/default/home-assistant/app
@@ -25,6 +25,8 @@ spec:
       VOLSYNC_CAPACITY: 8Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"
+      VOLSYNC_SNAPSHOTCLASS: csi-ceph-blockpool
+      VOLSYNC_STORAGECLASS: ceph-block
   sourceRef:
     kind: GitRepository
     name: flux-system
