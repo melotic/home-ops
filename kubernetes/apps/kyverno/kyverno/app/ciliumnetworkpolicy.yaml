@@ -29,3 +29,21 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
+    # Sigstore (TUF, Rekor, Fulcio) for verifyImages keyless cosign
+    - toFQDNs:
+        - matchName: tuf-repo-cdn.sigstore.dev
+        - matchName: rekor.sigstore.dev
+        - matchName: fulcio.sigstore.dev
+        - matchName: oauth2.sigstore.dev
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # Container registries for signature/attestation layer fetches
+    - toFQDNs:
+        - matchName: ghcr.io
+        - matchName: registry.k8s.io
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
