@@ -62,7 +62,7 @@ spec:
       data:
         accessMode: ReadWriteOnce
         size: 1Gi
-        storageClass: longhorn
+        storageClass: ceph-block
         globalMounts:
           - path: /data
       tmp:
