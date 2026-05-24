@@ -12,7 +12,7 @@ spec:
   dependsOn:
     - name: kyverno
       namespace: kyverno
-    - name: external-secrets-stores
+    - name: onepassword
       namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/kyverno/policy-reporter/app
