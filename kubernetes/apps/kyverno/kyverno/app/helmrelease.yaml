@@ -15,6 +15,7 @@ spec:
   values:
     admissionController:
       replicas: 1
+      priorityClassName: system-cluster-critical
       dnsConfig:
         options:
           - name: ndots
