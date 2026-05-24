@@ -23,7 +23,7 @@ nodes:
     ipAddress: "10.60.85.10"
     installDisk: "/dev/nvme0n1"
     machineSpec:
-      secureboot: false
+      secureboot: true
     controlPlane: true
     userVolumes:
       - name: local-hostpath
