@@ -29,6 +29,7 @@ spec:
       backupTarget: cifs://construct.melotic.dev/backups/longhorn?cifsOptions=rsize=65536,wsize=65536,soft
       backupTargetCredentialSecret: cifs-secret
     defaultSettings:
+      guaranteedInstanceManagerCPU: "5"
       autoCleanupRecurringJobBackupSnapshot: "true"
       autoCleanupSnapshotAfterOnDemandBackupCompleted: "true"
       autoCleanupSystemGeneratedSnapshot: "true"
