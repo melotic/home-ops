@@ -23,8 +23,6 @@ spec:
     substitute:
       APP: beets
       VOLSYNC_CAPACITY: 1Gi
-      VOLSYNC_SNAPSHOTCLASS: csi-ceph-blockpool
-      VOLSYNC_STORAGECLASS: ceph-block
     substituteFrom:
       - name: beets-secret
         kind: Secret
