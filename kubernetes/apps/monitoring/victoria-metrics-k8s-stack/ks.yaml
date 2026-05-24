@@ -12,6 +12,8 @@ spec:
   dependsOn:
     - name: prometheus-operator-crds
     - name: grafana
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   path: ./kubernetes/apps/monitoring/victoria-metrics-k8s-stack/app
   postBuild:
     substitute:
