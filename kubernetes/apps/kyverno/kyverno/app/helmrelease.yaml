@@ -20,12 +20,6 @@ spec:
         options:
           - name: ndots
             value: "1"
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          memory: 512Mi
       podSecurityContext:
         runAsNonRoot: true
         runAsUser: 1000
@@ -39,6 +33,7 @@ spec:
           drop: ["ALL"]
     backgroundController:
       replicas: 1
+      priorityClassName: system-cluster-critical
       dnsConfig:
         options:
           - name: ndots
