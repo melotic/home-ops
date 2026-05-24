@@ -22,8 +22,8 @@ spec:
       enabled: true
       openIDConnect:
         enabled: true
-        discoveryUrl: "https://auth.${SECRET_DOMAIN}/application/o/policy-reporter/.well-known/openid-configuration"
-        callbackUrl: "https://policy-reporter.${SECRET_DOMAIN}/callback"
+        discoveryUrl: "https://auth.melotic.dev/application/o/policy-reporter/.well-known/openid-configuration"
+        callbackUrl: "https://policy-reporter.melotic.dev/callback"
         clientId: ""
         clientSecret: ""
         secretRef: policy-reporter-oidc
@@ -39,7 +39,7 @@ spec:
             namespace: network
             sectionName: https
         hostnames:
-          - "policy-reporter.${SECRET_DOMAIN}"
+          - "policy-reporter.melotic.dev"
         rules:
           - matches:
               - path:
