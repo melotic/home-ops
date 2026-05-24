@@ -54,6 +54,9 @@ spec:
           - name: k8s-trinity
             devices:
               - name: /dev/disk/by-partlabel/r-rook-osd
+          - name: k8s-ghost
+            devices:
+              - name: /dev/disk/by-partlabel/r-rook-osd
     monitoring:
       enabled: true
       createPrometheusRules: true

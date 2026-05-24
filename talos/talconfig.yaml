@@ -120,13 +120,8 @@ nodes:
           grow: false
           minSize: 32GiB
           maxSize: 32GiB
-      - name: longhorn
-        provisioning:
-          diskSelector:
-            match: disk.transport == 'nvme'
-          grow: true
-          minSize: 128GiB
-          maxSize: 1TiB
+    patches:
+      - "@./patches/k8s-ghost/storage-reshape.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "58:47:ca:71:21:77"
