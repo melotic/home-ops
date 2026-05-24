@@ -224,7 +224,7 @@ spec:
         persistence:
           enabled: true
           size: 50Gi
-          storageClass: longhorn
+          storageClass: ceph-block
           accessMode: ReadWriteOnce
         resources:
           requests:
