@@ -22,6 +22,26 @@ spec:
           osd_pool_default_size: "3"
         mon:
           mon_data_avail_warn: "20"
+      # Override chart defaults that over-reserve small-cluster Ceph daemons.
+      resources:
+        mon:
+          requests:
+            cpu: 100m
+            memory: 1Gi
+          limits:
+            memory: 2Gi
+        mgr:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            memory: 1Gi
+        osd:
+          requests:
+            cpu: 250m
+            memory: 4Gi
+          limits:
+            memory: 4Gi
       cleanupPolicy:
         wipeDevicesFromOtherClusters: false
       crashCollector:
