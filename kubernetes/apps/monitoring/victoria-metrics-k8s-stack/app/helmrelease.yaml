@@ -75,7 +75,7 @@ spec:
       spec:
         retentionPeriod: "31d"
         storage:
-          storageClassName: longhorn
+          storageClassName: ceph-block
           accessModes: ["ReadWriteOnce"]
           resources:
             requests:
@@ -101,7 +101,7 @@ spec:
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: longhorn
+              storageClassName: ceph-block
               accessModes: ["ReadWriteOnce"]
               resources:
                 requests:

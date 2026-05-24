@@ -16,7 +16,7 @@ spec:
         registry: docker.io
       persistentVolume:
         enabled: true
-        storageClassName: longhorn
+        storageClassName: ceph-block
         size: 20Gi
       retentionPeriod: 14d
       route:
