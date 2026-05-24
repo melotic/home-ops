@@ -9,9 +9,6 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: longhorn
-      namespace: longhorn-system
   path: ./kubernetes/apps/default/authentik/app
   sourceRef:
     kind: GitRepository

@@ -24,10 +24,10 @@ spec:
       expr: |-
         status.conditions.filter(c, c.type == "Ready").all(c, c.status == "True")
       timeout: 10m
-    - apiVersion: longhorn.io/v1beta2
-      kind: Volume
-      namespace: longhorn-system
+    - apiVersion: ceph.rook.io/v1
+      kind: CephCluster
+      name: rook-ceph
+      namespace: rook-ceph
       expr: |-
-        (status.state == "attached" && status.robustness == "healthy") ||
-        (status.state != "attached")
+        status.ceph.health == "HEALTH_OK"
       timeout: 15m
