@@ -13,7 +13,8 @@ kubernetes/
     database/     # Dragonfly (Redis), CloudNativePG postgres cluster
     monitoring/   # VictoriaMetrics, Grafana, Loki, Gatus, etc.
     network/      # Envoy Gateway, Cloudflare Tunnel/DNS, UniFi DNS, Tailscale
-    kube-system/  # Cilium, CoreDNS, Longhorn CSI, Reloader, Spegel, etc.
+    kube-system/  # Cilium, CoreDNS, Reloader, Spegel, etc.
+    rook-ceph/    # Rook-Ceph cluster and storage classes
     cert-manager/ # cert-manager
     external-secrets/ # External Secrets Operator
     cnpg-system/  # CloudNativePG operator
@@ -86,8 +87,8 @@ spec:
     secretRef:
       name: sops-age
   dependsOn:
-    - name: longhorn        # if using Longhorn storage
-      namespace: longhorn-system
+    - name: rook-ceph-cluster # if the app requires Ceph storage readiness
+      namespace: rook-ceph
   interval: 1h
   path: ./kubernetes/apps/<namespace>/<app-name>/app
   postBuild:
@@ -202,7 +203,9 @@ Network CIDRs:
 
 ## Storage
 
-- **Longhorn** is the default StorageClass (`storageClass: longhorn`).
+- **Ceph RBD** is the default StorageClass (`storageClass: ceph-block`).
+- **CephFS** is available as a non-default StorageClass (`storageClass: ceph-filesystem`).
+- **OpenEBS hostpath** is used for CNPG (`storageClass: openebs-hostpath`).
 - **NFS** share is available at `construct.${SECRET_DOMAIN}:/var/nfs/shared/data`, typically mounted at `/data`.
 - Use `ReadWriteOnce` for most PVCs.
 
@@ -211,7 +214,7 @@ persistence:
   config:
     accessMode: ReadWriteOnce
     size: 5Gi
-    storageClass: longhorn
+    storageClass: ceph-block
   data:
     type: nfs
     server: construct.${SECRET_DOMAIN}
@@ -228,6 +231,7 @@ persistence:
 - **RW endpoint**: `postgres-cluster-rw.database.svc.cluster.local`
 - **RO endpoint**: `postgres-cluster-r.database.svc.cluster.local`
 - Credentials come from the secret `postgres-cluster-app` (keys: `user`, `password`).
+- CNPG uses `openebs-hostpath`; do not move it to Ceph unless a future plan explicitly changes it.
 - Apps like Sonarr/Radarr reference this via `secretKeyRef`.
 
 ### Dragonfly (Redis-compatible)
@@ -266,7 +270,7 @@ Tools are managed by **mise** (`.mise.toml`). Key tools:
 - `talosctl`, `talhelper` (Talos config generation)
 - `sops`, `age` (secret encryption)
 - `task` (Taskfile runner)
-- `yq`, `jq`, `kubeconform`
+- `yq`, `jq`, `kubeconform`, `flux-local`
 
 Bootstrap:
 ```sh
@@ -312,7 +316,7 @@ On pull requests touching `kubernetes/**`, the `flux-local` workflow runs:
 - **test**: validates all Kustomizations and HelmReleases resolve correctly
 - **diff**: posts a rendered diff of HelmRelease/Kustomization changes as a PR comment
 
-Always ensure your changes pass `flux-local test` before merging.
+Always ensure Kubernetes changes pass `mise exec -- flux-local test --enable-helm --all-namespaces --path kubernetes/flux/cluster -v --sources flux-system` before merging.
 
 ---
 
@@ -349,11 +353,11 @@ VIP (Kube API): `10.60.8.10:6443`
 | `database`        | Dragonfly, CloudNativePG postgres cluster             |
 | `monitoring`      | VictoriaMetrics stack, Grafana, Loki, Gatus           |
 | `network`         | Envoy Gateway, Cloudflare Tunnel/DNS, UniFi DNS, Tailscale |
-| `kube-system`     | Cilium, CoreDNS, Longhorn CSI, Reloader, Spegel, etc. |
+| `kube-system`     | Cilium, CoreDNS, Reloader, Spegel, etc. |
+| `rook-ceph`       | Rook-Ceph cluster, CSI drivers, and Ceph storage classes |
 | `cert-manager`    | cert-manager with wildcard certs                      |
 | `external-secrets`| External Secrets Operator + 1Password store           |
 | `cnpg-system`     | CloudNativePG operator                                |
-| `longhorn-system` | Longhorn distributed storage                          |
 | `flux-system`     | FluxCD controllers                                    |
 
 ---

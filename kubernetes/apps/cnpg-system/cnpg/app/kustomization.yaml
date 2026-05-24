@@ -6,4 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./helmrepository.yaml
   - ./grafanadashboard.yaml
-  - ./storageclass.yaml

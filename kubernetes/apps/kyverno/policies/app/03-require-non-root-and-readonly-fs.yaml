@@ -29,7 +29,7 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system, longhorn-system]
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
       validate:
         message: "Container must set securityContext.runAsNonRoot=true"
         foreach:
@@ -62,7 +62,7 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system, longhorn-system]
+              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
       validate:
         message: "Container must set securityContext.readOnlyRootFilesystem=true"
         foreach:

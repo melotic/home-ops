@@ -101,7 +101,7 @@ spec:
           enabled: true
           name: ceph-block
           allowVolumeExpansion: true
-          isDefault: false
+          isDefault: true
           mountOptions:
             - discard
           parameters:
@@ -121,7 +121,7 @@ spec:
       enabled: true
       name: csi-ceph-blockpool
       deletionPolicy: Delete
-      isDefault: false
+      isDefault: true
     cephFileSystems:
       - name: ceph-filesystem
         spec:

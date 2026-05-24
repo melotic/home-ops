@@ -16,7 +16,7 @@ This repo is the GitOps source-of-truth for my Talos Kubernetes cluster running 
 - Talos Linux for immutable nodes and declarative machine config.
 - FluxCD for reconciliation of `Kustomization` and `HelmRelease`.
 - CNI: Cilium. Ingress/Gateway: Kubernetes Gateway API.
-- Storage: Longhorn (+ CSI drivers where needed).
+- Storage: Rook-Ceph RBD/CephFS, OpenEBS hostpath, and NFS CSI where needed.
 - Databases: CloudNativePG for Postgres.
 - Secrets: SOPS (age) and External Secrets with 1Password.
 - Certificates: cert-manager with wildcard certs.
@@ -38,7 +38,7 @@ Networking (namespace `network`):
 - Cloudflare DNS, Cloudflare Tunnel, UniFi DNS
 
 Platform:
-- External Secrets (incl. 1Password), cert-manager, Flux system, CNPG system, CoreDNS, Cilium, Longhorn
+- External Secrets (incl. 1Password), cert-manager, Flux system, CNPG system, CoreDNS, Cilium, Rook-Ceph, OpenEBS
 
 ## 🚀 Bootstrap
 
