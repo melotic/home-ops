@@ -11,6 +11,8 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: grafana
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   path: ./kubernetes/apps/monitoring/victoria-logs/app
   postBuild:
     substitute:
