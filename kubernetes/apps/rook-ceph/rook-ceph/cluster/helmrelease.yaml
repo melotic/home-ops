@@ -17,8 +17,8 @@ spec:
     cephClusterSpec:
       cephConfig:
         global:
-          osd_pool_default_min_size: "1"
-          osd_pool_default_size: "1"
+          osd_pool_default_min_size: "2"
+          osd_pool_default_size: "3"
         mon:
           mon_data_avail_warn: "20"
       cleanupPolicy:
@@ -34,13 +34,9 @@ spec:
         ssl: false
         urlPrefix: /
       mgr:
-        count: 1
         modules:
           - name: pg_autoscaler
             enabled: true
-      mon:
-        allowMultiplePerNode: true
-        count: 1
       network:
         connections:
           requireMsgr2: true
@@ -76,8 +72,10 @@ spec:
       - name: ceph-blockpool
         spec:
           failureDomain: host
+          parameters:
+            min_size: "2"
           replicated:
-            size: 2
+            size: 3
         storageClass:
           enabled: true
           name: ceph-block
@@ -103,5 +101,60 @@ spec:
       name: csi-ceph-blockpool
       deletionPolicy: Delete
       isDefault: false
-    cephFileSystems: []
+    cephFileSystems:
+      - name: ceph-filesystem
+        spec:
+          metadataPool:
+            parameters:
+              min_size: "2"
+            replicated:
+              size: 3
+          dataPools:
+            - name: data0
+              failureDomain: host
+              parameters:
+                min_size: "2"
+              replicated:
+                size: 3
+          metadataServer:
+            activeCount: 1
+            activeStandby: true
+            placement:
+              topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: ceph-mds
+                      app.kubernetes.io/part-of: ceph-filesystem
+            priorityClassName: system-cluster-critical
+            resources:
+              requests:
+                cpu: 100m
+                memory: 1Gi
+              limits:
+                memory: 4Gi
+        storageClass:
+          enabled: true
+          name: ceph-filesystem
+          allowVolumeExpansion: true
+          isDefault: false
+          parameters:
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/controller-publish-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-publish-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
+          pool: data0
+          reclaimPolicy: Delete
+          volumeBindingMode: Immediate
+    cephFileSystemVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-filesystem
+      deletionPolicy: Delete
+      isDefault: false
     cephObjectStores: []
