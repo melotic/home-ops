@@ -80,6 +80,11 @@ spec:
             - pg_signal_backend
           passwordSecret:
             name: postgres-cluster-app
+        - name: seerr
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-seerr
       storage:
         size: 16Gi
         storageClass: openebs-hostpath
