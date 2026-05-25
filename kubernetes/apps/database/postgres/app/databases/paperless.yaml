@@ -5,6 +5,9 @@ metadata:
   name: paperless
 spec:
   name: paperless
-  owner: app
+  owner: paperless
   cluster:
     name: postgres-cluster
+  schemas:
+    - name: public
+      owner: paperless
