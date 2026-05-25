@@ -67,10 +67,10 @@ spec:
     database:
       type: external
       external:
-        host: postgres-cluster-rw.database.svc.cluster.local
-        username: app
+        host: ${PG_HOST}
+        username: harbor
         coreDatabase: harbor
-        existingSecret: postgres-cluster-app
+        existingSecret: harbor-postgres
     core:
       priorityClassName: app-high
       image:
