@@ -26,4 +26,4 @@ spec:
         password: "{{ .password }}"
   dataFrom:
     - extract:
-        key: postgres-seerr
+        key: seerr-postgres
