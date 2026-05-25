@@ -20,13 +20,13 @@ spec:
               repository: ghcr.io/seerr-team/seerr
               tag: v3.2.0@sha256:c4cbd5121236ac2f70a843a0b920b68a27976be57917555f1c45b08a1e6b2aad
             env:
-              DB_HOST: postgres-cluster-rw.database.svc.cluster.local
-              DB_NAME: seerr
+              DB_HOST: ${PG_HOST}
+              DB_NAME: ${PG_DATABASE}
               DB_TYPE: postgres
               DB_USER:
                 secretKeyRef:
-                  name: &pgsecret postgres-cluster-app
-                  key: user
+                  name: &pgsecret seerr-postgres
+                  key: username
               DB_PASS:
                 secretKeyRef:
                   name: *pgsecret

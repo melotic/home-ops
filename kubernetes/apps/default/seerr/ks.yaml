@@ -23,6 +23,7 @@ spec:
   postBuild:
     substitute:
       APP: seerr
+      PG_DATABASE: seerr
       PG_HOST: postgres-cluster-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 5Gi
   sourceRef:
