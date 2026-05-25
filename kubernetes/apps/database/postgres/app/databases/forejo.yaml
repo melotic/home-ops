@@ -5,6 +5,9 @@ metadata:
   name: forejo
 spec:
   name: forejo
-  owner: app
+  owner: forejo
   cluster:
     name: postgres-cluster
+  schemas:
+    - name: public
+      owner: forejo

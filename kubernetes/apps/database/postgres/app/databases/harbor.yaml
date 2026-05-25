@@ -5,6 +5,9 @@ metadata:
   name: harbor
 spec:
   name: harbor
-  owner: app
+  owner: harbor
   cluster:
     name: postgres-cluster
+  schemas:
+    - name: public
+      owner: harbor
