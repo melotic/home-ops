@@ -61,6 +61,10 @@ spec:
       instances: 3
       monitoring:
         enabled: true
+        podMonitor:
+          enabled: false
+        prometheusRule:
+          enabled: true
       resources:
         requests:
           cpu: 100m
