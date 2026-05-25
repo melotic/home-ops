@@ -32,10 +32,23 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
-          # prompp explicitly excluded — see Spike 002 (image-provenance) gating conditions
-          - resources:
-              namespaces: [spike-prompp]
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - cert-manager
+                - cnpg-system
+                - longhorn-system
+                - monitoring
+                - network
+                - external-secrets
+                - database
+                - rook-ceph
+                - openebs-system
+                - volsync-system
+                - system-upgrade
       verifyImages:
         - imageReferences:
             - "ghcr.io/*"

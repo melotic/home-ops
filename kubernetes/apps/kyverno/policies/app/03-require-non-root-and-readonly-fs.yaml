@@ -29,7 +29,23 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - longhorn-system
+                - cert-manager
+                - cnpg-system
+                - monitoring
+                - network
+                - external-secrets
+                - database
+                - rook-ceph
+                - openebs-system
+                - volsync-system
+                - system-upgrade
       validate:
         message: "Container must set securityContext.runAsNonRoot=true"
         foreach:
@@ -62,7 +78,23 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - longhorn-system
+                - cert-manager
+                - cnpg-system
+                - monitoring
+                - network
+                - external-secrets
+                - database
+                - rook-ceph
+                - openebs-system
+                - volsync-system
+                - system-upgrade
       validate:
         message: "Container must set securityContext.readOnlyRootFilesystem=true"
         foreach:

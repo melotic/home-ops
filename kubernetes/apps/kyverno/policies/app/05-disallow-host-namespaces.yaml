@@ -24,7 +24,20 @@ spec:
       exclude:
         any:
           - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
+              namespaces:
+                - kube-system
+                - kube-public
+                - kube-node-lease
+                - kyverno
+                - flux-system
+                - cert-manager
+                - cnpg-system
+                - longhorn-system
+                - monitoring
+                - network
+                - external-secrets
+                - rook-ceph
+                - openebs-system
       validate:
         message: "Pod must not set spec.hostNetwork, spec.hostPID, or spec.hostIPC"
         pattern:
