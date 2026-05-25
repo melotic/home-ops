@@ -5,9 +5,12 @@ metadata:
   name: gitlab
 spec:
   name: gitlab
-  owner: app
+  owner: gitlab
   cluster:
     name: postgres-cluster
+  schemas:
+    - name: public
+      owner: gitlab
   extensions:
     - name: pg_trgm
       ensure: present

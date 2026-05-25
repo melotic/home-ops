@@ -130,6 +130,11 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-paperless
+        - name: gitlab
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-gitlab
       storage:
         size: 16Gi
         storageClass: openebs-hostpath

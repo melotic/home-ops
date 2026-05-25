@@ -9,6 +9,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/cnpg-database
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -19,6 +21,11 @@ spec:
     - name: authentik
       namespace: default
   path: ./kubernetes/apps/gitlab/gitlab/app
+  postBuild:
+    substitute:
+      APP: gitlab
+      PG_DATABASE: gitlab
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system

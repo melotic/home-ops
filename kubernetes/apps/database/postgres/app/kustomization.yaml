@@ -25,6 +25,7 @@ resources:
   - ./roles/atuin.yaml
   - ./roles/authentik.yaml
   - ./roles/forejo.yaml
+  - ./roles/gitlab.yaml
   - ./roles/harbor.yaml
   - ./roles/lidarr.yaml
   - ./roles/paperless.yaml
