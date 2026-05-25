@@ -24,7 +24,7 @@ spec:
     substitute:
       APP: lidarr
       PG_DATABASE: lidarr
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
+      PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 16Gi
   sourceRef:
     kind: GitRepository
