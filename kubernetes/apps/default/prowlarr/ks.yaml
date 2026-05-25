@@ -24,7 +24,7 @@ spec:
     substitute:
       APP: prowlarr
       PG_DATABASE: prowlarr
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
+      PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 5Gi
   sourceRef:
     kind: GitRepository
