@@ -9,3 +9,6 @@ spec:
   owner: seerr
   cluster:
     name: postgres-cluster
+  schemas:
+    - name: public
+      owner: seerr
