@@ -9,10 +9,19 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/cnpg-database
   dependsOn:
+    - name: postgres
+      namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
   path: ./kubernetes/apps/default/harbor/app
+  postBuild:
+    substitute:
+      APP: harbor
+      PG_DATABASE: harbor
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system

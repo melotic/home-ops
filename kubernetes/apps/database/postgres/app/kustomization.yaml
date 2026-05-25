@@ -3,6 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./databases/atuin.yaml
+  - ./databases/authentik.yaml
   - ./databases/harbor.yaml
   - ./databases/forejo.yaml
   - ./databases/gitlab.yaml
@@ -20,7 +22,12 @@ resources:
   - ./monitoring/cluster-podmonitor.yaml
   - ./monitoring/pooler-podmonitor.yaml
   - ./pooler/pooler-rw.yaml
+  - ./roles/atuin.yaml
+  - ./roles/authentik.yaml
+  - ./roles/forejo.yaml
+  - ./roles/harbor.yaml
   - ./roles/lidarr.yaml
+  - ./roles/paperless.yaml
   - ./roles/prowlarr.yaml
   - ./roles/radarr.yaml
   - ./roles/seerr.yaml

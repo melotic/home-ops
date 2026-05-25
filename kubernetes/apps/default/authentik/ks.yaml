@@ -9,7 +9,17 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/cnpg-database
+  dependsOn:
+    - name: postgres
+      namespace: database
   path: ./kubernetes/apps/default/authentik/app
+  postBuild:
+    substitute:
+      APP: authentik
+      PG_DATABASE: authentik
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system

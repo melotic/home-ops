@@ -11,7 +11,10 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/cnpg-database
   dependsOn:
+    - name: postgres
+      namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
@@ -20,6 +23,8 @@ spec:
   postBuild:
     substitute:
       APP: atuin
+      PG_DATABASE: atuin
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"

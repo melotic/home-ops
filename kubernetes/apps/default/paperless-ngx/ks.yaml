@@ -11,8 +11,11 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
+    - ../../../../components/cnpg-database
   dependsOn:
     - name: dragonfly
+      namespace: database
+    - name: postgres
       namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -22,6 +25,10 @@ spec:
   postBuild:
     substitute:
       APP: paperless-ngx
+      ONEPASSWORD_ITEM: paperless-postgres
+      PG_DATABASE: paperless
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
+      PG_USER: paperless
       VOLSYNC_CAPACITY: 5Gi
   sourceRef:
     kind: GitRepository

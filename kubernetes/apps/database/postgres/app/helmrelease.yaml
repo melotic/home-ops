@@ -105,6 +105,31 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-prowlarr
+        - name: atuin
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-atuin
+        - name: authentik
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-authentik
+        - name: harbor
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-harbor
+        - name: forejo
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-forejo
+        - name: paperless
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-paperless
       storage:
         size: 16Gi
         storageClass: openebs-hostpath
