@@ -21,7 +21,17 @@ spec:
     ui:
       enabled: true
       openIDConnect:
-        enabled: false
+        enabled: true
+        discoveryUrl: "https://sso.melotic.dev/application/o/policy-reporter/.well-known/openid-configuration"
+        callbackUrl: "https://policy-reporter.melotic.dev/callback"
+        clientId: ""
+        clientSecret: ""
+        secretRef: policy-reporter-oidc
+        scopes:
+          - openid
+          - email
+          - profile
+        groupClaim: groups
       httproute:
         enabled: true
         parentRefs:
