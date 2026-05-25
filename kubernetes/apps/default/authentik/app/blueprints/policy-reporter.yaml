@@ -38,6 +38,9 @@ entries:
       redirect_uris:
         - url: "https://policy-reporter.melotic.dev/callback"
           matching_mode: strict
+      grant_types:
+        - authorization_code
+        - refresh_token
       property_mappings: *property_mappings
       signing_key: *signing_key
 
