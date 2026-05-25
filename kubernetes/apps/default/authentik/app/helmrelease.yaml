@@ -20,7 +20,7 @@ spec:
       error_reporting:
         enabled: false
       postgresql:
-        host: postgres-cluster-rw.database.svc.cluster.local
+        host: ${PG_HOST}
         password: file:///postgres-creds/password
         user: file:///postgres-creds/username
     blueprints:
@@ -93,7 +93,7 @@ spec:
       volumes: &volumes
         - name: postgres-creds
           secret:
-            secretName: postgres-cluster-app
+            secretName: authentik-postgres
         - name: data
           persistentVolumeClaim:
             claimName: authentik-data
