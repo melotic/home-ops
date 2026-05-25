@@ -85,6 +85,26 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-seerr
+        - name: sonarr
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-sonarr
+        - name: radarr
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-radarr
+        - name: lidarr
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-lidarr
+        - name: prowlarr
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-prowlarr
       storage:
         size: 16Gi
         storageClass: openebs-hostpath
