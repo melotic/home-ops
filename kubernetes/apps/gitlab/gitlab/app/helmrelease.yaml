@@ -70,9 +70,9 @@ spec:
         host: postgres-cluster-rw.database.svc.cluster.local
         port: 5432
         database: gitlab
-        username: app
+        username: gitlab
         password:
-          secret: postgres-cluster-app
+          secret: gitlab-postgres
           key: password
       redis:
         host: dragonfly.database.svc.cluster.local
