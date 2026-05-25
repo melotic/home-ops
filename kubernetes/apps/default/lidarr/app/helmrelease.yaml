@@ -26,12 +26,12 @@ spec:
               LIDARR__AUTH__REQUIRED: DisabledForLocalAddresses
               LIDARR__LOG__DBENABLED: "False"
               LIDARR__LOG__LEVEL: info
-              LIDARR__POSTGRES__HOST: postgres-cluster-rw.database.svc.cluster.local
-              LIDARR__POSTGRES__MAINDB: lidarr
+              LIDARR__POSTGRES__HOST: ${PG_HOST}
+              LIDARR__POSTGRES__MAINDB: ${PG_DATABASE}
               LIDARR__POSTGRES__USER:
                 secretKeyRef:
-                  name: &pgsecret postgres-cluster-app
-                  key: user
+                  name: &pgsecret lidarr-postgres
+                  key: username
               LIDARR__POSTGRES__PASSWORD:
                 secretKeyRef:
                   name: *pgsecret
