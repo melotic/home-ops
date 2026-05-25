@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/podmonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: postgres-cluster-instances
+spec:
+  jobLabel: cnpg-cluster
+  namespaceSelector:
+    matchNames:
+      - database
+  podMetricsEndpoints:
+    - port: metrics
+      honorLabels: true
+  selector:
+    matchLabels:
+      cnpg.io/cluster: postgres-cluster
+      cnpg.io/podRole: instance
