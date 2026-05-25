@@ -32,8 +32,6 @@ spec:
                 - flux-system
                 - cert-manager
                 - cnpg-system
-                - longhorn-system
-                - monitoring
                 - network
                 - external-secrets
                 - rook-ceph

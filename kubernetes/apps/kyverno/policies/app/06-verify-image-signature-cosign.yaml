@@ -40,15 +40,15 @@ spec:
                 - flux-system
                 - cert-manager
                 - cnpg-system
-                - longhorn-system
-                - monitoring
                 - network
                 - external-secrets
-                - database
                 - rook-ceph
                 - openebs-system
                 - volsync-system
                 - system-upgrade
+          # prompp explicitly excluded — see Spike 002 (image-provenance) gating conditions
+          - resources:
+              namespaces: [spike-prompp]
       verifyImages:
         - imageReferences:
             - "ghcr.io/*"
