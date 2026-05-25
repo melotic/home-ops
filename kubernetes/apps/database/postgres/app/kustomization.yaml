@@ -12,3 +12,6 @@ resources:
   - ./helmrelease.yaml
   - ./objectstore.yaml
   - ./scheduledbackup.yaml
+  - ./monitoring/cluster-podmonitor.yaml
+  - ./monitoring/pooler-podmonitor.yaml
+  - ./pooler/pooler-rw.yaml

@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/pooler_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: postgres-cluster-pooler-rw
+spec:
+  cluster:
+    name: postgres-cluster
+  instances: 3
+  type: rw
+  pgbouncer:
+    poolMode: transaction
+    parameters:
+      max_client_conn: "200"
+      default_pool_size: "20"
+      reserve_pool_size: "5"
+      reserve_pool_timeout: "3"
+      server_idle_timeout: "120"
+      server_lifetime: "3600"
+      query_wait_timeout: "30"
+      log_connections: "0"
+      log_disconnections: "0"
+  template:
+    metadata:
+      labels:
+        cnpg.io/poolerName: postgres-cluster-pooler-rw
+    spec:
+      priorityClassName: cluster-critical
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  cnpg.io/poolerName: postgres-cluster-pooler-rw
+      containers:
+        - name: pgbouncer
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
