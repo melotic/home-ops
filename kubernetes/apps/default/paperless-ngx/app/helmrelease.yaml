@@ -30,12 +30,12 @@ spec:
               tag: 2.20.15
             env:
               TZ: America/Chicago
-              PAPERLESS_DBHOST: postgres-cluster-rw.database.svc.cluster.local
-              PAPERLESS_DBNAME: paperless
+              PAPERLESS_DBHOST: ${PG_HOST}
+              PAPERLESS_DBNAME: ${PG_DATABASE}
               PAPERLESS_DBUSER:
                 secretKeyRef:
-                  name: &pgsecret postgres-cluster-app
-                  key: user
+                  name: &pgsecret paperless-ngx-postgres
+                  key: username
               PAPERLESS_DBPASS:
                 secretKeyRef:
                   name: *pgsecret
