@@ -44,7 +44,7 @@ spec:
         - name: GITEA__DATABASE__PASSWD
           valueFrom:
             secretKeyRef:
-              name: postgres-cluster-app
+              name: forejo-postgres
               key: password
 
     gitea:
@@ -97,9 +97,9 @@ spec:
           SSH_LISTEN_PORT: 2222
         database:
           DB_TYPE: postgres
-          HOST: postgres-cluster-rw.database.svc.cluster.local:5432
+          HOST: ${PG_HOST}:5432
           NAME: forejo
-          USER: app
+          USER: forejo
           SSL_MODE: disable
         picture:
           DISABLE_GRAVATAR: false
