@@ -11,6 +11,10 @@ spec:
   schemas:
     - name: public
       owner: gitlab
+    - name: gitlab_partitions_dynamic
+      owner: gitlab
+    - name: gitlab_partitions_static
+      owner: gitlab
   extensions:
     - name: pg_trgm
       ensure: present
