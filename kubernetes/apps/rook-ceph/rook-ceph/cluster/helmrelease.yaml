@@ -178,4 +178,36 @@ spec:
       name: csi-ceph-filesystem
       deletionPolicy: Delete
       isDefault: false
-    cephObjectStores: []
+    cephObjectStores:
+      - name: gitlab-rgw
+        spec:
+          metadataPool:
+            failureDomain: host
+            parameters:
+              min_size: "2"
+            replicated:
+              size: 3
+          dataPool:
+            failureDomain: host
+            parameters:
+              min_size: "2"
+            replicated:
+              size: 3
+          preservePoolsOnDelete: true
+          gateway:
+            port: 80
+            instances: 1
+            priorityClassName: system-cluster-critical
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+        storageClass:
+          enabled: true
+          name: gitlab-rgw-bucket
+          reclaimPolicy: Delete
+          volumeBindingMode: Immediate
+          parameters:
+            region: us-east-1

@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-artifacts
+spec:
+  bucketName: gitlab-artifacts
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-lfs
+spec:
+  bucketName: gitlab-lfs
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-uploads
+spec:
+  bucketName: gitlab-uploads
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-packages
+spec:
+  bucketName: gitlab-packages
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-mr-diffs
+spec:
+  bucketName: gitlab-mr-diffs
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-tf-state
+spec:
+  bucketName: gitlab-tf-state
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-ci-secure
+spec:
+  bucketName: gitlab-ci-secure
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-dep-proxy
+spec:
+  bucketName: gitlab-dep-proxy
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-backups
+spec:
+  bucketName: gitlab-backups
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: gitlab-tmp
+spec:
+  bucketName: gitlab-tmp
+  storageClassName: gitlab-rgw-bucket
