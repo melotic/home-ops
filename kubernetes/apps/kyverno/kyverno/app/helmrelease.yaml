@@ -15,7 +15,7 @@ spec:
   values:
     crds:
       migration:
-        enabled: false
+        enabled: true
     admissionController:
       replicas: 1
       priorityClassName: system-cluster-critical
