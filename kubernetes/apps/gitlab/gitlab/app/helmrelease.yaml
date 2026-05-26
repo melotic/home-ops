@@ -1,4 +1,13 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: gitlab
+spec:
+  interval: 15m
+  url: https://charts.gitlab.io
+---
 # yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -9,7 +18,7 @@ spec:
   chart:
     spec:
       chart: gitlab
-      version: 9.11.1
+      version: 10.0.0
       sourceRef:
         kind: HelmRepository
         name: gitlab
@@ -66,6 +75,14 @@ spec:
         enabled: false
         tls:
           enabled: false
+      gatewayApi:
+        enabled: true
+        gatewayRef:
+          name: envoy-internal
+          namespace: network
+        installEnvoy: false
+        configureCertmanager: false
+        httpToHttpsRedirect: false
       psql:
         host: postgres-cluster-rw.database.svc.cluster.local
         port: 5432
@@ -167,6 +184,8 @@ spec:
       install: false
     gitlab:
       webservice:
+        gatewayRoute:
+          sectionName: https
         ingress:
           enabled: false
         service:
@@ -247,6 +266,8 @@ spec:
             cpu: 500m
             memory: 512Mi
       gitlab-shell:
+        gatewayRoute:
+          enabled: false
         service:
           type: LoadBalancer
           annotations:
