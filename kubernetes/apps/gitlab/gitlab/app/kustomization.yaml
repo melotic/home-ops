@@ -8,6 +8,7 @@ resources:
   - ./helmrepository.yaml
   - ./httproute-webservice.yaml
   - ./objectbucketclaims.yaml
+  - ./objectstoreuser.yaml
   - ./minio-ocirepository.yaml
   - ./minio-helmrelease.yaml
   - ./minio-bucket-init.yaml
