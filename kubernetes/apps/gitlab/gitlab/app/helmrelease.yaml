@@ -158,10 +158,12 @@ spec:
           syncProfileFromProvider: [openid_connect]
           syncProfileAttributes: [name, email]
           allowSingleSignOn: [openid_connect]
-          blockAutoCreatedUsers: false
+          blockAutoCreatedUsers: true
           providers:
             - secret: gitlab-oidc
               key: provider
+        initialDefaults:
+          signupEnabled: false
       initialRootPassword:
         secret: gitlab-initial-root-password
         key: password
