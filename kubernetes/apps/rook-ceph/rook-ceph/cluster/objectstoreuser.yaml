@@ -1,9 +1,0 @@
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/ceph.rook.io/cephobjectstoreuser_v1.json
-apiVersion: ceph.rook.io/v1
-kind: CephObjectStoreUser
-metadata:
-  name: gitlab
-spec:
-  store: gitlab-rgw
-  displayName: GitLab
