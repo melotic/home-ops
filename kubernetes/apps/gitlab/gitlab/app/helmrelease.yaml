@@ -116,7 +116,16 @@ spec:
         enabled: false
       registry:
         enabled: false
+      smtp:
+        enabled: true
+        address: smtp-relay.default.svc.cluster.local
+        port: 587
+        authentication: none
+        starttls_auto: false
+        openssl_verify_mode: none
       appConfig:
+        enableUsagePing: false
+        enableSeatLink: false
         object_store:
           enabled: true
           connection:
@@ -164,6 +173,7 @@ spec:
               key: provider
         initialDefaults:
           signupEnabled: false
+          gitlabProductUsageData: false
       initialRootPassword:
         secret: gitlab-initial-root-password
         key: password
