@@ -6,7 +6,7 @@ metadata:
   name: gitlab-artifacts
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-artifacts
   storageClassName: gitlab-rgw-bucket
 ---
@@ -17,7 +17,7 @@ metadata:
   name: gitlab-lfs
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-lfs
   storageClassName: gitlab-rgw-bucket
 ---
@@ -28,7 +28,7 @@ metadata:
   name: gitlab-uploads
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-uploads
   storageClassName: gitlab-rgw-bucket
 ---
@@ -39,7 +39,7 @@ metadata:
   name: gitlab-packages
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-packages
   storageClassName: gitlab-rgw-bucket
 ---
@@ -50,7 +50,7 @@ metadata:
   name: gitlab-mr-diffs
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-mr-diffs
   storageClassName: gitlab-rgw-bucket
 ---
@@ -61,7 +61,7 @@ metadata:
   name: gitlab-tf-state
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-tf-state
   storageClassName: gitlab-rgw-bucket
 ---
@@ -72,7 +72,7 @@ metadata:
   name: gitlab-ci-secure
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-ci-secure
   storageClassName: gitlab-rgw-bucket
 ---
@@ -83,7 +83,7 @@ metadata:
   name: gitlab-dep-proxy
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-dep-proxy
   storageClassName: gitlab-rgw-bucket
 ---
@@ -94,7 +94,7 @@ metadata:
   name: gitlab-backups
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-backups
   storageClassName: gitlab-rgw-bucket
 ---
@@ -105,6 +105,6 @@ metadata:
   name: gitlab-tmp
 spec:
   additionalConfig:
-    bucketOwner: gitlab
+    bucketOwner: gitlab-rgw
   bucketName: gitlab-tmp
   storageClassName: gitlab-rgw-bucket

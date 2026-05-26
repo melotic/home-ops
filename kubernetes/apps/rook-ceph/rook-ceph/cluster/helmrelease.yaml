@@ -181,6 +181,8 @@ spec:
     cephObjectStores:
       - name: gitlab-rgw
         spec:
+          allowUsersInNamespaces:
+            - gitlab
           metadataPool:
             failureDomain: host
             parameters:
