@@ -27,7 +27,7 @@ spec:
               SONARR__LOG__DBENABLED: "False"
               SONARR__LOG__LEVEL: info
               SONARR__POSTGRES__HOST: ${PG_HOST}
-              SONARR__POSTGRES__MAINDB: ${PG_DATABASE}
+              SONARR__POSTGRES__MAINDB: ${PG_DATABASE:=${APP}}
               SONARR__POSTGRES__USER:
                 secretKeyRef:
                   name: &pgsecret sonarr-postgres

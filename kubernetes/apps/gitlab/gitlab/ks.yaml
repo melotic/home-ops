@@ -24,8 +24,6 @@ spec:
   postBuild:
     substitute:
       APP: gitlab
-      PG_DATABASE: gitlab
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system
