@@ -16,6 +16,7 @@ spec:
       repository: ghcr.io/rook/ceph
     monitoring:
       enabled: true
+    obcAllowAdditionalConfigFields: "maxObjects,maxSize,bucketOwner"
     resources:
       requests:
         cpu: 100m
