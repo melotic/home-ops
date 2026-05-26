@@ -6,6 +6,5 @@ resources:
   - ./rgw-secretstore.yaml
   - ./externalsecret.yaml
   - ./helmrelease.yaml
-  - ./httproute-webservice.yaml
   - ./objectbucketclaims.yaml
   - ./objectstoreuser.yaml

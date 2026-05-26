@@ -76,9 +76,13 @@ spec:
         tls:
           enabled: false
       gatewayApi:
-        enabled: false
+        enabled: true
+        gatewayRef:
+          name: envoy-internal
+          namespace: network
         installEnvoy: false
         configureCertmanager: false
+        httpToHttpsRedirect: false
       psql:
         host: postgres-cluster-rw.database.svc.cluster.local
         port: 5432
@@ -180,6 +184,8 @@ spec:
       install: false
     gitlab:
       webservice:
+        gatewayRoute:
+          sectionName: https
         ingress:
           enabled: false
         service:
@@ -260,6 +266,8 @@ spec:
             cpu: 500m
             memory: 512Mi
       gitlab-shell:
+        gatewayRoute:
+          enabled: false
         service:
           type: LoadBalancer
           annotations:
