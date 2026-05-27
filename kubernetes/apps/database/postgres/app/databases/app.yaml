@@ -3,14 +3,10 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
-  name: authentik
+  name: app
 spec:
-  name: authentik
-  owner: authentik
+  name: app
+  owner: app
+  ensure: absent
   cluster:
     name: postgres-cluster
-  schemas:
-    - name: public
-      owner: authentik
-    - name: template
-      ensure: absent
