@@ -3,6 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ./databases/app.yaml
   - ./databases/atuin.yaml
   - ./databases/authentik.yaml
   - ./databases/harbor.yaml
