@@ -42,6 +42,22 @@ spec:
                     isWALArchiver: true
                     parameters:
                       barmanObjectName: azure-blob-store
+          - target:
+              kind: Cluster
+              name: postgres-cluster
+            patch: |
+              - op: test
+                path: /spec/externalClusters/0/name
+                value: objectStoreRecoveryCluster
+              - op: replace
+                path: /spec/externalClusters
+                value:
+                  - name: objectStoreRecoveryCluster
+                    plugin:
+                      name: barman-cloud.cloudnative-pg.io
+                      parameters:
+                        barmanObjectName: azure-blob-store
+                        serverName: postgres-cluster
   values:
     type: postgresql
     mode: recovery
@@ -139,23 +155,12 @@ spec:
         size: 16Gi
         storageClass: openebs-hostpath
     recovery:
-      method: pg_basebackup
-      pgBaseBackup:
-        database: app
-        owner: app
-        secretName: psql-apps-cluster-app
-        source:
-          host: psql-apps-cluster-rw.default.svc.cluster.local
-          port: 5432
-          username: streaming_replica
-          database: postgres
-          sslMode: verify-full
-          sslRootCertSecret:
-            name: psql-apps-cluster-ca
-            key: ca.crt
-          sslCertSecret:
-            name: psql-apps-cluster-replication
-            key: tls.crt
-          sslKeySecret:
-            name: psql-apps-cluster-replication
-            key: tls.key
+      method: object_store
+      clusterName: postgres-cluster
+      database: ""
+      owner: ""
+      provider: azure
+      destinationPath: https://sthomeopsbackup.blob.core.windows.net/cnpg-backup/
+      secret:
+        create: false
+        name: cnpg-backup-azure-creds

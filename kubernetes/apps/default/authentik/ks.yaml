@@ -18,8 +18,6 @@ spec:
   postBuild:
     substitute:
       APP: authentik
-      PG_DATABASE: authentik
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -27,7 +27,7 @@ spec:
               RADARR__LOG__DBENABLED: "False"
               RADARR__LOG__LEVEL: info
               RADARR__POSTGRES__HOST: ${PG_HOST}
-              RADARR__POSTGRES__MAINDB: ${PG_DATABASE}
+              RADARR__POSTGRES__MAINDB: ${PG_DATABASE:=${APP}}
               RADARR__POSTGRES__USER:
                 secretKeyRef:
                   name: &pgsecret radarr-postgres
