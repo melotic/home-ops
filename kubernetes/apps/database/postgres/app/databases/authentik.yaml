@@ -12,3 +12,5 @@ spec:
   schemas:
     - name: public
       owner: authentik
+    - name: template
+      ensure: absent
