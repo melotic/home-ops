@@ -89,13 +89,7 @@ spec:
           memory: 1Gi
       roles:
         - name: app
-          ensure: present
-          login: true
-          inRoles:
-            - pg_monitor
-            - pg_signal_backend
-          passwordSecret:
-            name: postgres-cluster-app
+          ensure: absent
         - name: seerr
           ensure: present
           login: true

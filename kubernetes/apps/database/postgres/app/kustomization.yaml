@@ -15,7 +15,6 @@ resources:
   - ./databases/radarr.yaml
   - ./databases/seerr.yaml
   - ./databases/sonarr.yaml
-  - ./externalsecret.yaml
   - ./externalsecret-backup.yaml
   - ./helmrelease.yaml
   - ./objectstore.yaml
