@@ -230,7 +230,7 @@ persistence:
 ### PostgreSQL (CloudNativePG)
 - **RW endpoint**: `postgres-cluster-rw.database.svc.cluster.local`
 - **RO endpoint**: `postgres-cluster-r.database.svc.cluster.local`
-- Credentials come from the secret `postgres-cluster-app` (keys: `user`, `password`).
+- App credentials come from per-app secrets named `postgres-user-<app>`; the legacy `postgres-cluster-app` secret is only for the gated CNPG-managed `app` role in the `database` namespace.
 - CNPG uses `openebs-hostpath`; do not move it to Ceph unless a future plan explicitly changes it.
 - Apps like Sonarr/Radarr reference this via `secretKeyRef`.
 
