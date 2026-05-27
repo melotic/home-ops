@@ -23,8 +23,6 @@ spec:
   postBuild:
     substitute:
       APP: forejo
-      PG_DATABASE: forejo
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 25Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"

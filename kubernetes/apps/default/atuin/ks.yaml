@@ -23,8 +23,6 @@ spec:
   postBuild:
     substitute:
       APP: atuin
-      PG_DATABASE: atuin
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 5Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"

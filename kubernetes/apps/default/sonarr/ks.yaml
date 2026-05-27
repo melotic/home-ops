@@ -23,7 +23,6 @@ spec:
   postBuild:
     substitute:
       APP: sonarr
-      PG_DATABASE: sonarr
       PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 5Gi
   sourceRef:

@@ -20,7 +20,7 @@ spec:
       error_reporting:
         enabled: false
       postgresql:
-        host: ${PG_HOST}
+        host: ${PG_HOST:=postgres-cluster-rw.database.svc.cluster.local}
         password: file:///postgres-creds/password
         user: file:///postgres-creds/username
     blueprints:

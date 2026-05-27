@@ -20,8 +20,8 @@ spec:
               repository: ghcr.io/seerr-team/seerr
               tag: v3.2.0@sha256:c4cbd5121236ac2f70a843a0b920b68a27976be57917555f1c45b08a1e6b2aad
             env:
-              DB_HOST: ${PG_HOST}
-              DB_NAME: ${PG_DATABASE}
+              DB_HOST: ${PG_HOST:=postgres-cluster-rw.database.svc.cluster.local}
+              DB_NAME: ${PG_DATABASE:=${APP}}
               DB_TYPE: postgres
               DB_USER:
                 secretKeyRef:

@@ -20,8 +20,6 @@ spec:
   postBuild:
     substitute:
       APP: harbor
-      PG_DATABASE: harbor
-      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system
