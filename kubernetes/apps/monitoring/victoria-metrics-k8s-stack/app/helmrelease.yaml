@@ -208,6 +208,7 @@ spec:
             - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
               port: https
               scheme: https
+              max_scrape_size: 32MB
               tlsConfig:
                 caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
                 serverName: kubernetes
