@@ -30,7 +30,7 @@ spec:
 
         - alert: VolSyncMissedInterval
           expr: |-
-            increase(volsync_missed_intervals_total{role="source"}[13h]) > 0
+            increase(volsync_missed_intervals_total{role="source"}[1h]) > 0
           annotations:
             summary: >-
               {{ $labels.obj_namespace }}/{{ $labels.obj_name }} missed a scheduled VolSync backup interval
