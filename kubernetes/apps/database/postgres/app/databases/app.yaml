@@ -6,7 +6,11 @@ metadata:
   name: app
 spec:
   name: app
-  owner: app
-  ensure: absent
+  # Kept as an empty database owned by postgres (the app role stays retired).
+  # The cluster's application database is "app" (recovery bootstrap default), and
+  # the CNPG metrics exporter connects to it to run the default monitoring queries
+  # (cnpg_backends_total, cnpg_pg_*). Dropping it breaks all query-based metrics.
+  owner: postgres
+  ensure: present
   cluster:
     name: postgres-cluster
