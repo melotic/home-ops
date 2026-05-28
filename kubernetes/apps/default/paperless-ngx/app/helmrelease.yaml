@@ -98,6 +98,7 @@ spec:
             resources:
               requests:
                 cpu: 100m
+                memory: 512Mi
               limits:
                 memory: 2Gi
           tika:
@@ -108,6 +109,8 @@ spec:
               allowPrivilegeEscalation: false
               capabilities: { drop: ["ALL"] }
             resources:
+              requests:
+                memory: 256Mi
               limits:
                 memory: 512Mi
           gotenberg:
@@ -122,6 +125,8 @@ spec:
               - --chromium-disable-javascript=true
               - --chromium-allow-list=file:///tmp/.*
             resources:
+              requests:
+                memory: 128Mi
               limits:
                 memory: 512Mi
     defaultPodOptions:
