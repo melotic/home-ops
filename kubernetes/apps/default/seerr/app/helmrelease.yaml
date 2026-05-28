@@ -14,6 +14,40 @@ spec:
       seerr:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          fix-media-server-type:
+            image:
+              repository: docker.io/alpine/k8s
+              tag: 1.35.0@sha256:18bc02c1e0df04451f4f9194eb7b7341c1165da5495459b52f85f72fb9545032
+            command:
+              - /bin/sh
+              - -c
+              - |
+                SETTINGS="/app/config/settings.json"
+                if [ ! -f "$SETTINGS" ]; then
+                  echo "settings.json not found, skipping"
+                  exit 0
+                fi
+                MEDIA_TYPE=$(jq -r '.main.mediaServerType // empty' "$SETTINGS")
+                if [ "$MEDIA_TYPE" != "4" ]; then
+                  echo "mediaServerType=$MEDIA_TYPE, no fix needed"
+                  exit 0
+                fi
+                # Only fix if Plex config is clearly present
+                PLEX_IP=$(jq -r '.plex.ip // empty' "$SETTINGS")
+                PLEX_HOSTNAME=$(jq -r '.plex.hostname // empty' "$SETTINGS")
+                if [ -z "$PLEX_IP" ] && [ -z "$PLEX_HOSTNAME" ]; then
+                  echo "No Plex config found, not safe to auto-fix"
+                  exit 0
+                fi
+                echo "GUARD: mediaServerType=4 with Plex configured, restoring to 1"
+                jq '.main.mediaServerType = 1' "$SETTINGS" > "$SETTINGS.tmp" && \
+                  mv "$SETTINGS.tmp" "$SETTINGS"
+                echo "Fixed mediaServerType=$(jq -r '.main.mediaServerType' "$SETTINGS")"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
@@ -73,7 +107,10 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/endpoint: |-
-            conditions: ["[STATUS] == 200"]
+            conditions:
+              - "[STATUS] == 200"
+              - "[BODY].mediaServerType == 1"
+            url: https://seerr.melotic.dev/api/v1/settings/public
         hostnames:
           - "seerr.melotic.dev"
         parentRefs:
