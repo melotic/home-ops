@@ -9,7 +9,7 @@ spec:
       namespace: network
       sectionName: https
   hostnames:
-    - victoria-logs.${SECRET_DOMAIN}
+    - victoria-logs.melotic.dev
   rules:
     - filters:
         - type: RequestRedirect
