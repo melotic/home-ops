@@ -20,25 +20,7 @@ spec:
         size: 20Gi
       retentionPeriod: 14d
       route:
-        enabled: true
-        hostnames:
-          - victoria-logs.melotic.dev
-        parentRefs:
-          - name: envoy-internal
-            namespace: network
-            sectionName: https
-        extraRules:
-          - filters:
-              - type: RequestRedirect
-                requestRedirect:
-                  path:
-                    type: ReplaceFullPath
-                    replaceFullPath: /select/vmui/
-                  statusCode: 302
-            matches:
-              - path:
-                  type: Exact
-                  value: /
+        enabled: false
       serviceMonitor:
         enabled: true
     dashboards:
