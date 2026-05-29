@@ -11,7 +11,7 @@ spec:
       sourceRef:
         name: tailscale
         kind: HelmRepository
-      version: 1.98.3
+      version: 1.98.4
   interval: 1h
   install:
     remediation:
