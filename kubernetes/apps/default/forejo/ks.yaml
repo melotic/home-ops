@@ -24,6 +24,7 @@ spec:
     substitute:
       APP: forejo
       VOLSYNC_CAPACITY: 25Gi
+      VOLSYNC_CACHE_CAPACITY: 25Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"
   sourceRef:

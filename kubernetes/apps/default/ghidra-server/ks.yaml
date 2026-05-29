@@ -23,6 +23,7 @@ spec:
     substitute:
       APP: ghidra-server
       VOLSYNC_CAPACITY: 20Gi
+      VOLSYNC_CACHE_CAPACITY: 20Gi
       GHIDRA_SERVER_IP: 10.60.80.7
       AUTHENTIK_LDAP_HOST: ghidra-ldap.melotic.dev
       AUTHENTIK_LDAP_BASE_DN: OU=ghidra,DC=ldap,DC=melotic,DC=dev

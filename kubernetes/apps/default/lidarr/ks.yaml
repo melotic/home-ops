@@ -25,6 +25,7 @@ spec:
       APP: lidarr
       PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       VOLSYNC_CAPACITY: 16Gi
+      VOLSYNC_CACHE_CAPACITY: 16Gi
   sourceRef:
     kind: GitRepository
     name: flux-system
