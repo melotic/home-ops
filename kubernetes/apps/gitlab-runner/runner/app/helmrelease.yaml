@@ -44,14 +44,23 @@ spec:
       clusterWideAccess: false
       rules:
         - apiGroups: [""]
-          resources: [pods, pods/exec, pods/log, pods/attach]
+          resources: [pods, pods/exec, pods/attach]
           verbs: [get, list, watch, create, update, patch, delete]
+        - apiGroups: [""]
+          resources: [pods/log]
+          verbs: [get, list]
         - apiGroups: [""]
           resources: [secrets, configmaps]
           verbs: [get, list, watch, create, update, patch, delete]
         - apiGroups: [""]
           resources: [events]
           verbs: [list, watch]
+        - apiGroups: [""]
+          resources: [serviceaccounts]
+          verbs: [get]
+        - apiGroups: [""]
+          resources: [services]
+          verbs: [get, create]
 
     serviceAccount:
       create: true
@@ -113,7 +122,10 @@ spec:
               BucketName = "gitlab-runner-cache"
               BucketLocation = "us-east-1"
               Insecure = true
-          # FF_USE_FASTZIP: faster artifact upload (chart-recommended).
+          # FF_* flags keep Kubernetes executor behavior safer and more
+          # diagnosable: entrypoint parity, pod event logging, token-free Git
+          # URLs, stricter Bash exit handling, script log sections, failed-cache
+          # cleanup, and predictable TLS-chain behavior.
           # DOCKER_CONFIG: defense-in-depth default for Kaniko/Buildah jobs.
           # The build pod runs as uid 1000 (PSS=restricted), but the kaniko
           # image's /kaniko directory is root-owned 0755 — so writing Docker
@@ -121,10 +133,18 @@ spec:
           # `Permission denied` in step_script. /tmp is mounted as a
           # writable emptyDir on every build pod, and kaniko's executor
           # honors $DOCKER_CONFIG ahead of its /kaniko/.docker default.
-          # Setting this at the runner level means CI snippets that copy/paste
-          # the upstream kaniko docs verbatim still work; CI-PATTERNS.md
-          # additionally sets it per-job for explicitness.
-          environment = ["FF_USE_FASTZIP=true", "DOCKER_CONFIG=/tmp/.docker"]
+          environment = [
+            "FF_USE_FASTZIP=true",
+            "DOCKER_CONFIG=/tmp/.docker",
+            "FF_KUBERNETES_HONOR_ENTRYPOINT=true",
+            "FF_PRINT_POD_EVENTS=true",
+            "FF_GIT_URLS_WITHOUT_TOKENS=true",
+            "FF_ENABLE_BASH_EXIT_CODE_CHECK=true",
+            "FF_USE_NEW_BASH_EVAL_STRATEGY=true",
+            "FF_SCRIPT_SECTIONS=true",
+            "FF_CLEAN_UP_FAILED_CACHE_EXTRACT=true",
+            "FF_RESOLVE_FULL_TLS_CHAIN=false",
+          ]
           [runners.kubernetes]
             namespace = "gitlab-runner"
             image = "docker.io/library/alpine:3.20"
@@ -139,7 +159,11 @@ spec:
             # giving uid 1000 a real, writable HOME.
             helper_image_flavor = "ubuntu"
             privileged = false
+            poll_interval = 5
             poll_timeout = 600
+            pod_termination_grace_period_seconds = 30
+            cleanup_resources_timeout = "10m"
+            print_pod_warning_events = true
             service_account = "gitlab-runner"
             allow_privilege_escalation = false
             [runners.kubernetes.pod_security_context]
