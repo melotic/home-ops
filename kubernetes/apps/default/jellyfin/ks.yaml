@@ -11,10 +11,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/volsync
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -27,10 +23,6 @@ spec:
       VOLSYNC_CAPACITY: 10Gi
       VOLSYNC_PUID: "1000"
       VOLSYNC_PGID: "1000"
-    substituteFrom:
-      - name: jellyfin-nas
-        kind: Secret
-        optional: true
   sourceRef:
     kind: GitRepository
     name: flux-system
