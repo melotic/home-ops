@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: victoria-metrics-k8s-stack
+    - name: kube-prometheus-stack
   path: ./kubernetes/apps/monitoring/silence-operator/app
   sourceRef:
     kind: GitRepository
