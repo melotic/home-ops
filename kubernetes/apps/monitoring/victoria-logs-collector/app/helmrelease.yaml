@@ -52,14 +52,17 @@ spec:
         memory: 512Mi
     podSecurityContext:
       enabled: true
-      runAsNonRoot: true
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
+      runAsNonRoot: false
+      runAsUser: 0
+      runAsGroup: 0
+      fsGroup: 0
       fsGroupChangePolicy: OnRootMismatch
     securityContext:
       enabled: true
       allowPrivilegeEscalation: false
       readOnlyRootFilesystem: true
+      runAsNonRoot: false
+      runAsUser: 0
+      runAsGroup: 0
       capabilities:
         drop: ["ALL"]
