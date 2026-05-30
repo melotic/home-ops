@@ -58,7 +58,9 @@ spec:
               seccompProfile:
                 type: Localhost
                 localhostProfile: profiles/buildkit.json
-              capabilities: { drop: ["ALL"] }
+              capabilities:
+                add: ["SETGID", "SETUID"]
+                drop: ["ALL"]
     defaultPodOptions:
       automountServiceAccountToken: false
       securityContext:
