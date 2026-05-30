@@ -97,7 +97,7 @@ spec:
           - path: /cache
       media:
         type: nfs
-        server: "${NAS_SERVER:=nas.internal}"
+        server: 10.60.10.20
         path: /var/nfs/shared/data
         globalMounts:
           - path: /data/media
