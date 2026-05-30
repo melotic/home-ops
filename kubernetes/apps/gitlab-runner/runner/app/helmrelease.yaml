@@ -103,6 +103,7 @@ spec:
           executor = "kubernetes"
           # Avoid long-polling request bottleneck (chart logs WARNING when =1).
           request_concurrency = 4
+          cache_dir = "/cache"
           [runners.cache]
             Type = "s3"
             Path = "gitlab-runner"
@@ -194,10 +195,17 @@ spec:
               name = "build-tmp"
               mount_path = "/builds"
               medium = ""
+              mount_propagation = "None"
             [[runners.kubernetes.volumes.empty_dir]]
               name = "tmp"
               mount_path = "/tmp"
               medium = ""
+              mount_propagation = "None"
+            [[runners.kubernetes.volumes.empty_dir]]
+              name = "cache"
+              mount_path = "/cache"
+              medium = ""
+              mount_propagation = "None"
             [[runners.kubernetes.volumes.secret]]
               name = "buildkit-client-certs"
               mount_path = "/certs"
