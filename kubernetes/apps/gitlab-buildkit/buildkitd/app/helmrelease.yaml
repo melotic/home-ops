@@ -21,6 +21,7 @@ spec:
               repository: docker.io/moby/buildkit
               tag: v0.30.0-rootless@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9
             args:
+              - --config=/etc/buildkit/buildkitd.toml
               - --addr=unix:///run/user/1000/buildkit/buildkitd.sock
               - --addr=tcp://0.0.0.0:1234
               - --tlscacert=/certs/ca.crt
@@ -69,6 +70,12 @@ spec:
         runAsGroup: 1000
         runAsNonRoot: true
         runAsUser: 1000
+    configMaps:
+      config:
+        data:
+          buildkitd.toml: |-
+            [registry."harbor-registry.default.svc.cluster.local:5000"]
+              http = true
     service:
       app:
         forceRename: buildkitd
@@ -87,6 +94,13 @@ spec:
         name: buildkit-daemon-certs
         globalMounts:
           - path: /certs
+            readOnly: true
+      config-file:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /etc/buildkit/buildkitd.toml
+            subPath: buildkitd.toml
             readOnly: true
       run:
         type: emptyDir
