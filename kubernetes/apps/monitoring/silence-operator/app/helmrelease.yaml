@@ -17,7 +17,7 @@ spec:
     remediation:
       retries: 3
   values:
-    alertmanagerAddress: http://vmalertmanager-vm-kube-stack.monitoring.svc.cluster.local:9093
+    alertmanagerAddress: http://alertmanager-operated.monitoring.svc.cluster.local:9093
     image:
       tag: 0.20.1@sha256:99f087838f39830f587ab7897708ad9155ccd71a5d71e76e81b9217e6eaa386f
     networkPolicy:

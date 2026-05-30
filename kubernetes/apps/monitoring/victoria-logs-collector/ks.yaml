@@ -3,15 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app silence-operator
+  name: &app victoria-logs-collector
   namespace: &namespace monitoring
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kube-prometheus-stack
-  path: ./kubernetes/apps/monitoring/silence-operator/app
+    - name: victoria-logs
+  path: ./kubernetes/apps/monitoring/victoria-logs-collector/app
   sourceRef:
     kind: GitRepository
     name: flux-system

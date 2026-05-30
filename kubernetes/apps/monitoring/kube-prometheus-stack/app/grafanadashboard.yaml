@@ -3,14 +3,13 @@
 apiVersion: grafana.integreatly.org/v1beta1
 kind: GrafanaDashboard
 metadata:
-  name: kubernetes-volumes
+  name: prometheus
 spec:
   allowCrossNamespaceImport: true
-  folder: General
   instanceSelector:
     matchLabels:
       dashboards: grafana
   datasources:
     - datasourceName: prometheus
-      inputName: DS_OPENSHIFT_PROMETHEUS
-  url: https://grafana.com/api/dashboards/11454/revisions/14/download
+      inputName: DS_PROMETHEUS
+  url: https://grafana.com/api/dashboards/19105/revisions/9/download
