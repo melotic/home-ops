@@ -31,6 +31,17 @@ spec:
         - description
         - detail
         - output
+        - route
+        - route_name
+        - path
+        - x-envoy-origin-path
+        - method
+        - action
+        - controller
+        - hostname
+        - host
+        - component
+        - severity
       streamFields:
         - kubernetes.container_name
         - kubernetes.pod_name
