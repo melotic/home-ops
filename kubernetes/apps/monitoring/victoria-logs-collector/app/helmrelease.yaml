@@ -13,6 +13,9 @@ spec:
     fullnameOverride: victoria-logs-collector
     image:
       registry: docker.io
+      tag: v1.50.0@sha256:89693ad27a728bb6971e533eb7b121ad00cf38efdbdda2ec4bf056a348f5ca82
+    extraArgs:
+      tmpDataPath: /tmp
     remoteWrite:
       - url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
     collector:
