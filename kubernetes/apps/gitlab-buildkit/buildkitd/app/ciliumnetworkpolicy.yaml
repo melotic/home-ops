@@ -44,15 +44,8 @@ spec:
               protocol: TCP
             - port: "8080"
               protocol: TCP
-    - toFQDNs:
-        - matchName: harbor.melotic.dev
-        - matchName: docker.io
-        - matchPattern: "*.docker.io"
-        - matchName: ghcr.io
-        - matchName: quay.io
-        - matchName: registry.k8s.io
-        - matchName: gcr.io
-        - matchPattern: "*.gcr.io"
+    - toEntities:
+        - world
       toPorts:
         - ports:
             - port: "443"
