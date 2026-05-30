@@ -45,14 +45,6 @@ spec:
             health_check      on
       inputs: |
         [INPUT]
-            Name              tail
-            Path              /var/log/containers/*.log
-            multiline.parser  docker, cri
-            Tag               kube.*
-            Mem_Buf_Limit     5MB
-            Skip_Long_Lines   On
-            Skip_Empty_Lines  On
-        [INPUT]
             Name              syslog
             Tag               syslog.*
             Mode              udp
@@ -60,35 +52,7 @@ spec:
             Port              5140
             Parser            syslog-rfc3164-local
             Buffer_Chunk_Size 64000
-      filters: |-
-        [FILTER]
-            Name                kubernetes
-            Match               kube.*
-            Merge_Log           On
-            Keep_Log            Off
-            K8S-Logging.Parser  On
-            K8S-Logging.Exclude On
-            Buffer_Size         128k
-            Annotations         Off
-            Namespace_Labels    Off
-        [FILTER]
-            Name                nest
-            Match               kube.*
-            Operation           lift
-            Nested_under        kubernetes
-            Add_prefix          k_
-        [FILTER]
-            Name                nest
-            Match               kube.*
-            Operation           lift
-            Nested_under        k_labels
-            Add_prefix          k_labels_
-        [FILTER]
-            Name                modify
-            Match               kube.*
-            Rename              k_labels_app.kubernetes.io/name app
-            Rename              k_labels_app app
-            Rename              k_labels_k8s-app app
+      filters: ""
       customParsers: |-
         [PARSER]
             Name                 syslog-rfc3164-local
@@ -98,16 +62,6 @@ spec:
             Time_Format          %b %d %H:%M:%S
             Time_System_Timezone On
       outputs: |-
-        [OUTPUT]
-            Name                 http
-            Match                kube.*
-            Host                 victoria-logs-server.monitoring.svc.cluster.local
-            Port                 9428
-            URI                  /insert/jsonline?_stream_fields=stream,k_namespace_name,k_pod_name,k_container_name,app&_msg_field=log,message,msg,log_message,event,text,error,err,description,detail,output&_time_field=date
-            Format               json_lines
-            json_date_format     iso8601
-            Compress             gzip
-            Log_response_payload false
         [OUTPUT]
             Name                 http
             Match                syslog.*
