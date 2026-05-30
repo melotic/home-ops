@@ -6,8 +6,8 @@ metadata:
   name: buildkit-daemon-certs
 spec:
   dnsNames:
-    - buildkitd.gitlab-buildkit.svc
-    - buildkitd.gitlab-buildkit.svc.cluster.local
+    - buildkitd.gitlab.svc
+    - buildkitd.gitlab.svc.cluster.local
   issuerRef:
     kind: ClusterIssuer
     name: buildkit-ca
