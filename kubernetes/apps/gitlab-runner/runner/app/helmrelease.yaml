@@ -96,11 +96,22 @@ spec:
 
     # config.toml for the K8s executor — controls per-job pod security.
     runners:
+      cache:
+        secretName: gitlab-runner-cache-credentials
       config: |
         [[runners]]
           executor = "kubernetes"
           # Avoid long-polling request bottleneck (chart logs WARNING when =1).
           request_concurrency = 4
+          [runners.cache]
+            Type = "s3"
+            Path = "gitlab-runner"
+            Shared = true
+            [runners.cache.s3]
+              ServerAddress = "rook-ceph-rgw-gitlab-rgw.rook-ceph.svc:80"
+              BucketName = "gitlab-runner-cache"
+              BucketLocation = "us-east-1"
+              Insecure = true
           # FF_USE_FASTZIP: faster artifact upload (chart-recommended).
           # DOCKER_CONFIG: defense-in-depth default for Kaniko/Buildah jobs.
           # The build pod runs as uid 1000 (PSS=restricted), but the kaniko
