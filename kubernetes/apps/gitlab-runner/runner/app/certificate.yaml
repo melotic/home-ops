@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-client-certs
+spec:
+  commonName: buildkit-client
+  issuerRef:
+    kind: ClusterIssuer
+    name: buildkit-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  secretName: buildkit-client-certs
+  usages:
+    - client auth

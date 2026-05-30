@@ -157,6 +157,7 @@ patches:
   - "@./patches/global/machine-kubelet.yaml"
   - "@./patches/global/machine-mounts.yaml"
   - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-seccomp.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
 

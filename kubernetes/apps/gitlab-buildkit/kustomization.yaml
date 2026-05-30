@@ -2,7 +2,10 @@
 # yaml-language-server: $schema=https://json.schemastore.org/kustomization
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: gitlab-buildkit
+components:
+  - ../../components/alerts
+  - ../../components/common
+  - ../../components/psa/baseline
 resources:
-  - ./externalsecret.yaml
-  - ./helmrelease.yaml
-  - ./ocirepository.yaml
+  - ./buildkitd/ks.yaml
