@@ -156,6 +156,19 @@ spec:
                 drop = ["ALL"]
               [runners.kubernetes.helper_container_security_context.seccomp_profile]
                 type = "RuntimeDefault"
+            # Auto-injected svc-* service containers (e.g. Redis, Postgres
+            # declared via `services:` in .gitlab-ci.yml) inherit no security
+            # context by default, violating the namespace's restricted PSS.
+            # Mirror build/helper hardening; keep read_only_root_filesystem
+            # false because service images typically need writable roots.
+            [runners.kubernetes.service_container_security_context]
+              allow_privilege_escalation = false
+              read_only_root_filesystem = false
+              run_as_non_root = true
+              [runners.kubernetes.service_container_security_context.capabilities]
+                drop = ["ALL"]
+              [runners.kubernetes.service_container_security_context.seccomp_profile]
+                type = "RuntimeDefault"
             # The auto-injected init-permissions container only drops NET_RAW by
             # default, which violates the namespace's restricted PSS. Mirror the
             # helper container's hardened context so build pods are admitted.
