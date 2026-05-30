@@ -19,6 +19,8 @@ spec:
         storageClassName: ceph-block
         size: 20Gi
       retentionPeriod: 14d
+      extraArgs:
+        defaultMsgValue: structured log record
       route:
         enabled: false
       serviceMonitor:
