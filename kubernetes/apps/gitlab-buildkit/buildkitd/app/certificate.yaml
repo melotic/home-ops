@@ -1,0 +1,19 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/certificate_v1.json
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-daemon-certs
+spec:
+  dnsNames:
+    - buildkitd.gitlab-buildkit.svc
+    - buildkitd.gitlab-buildkit.svc.cluster.local
+  issuerRef:
+    kind: ClusterIssuer
+    name: buildkit-ca
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  secretName: buildkit-daemon-certs
+  usages:
+    - server auth

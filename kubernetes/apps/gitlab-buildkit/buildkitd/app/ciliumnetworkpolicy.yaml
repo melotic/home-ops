@@ -1,0 +1,57 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/CiliumProject/cilium/main/pkg/k8s/apis/cilium.io/client/crds/v2/ciliumnetworkpolicies.yaml
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: buildkitd
+spec:
+  endpointSelector:
+    matchLabels:
+      app: buildkitd
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": gitlab-runner
+      toPorts:
+        - ports:
+            - port: "1234"
+              protocol: TCP
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": kube-system
+            "k8s:k8s-app": kube-dns
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": default
+            "k8s:app.kubernetes.io/name": harbor
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+            - port: "5000"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+    - toFQDNs:
+        - matchName: harbor.melotic.dev
+        - matchName: docker.io
+        - matchPattern: "*.docker.io"
+        - matchName: ghcr.io
+        - matchName: quay.io
+        - matchName: registry.k8s.io
+        - matchName: gcr.io
+        - matchPattern: "*.gcr.io"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP

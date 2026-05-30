@@ -3,7 +3,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./egress-disco-ninja.yaml
-  - ./externalsecret.yaml
-  - ./helmrelease.yaml
-  - ./ocirepository.yaml
+  - ./certificate.yaml
+  - ./ciliumnetworkpolicy.yaml
+  - ./deployment.yaml
+  - ./pvc.yaml
+  - ./service.yaml

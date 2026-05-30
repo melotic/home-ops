@@ -1,0 +1,88 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0-standalone-strict/deployment.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buildkitd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: buildkitd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        app: buildkitd
+    spec:
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: buildkitd
+          image: docker.io/moby/buildkit:v0.30.0-rootless@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9
+          args:
+            - --addr=unix:///run/user/1000/buildkit/buildkitd.sock
+            - --addr=tcp://0.0.0.0:1234
+            - --tlscacert=/certs/ca.crt
+            - --tlscert=/certs/tls.crt
+            - --tlskey=/certs/tls.key
+            - --oci-worker-no-process-sandbox
+          env:
+            - name: XDG_RUNTIME_DIR
+              value: /run/user/1000
+          ports:
+            - name: grpc
+              containerPort: 1234
+              protocol: TCP
+          readinessProbe:
+            exec:
+              command:
+                - buildctl
+                - --addr
+                - unix:///run/user/1000/buildkit/buildkitd.sock
+                - debug
+                - workers
+            initialDelaySeconds: 5
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 4Gi
+          securityContext:
+            allowPrivilegeEscalation: true
+            readOnlyRootFilesystem: false
+            runAsGroup: 1000
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: Localhost
+              localhostProfile: profiles/buildkit.json
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: cache
+              mountPath: /home/user/.local/share/buildkit
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+            - name: run
+              mountPath: /run/user/1000
+      volumes:
+        - name: cache
+          persistentVolumeClaim:
+            claimName: buildkitd-cache
+        - name: certs
+          secret:
+            secretName: buildkit-daemon-certs
+        - name: run
+          emptyDir:
+            medium: Memory

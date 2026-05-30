@@ -92,7 +92,6 @@ spec:
         cpu: 50m
         memory: 128Mi
       limits:
-        cpu: 500m
         memory: 256Mi
 
     # config.toml for the K8s executor — controls per-job pod security.
@@ -188,6 +187,10 @@ spec:
               name = "tmp"
               mount_path = "/tmp"
               medium = ""
+            [[runners.kubernetes.volumes.secret]]
+              name = "buildkit-client-certs"
+              mount_path = "/certs"
+              read_only = true
 
     concurrent: 4
     checkInterval: 30
