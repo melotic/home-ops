@@ -130,11 +130,6 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-harbor
-        - name: forejo
-          ensure: present
-          login: true
-          passwordSecret:
-            name: postgres-user-forejo
         - name: paperless
           ensure: present
           login: true
