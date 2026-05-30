@@ -10,5 +10,4 @@ resources:
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./prometheusrule.yaml
-  - ./servicemonitor-exporters.yaml
   - ./tailscale-egress.yaml
