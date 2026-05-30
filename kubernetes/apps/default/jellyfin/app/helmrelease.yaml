@@ -23,13 +23,14 @@ spec:
               - /bin/sh
               - -c
               - |
+                set -eu
                 MARKER="/config/recovery-backups/10.11-migration-xml-disabled"
                 if [ -f "$MARKER" ]; then
                   echo "migration-recovery: already applied, skipping"
                   exit 0
                 fi
                 TS=$(date +%Y%m%d-%H%M%S)
-                BACKUP_DIR="/config/recovery-backups/${TS}"
+                BACKUP_DIR="/config/recovery-backups/$TS"
                 mkdir -p "$BACKUP_DIR"
                 # Backup key files if they exist
                 for f in \
@@ -51,13 +52,13 @@ spec:
                   /config/migrations.xml \
                   /config/migration.xml; do
                   if [ -f "$f" ]; then
-                    mv "$f" "${f}.disabled-${TS}"
-                    echo "disabled: $f -> ${f}.disabled-${TS}"
+                    mv "$f" "$f.disabled-$TS"
+                    echo "disabled: $f -> $f.disabled-$TS"
                   fi
                 done
                 # Write marker so this is idempotent
                 mkdir -p /config/recovery-backups
-                echo "applied at ${TS}" > "$MARKER"
+                echo "applied at $TS" > "$MARKER"
                 echo "migration-recovery: done"
             securityContext:
               allowPrivilegeEscalation: false
