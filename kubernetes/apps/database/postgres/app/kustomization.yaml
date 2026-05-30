@@ -7,7 +7,6 @@ resources:
   - ./databases/atuin.yaml
   - ./databases/authentik.yaml
   - ./databases/harbor.yaml
-  - ./databases/forejo.yaml
   - ./databases/gitlab.yaml
   - ./databases/lidarr.yaml
   - ./databases/paperless.yaml
@@ -24,7 +23,6 @@ resources:
   - ./pooler/pooler-rw.yaml
   - ./roles/atuin.yaml
   - ./roles/authentik.yaml
-  - ./roles/forejo.yaml
   - ./roles/gitlab.yaml
   - ./roles/harbor.yaml
   - ./roles/lidarr.yaml
