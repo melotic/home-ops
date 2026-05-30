@@ -11,6 +11,8 @@ spec:
   interval: 1h
   values:
     fullnameOverride: victoria-logs-collector
+    image:
+      registry: docker.io
     remoteWrite:
       - url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
     collector:
