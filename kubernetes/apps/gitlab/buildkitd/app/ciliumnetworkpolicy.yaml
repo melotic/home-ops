@@ -30,15 +30,16 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    - toServices:
-        - k8sService:
-            serviceName: envoy-internal
-            namespace: network
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": network
+            "k8s:app.kubernetes.io/component": proxy
+            "k8s:app.kubernetes.io/managed-by": envoy-gateway
+            "k8s:app.kubernetes.io/name": envoy
+            "k8s:gateway.envoyproxy.io/owning-gateway-name": envoy-internal
       toPorts:
         - ports:
-            - port: "80"
-              protocol: TCP
-            - port: "443"
+            - port: "10443"
               protocol: TCP
     - toEntities:
         - world
