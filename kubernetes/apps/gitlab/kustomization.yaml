@@ -8,4 +8,5 @@ components:
   - ../../components/common
   - ../../components/psa/baseline
 resources:
+  - ./buildkitd/ks.yaml
   - ./gitlab/ks.yaml
