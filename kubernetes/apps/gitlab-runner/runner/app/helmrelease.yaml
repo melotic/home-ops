@@ -26,7 +26,6 @@ spec:
     # CI_SERVER_TOKEN before calling `gitlab-runner register`.
     secrets:
       - name: gitlab-runner-token
-      - name: gitlab-runner-cache-credentials
     runnerRegistrationToken: ""
     runnerToken: ""
 
@@ -97,6 +96,8 @@ spec:
 
     # config.toml for the K8s executor — controls per-job pod security.
     runners:
+      cache:
+        secretName: gitlab-runner-cache-credentials
       config: |
         [[runners]]
           executor = "kubernetes"
