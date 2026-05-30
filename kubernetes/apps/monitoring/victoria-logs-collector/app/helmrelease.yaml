@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-logs-collector
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: victoria-logs-collector
+  interval: 1h
+  values:
+    fullnameOverride: victoria-logs-collector
+    remoteWrite:
+      - url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
+    collector:
+      msgField:
+        - message
+        - msg
+        - log
+        - log_message
+        - event
+        - text
+        - error
+        - err
+        - description
+        - detail
+        - output
+      streamFields:
+        - kubernetes.container_name
+        - kubernetes.pod_name
+        - kubernetes.pod_namespace
+      includePodLabels: true
+      includePodAnnotations: false
+      includeNodeLabels: false
+      includeNodeAnnotations: false
+    persistence:
+      volume:
+        emptyDir: {}
+    podMonitor:
+      enabled: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    podSecurityContext:
+      enabled: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+    securityContext:
+      enabled: true
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      capabilities:
+        drop: ["ALL"]
