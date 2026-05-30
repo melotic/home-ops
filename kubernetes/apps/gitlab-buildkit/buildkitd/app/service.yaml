@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/refs/heads/master/v1.35.0-standalone-strict/service.json
+apiVersion: v1
+kind: Service
+metadata:
+  name: buildkitd
+spec:
+  type: ClusterIP
+  selector:
+    app: buildkitd
+  ports:
+    - name: grpc
+      port: 1234
+      targetPort: 1234
+      protocol: TCP
