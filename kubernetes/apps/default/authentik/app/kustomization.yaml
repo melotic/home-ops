@@ -15,7 +15,6 @@ configMapGenerator:
       - harbor.yaml=./blueprints/harbor.yaml
       - gitlab.yaml=./blueprints/gitlab.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
-      - victoria-metrics.yaml=./blueprints/victoria-metrics.yaml
       - victoria-logs.yaml=./blueprints/victoria-logs.yaml
       - alertmanager.yaml=./blueprints/alertmanager.yaml
       - slskd.yaml=./blueprints/slskd.yaml
