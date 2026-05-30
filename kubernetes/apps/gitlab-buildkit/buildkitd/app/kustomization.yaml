@@ -5,6 +5,5 @@ kind: Kustomization
 resources:
   - ./certificate.yaml
   - ./ciliumnetworkpolicy.yaml
-  - ./deployment.yaml
-  - ./pvc.yaml
-  - ./service.yaml
+  - ./helmrelease.yaml
+  - ./ocirepository.yaml

@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: buildkitd
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: buildkitd
+  interval: 1h
+  values:
+    controllers:
+      buildkitd:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/moby/buildkit
+              tag: v0.30.0-rootless@sha256:d76eb1caecac5733ef7553c1e90a1b21f1bb218cd1142d3553de0747b4a14ba9
+            args:
+              - --addr=unix:///run/user/1000/buildkit/buildkitd.sock
+              - --addr=tcp://0.0.0.0:1234
+              - --tlscacert=/certs/ca.crt
+              - --tlscert=/certs/tls.crt
+              - --tlskey=/certs/tls.key
+              - --oci-worker-no-process-sandbox
+            env:
+              XDG_RUNTIME_DIR: /run/user/1000
+            probes:
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - buildctl
+                      - --addr
+                      - unix:///run/user/1000/buildkit/buildkitd.sock
+                      - debug
+                      - workers
+                  initialDelaySeconds: 5
+                  periodSeconds: 30
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 4Gi
+            securityContext:
+              allowPrivilegeEscalation: true
+              readOnlyRootFilesystem: false
+              runAsGroup: 1000
+              runAsNonRoot: true
+              runAsUser: 1000
+              seccompProfile:
+                type: Localhost
+                localhostProfile: profiles/buildkit.json
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+    service:
+      app:
+        forceRename: buildkitd
+        ports:
+          grpc:
+            port: 1234
+    persistence:
+      cache:
+        accessMode: ReadWriteOnce
+        size: 50Gi
+        storageClass: ceph-block
+        globalMounts:
+          - path: /home/user/.local/share/buildkit
+      certs:
+        type: secret
+        name: buildkit-daemon-certs
+        globalMounts:
+          - path: /certs
+            readOnly: true
+      run:
+        type: emptyDir
+        medium: Memory
+        globalMounts:
+          - path: /run/user/1000

@@ -7,7 +7,9 @@ metadata:
 spec:
   endpointSelector:
     matchLabels:
-      app: buildkitd
+      app.kubernetes.io/controller: buildkitd
+      app.kubernetes.io/instance: buildkitd
+      app.kubernetes.io/name: buildkitd
   ingress:
     - fromEndpoints:
         - matchLabels:
