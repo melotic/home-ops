@@ -14,56 +14,6 @@ spec:
       jellyfin:
         annotations:
           reloader.stakater.com/auto: "true"
-        initContainers:
-          migration-recovery:
-            image:
-              repository: docker.io/library/busybox
-              tag: 1.37.0
-            command:
-              - /bin/sh
-              - -c
-              - |
-                set -eu
-                MARKER="/config/recovery-backups/10.11-migration-xml-disabled"
-                if [ -f "$MARKER" ]; then
-                  echo "migration-recovery: already applied, skipping"
-                  exit 0
-                fi
-                TS=$(date +%Y%m%d-%H%M%S)
-                BACKUP_DIR="/config/recovery-backups/$TS"
-                mkdir -p "$BACKUP_DIR"
-                # Backup key files if they exist
-                for f in \
-                  /config/data/jellyfin.db \
-                  /config/data/library.db \
-                  /config/config/migrations.xml \
-                  /config/config/migration.xml \
-                  /config/migrations.xml \
-                  /config/migration.xml; do
-                  if [ -f "$f" ]; then
-                    cp "$f" "$BACKUP_DIR/$(echo "$f" | sed 's|/|_|g')"
-                    echo "backed up: $f"
-                  fi
-                done
-                # Rename legacy migration XML files out of the way
-                for f in \
-                  /config/config/migrations.xml \
-                  /config/config/migration.xml \
-                  /config/migrations.xml \
-                  /config/migration.xml; do
-                  if [ -f "$f" ]; then
-                    mv "$f" "$f.disabled-$TS"
-                    echo "disabled: $f -> $f.disabled-$TS"
-                  fi
-                done
-                # Write marker so this is idempotent
-                mkdir -p /config/recovery-backups
-                echo "applied at $TS" > "$MARKER"
-                echo "migration-recovery: done"
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
