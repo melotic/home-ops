@@ -114,27 +114,4 @@ spec:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
         name: kyverno
-    - # Jellyfin-specific: prevent rollback death-spiral during migration recovery
-      patch: |-
-        - op: add
-          path: /spec/patches/-
-          value:
-            patch: |-
-              apiVersion: helm.toolkit.fluxcd.io/v2
-              kind: HelmRelease
-              metadata:
-                name: _
-              spec:
-                upgrade:
-                  remediation:
-                    retries: 3
-                    remediateLastFailure: false
-            target:
-              group: helm.toolkit.fluxcd.io
-              kind: HelmRelease
-              name: jellyfin
-      target:
-        group: kustomize.toolkit.fluxcd.io
-        kind: Kustomization
-        name: jellyfin
   wait: false
