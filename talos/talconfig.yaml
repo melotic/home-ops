@@ -58,10 +58,8 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
-            - siderolabs/iscsi-tools
             - siderolabs/nfs-utils
             - siderolabs/realtek-firmware
-            - siderolabs/util-linux-tools
 
   - hostname: "k8s-trinity"
     ipAddress: "10.60.85.11"
@@ -102,9 +100,7 @@ nodes:
           officialExtensions:
             - siderolabs/i915
             - siderolabs/intel-ucode
-            - siderolabs/iscsi-tools
             - siderolabs/nfs-utils
-            - siderolabs/util-linux-tools
 
   - hostname: "k8s-ghost"
     ipAddress: "10.60.85.12"
@@ -145,10 +141,8 @@ nodes:
           officialExtensions:
             - siderolabs/amd-ucode
             - siderolabs/amdgpu
-            - siderolabs/iscsi-tools
             - siderolabs/nfs-utils
             - siderolabs/realtek-firmware
-            - siderolabs/util-linux-tools
 
 # Global patches
 patches:
