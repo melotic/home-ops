@@ -23,6 +23,23 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
+  name: buildkit-selfsigned
+spec:
+  selfSigned: {}
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/clusterissuer_v1.json
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: buildkit-ca
+spec:
+  ca:
+    secretName: buildkit-ca
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/cert-manager.io/clusterissuer_v1.json
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
   name: letsencrypt-staging
 spec:
   acme:
