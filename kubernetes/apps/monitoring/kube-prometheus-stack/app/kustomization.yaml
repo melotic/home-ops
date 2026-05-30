@@ -11,3 +11,4 @@ resources:
   - ./ocirepository.yaml
   - ./prometheusrule.yaml
   - ./servicemonitor-exporters.yaml
+  - ./tailscale-egress.yaml
