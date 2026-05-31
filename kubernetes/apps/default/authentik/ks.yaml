@@ -10,14 +10,24 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
+    - ../../../../components/volsync
     - ../../../../components/cnpg-database
   dependsOn:
     - name: postgres
       namespace: database
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
   path: ./kubernetes/apps/default/authentik/app
   postBuild:
     substitute:
       APP: authentik
+      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_STORAGECLASS: ceph-filesystem
+      VOLSYNC_ACCESSMODES: ReadWriteMany
+      VOLSYNC_SNAPSHOTCLASS: csi-ceph-filesystem
+      VOLSYNC_SNAP_ACCESSMODES: ReadWriteMany
   sourceRef:
     kind: GitRepository
     name: flux-system
