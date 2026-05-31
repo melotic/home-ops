@@ -12,6 +12,7 @@ spec:
   values:
     controllers:
       plex:
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
