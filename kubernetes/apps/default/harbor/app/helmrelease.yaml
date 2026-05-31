@@ -47,7 +47,7 @@ spec:
       enabled: true
       persistentVolumeClaim:
         registry:
-          storageClass: nfs-construct
+          existingClaim: harbor
         jobservice:
           jobLog:
             storageClass: ceph-block

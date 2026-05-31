@@ -96,7 +96,7 @@ spec:
             secretName: authentik-postgres
         - name: data
           persistentVolumeClaim:
-            claimName: authentik-data
+            claimName: authentik
         - name: tmp
           emptyDir: {}
     worker:

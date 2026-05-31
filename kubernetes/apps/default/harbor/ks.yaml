@@ -10,16 +10,20 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
+    - ../../../../components/volsync
     - ../../../../components/cnpg-database
   dependsOn:
     - name: postgres
       namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
   path: ./kubernetes/apps/default/harbor/app
   postBuild:
     substitute:
       APP: harbor
+      VOLSYNC_CAPACITY: 30Gi
   sourceRef:
     kind: GitRepository
     name: flux-system
