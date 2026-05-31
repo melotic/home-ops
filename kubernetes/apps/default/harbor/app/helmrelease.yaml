@@ -20,7 +20,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: harbor
-      version: 1.19.0
+      version: 1.19.1
   install:
     remediation:
       retries: -1
