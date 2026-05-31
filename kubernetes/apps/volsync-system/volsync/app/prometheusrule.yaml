@@ -30,7 +30,7 @@ spec:
 
         - alert: VolSyncMissedInterval
           expr: |-
-            increase(volsync_missed_intervals_total{role="source"}[1h]) > 0
+            increase(volsync_missed_intervals_total{role="source"}[15h]) > 0
           annotations:
             summary: >-
               {{ $labels.obj_namespace }}/{{ $labels.obj_name }} missed a scheduled VolSync backup interval
@@ -48,17 +48,159 @@ spec:
           labels:
             severity: critical
 
-        - alert: KopiaAzureSyncFailed
+        - alert: VolSyncSourceStaleWarning
           expr: |-
-            kube_job_status_failed{namespace="default", job_name=~"kopia-azure-sync-.*"} > 0
+            max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role="source"}[18h])) < 1
           annotations:
             summary: >-
-              Kopia Azure sync job {{ $labels.job_name }} failed
+              {{ $labels.obj_namespace }}/{{ $labels.obj_name }} has no completed VolSync source sync in more than 18 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: VolSyncSourceStaleCritical
+          expr: |-
+            max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role="source"}[24h])) < 1
+          annotations:
+            summary: >-
+              {{ $labels.obj_namespace }}/{{ $labels.obj_name }} has no completed VolSync source sync in more than 24 hours
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: VolSyncSourceFreshnessUnobservable
+          expr: |-
+            absent(volsync_sync_duration_seconds_count{role="source"})
+          annotations:
+            summary: >-
+              VolSync source freshness cannot be observed because sync duration metrics are absent
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: VolSyncSourceMissingFromInventory
+          expr: |-
+            kube_customresource_volsync_replicationsource_info
+              unless on (obj_namespace, obj_name)
+            count by (obj_namespace, obj_name) (volsync_sync_duration_seconds_count{role="source"})
+          annotations:
+            summary: >-
+              ReplicationSource {{ $labels.obj_namespace }}/{{ $labels.obj_name }} exists but has produced no VolSync sync metrics for over 13h (broken or never-synced backup source)
+          for: 13h
+          labels:
+            severity: critical
+
+        - alert: VolSyncInventoryUnobservable
+          expr: |-
+            absent(kube_customresource_volsync_replicationsource_info)
+          annotations:
+            summary: >-
+              VolSync ReplicationSource inventory metrics are absent; per-source backup coverage cannot be verified (kube-state-metrics custom resource state may be broken)
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: BackupCronJobFailed
+          expr: |-
+            kube_job_status_failed{namespace="default"} * on(namespace, job_name) group_left(owner_name) kube_job_owner{namespace="default", owner_kind="CronJob", owner_name=~"nas-backup|kopia-verify|kopia-azure-sync"} > 0
+          annotations:
+            summary: >-
+              Backup CronJob {{ $labels.owner_name }} job {{ $labels.job_name }} failed
           for: 10m
           labels:
             severity: critical
 
-        - alert: KopiaAzureSyncStale
+        - alert: BackupCronJobFreshnessUnobservable
+          expr: |-
+            kube_cronjob_info{namespace="default", cronjob=~"nas-backup|kopia-verify|kopia-azure-sync"} unless on(namespace, cronjob) kube_cronjob_status_last_successful_time{namespace="default", cronjob=~"nas-backup|kopia-verify|kopia-azure-sync"}
+          annotations:
+            summary: >-
+              Backup CronJob {{ $labels.cronjob }} freshness cannot be observed because last successful time is absent
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: NasBackupCronJobMissing
+          expr: |-
+            absent(kube_cronjob_info{namespace="default", cronjob="nas-backup"})
+          annotations:
+            summary: >-
+              Backup CronJob nas-backup is missing from kube-state-metrics
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: NasBackupStaleWarning
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="nas-backup"} > 129600
+          annotations:
+            summary: >-
+              NAS backup has not completed successfully in more than 36 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: NasBackupStaleCritical
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="nas-backup"} > 172800
+          annotations:
+            summary: >-
+              NAS backup has not completed successfully in more than 48 hours
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: KopiaVerifyCronJobMissing
+          expr: |-
+            absent(kube_cronjob_info{namespace="default", cronjob="kopia-verify"})
+          annotations:
+            summary: >-
+              Backup CronJob kopia-verify is missing from kube-state-metrics
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: KopiaVerifyStaleWarning
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="kopia-verify"} > 129600
+          annotations:
+            summary: >-
+              Kopia verify has not completed successfully in more than 36 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: KopiaVerifyStaleCritical
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="kopia-verify"} > 172800
+          annotations:
+            summary: >-
+              Kopia verify has not completed successfully in more than 48 hours
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: KopiaAzureSyncCronJobMissing
+          expr: |-
+            absent(kube_cronjob_info{namespace="default", cronjob="kopia-azure-sync"})
+          annotations:
+            summary: >-
+              Backup CronJob kopia-azure-sync is missing from kube-state-metrics
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: KopiaAzureSyncStaleWarning
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="kopia-azure-sync"} > 129600
+          annotations:
+            summary: >-
+              Kopia Azure sync has not completed successfully in more than 36 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: KopiaAzureSyncStaleCritical
           expr: |-
             time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="kopia-azure-sync"} > 172800
           annotations:
@@ -77,3 +219,33 @@ spec:
           for: 10m
           labels:
             severity: warning
+
+        - alert: KopiaMaintenanceStaleWarning
+          expr: |-
+            time() - max(kube_job_status_completion_time{namespace="volsync-system", job_name=~"kopia-maint-.*"}) > 21600
+          annotations:
+            summary: >-
+              Kopia maintenance has not completed successfully in more than 6 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: KopiaMaintenanceStaleCritical
+          expr: |-
+            time() - max(kube_job_status_completion_time{namespace="volsync-system", job_name=~"kopia-maint-.*"}) > 28800
+          annotations:
+            summary: >-
+              Kopia maintenance has not completed successfully in more than 8 hours
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: KopiaMaintenanceFreshnessUnobservable
+          expr: |-
+            absent(kube_job_status_completion_time{namespace="volsync-system", job_name=~"kopia-maint-.*"})
+          annotations:
+            summary: >-
+              Kopia maintenance freshness cannot be observed because completion metrics are absent
+          for: 15m
+          labels:
+            severity: critical
