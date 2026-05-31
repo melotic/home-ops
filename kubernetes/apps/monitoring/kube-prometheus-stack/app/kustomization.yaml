@@ -6,8 +6,15 @@ resources:
   - ./alertmanagerconfig.yaml
   - ./externalsecret-webhook.yaml
   - ./externalsecret.yaml
+  - ./grafanadashboard-backup-confidence.yaml
   - ./grafanadashboard.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
   - ./prometheusrule.yaml
   - ./tailscale-egress.yaml
+configMapGenerator:
+  - name: backup-confidence-dashboard
+    files:
+      - backup-confidence.json=./resources/backup-confidence.json
+generatorOptions:
+  disableNameSuffixHash: true

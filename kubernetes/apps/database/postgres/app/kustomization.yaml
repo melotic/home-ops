@@ -21,6 +21,7 @@ resources:
   - ./monitoring/cluster-podmonitor.yaml
   - ./monitoring/pooler-podmonitor.yaml
   - ./pooler/pooler-rw.yaml
+  - ./prometheusrule-backup.yaml
   - ./roles/atuin.yaml
   - ./roles/authentik.yaml
   - ./roles/gitlab.yaml
