@@ -108,6 +108,31 @@ spec:
           memory: 128Mi
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
+      rbac:
+        extraRules:
+          - apiGroups: ["volsync.backube"]
+            resources: ["replicationsources"]
+            verbs: ["list", "watch"]
+      customResourceState:
+        enabled: true
+        config:
+          kind: CustomResourceStateMetrics
+          spec:
+            resources:
+              - groupVersionKind:
+                  group: volsync.backube
+                  version: v1alpha1
+                  kind: ReplicationSource
+                metricNamePrefix: kube_customresource
+                labelsFromPath:
+                  obj_namespace: [metadata, namespace]
+                  obj_name: [metadata, name]
+                metrics:
+                  - name: volsync_replicationsource_info
+                    help: VolSync ReplicationSource inventory
+                    each:
+                      type: Info
+                      info: {}
       resources:
         requests:
           cpu: 10m

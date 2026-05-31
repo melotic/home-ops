@@ -1,0 +1,79 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: postgres-backup
+spec:
+  groups:
+    - name: postgres.backup.rules
+      rules:
+        - alert: PostgresBackupStaleWarning
+          expr: |-
+            time() - max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="database"}) > 129600
+          annotations:
+            summary: >-
+              CNPG backup has not completed successfully in more than 36 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: PostgresBackupStaleCritical
+          expr: |-
+            time() - max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="database"}) > 172800
+          annotations:
+            summary: >-
+              CNPG backup has not completed successfully in more than 48 hours
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: PostgresBackupFailed
+          expr: |-
+            max(barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp{namespace="database"}) > max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="database"})
+          annotations:
+            summary: >-
+              CNPG latest failed backup is newer than the latest available backup
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: PostgresBackupFreshnessUnobservable
+          expr: |-
+            absent(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="database"})
+          annotations:
+            summary: >-
+              CNPG backup freshness cannot be observed because Barman Cloud backup timestamp metrics are absent
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: PostgresWalArchiveFailures
+          expr: |-
+            increase(cnpg_pg_stat_archiver_failed_count{namespace="database"}[15m]) > 0
+          annotations:
+            summary: >-
+              CNPG WAL archiver recorded failures in the last 15 minutes
+          for: 5m
+          labels:
+            severity: critical
+
+        - alert: PostgresWalArchiveStale
+          expr: |-
+            cnpg_pg_stat_archiver_seconds_since_last_archival{namespace="database"} > 3600
+          annotations:
+            summary: >-
+              CNPG WAL archiver has not archived a WAL segment in more than 1 hour
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: PostgresWalLatestFailureNewerThanArchive
+          expr: |-
+            cnpg_pg_stat_archiver_last_failed_time{namespace="database"} - cnpg_pg_stat_archiver_last_archived_time{namespace="database"} > 1
+          annotations:
+            summary: >-
+              CNPG latest WAL archive failure is newer than the latest successful archive
+          for: 5m
+          labels:
+            severity: critical
