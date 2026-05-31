@@ -172,6 +172,8 @@ spec:
           providers:
             - secret: gitlab-oidc
               key: provider
+            - secret: gitlab-github-oauth
+              key: github
         initialDefaults:
           signupEnabled: false
           gitlabProductUsageData: false
