@@ -16,6 +16,7 @@ metadata:
   name: gitlab
 spec:
   interval: 1h
+  timeout: 15m
   chart:
     spec:
       chart: gitlab
@@ -27,6 +28,11 @@ spec:
   install:
     remediation:
       retries: -1
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      remediateLastFailure: true
   postRenderers:
     - kustomize:
         patches:
