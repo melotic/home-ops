@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./cronjob.yaml
+  - ./cronjob-prune.yaml
