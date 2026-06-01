@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/batch/cronjob_v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: kopia-azure-prune
+spec:
+  schedule: "30 9 * * 0"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 28800
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 977
+            runAsGroup: 988
+            fsGroup: 988
+          containers:
+            - name: kopia
+              image: docker.io/kopia/kopia:0.23.0
+              env:
+                - name: USER
+                  value: kopia
+                - name: KOPIA_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: kopia-azure-sync-secret
+                      key: KOPIA_PASSWORD
+                - name: AZURE_STORAGE_ACCOUNT
+                  valueFrom:
+                    secretKeyRef:
+                      name: kopia-azure-sync-secret
+                      key: AZURE_STORAGE_ACCOUNT
+                - name: AZURE_SAS_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: kopia-azure-sync-secret
+                      key: AZURE_SAS_TOKEN
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+
+                  echo "Connecting to kopia repository..."
+                  kopia repository connect filesystem \
+                    --path=/repository \
+                    --password="$KOPIA_PASSWORD"
+                  echo "Pruning Azure mirror to match repository (sync-to --delete)..."
+                  kopia repository sync-to azure \
+                    --container=nas-backup \
+                    --prefix=k8s/volsync \
+                    --storage-account="$AZURE_STORAGE_ACCOUNT" \
+                    --sas-token="$AZURE_SAS_TOKEN" \
+                    --parallel=2 \
+                    --delete \
+                    --must-exist
+                  echo "Azure prune complete."
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: repository
+                  mountPath: /repository
+                  readOnly: true
+                - name: tmp
+                  mountPath: /tmp
+                - name: kopia-cache
+                  mountPath: /app/cache
+                - name: kopia-config
+                  mountPath: /app/config
+                - name: kopia-logs
+                  mountPath: /app/logs
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 256Mi
+                limits:
+                  memory: 512Mi
+          volumes:
+            - name: repository
+              nfs:
+                server: construct.melotic.dev
+                path: /var/nfs/shared/k8s/volsync
+                readOnly: true
+            - name: tmp
+              emptyDir: {}
+            - name: kopia-cache
+              emptyDir: {}
+            - name: kopia-config
+              emptyDir: {}
+            - name: kopia-logs
+              emptyDir: {}
