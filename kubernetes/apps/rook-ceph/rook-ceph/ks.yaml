@@ -28,6 +28,34 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: &csi rook-ceph-csi
+  namespace: &namespace rook-ceph
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *csi
+  dependsOn:
+    - name: rook-ceph
+      namespace: rook-ceph
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      name: ceph-csi-drivers
+      namespace: *namespace
+  interval: 1h
+  path: ./kubernetes/apps/rook-ceph/rook-ceph/csi
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  wait: true
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: &cluster rook-ceph-cluster
   namespace: &namespace rook-ceph
 spec:
@@ -35,7 +63,7 @@ spec:
     labels:
       app.kubernetes.io/name: *cluster
   dependsOn:
-    - name: rook-ceph
+    - name: rook-ceph-csi
       namespace: rook-ceph
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
