@@ -132,7 +132,10 @@ spec:
                     help: VolSync ReplicationSource inventory
                     each:
                       type: Info
-                      info: {}
+                      info:
+                        labelsFromPath:
+                          obj_namespace: [metadata, namespace]
+                          obj_name: [metadata, name]
       resources:
         requests:
           cpu: 10m
