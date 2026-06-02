@@ -1,0 +1,149 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+# Residual require-non-root-and-readonly-fs exceptions, grouped by the exact
+# rule(s) each workload fails so that checks a workload still passes are NOT
+# suppressed (no pass→skip blind spots).
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: writable-rootfs-apps
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      These workloads run non-root but write to their container root filesystem
+      (caches, runtime state, embedded tooling) and upstream charts do not expose
+      a read-only-rootfs profile. Excepted from readOnlyRootFilesystem only.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/review-trigger: >-
+      Re-evaluate per workload when its upstream chart supports a writable tmp
+      mount with read-only root filesystem.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: require-non-root-and-readonly-fs
+      ruleNames:
+        - check-readOnlyRootFilesystem
+        - autogen-check-readOnlyRootFilesystem
+        - autogen-cronjob-check-readOnlyRootFilesystem
+  match:
+    any:
+      # Harbor stack (core/exporter/jobservice/portal/registry/trivy)
+      - resources:
+          namespaces: [default]
+          names: [harbor-*]
+          kinds: [Pod, Deployment, StatefulSet, ReplicaSet]
+      # Misc default apps that write to rootfs
+      - resources:
+          namespaces: [default]
+          names:
+            - aurral
+            - aurral-*
+            - beets
+            - beets-*
+            - ghidra-server
+            - ghidra-server-*
+            - ak-outpost-ghidra-server-ldap
+            - ak-outpost-ghidra-server-ldap-*
+          kinds: [Pod, Deployment, Job, CronJob, ReplicaSet]
+      # Envoy Gateway data/control plane
+      - resources:
+          namespaces: [network]
+          names: [envoy-*]
+          kinds: [Pod, Deployment, ReplicaSet]
+      # GitLab chart is not designed for read-only root filesystems across its
+      # components (gitaly/webservice/sidekiq/toolbox/gitlab-shell/buildkitd/
+      # migrations); none run as root, so this is scoped to those components.
+      - resources:
+          namespaces: [gitlab]
+          names:
+            - buildkitd
+            - buildkitd-*
+            - gitlab-gitlab-shell
+            - gitlab-gitlab-shell-*
+            - gitlab-sidekiq-*
+            - gitlab-toolbox
+            - gitlab-toolbox-*
+            - gitlab-webservice-*
+            - gitlab-gitaly
+            - gitlab-gitaly-*
+            - gitlab-migrations-*
+          kinds: [Pod, Deployment, StatefulSet, Job, ReplicaSet]
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: root-and-writable-rootfs-infra
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      These workloads require both root and a writable root filesystem: paperless
+      (consumer pipeline), smartctl-exporter (raw device access), the Tailscale
+      operator/nameserver/proxies, and the OpenEBS localpv provisioner.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/review-trigger: >-
+      Re-evaluate per workload when its upstream chart supports running non-root
+      with a read-only root filesystem.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: require-non-root-and-readonly-fs
+      ruleNames:
+        - check-runAsNonRoot
+        - check-readOnlyRootFilesystem
+        - autogen-check-runAsNonRoot
+        - autogen-check-readOnlyRootFilesystem
+        - autogen-cronjob-check-runAsNonRoot
+        - autogen-cronjob-check-readOnlyRootFilesystem
+  match:
+    any:
+      - resources:
+          namespaces: [default]
+          names: [paperless-ngx, paperless-ngx-*]
+          kinds: [Pod, Deployment, ReplicaSet]
+      - resources:
+          namespaces: [monitoring]
+          names: [smartctl-exporter, smartctl-exporter-*]
+          kinds: [Pod, DaemonSet]
+      - resources:
+          namespaces: [network]
+          names:
+            - nameserver
+            - nameserver-*
+            - operator
+            - operator-*
+            - ts-disco-ninja-*
+            - ts-ts-srv-zion-*
+          kinds: [Pod, Deployment, StatefulSet, ReplicaSet]
+      - resources:
+          namespaces: [openebs-system]
+          names: [openebs-localpv-provisioner, openebs-localpv-provisioner-*]
+          kinds: [Pod, Deployment, ReplicaSet]
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: root-logs-collector
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      victoria-logs-collector is a node log shipper that must run as root to read
+      container log files owned by root under /var/log. It already uses a
+      read-only root filesystem.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/review-trigger: >-
+      Re-evaluate if the collector supports reading node logs without root.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: require-non-root-and-readonly-fs
+      ruleNames:
+        - check-runAsNonRoot
+        - autogen-check-runAsNonRoot
+  match:
+    any:
+      - resources:
+          namespaces: [monitoring]
+          names: [victoria-logs-collector, victoria-logs-collector-*]
+          kinds: [Pod, DaemonSet]
