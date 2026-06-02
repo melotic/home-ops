@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: host-namespace-infra
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      node-exporter needs host network/PID to expose node-level metrics, and the
+      Rook-Ceph CSI nodeplugins need host namespaces to attach and mount block
+      devices on the node. Neither can function without host namespaces.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/review-trigger: >-
+      Re-evaluate if node-exporter or Rook-Ceph CSI ship a profile that no longer
+      requires host namespaces.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: disallow-host-namespaces
+      ruleNames:
+        - check-no-host-namespaces
+        - autogen-check-no-host-namespaces
+  match:
+    any:
+      - resources:
+          namespaces: [monitoring]
+          names: [node-exporter, node-exporter-*]
+          kinds: [Pod, DaemonSet]
+      - resources:
+          namespaces: [rook-ceph]
+          names:
+            - rook-ceph.*.csi.ceph.com-nodeplugin
+            - rook-ceph.*.csi.ceph.com-nodeplugin-*
+          kinds: [Pod, DaemonSet]
