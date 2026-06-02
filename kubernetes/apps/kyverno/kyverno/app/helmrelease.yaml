@@ -95,3 +95,4 @@ spec:
     features:
       policyExceptions:
         enabled: true
+        namespace: kyverno
