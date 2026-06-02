@@ -15,6 +15,9 @@ metadata:
       Container images must be pinned by SHA256 digest, not floating tags.
       Surfaces tag-rewrite supply-chain risk via PolicyReports; remediation is
       Renovate's `pinDigests: true` feature.
+    home-ops.melotic.dev/audit-rationale: >-
+      Metrics-only: 325+ upstream-chart violations; Renovate pinDigests owns
+      remediation; Enforce would block every Helm chart upgrade.
 spec:
   validationFailureAction: Audit  # Stays in Audit; this is a metrics-only policy
   background: true

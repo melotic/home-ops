@@ -17,6 +17,9 @@ metadata:
     policies.kyverno.io/description: >-
       Containers must run non-root with a read-only root filesystem. Audit-only:
       surfaces apps that need a writable tmp emptyDir or non-root user.
+    home-ops.melotic.dev/audit-rationale: >-
+      Large legitimate-exception surface (rook-ceph daemons, s6/LSIO apps,
+      host-net infra); promote per-rule only after the exception set dwells clean.
 spec:
   validationFailureAction: Audit
   background: true

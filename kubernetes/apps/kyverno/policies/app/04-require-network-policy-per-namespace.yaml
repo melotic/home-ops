@@ -26,6 +26,9 @@ metadata:
       Every user namespace must have at least one NetworkPolicy (or CiliumNetworkPolicy).
       Default-deny is preferred but not enforced here; this is the floor.
       BACKGROUND-SCAN ONLY — see WARNING in file header; cannot be Enforced.
+    home-ops.melotic.dev/audit-rationale: >-
+      Can NEVER be Enforced (CR-02): a namespace is admitted before any
+      NetworkPolicy can exist in it, so Enforce would block all namespace creation.
 spec:
   validationFailureAction: Audit
   background: true
