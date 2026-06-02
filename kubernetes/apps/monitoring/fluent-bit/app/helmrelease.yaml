@@ -31,6 +31,25 @@ spec:
         port: 5140
         containerPort: 5140
         protocol: UDP
+    podSecurityContext:
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      capabilities:
+        drop: ["ALL"]
+    extraVolumes:
+      - name: tmp
+        emptyDir: {}
+    extraVolumeMounts:
+      - name: tmp
+        mountPath: /tmp
     config:
       service: |-
         [SERVICE]
