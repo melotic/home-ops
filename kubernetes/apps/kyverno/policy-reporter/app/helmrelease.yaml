@@ -50,6 +50,19 @@ spec:
       kyverno:
         enabled: true
 
+    metrics:
+      enabled: true
+      mode: detailed
+
+    monitoring:
+      enabled: true
+      grafana:
+        grafanaDashboard:
+          enabled: true
+          folder: kyverno
+          matchLabels:
+            dashboards: grafana
+
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1234
