@@ -27,7 +27,10 @@ spec:
         imageSet:
           name: rook-csi-operator-image-set-configmap
         controllerPlugin:
-          hostNetwork: true
+          # Provisioner runs on the pod network; Ceph is reachable there (no dedicated
+          # storage network). hostNetwork is only needed when the pod network cannot
+          # reach the Ceph cluster. Keeping it false avoids tripping disallow-host-namespaces.
+          hostNetwork: false
           replicas: 2
           deploymentStrategy:
             type: Recreate
@@ -43,7 +46,7 @@ spec:
           name: rook-csi-operator-image-set-configmap
         snapshotPolicy: none
         controllerPlugin:
-          hostNetwork: true
+          hostNetwork: false
           replicas: 2
           priorityClassName: system-cluster-critical
         nodePlugin:
@@ -58,7 +61,7 @@ spec:
         kernelMountOptions:
           ms_mode: prefer-crc
         controllerPlugin:
-          hostNetwork: true
+          hostNetwork: false
           replicas: 2
           priorityClassName: system-cluster-critical
         nodePlugin:
