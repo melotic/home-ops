@@ -1,0 +1,35 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: rook-ceph-storage-rootfs
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      Ceph daemons (osd/mon/mgr/mds/rgw/operator/crashcollector/exporter/tools) and CSI
+      plugins require root and a writable root filesystem to manage block devices and mounts.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/review-trigger: >-
+      Re-evaluate if Rook-Ceph upstream ships a rootless/read-only-rootfs profile.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: require-non-root-and-readonly-fs
+      ruleNames:
+        - check-runAsNonRoot
+        - check-readOnlyRootFilesystem
+        - autogen-check-runAsNonRoot
+        - autogen-check-readOnlyRootFilesystem
+        - autogen-cronjob-check-runAsNonRoot
+        - autogen-cronjob-check-readOnlyRootFilesystem
+    - policyName: verify-image-signature-cosign
+      ruleNames:
+        - verify-trusted-registries
+        - autogen-verify-trusted-registries
+        - autogen-cronjob-verify-trusted-registries
+  match:
+    any:
+      - resources:
+          namespaces: [rook-ceph]
+          kinds: [Pod, Deployment, StatefulSet, DaemonSet, Job, CronJob, ReplicaSet]

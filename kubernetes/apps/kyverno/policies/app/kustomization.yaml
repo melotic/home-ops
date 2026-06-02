@@ -11,3 +11,4 @@ resources:
   - ./06-verify-image-signature-cosign.yaml
   - ./07-disallow-untrusted-images.yaml
   - ./08-require-image-registry-allowlist.yaml
+  - ./exceptions/rook-ceph-storage.yaml
