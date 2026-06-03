@@ -24,13 +24,13 @@ spec:
         - alert: CertManagerCertExpirySoon
           annotations:
             description:
-              The domain that this cert covers will be unavailable after {{ $value
-              | humanizeDuration }}. Clients using endpoints that this cert protects will
-              start to fail in {{ $value | humanizeDuration }}.
+              The cert is either overdue for renewal and under 21 days from expiry,
+              or under 3 days from expiry regardless of renewal state. Clients using
+              endpoints that this cert protects will start to fail in {{ $value |
+              humanizeDuration }}.
             runbook_url: https://github.com/imusmanmalik/cert-manager-mixin/blob/main/RUNBOOK.md#certmanagercertexpirysoon
             summary:
-              The cert `{{ $labels.name }}` is {{ $value | humanizeDuration }} from
-              expiry and overdue for renewal.
+              The cert `{{ $labels.name }}` expires in {{ $value | humanizeDuration }}.
           # Fire only when a cert is near expiry AND its renewal is actually overdue
           # (renewal timestamp already passed), so certs with a shorter renewBefore
           # than the 21d window (e.g. the barman-cloud self-signed certs, renewBefore
