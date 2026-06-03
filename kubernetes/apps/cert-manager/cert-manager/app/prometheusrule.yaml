@@ -24,17 +24,38 @@ spec:
         - alert: CertManagerCertExpirySoon
           annotations:
             description:
-              The domain that this cert covers will be unavailable after {{ $value
-              | humanizeDuration }}. Clients using endpoints that this cert protects will
-              start to fail in {{ $value | humanizeDuration }}.
+              The cert is either overdue for renewal and under 21 days from expiry,
+              or under 3 days from expiry regardless of renewal state. Clients using
+              endpoints that this cert protects will start to fail in {{ $value |
+              humanizeDuration }}.
             runbook_url: https://github.com/imusmanmalik/cert-manager-mixin/blob/main/RUNBOOK.md#certmanagercertexpirysoon
             summary:
-              The cert `{{ $labels.name }}` is {{ $value | humanizeDuration }} from
-              expiry, it should have renewed over a week ago.
+              The cert `{{ $labels.name }}` expires in {{ $value | humanizeDuration }}.
+          # Fire only when a cert is near expiry AND its renewal is actually overdue
+          # (renewal timestamp already passed), so certs with a shorter renewBefore
+          # than the 21d window (e.g. the barman-cloud self-signed certs, renewBefore
+          # 360h) don't false-positive while waiting for their scheduled renewal.
+          # A hard <3d expiry backstop still fires regardless of the renewal metric.
           expr: |
-            avg by (exported_namespace, namespace, name) (
-              certmanager_certificate_expiration_timestamp_seconds - time()
-            ) < (21 * 24 * 3600) # 21 days in seconds
+            (
+              (
+                avg by (exported_namespace, namespace, name) (
+                  certmanager_certificate_expiration_timestamp_seconds - time()
+                ) < (21 * 24 * 3600)
+              )
+              and on (exported_namespace, namespace, name)
+              (
+                avg by (exported_namespace, namespace, name) (
+                  certmanager_certificate_renewal_timestamp_seconds - time()
+                ) < 0
+              )
+            )
+            or
+            (
+              avg by (exported_namespace, namespace, name) (
+                certmanager_certificate_expiration_timestamp_seconds - time()
+              ) < (3 * 24 * 3600)
+            )
           for: 1h
           labels:
             severity: critical
