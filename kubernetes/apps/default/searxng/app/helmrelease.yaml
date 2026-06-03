@@ -22,7 +22,7 @@ spec:
           app:
             image:
               repository: docker.io/searxng/searxng
-              tag: 2026.3.17-2bb8ac17c
+              tag: 2026.3.17-2bb8ac17c@sha256:090d7ef2e61cb540baf0db0656bfd4dfbcbba82604adb8ebfb5e316d09289fef
             env:
               SEARXNG_BASE_URL: "https://searxng.melotic.dev"
             envFrom:
