@@ -78,21 +78,15 @@
       commitMessageTopic: "image {{depName}}",
     },
     {
-      // Surgical digest pinning: only container images declared in HelmRelease
-      // values (helmrelease.yaml) are pinned. Helm chart OCI refs live in
-      // ocirepository.yaml (also datasource=docker, same flux manager) and must
-      // NOT be pinned — a digest on an OCIRepository tag breaks chart resolution.
-      // This satisfies the Kyverno `require-image-digest-pin` audit policy.
+      // Pin container image digests, but not OCIRepository chart refs
+      // (ocirepository.yaml) — both are datasource=docker via the flux manager.
       description: "Pin container image digests (HelmRelease values only)",
       matchDatasources: ["docker"],
       matchFileNames: ["kubernetes/**/helmrelease.yaml"],
       pinDigests: true,
     },
     {
-      // Never auto-merge the pin operations themselves. The one-time bulk pin
-      // rollout (and any future pin/pinDigest) must be reviewed by a human and
-      // pass flux-local CI before merge, so a bad pin can't auto-break the
-      // cluster. Routine digest re-pin updates still auto-merge via the rule above.
+      // Bulk pin rollout must be reviewed + pass CI; routine re-pins still automerge.
       description: "Require manual review for digest pin rollout",
       matchUpdateTypes: ["pin", "pinDigest"],
       automerge: false,
