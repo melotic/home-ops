@@ -4,7 +4,7 @@ version: 1
 metadata:
   name: melotic Brand
   labels:
-    blueprints.goauthentik.io/description: "Dark-themed branding for sso.melotic.dev"
+    blueprints.goauthentik.io/description: "Matrix-themed branding for sso.melotic.dev"
 entries:
   # Apply auth flow blueprint first so the flow exists for the !Find below
   - model: authentik_blueprints.metaapplyblueprint
@@ -46,59 +46,88 @@ entries:
           theme:
             base: dark
       branding_custom_css: |
-        /* melotic brand — dark theme pulled from melotic.xyz
+        /* melotic brand — "Matrix" theme for sso.melotic.dev (zion)
+         *
+         * Inspired by The Matrix: Zion's phosphor-green terminals on a
+         * deep black screen, with a soft "digital rain" green glow.
          *
          * Palette:
-         *   bg:      #1d1e20  (blog --theme)
-         *   card:    #2e2e33  (blog --entry)
-         *   border:  #333333  (blog --border)
-         *   text:    #dadadb  (blog --primary)
-         *   muted:   #9b9c9d  (blog --secondary)
-         *   accent:  #38bdf8  (sky-400, complements the gray palette)
+         *   bg:        #050805  (deep terminal black)
+         *   bg-2:      #000000  (pure black vignette)
+         *   card:      #0a120a  (translucent panel over the rain)
+         *   border:    #1c3a1c  (dim green hairline)
+         *   text:      #c8f7c8  (phosphor green-white)
+         *   muted:     #5f9f6a  (dim green)
+         *   accent:    #00ff41  (matrix green)
+         *   accent-2:  #00c853  (deep green)
          */
 
         :root {
           color-scheme: dark;
 
           /* PatternFly global overrides */
-          --pf-global--BackgroundColor--100: #1d1e20;
-          --pf-global--BackgroundColor--200: #18181b;
-          --pf-global--BackgroundColor--dark-100: #1d1e20;
-          --pf-global--BackgroundColor--dark-200: #18181b;
-          --pf-global--Color--100: #dadadb;
-          --pf-global--Color--200: #9b9c9d;
-          --pf-global--primary-color--100: #38bdf8;
-          --pf-global--primary-color--200: #0ea5e9;
-          --pf-global--link--Color: #38bdf8;
-          --pf-global--link--Color--hover: #7dd3fc;
-          --pf-global--link--Color--visited: #38bdf8;
+          --pf-global--BackgroundColor--100: #050805;
+          --pf-global--BackgroundColor--200: #000000;
+          --pf-global--BackgroundColor--dark-100: #050805;
+          --pf-global--BackgroundColor--dark-200: #000000;
+          --pf-global--Color--100: #c8f7c8;
+          --pf-global--Color--200: #5f9f6a;
+          --pf-global--primary-color--100: #00ff41;
+          --pf-global--primary-color--200: #00c853;
+          --pf-global--link--Color: #00ff41;
+          --pf-global--link--Color--hover: #6bff96;
+          --pf-global--link--Color--visited: #00ff41;
+          --pf-global--BorderColor--100: #1c3a1c;
+          --pf-global--FontFamily--text:
+            "JetBrains Mono", "Fira Code", "SFMono-Regular", "Cascadia Code",
+            ui-monospace, Menlo, Consolas, monospace;
         }
 
-        /* Solid dark background — nuke the stock landscape */
+        /* Matrix "digital rain" background — replace the stock landscape with
+         * a layered black + green-glow radial field. */
         .pf-c-background-image {
           --pf-c-background-image--BackgroundImage: none !important;
           --pf-c-background-image--BackgroundImage--sm: none !important;
           --pf-c-background-image--BackgroundImage--lg: none !important;
           --pf-c-background-image--BackgroundImage-2x: none !important;
           --pf-c-background-image--Filter: none !important;
-          background-image: none !important;
-          background: #1d1e20 !important;
+          background-image:
+            radial-gradient(circle at 50% 0%, rgba(0, 255, 65, 0.10), transparent 55%),
+            radial-gradient(circle at 15% 85%, rgba(0, 200, 83, 0.08), transparent 45%),
+            linear-gradient(180deg, #050805 0%, #000000 100%) !important;
+          background-color: #000000 !important;
         }
         .pf-c-background-image::before {
-          content: none !important;
-          display: none !important;
+          content: "" !important;
+          display: block !important;
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          /* faint scanlines for the CRT terminal feel */
+          background-image: repeating-linear-gradient(
+            0deg,
+            rgba(0, 255, 65, 0.035) 0px,
+            rgba(0, 255, 65, 0.035) 1px,
+            transparent 1px,
+            transparent 3px
+          );
+          opacity: 0.6;
         }
         /* Authentik Lit shadow DOM variable */
         :root, :host {
           --ak-flow-background: none;
         }
 
-        /* Login card */
+        /* Login card — glassy panel with a green glow halo */
         .pf-c-login__main {
-          background-color: #2e2e33 !important;
-          border: 1px solid #333;
+          background-color: rgba(10, 18, 10, 0.92) !important;
+          border: 1px solid #1c3a1c;
           border-radius: 12px;
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+          box-shadow:
+            0 0 0 1px rgba(0, 255, 65, 0.12),
+            0 0 28px rgba(0, 255, 65, 0.18),
+            0 18px 48px rgba(0, 0, 0, 0.75);
+          backdrop-filter: blur(2px);
         }
 
         .pf-c-login__main-header {
@@ -113,39 +142,75 @@ entries:
           padding: 0 2.5rem 2rem !important;
         }
 
-        /* Logo — constrain Zion SVG */
+        /* Title — phosphor glow */
+        .pf-c-login__main-header .pf-c-title {
+          color: #e6ffe6 !important;
+          letter-spacing: 0.04em;
+          text-shadow: 0 0 12px rgba(0, 255, 65, 0.45);
+        }
+
+        /* Logo — constrain Zion SVG and give it a subtle glow */
         .pf-c-brand {
           content: "";
           width: 140px;
           height: 34px;
+          filter: drop-shadow(0 0 10px rgba(0, 255, 65, 0.35));
         }
 
-        /* Primary action button */
+        /* Primary action button — neon-green terminal key */
         .pf-c-button.pf-m-primary {
-          --pf-c-button--m-primary--BackgroundColor: #38bdf8;
-          --pf-c-button--m-primary--hover--BackgroundColor: #0ea5e9;
-          --pf-c-button--m-primary--active--BackgroundColor: #0284c7;
-          --pf-c-button--m-primary--Color: #0f172a;
+          --pf-c-button--m-primary--BackgroundColor: #00c853;
+          --pf-c-button--m-primary--hover--BackgroundColor: #00ff41;
+          --pf-c-button--m-primary--active--BackgroundColor: #00b347;
+          --pf-c-button--m-primary--Color: #02140a;
           border-radius: 6px;
-          font-weight: 600;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          box-shadow: 0 0 18px rgba(0, 255, 65, 0.35);
+          transition: box-shadow 0.15s ease, background-color 0.15s ease;
+        }
+        .pf-c-button.pf-m-primary:hover {
+          box-shadow: 0 0 26px rgba(0, 255, 65, 0.55);
         }
 
-        /* Form inputs */
+        /* Form inputs — terminal fields with a green caret/underline */
         .pf-c-form-control {
-          --pf-c-form-control--BackgroundColor: #1d1e20;
-          --pf-c-form-control--BorderBottomColor: #414244;
-          --pf-c-form-control--Color: #dadadb;
+          --pf-c-form-control--BackgroundColor: #030503;
+          --pf-c-form-control--BorderBottomColor: #1c3a1c;
+          --pf-c-form-control--Color: #c8f7c8;
           border-radius: 6px;
+          caret-color: #00ff41;
         }
 
         .pf-c-form-control:focus {
-          --pf-c-form-control--focus--BorderBottomColor: #38bdf8;
+          --pf-c-form-control--focus--BorderBottomColor: #00ff41;
+          box-shadow: 0 0 0 1px rgba(0, 255, 65, 0.25),
+            0 0 14px rgba(0, 255, 65, 0.20);
+        }
+
+        .pf-c-form-control::placeholder {
+          color: #4d7a55;
+        }
+
+        /* Form labels */
+        .pf-c-form__label-text {
+          color: #9fe3ab;
+        }
+
+        /* Links — matrix green */
+        a {
+          color: #00ff41;
+        }
+        a:hover {
+          color: #6bff96;
+          text-shadow: 0 0 8px rgba(0, 255, 65, 0.45);
         }
 
         /* Tone down the header/footer on login page */
         .pf-c-login__header,
         .pf-c-login__footer {
-          color: #9b9c9d;
+          color: #5f9f6a;
         }
 
 

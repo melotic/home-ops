@@ -53,7 +53,12 @@ entries:
       configure_flow:
         !Find [authentik_flows.flow, [slug, default-password-change]]
 
-  # Cloudflare Turnstile CAPTCHA (Invisible mode)
+  # Cloudflare Turnstile CAPTCHA — Managed widget mode
+  # Managed mode lets Cloudflare automatically decide whether to show an
+  # interactive checkbox based on the visitor's risk level. The widget mode
+  # itself ("Managed") is configured on the Turnstile site key in the
+  # Cloudflare dashboard; `interactive: true` here ensures Authentik renders
+  # and waits for the (possibly shown) checkbox challenge.
   # Set AUTHENTIK_TURNSTILE_SITE_KEY and AUTHENTIK_TURNSTILE_SECRET_KEY in your env
   - model: authentik_stages_captcha.captchastage
     id: captcha
