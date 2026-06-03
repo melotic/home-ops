@@ -78,6 +78,20 @@
       commitMessageTopic: "image {{depName}}",
     },
     {
+      // Pin container image digests, but not OCIRepository chart refs
+      // (ocirepository.yaml) — both are datasource=docker via the flux manager.
+      description: "Pin container image digests (HelmRelease values only)",
+      matchDatasources: ["docker"],
+      matchFileNames: ["kubernetes/**/helmrelease.yaml"],
+      pinDigests: true,
+    },
+    {
+      // Bulk pin rollout must be reviewed + pass CI; routine re-pins still automerge.
+      description: "Require manual review for digest pin rollout",
+      matchUpdateTypes: ["pin", "pinDigest"],
+      automerge: false,
+    },
+    {
       matchDatasources: ["helm"],
       semanticCommitScope: "helm",
       commitMessageTopic: "chart {{depName}}",

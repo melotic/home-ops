@@ -12,6 +12,11 @@ metadata:
     policies.kyverno.io/description: >-
       Pods must not use hostNetwork, hostPID, or hostIPC. Equivalent to PSS Baseline.
       Excludes system addons (Cilium, kubelet pods, etc.) that legitimately need it.
+    home-ops.melotic.dev/promotion-readiness: >-
+      0 residual fails as of the Phase 20 census (only node-exporter + Rook-Ceph CSI
+      nodeplugins use host namespaces, all excepted). Eligible for per-rule Enforce via
+      validationFailureActionOverrides after a clean dwell window; live flip is a
+      deferred follow-up. See policies/README.md (KYV-04 promotion runbook).
 spec:
   validationFailureAction: Audit
   background: true
