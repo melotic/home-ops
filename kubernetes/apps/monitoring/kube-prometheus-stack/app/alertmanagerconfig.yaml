@@ -18,18 +18,6 @@ spec:
             value: critical
             matchType: =
         continue: true
-      - receiver: pushover
-        matchers:
-          - name: severity
-            value: warning
-            matchType: =
-        continue: true
-      - receiver: pushover
-        matchers:
-          - name: severity
-            value: error
-            matchType: =
-        continue: true
       - receiver: webhook
         matchers:
           - name: severity

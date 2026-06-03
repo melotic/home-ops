@@ -28,16 +28,6 @@ spec:
           labels:
             severity: warning
 
-        - alert: VolSyncMissedInterval
-          expr: |-
-            increase(volsync_missed_intervals_total{role="source"}[15h]) > 0
-          annotations:
-            summary: >-
-              {{ $labels.obj_namespace }}/{{ $labels.obj_name }} missed a scheduled VolSync backup interval
-          for: 15m
-          labels:
-            severity: warning
-
         - alert: VolSyncSourceBackupStale
           expr: |-
             volsync_volume_out_of_sync{role="source"} == 1
