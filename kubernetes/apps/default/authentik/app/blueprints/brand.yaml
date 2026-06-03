@@ -65,6 +65,9 @@ entries:
         :root, :host {
           color-scheme: dark;
 
+          --ak-font-mono:
+            ui-monospace, "SFMono-Regular", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
           --pf-global--BackgroundColor--100: #000000;
           --pf-global--BackgroundColor--200: #000000;
           --pf-global--BackgroundColor--dark-100: #000000;
@@ -77,10 +80,8 @@ entries:
           --pf-global--link--Color--hover: #7dff9f;
           --pf-global--link--Color--visited: #00ff41;
           --pf-global--BorderColor--100: #0d3b1e;
-          --pf-global--FontFamily--text:
-            ui-monospace, "SFMono-Regular", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
-          --pf-global--FontFamily--heading:
-            ui-monospace, "SFMono-Regular", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
+          --pf-global--FontFamily--text: var(--ak-font-mono);
+          --pf-global--FontFamily--heading: var(--ak-font-mono);
           --ak-flow-background: none;
         }
 
@@ -163,14 +164,14 @@ entries:
         }
         /* title bar with window dots + path */
         .pf-c-login__main::before {
-          content: "zion@matrix: ~/auth — login";
+          content: "zion@matrix: ~/auth -- login";
           position: absolute;
           top: 0; left: 0; right: 0;
           height: 2.1rem;
           display: flex;
           align-items: center;
           padding-left: 4.6rem;
-          font-family: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+          font-family: var(--ak-font-mono);
           font-size: 0.78rem;
           letter-spacing: 0.04em;
           color: #6effa0;
@@ -204,7 +205,7 @@ entries:
         }
 
         .pf-c-login__main-header .pf-c-title {
-          font-family: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace !important;
+          font-family: var(--ak-font-mono) !important;
           color: #d7ffe2 !important;
           letter-spacing: 0.06em;
           animation: ak-glitch 4s steps(1) infinite;
@@ -223,7 +224,7 @@ entries:
 
         .pf-c-form__label-text,
         .pf-c-form__label {
-          font-family: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+          font-family: var(--ak-font-mono);
           color: #6effa0;
           text-transform: lowercase;
           letter-spacing: 0.03em;
@@ -231,7 +232,7 @@ entries:
         /* prompt glyph before every field label */
         .pf-c-form__group-label .pf-c-form__label-text::before,
         .pf-c-form__label .pf-c-form__label-text::before {
-          content: "❯ ";
+          content: "> ";
           color: #00ff41;
         }
 
@@ -242,7 +243,7 @@ entries:
           --pf-c-form-control--BorderLeftColor: #0d3b1e;
           --pf-c-form-control--BorderBottomColor: #00c853;
           --pf-c-form-control--Color: #b6ffc8;
-          font-family: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+          font-family: var(--ak-font-mono);
           border: 1px solid #0d3b1e;
           border-radius: 4px;
           caret-color: #00ff41;
@@ -262,7 +263,7 @@ entries:
           --pf-c-button--m-primary--hover--BackgroundColor: #00ff41;
           --pf-c-button--m-primary--active--BackgroundColor: #00c853;
           --pf-c-button--m-primary--Color: #00ff41;
-          font-family: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+          font-family: var(--ak-font-mono);
           font-weight: 700;
           letter-spacing: 0.12em;
           text-transform: uppercase;
@@ -285,7 +286,7 @@ entries:
         a:hover { color: #7dff9f; text-shadow: 0 0 8px rgba(0,255,65,0.45); }
 
         .pf-c-login__header,
-        .pf-c-login__footer { color: #4f9d63; font-family: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace; }
+        .pf-c-login__footer { color: #4f9d63; font-family: var(--ak-font-mono); }
 
         /* Hide locale selector — single-user homelab */
         .pf-c-select.pf-m-align-right { display: none !important; }
