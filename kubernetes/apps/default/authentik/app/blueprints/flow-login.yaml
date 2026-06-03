@@ -53,8 +53,7 @@ entries:
       configure_flow:
         !Find [authentik_flows.flow, [slug, default-password-change]]
 
-  # Cloudflare Turnstile CAPTCHA (Invisible mode)
-  # Set AUTHENTIK_TURNSTILE_SITE_KEY and AUTHENTIK_TURNSTILE_SECRET_KEY in your env
+  # Cloudflare Turnstile CAPTCHA — Managed widget mode
   - model: authentik_stages_captcha.captchastage
     id: captcha
     identifiers:
