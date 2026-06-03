@@ -14,10 +14,11 @@ metadata:
     policies.kyverno.io/description: >-
       Container images must be pinned by SHA256 digest, not floating tags.
       Surfaces tag-rewrite supply-chain risk via PolicyReports; remediation is
-      Renovate's `pinDigests: true` feature.
+      Renovate's surgical `pinDigests` rule (container images in helmrelease.yaml).
     home-ops.melotic.dev/audit-rationale: >-
-      Metrics-only: 325+ upstream-chart violations; Renovate pinDigests owns
-      remediation; Enforce would block every Helm chart upgrade.
+      Metrics-only. Renovate owns remediation via a surgical pinDigests rule that
+      pins container images (helmrelease.yaml) but not chart OCI refs
+      (ocirepository.yaml); Enforce would block every Helm chart upgrade.
 spec:
   validationFailureAction: Audit  # Stays in Audit; this is a metrics-only policy
   background: true

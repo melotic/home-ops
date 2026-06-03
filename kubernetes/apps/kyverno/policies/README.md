@@ -52,7 +52,7 @@ README-only).
 
 | Policy | Why it stays in Audit |
 |--------|-----------------------|
-| `require-image-digest-pin` (02) | Metrics-only. 325+ upstream-chart violations; Renovate's `pinDigests: true` owns remediation. Flipping to Enforce would block every Helm chart upgrade. |
+| `require-image-digest-pin` (02) | Metrics-only. Renovate owns remediation via a surgical `pinDigests` rule that pins container images (`helmrelease.yaml`) but deliberately not chart OCI refs (`ocirepository.yaml`). Flipping to Enforce would block every Helm chart upgrade. |
 | `require-non-root-and-readonly-fs` (03) | Large legitimate-exception surface (rook-ceph daemons, s6/LSIO apps, host-net infra). Per-namespace/per-rule exceptions must dwell clean before any promotion; promote per-rule only after the exception set is stable. |
 | `require-network-policy-per-namespace` (04) | **Can never be Enforced** (CR-02). A Namespace is admitted as a single object before any NetworkPolicy can exist inside it, so an admission-time check always sees zero NetworkPolicies and would permanently block all namespace creation. Background-scan-only by design. |
 | `verify-image-signature-cosign` (06) | Trust roots not yet nailed down. The current `subject:` is a wildcard that accepts any GitHub repo's signature (WR-06); `required: true` / Enforce is unsafe until the subject is narrowed and a tested verifier endpoint is in place. |

@@ -78,6 +78,17 @@
       commitMessageTopic: "image {{depName}}",
     },
     {
+      // Surgical digest pinning: only container images declared in HelmRelease
+      // values (helmrelease.yaml) are pinned. Helm chart OCI refs live in
+      // ocirepository.yaml (also datasource=docker, same flux manager) and must
+      // NOT be pinned — a digest on an OCIRepository tag breaks chart resolution.
+      // This satisfies the Kyverno `require-image-digest-pin` audit policy.
+      description: "Pin container image digests (HelmRelease values only)",
+      matchDatasources: ["docker"],
+      matchFileNames: ["kubernetes/**/helmrelease.yaml"],
+      pinDigests: true,
+    },
+    {
       matchDatasources: ["helm"],
       semanticCommitScope: "helm",
       commitMessageTopic: "chart {{depName}}",
