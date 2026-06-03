@@ -19,6 +19,9 @@ metadata:
       Container images from approved registries must carry a valid cosign signature.
       Hard exclusion for prompp images until Spike 002's signature/SBOM gating
       conditions are met.
+    home-ops.melotic.dev/audit-rationale: >-
+      Trust roots not set: the wildcard subject (WR-06) accepts any GitHub repo's
+      signature; Enforce is unsafe until the subject is narrowed and a verifier is tested.
 spec:
   validationFailureAction: Audit
   webhookConfiguration:
