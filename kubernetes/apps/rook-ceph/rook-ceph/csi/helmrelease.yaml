@@ -44,7 +44,9 @@ spec:
         clusterName: rook-ceph
         imageSet:
           name: rook-csi-operator-image-set-configmap
-        snapshotPolicy: none
+        # VolSync creates individual VolumeSnapshots per PVC on ceph-block; this
+        # deploys the csi-snapshotter sidecar on the RBD controller plugin.
+        snapshotPolicy: volumeSnapshot
         controllerPlugin:
           hostNetwork: false
           replicas: 2
