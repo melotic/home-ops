@@ -86,6 +86,14 @@
       pinDigests: true,
     },
     {
+      // cert-manager is the only chart that pins via its own image.digest field;
+      // also pinning the tag renders an invalid double-digest ref (tag@sha256@sha256).
+      description: "cert-manager self-manages image digests",
+      matchDatasources: ["docker"],
+      matchFileNames: ["kubernetes/apps/cert-manager/cert-manager/app/helmrelease.yaml"],
+      pinDigests: false,
+    },
+    {
       // Bulk pin rollout must be reviewed + pass CI; routine re-pins still automerge.
       description: "Require manual review for digest pin rollout",
       matchUpdateTypes: ["pin", "pinDigest"],
