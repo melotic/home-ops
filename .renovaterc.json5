@@ -89,6 +89,15 @@
       pinDigests: true,
     },
     {
+      // Never auto-merge the pin operations themselves. The one-time bulk pin
+      // rollout (and any future pin/pinDigest) must be reviewed by a human and
+      // pass flux-local CI before merge, so a bad pin can't auto-break the
+      // cluster. Routine digest re-pin updates still auto-merge via the rule above.
+      description: "Require manual review for digest pin rollout",
+      matchUpdateTypes: ["pin", "pinDigest"],
+      automerge: false,
+    },
+    {
       matchDatasources: ["helm"],
       semanticCommitScope: "helm",
       commitMessageTopic: "chart {{depName}}",
