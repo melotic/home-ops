@@ -218,7 +218,6 @@ spec:
             cpu: 500m
             memory: 1.5Gi
           limits:
-            cpu: 2
             memory: 3Gi
         extraEnv:
           MALLOC_CONF: dirty_decay_ms:1000,muzzy_decay_ms:1000
@@ -247,7 +246,6 @@ spec:
             cpu: 250m
             memory: 1Gi
           limits:
-            cpu: 1
             memory: 2Gi
       gitlab-exporter:
         enabled: false
@@ -271,7 +269,6 @@ spec:
             cpu: 250m
             memory: 512Mi
           limits:
-            cpu: 1
             memory: 1Gi
       toolbox:
         backups:
@@ -284,7 +281,6 @@ spec:
             cpu: 100m
             memory: 256Mi
           limits:
-            cpu: 500m
             memory: 512Mi
       gitlab-shell:
         gatewayRoute:
@@ -299,7 +295,6 @@ spec:
             cpu: 50m
             memory: 128Mi
           limits:
-            cpu: 200m
             memory: 256Mi
     registry:
       enabled: false
