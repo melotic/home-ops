@@ -54,7 +54,7 @@ jobs:
           install_args: yamlfmt
 
       - name: Run yamlfmt lint
-        run: mise exec -- yamlfmt -lint
+        run: yamlfmt -lint
 
   yamlfmt-status:
     name: YAML Format Success
