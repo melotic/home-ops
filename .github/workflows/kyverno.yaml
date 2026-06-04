@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   pre-job:
-    name: Kyverno Pre-Job
+    name: Pre-Job
     runs-on: ubuntu-latest
     outputs:
       any_changed: ${{ steps.changed.outputs.any_changed }}
@@ -41,7 +41,7 @@ jobs:
               - ".github/workflows/kyverno.yaml"
 
   test:
-    name: Kyverno Test
+    name: Test
     needs: pre-job
     runs-on: ubuntu-latest
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
@@ -58,7 +58,7 @@ jobs:
         run: kyverno test kubernetes/apps/kyverno/policies/tests/
 
   validate:
-    name: Kyverno Validate
+    name: Validate
     needs: pre-job
     runs-on: ubuntu-latest
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
@@ -116,7 +116,7 @@ jobs:
           echo '```' >> "${GITHUB_STEP_SUMMARY}"
 
   kyverno-status:
-    name: Kyverno Success
+    name: Success
     needs: ["pre-job", "test", "validate"]
     runs-on: ubuntu-latest
     if: ${{ always() }}

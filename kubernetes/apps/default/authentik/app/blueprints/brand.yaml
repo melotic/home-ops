@@ -35,17 +35,14 @@ entries:
       branding_favicon: "zion.svg"
       branding_default_flow_background: "background.svg"
 
-      flow_authentication:
-        !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
-      flow_invalidation:
-        !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
-      flow_user_settings:
-        !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+      flow_authentication: !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
+      flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+      flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
       attributes:
         settings:
           theme:
             base: dark
-      branding_custom_css: |
+      branding_custom_css: |-
         /* melotic brand — "Matrix" terminal redesign for sso.melotic.dev (zion)
          *
          * The login is reframed as a phosphor-green terminal window sitting in
@@ -60,7 +57,6 @@ entries:
          *   muted:     #4f9d63  (dim green)
          *   accent:    #00ff41  (matrix green)
          */
-
 
         :root, :host {
           color-scheme: dark;

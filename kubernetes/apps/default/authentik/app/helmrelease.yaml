@@ -45,7 +45,7 @@ spec:
         runAsNonRoot: true
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
-        capabilities: { drop: ["ALL"] }
+        capabilities: {drop: ["ALL"]}
     prometheus:
       rules:
         enabled: true

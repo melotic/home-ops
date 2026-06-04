@@ -4,16 +4,8 @@ version: 1
 metadata:
   name: slskd Proxy Provider and Application
 context:
-  authorization_flow:
-    !Find &authorization_flow [
-      authentik_flows.flow,
-      [slug, default-provider-authorization-implicit-consent],
-    ]
-  invalidation_flow:
-    !Find &invalidation_flow [
-      authentik_flows.flow,
-      [slug, default-provider-invalidation-flow],
-    ]
+  authorization_flow: &authorization_flow !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+  invalidation_flow: &invalidation_flow !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
 entries:
   - model: authentik_providers_proxy.proxyprovider
     identifiers:

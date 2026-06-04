@@ -4,11 +4,7 @@ version: 1
 metadata:
   name: Ghidra LDAP Provider and Application
 context:
-  invalidation_flow:
-    !Find &invalidation_flow [
-      authentik_flows.flow,
-      [slug, default-provider-invalidation-flow],
-    ]
+  invalidation_flow: &invalidation_flow !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
 entries:
   - model: authentik_core.group
     id: ghidra-users
@@ -34,8 +30,7 @@ entries:
       backends:
         - authentik.core.auth.InbuiltBackend
         - authentik.core.auth.TokenBackend
-      configure_flow:
-        !Find [authentik_flows.flow, [slug, default-password-change]]
+      configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
 
   - model: authentik_stages_identification.identificationstage
     id: ghidra-ldap-identification
