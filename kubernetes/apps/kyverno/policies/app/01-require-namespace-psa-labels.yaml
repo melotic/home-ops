@@ -32,7 +32,7 @@ spec:
                 - kyverno
                 - flux-system
                 - default
-                - cilium-secrets    # Cilium-managed, no user pods
+                - cilium-secrets # Cilium-managed, no user pods
       validate:
         message: "Namespace must set label pod-security.kubernetes.io/enforce (restricted | baseline | privileged)"
         pattern:

@@ -1,3 +1,4 @@
+---
 machine:
   # Custom Localhost seccomp profile for rootless BuildKit (CI-01).
   #

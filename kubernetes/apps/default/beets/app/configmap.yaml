@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: beets-config
 data:
-  config.yaml: |
+  config.yaml: |-
     directory: /data/media/music
     library: /config/library.db
 
