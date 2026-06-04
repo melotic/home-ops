@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "YAML Format"
+
+on:
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  pre-job:
+    name: YAML Format Pre-Job
+    runs-on: ubuntu-latest
+    outputs:
+      any_changed: ${{ steps.changed.outputs.any_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 20
+
+      - name: Get Changed Files
+        id: changed
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        with:
+          base: ${{ github.event.repository.default_branch }}
+          filters: |
+            any_changed:
+              - "**/*.yaml"
+              - "**/*.yml"
+              - ".yamlfmt.yaml"
+              - ".github/workflows/yamlfmt.yaml"
+
+  lint:
+    name: YAML Format Lint
+    needs: pre-job
+    runs-on: ubuntu-latest
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: Setup Mise
+        uses: jdx/mise-action@1648a7812b9aeae629881980618f079932869151 # v4.0.1
+        with:
+          cache: false
+
+      - name: Run yamlfmt lint
+        run: mise exec -- yamlfmt -lint
+
+  yamlfmt-status:
+    name: YAML Format Success
+    needs: ["pre-job", "lint"]
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Required jobs passed?
+        if: ${{ needs.pre-job.result != 'success' || (needs.pre-job.outputs.any_changed == 'true' && needs.lint.result != 'success') }}
+        run: exit 1
+
+      - name: All jobs passed or skipped?
+        run: echo "${{ toJSON(needs.*.result) }}"
