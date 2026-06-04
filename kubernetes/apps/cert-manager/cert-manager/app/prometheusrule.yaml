@@ -10,9 +10,7 @@ spec:
       rules:
         - alert: CertManagerAbsent
           annotations:
-            description:
-              New certificates will not be able to be minted, and existing ones
-              can't be renewed until cert-manager is back.
+            description: New certificates will not be able to be minted, and existing ones can't be renewed until cert-manager is back.
             runbook_url: https://github.com/imusmanmalik/cert-manager-mixin/blob/main/RUNBOOK.md#certmanagerabsent
             summary: Cert Manager has disappeared from Prometheus service discovery.
           expr: absent(up{job="cert-manager"})
@@ -23,14 +21,9 @@ spec:
       rules:
         - alert: CertManagerCertExpirySoon
           annotations:
-            description:
-              The cert is either overdue for renewal and under 21 days from expiry,
-              or under 3 days from expiry regardless of renewal state. Clients using
-              endpoints that this cert protects will start to fail in {{ $value |
-              humanizeDuration }}.
+            description: The cert is either overdue for renewal and under 21 days from expiry, or under 3 days from expiry regardless of renewal state. Clients using endpoints that this cert protects will start to fail in {{ $value | humanizeDuration }}.
             runbook_url: https://github.com/imusmanmalik/cert-manager-mixin/blob/main/RUNBOOK.md#certmanagercertexpirysoon
-            summary:
-              The cert `{{ $labels.name }}` expires in {{ $value | humanizeDuration }}.
+            summary: The cert `{{ $labels.name }}` expires in {{ $value | humanizeDuration }}.
           # Fire only when a cert is near expiry AND its renewal is actually overdue
           # (renewal timestamp already passed), so certs with a shorter renewBefore
           # than the 21d window (e.g. the barman-cloud self-signed certs, renewBefore
@@ -61,10 +54,7 @@ spec:
             severity: critical
         - alert: CertManagerCertNotReady
           annotations:
-            description:
-              This certificate has not been ready to serve traffic for at least
-              10m. If the cert is being renewed or there is another valid cert, the ingress
-              controller _may_ be able to serve that instead.
+            description: This certificate has not been ready to serve traffic for at least 10m. If the cert is being renewed or there is another valid cert, the ingress controller _may_ be able to serve that instead.
             runbook_url: https://github.com/imusmanmalik/cert-manager-mixin/blob/main/RUNBOOK.md#certmanagercertnotready
             summary: The cert `{{ $labels.name }}` is not ready to serve traffic.
           expr: |
@@ -76,9 +66,7 @@ spec:
             severity: critical
         - alert: CertManagerHittingRateLimits
           annotations:
-            description:
-              Depending on the rate limit, cert-manager may be unable to generate
-              certificates for up to a week.
+            description: Depending on the rate limit, cert-manager may be unable to generate certificates for up to a week.
             runbook_url: https://github.com/imusmanmalik/cert-manager-mixin/blob/main/RUNBOOK.md#certmanagerhittingratelimits
             summary: Cert manager hitting LetsEncrypt rate limits.
           expr: |

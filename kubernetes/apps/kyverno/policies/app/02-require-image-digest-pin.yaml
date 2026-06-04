@@ -20,7 +20,7 @@ metadata:
       pins container images (helmrelease.yaml) but not chart OCI refs
       (ocirepository.yaml); Enforce would block every Helm chart upgrade.
 spec:
-  validationFailureAction: Audit  # Stays in Audit; this is a metrics-only policy
+  validationFailureAction: Audit # Stays in Audit; this is a metrics-only policy
   background: true
   rules:
     - name: check-image-digest

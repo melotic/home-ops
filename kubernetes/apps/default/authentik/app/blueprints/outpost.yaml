@@ -12,10 +12,7 @@ entries:
       type: proxy
       managed: "goauthentik.io/outposts/embedded"
       providers:
-        - !Find [
-            authentik_providers_proxy.proxyprovider,
-            [name, victoria-metrics],
-          ]
+        - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-metrics]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-logs]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, slskd]]
@@ -27,11 +24,7 @@ entries:
     attrs:
       name: ghidra-server-ldap
       type: ldap
-      service_connection:
-        !Find [
-          authentik_outposts.outpostserviceconnection,
-          [name, "Local Kubernetes Cluster"],
-        ]
+      service_connection: !Find [authentik_outposts.outpostserviceconnection, [name, "Local Kubernetes Cluster"]]
       providers:
         - !Find [authentik_core.provider, [name, ghidra-ldap]]
       config:

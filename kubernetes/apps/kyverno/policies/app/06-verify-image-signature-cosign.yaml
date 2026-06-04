@@ -25,7 +25,7 @@ metadata:
 spec:
   validationFailureAction: Audit
   webhookConfiguration:
-    failurePolicy: Ignore   # Don't block when verifier endpoint is down
+    failurePolicy: Ignore # Don't block when verifier endpoint is down
   rules:
     - name: verify-trusted-registries
       match:
@@ -43,9 +43,9 @@ spec:
         - imageReferences:
             - "ghcr.io/*"
             - "registry.k8s.io/*"
-          mutateDigest: false   # Don't auto-mutate; that's Renovate's job
+          mutateDigest: false # Don't auto-mutate; that's Renovate's job
           verifyDigest: false
-          required: false       # Audit-only mode; flip to true to Enforce
+          required: false # Audit-only mode; flip to true to Enforce
           attestors:
             - entries:
                 # WARNING (WR-06): the wildcards below accept signatures from ANY
