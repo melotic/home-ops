@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   pre-job:
-    name: YAML Format Pre-Job
+    name: Pre-Job
     runs-on: ubuntu-latest
     outputs:
       any_changed: ${{ steps.changed.outputs.any_changed }}
@@ -39,7 +39,7 @@ jobs:
               - ".github/workflows/yamlfmt.yaml"
 
   lint:
-    name: YAML Format Lint
+    name: Lint
     needs: pre-job
     runs-on: ubuntu-latest
     if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
@@ -57,7 +57,7 @@ jobs:
         run: yamlfmt -lint
 
   yamlfmt-status:
-    name: YAML Format Success
+    name: Success
     needs: ["pre-job", "lint"]
     runs-on: ubuntu-latest
     if: ${{ always() }}
