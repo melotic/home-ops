@@ -13,6 +13,10 @@ mod talos
 default:
     just --list
 
+[private]
+log lvl msg *args:
+    gum log -t rfc3339 -s -l "{{ lvl }}" "{{ msg }}" {{ args }}
+
 [doc('Force Flux to pull from Git')]
 reconcile:
     test -f "$KUBECONFIG"
