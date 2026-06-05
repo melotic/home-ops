@@ -27,7 +27,7 @@ kubernetes/
 talos/            # Talos machine configs via talhelper (talconfig.yaml, talenv.yaml, patches/)
 bootstrap/        # Pre-Flux Helmfile charts
 scripts/          # Helper scripts (e.g., bootstrap-apps.sh)
-Taskfile.yaml     # Task automation
+.justfile         # Task automation (just command runner)
 .mise.toml        # Tool version management
 .sops.yaml        # SOPS encryption rules
 .renovaterc.json5 # Renovate config for automated dependency updates
@@ -269,7 +269,7 @@ Tools are managed by **mise** (`.mise.toml`). Key tools:
 - `kubectl`, `flux`, `helm`, `kustomize`, `helmfile`
 - `talosctl`, `talhelper` (Talos config generation)
 - `sops`, `age` (secret encryption)
-- `task` (Taskfile runner)
+- `just` (command runner), `gum` (interactive prompts)
 - `yq`, `jq`, `kubeconform`, `flux-local`
 
 Bootstrap:
@@ -279,19 +279,20 @@ mise trust && mise install
 
 ---
 
-## Task Automation (Taskfile.yaml)
+## Task Automation (Justfile)
 
-Common tasks:
+Common recipes (run inside mise activation so `[env]` is inherited):
 ```sh
-task reconcile                            # Force Flux to pull from Git
-task talos:generate-config                # Regenerate Talos machine configs
-task talos:apply-node IP=10.60.85.10      # Apply config to a node
-task talos:upgrade-node IP=10.60.85.10    # Upgrade Talos on a node
-task talos:upgrade-k8s                    # Upgrade Kubernetes
-task talos:reset                          # DESTRUCTIVE: reset nodes
+just reconcile                            # Force Flux to pull from Git
+just talos generate-config                # Regenerate Talos machine configs
+just talos apply-node ip=10.60.85.10      # Apply config to a node
+just talos upgrade-node ip=10.60.85.10    # Upgrade Talos on a node
+just talos upgrade-k8s                    # Upgrade Kubernetes
+just talos reset                          # DESTRUCTIVE: reset nodes
 ```
 
-Environment variables (set automatically via mise/Taskfile):
+Recipes inherit `KUBECONFIG`, `SOPS_AGE_KEY_FILE`, and `TALOSCONFIG` from the
+mise `[env]` block (run `just` inside mise activation):
 - `KUBECONFIG=./kubeconfig`
 - `SOPS_AGE_KEY_FILE=./age.key`
 - `TALOSCONFIG=./talos/clusterconfig/talosconfig`

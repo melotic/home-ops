@@ -53,17 +53,15 @@ mise install
 Initialize and configure:
 
 ```sh
-task init
 # edit cluster.yaml and nodes.yaml based on my environment
-task configure
 git add -A && git commit -m "chore: initial setup" && git push
 ```
 
 Bootstrap Talos and core apps:
 
 ```sh
-task bootstrap:talos
-task bootstrap:apps
+just bootstrap talos
+just bootstrap apps
 kubectl get pods -A --watch
 ```
 
@@ -84,14 +82,14 @@ Public routes use the `external` gateway; internal-only use the `internal` gatew
 - [bootstrap/helmfile.d](bootstrap/helmfile.d): pre-Flux bootstrapping charts.
 - [talos](talos): talconfig, talenv, patches, clusterconfig.
 - [scripts](scripts): helper scripts like `bootstrap-apps.sh`.
-- [Taskfile.yaml](Taskfile.yaml): task automation.
+- [.justfile](.justfile): task automation (just command runner).
 
 ## 🛠 Operations
 
 - Flux reconcile and status:
 
 ```sh
-task reconcile
+just reconcile
 flux check
 flux get ks -A
 flux get hr -A
@@ -100,21 +98,21 @@ flux get hr -A
 - Talos config/apply:
 
 ```sh
-task talos:generate-config
-task talos:apply-node IP=10.10.10.10 MODE=auto
+just talos generate-config
+just talos apply-node ip=10.10.10.10 mode=auto
 ```
 
 - Upgrades:
 
 ```sh
-task talos:upgrade-node IP=10.10.10.10
-task talos:upgrade-k8s
+just talos upgrade-node ip=10.10.10.10
+just talos upgrade-k8s
 ```
 
 - Reset (destructive):
 
 ```sh
-task talos:reset
+just talos reset
 ```
 
 ## 🔐 Secrets
@@ -140,7 +138,7 @@ kubectl -n <ns> get events --sort-by='.metadata.creationTimestamp'
 When the cluster configuration is stable, remove unused templating artifacts:
 
 ```sh
-task template:tidy
+# template:tidy is not yet implemented as a just recipe
 git add -A && git commit -m "chore: tidy" && git push
 ```
 
