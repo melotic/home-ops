@@ -285,8 +285,8 @@ Common recipes (run inside mise activation so `[env]` is inherited):
 ```sh
 just reconcile                            # Force Flux to pull from Git
 just talos generate-config                # Regenerate Talos machine configs
-just talos apply-node ip=10.60.85.10      # Apply config to a node
-just talos upgrade-node ip=10.60.85.10    # Upgrade Talos on a node
+just talos apply-node 10.60.85.10         # Apply config to a node
+just talos upgrade-node 10.60.85.10       # Upgrade Talos on a node
 just talos upgrade-k8s                    # Upgrade Kubernetes
 just talos reset                          # DESTRUCTIVE: reset nodes
 ```

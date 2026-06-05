@@ -99,13 +99,13 @@ flux get hr -A
 
 ```sh
 just talos generate-config
-just talos apply-node ip=10.10.10.10 mode=auto
+just talos apply-node 10.10.10.10 auto
 ```
 
 - Upgrades:
 
 ```sh
-just talos upgrade-node ip=10.10.10.10
+just talos upgrade-node 10.10.10.10
 just talos upgrade-k8s
 ```
 
