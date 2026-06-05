@@ -8,6 +8,7 @@ default:
 
 [confirm('Bootstrap the Talos cluster [y|N]?')]
 [doc('Bootstrap the Talos cluster')]
+[working-directory('..')]
 talos:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -24,9 +25,11 @@ talos:
     until talhelper gencommand kubeconfig --extra-flags="$root --force" | bash; do sleep 10; done
 
 [doc('Bootstrap apps into the Talos cluster')]
+[working-directory('..')]
 apps:
     test -f "$KUBECONFIG"
     test -f .sops.yaml
     test -f scripts/bootstrap-apps.sh
     test -f "$SOPS_AGE_KEY_FILE"
+    if [ "$(uname)" = "Darwin" ]; then test -f /opt/homebrew/bin/bash || test -f /usr/local/bin/bash || { echo "Unsupported bash version, run 'brew install bash' to upgrade" >&2; exit 1; }; fi
     bash scripts/bootstrap-apps.sh

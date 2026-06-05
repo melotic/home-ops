@@ -6,7 +6,6 @@ default:
     just -l talos
 
 [doc('Generate Talos configuration with talhelper')]
-[working-directory('talos')]
 generate-config:
     test -f talconfig.yaml
     test -f ../.sops.yaml
@@ -15,7 +14,6 @@ generate-config:
     talhelper genconfig
 
 [doc('Validate talconfig (read-only, no secrets)')]
-[working-directory('talos')]
 validate:
     test -f talconfig.yaml
     test -f talenv.yaml
@@ -24,7 +22,6 @@ validate:
 
 [confirm('Apply Talos config to the node [y|N]?')]
 [doc('Apply Talos config to a node [ip=required, mode=auto]')]
-[working-directory('talos')]
 apply-node ip mode='auto':
     talosctl --nodes {{ ip }} get machineconfig
     talosctl config info
@@ -34,7 +31,6 @@ apply-node ip mode='auto':
 
 [confirm('Upgrade Talos on the node [y|N]?')]
 [doc('Upgrade Talos on a single node [ip=required]')]
-[working-directory('talos')]
 upgrade-node ip:
     talosctl --nodes {{ ip }} get machineconfig
     talosctl config info
@@ -44,7 +40,6 @@ upgrade-node ip:
 
 [confirm('Upgrade Kubernetes on the cluster [y|N]?')]
 [doc('Upgrade Kubernetes')]
-[working-directory('talos')]
 upgrade-k8s:
     talosctl config info
     test -f "$TALOSCONFIG"
@@ -53,7 +48,6 @@ upgrade-k8s:
 
 [confirm('This will DESTROY the cluster and reset nodes to maintenance mode [y|N]?')]
 [doc('Reset nodes back to maintenance mode [force=false full wipe; force=true lighter reset]')]
-[working-directory('talos')]
 reset force='false':
     command -v talhelper >/dev/null
     wipe=""; if [ "{{ force }}" = "false" ]; then wipe="--system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL"; fi; talhelper gencommand reset --extra-flags="--reboot $wipe --graceful=false --wait=false" | bash
