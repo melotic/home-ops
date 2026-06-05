@@ -2,20 +2,16 @@ set quiet
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 # Bootstrap Recipes
-[group('Bootstrap')]
+[group: 'Bootstrap']
 mod bootstrap
 
 # Talos Recipes
-[group('Talos')]
+[group: 'Talos']
 mod talos
 
 [private]
 default:
     just --list
-
-[private]
-log lvl msg *args:
-    gum log -t rfc3339 -s -l "{{ lvl }}" "{{ msg }}" {{ args }}
 
 [doc('Force Flux to pull from Git')]
 reconcile:

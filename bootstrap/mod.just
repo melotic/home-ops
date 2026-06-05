@@ -1,10 +1,9 @@
-set no-exit-message
 set quiet
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 [private]
 default:
-    just -l bootstrap
+    just --list bootstrap
 
 [confirm('Bootstrap the Talos cluster [y|N]?')]
 [doc('Bootstrap the Talos cluster')]

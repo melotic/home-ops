@@ -3,7 +3,7 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 
 [private]
 default:
-    just -l talos
+    just --list talos
 
 [doc('Generate Talos configuration with talhelper')]
 generate-config:
