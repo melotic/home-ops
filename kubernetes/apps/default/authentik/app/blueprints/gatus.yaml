@@ -15,7 +15,7 @@ entries:
       authorization_flow: *authorization_flow
       invalidation_flow: *invalidation_flow
       mode: forward_single
-      external_host: https://gatus.melotic.dev
+      external_host: https://status.melotic.dev
   - model: authentik_core.application
     identifiers:
       slug: gatus

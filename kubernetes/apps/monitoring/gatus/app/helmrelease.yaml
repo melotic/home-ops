@@ -94,7 +94,6 @@ spec:
         annotations:
           gatus.home-operations.com/enabled: "false"
         hostnames:
-          - "{{ .Release.Name }}.melotic.dev"
           - "status.melotic.dev"
         parentRefs:
           - name: envoy-internal
