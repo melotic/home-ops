@@ -58,7 +58,11 @@ entries:
          *   accent:    #00ff41  (matrix green)
          */
 
-        :root, :host {
+        /* authentik scopes its dark palette to html[data-theme="dark"] (higher
+         * specificity than :root); matching that selector + :host (which wins
+         * inside each adopted shadow root) lets these tokens govern the theme
+         * without per-element !important overrides */
+        :root, :host, html[data-theme="dark"] {
           color-scheme: dark;
 
           --ak-font-mono:
@@ -89,8 +93,6 @@ entries:
           --pf-c-page__sidebar--BackgroundColor: var(--ak-surface-panel);
           --ak-c-page-navbar__brand---BackgroundColor: var(--ak-surface-panel);
           --pf-c-pagination--m-bottom--BackgroundColor: transparent;
-          --pf-c-progress--bar--BackgroundColor: rgba(0,255,65,0.12);
-          --pf-c-progress__indicator--BackgroundColor: #00ff41;
         }
 
         /* ---- Animations ------------------------------------------------- */
@@ -281,6 +283,7 @@ entries:
           --pf-c-form-control--BorderLeftColor: #0d3b1e;
           --pf-c-form-control--BorderBottomColor: #00c853;
           --pf-c-form-control--Color: #b6ffc8;
+          --pf-c-form-control--placeholder--Color: #2f6b41;
           font-family: var(--ak-font-mono);
           border: 1px solid #0d3b1e;
           border-radius: 4px;
@@ -292,7 +295,6 @@ entries:
           border-color: #00ff41;
           box-shadow: 0 0 0 1px rgba(0,255,65,0.30), 0 0 16px rgba(0,255,65,0.30);
         }
-        .pf-c-form-control::placeholder { color: #2f6b41; }
 
         /* App-library search field — constrain oversized default size */
         input[part="search-input"],
@@ -355,21 +357,15 @@ entries:
           box-shadow: 0 0 26px rgba(0,255,65,0.65);
         }
 
-        /* secondary buttons (e.g. "Admin interface") — green outline */
+        /* secondary buttons (e.g. "Admin interface") — drive PatternFly's own
+         * ::after border-overlay vars instead of forcing a real border */
         .pf-c-button.pf-m-secondary {
           --pf-c-button--m-secondary--Color: #00ff41;
-          --pf-c-button--m-secondary--BorderColor: #00c853;
-          color: #00ff41 !important;
-          border: 1px solid #00c853;
-          background: transparent;
+          --pf-c-button--m-secondary--after--BorderColor: #00c853;
+          --pf-c-button--m-secondary--hover--Color: #02140a;
+          --pf-c-button--m-secondary--hover--BackgroundColor: #00ff41;
+          --pf-c-button--m-secondary--hover--after--BorderColor: #00ff41;
           font-family: var(--ak-font-mono);
-        }
-        /* reset PatternFly's absolute border-overlay so it doesn't double up */
-        .pf-c-button.pf-m-secondary::after { border: 0; }
-        .pf-c-button.pf-m-secondary:hover {
-          color: #02140a !important;
-          background: #00ff41;
-          border-color: #00ff41;
         }
 
         /* ---- Misc ------------------------------------------------------- */
@@ -431,27 +427,26 @@ entries:
         .pf-c-pagination .pf-c-options-menu__toggle-text { color: #8fdfa3; }
         .pf-c-pagination .pf-c-button:not(:disabled):not(.pf-m-disabled) { color: #8fdfa3 !important; }
 
-        /* progress bar colours come from the :root vars; add the green glow */
+        /* progress / usage bars — canonical PatternFly vars + a green glow */
+        .pf-c-progress {
+          --pf-c-progress__bar--BackgroundColor: rgba(0,255,65,0.12);
+          --pf-c-progress__indicator--BackgroundColor: #00ff41;
+        }
         .pf-c-progress__indicator { box-shadow: 0 0 8px rgba(0,255,65,0.45); }
 
         /* ---- Sidebar navigation (admin + user shell) ------------------- */
-        .pf-c-nav__link {
-          font-family: var(--ak-font-mono);
-          color: #8fdfa3;
+        /* PatternFly declares its nav link vars on .pf-c-nav, so set them there
+         * — no per-state !important rules needed */
+        .pf-c-nav {
+          --pf-c-nav__link--Color: #8fdfa3;
+          --pf-c-nav__link--hover--Color: #b6ffc8;
+          --pf-c-nav__link--hover--BackgroundColor: rgba(0,255,65,0.06);
+          --pf-c-nav__link--focus--BackgroundColor: rgba(0,255,65,0.06);
+          --pf-c-nav__link--m-current--Color: #00ff41;
+          --pf-c-nav__link--m-current--BackgroundColor: rgba(0,255,65,0.10);
+          --pf-c-nav__link--m-current--after--BorderColor: #00ff41;
         }
-        .pf-c-nav__link:hover {
-          color: #b6ffc8;
-          background-color: rgba(0,255,65,0.06) !important;
-        }
-        .pf-c-nav__link.pf-m-current,
-        .pf-c-nav__link[aria-current="page"] {
-          color: #00ff41 !important;
-          background-color: rgba(0,255,65,0.10) !important;
-        }
-        .pf-c-nav__link.pf-m-current::after,
-        .pf-c-nav__link[aria-current="page"]::after {
-          border-left-color: #00ff41 !important;
-        }
+        .pf-c-nav__link { font-family: var(--ak-font-mono); }
         .pf-c-nav__section-title,
         .pf-c-nav__subnav .pf-c-nav__link { color: #4f9d63; }
         /* "Enterprise only" pill reads shared gray tokens; tint it locally */
