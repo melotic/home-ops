@@ -18,7 +18,13 @@ talos:
     root="$(pwd)"
     cd talos
     just log info "Generating Talos secrets and machine config"
-    [ -f talsecret.sops.yaml ] || talhelper gensecret | sops --filename-override talos/talsecret.sops.yaml --encrypt /dev/stdin > talsecret.sops.yaml
+    if [ ! -f talsecret.sops.yaml ]; then
+      tmp="$(mktemp .talsecret.sops.yaml.XXXXXX)"
+      trap 'rm -f "$tmp"' EXIT
+      talhelper gensecret | sops --filename-override talos/talsecret.sops.yaml --encrypt /dev/stdin > "$tmp"
+      mv "$tmp" talsecret.sops.yaml
+      trap - EXIT
+    fi
     talhelper genconfig
     just log info "Applying Talos config to nodes" "mode" "insecure"
     talhelper gencommand apply --extra-flags="--insecure" | bash

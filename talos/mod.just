@@ -26,7 +26,7 @@ apply-node ip mode='auto':
     talosctl --nodes {{ ip }} get machineconfig
     talosctl config info
     test -f "$TALOSCONFIG"
-    command -v talhelper >/dev/null && command -v talosctl >/dev/null && command -v yq >/dev/null
+    command -v talhelper >/dev/null && command -v talosctl >/dev/null
     talhelper gencommand apply --node {{ ip }} --extra-flags '--mode={{ mode }}' | bash
 
 [confirm('Upgrade Talos on the node [y|N]?')]
@@ -35,19 +35,26 @@ upgrade-node ip:
     talosctl --nodes {{ ip }} get machineconfig
     talosctl config info
     test -f "$TALOSCONFIG"
-    command -v talhelper >/dev/null && command -v talosctl >/dev/null && command -v yq >/dev/null && command -v kubectl >/dev/null
-    image="$(yq '.nodes[] | select(.ipAddress == "{{ ip }}") | .talosImageURL' talconfig.yaml)"; version="$(yq '.talosVersion' talenv.yaml)"; talhelper gencommand upgrade --node {{ ip }} --extra-flags "--image='$image:$version' --timeout=10m" | bash
+    command -v talhelper >/dev/null && command -v talosctl >/dev/null
+    talhelper gencommand upgrade --node {{ ip }} --extra-flags '--timeout=10m' | bash
 
 [confirm('Upgrade Kubernetes on the cluster [y|N]?')]
 [doc('Upgrade Kubernetes')]
 upgrade-k8s:
     talosctl config info
     test -f "$TALOSCONFIG"
-    command -v talhelper >/dev/null && command -v talosctl >/dev/null && command -v yq >/dev/null
-    version="$(yq '.kubernetesVersion' talenv.yaml)"; talhelper gencommand upgrade-k8s --extra-flags "--to '$version'" | bash
+    command -v talhelper >/dev/null && command -v talosctl >/dev/null
+    talhelper gencommand upgrade-k8s | bash
 
 [confirm('This will DESTROY the cluster and reset nodes to maintenance mode [y|N]?')]
-[doc('Reset nodes back to maintenance mode [force=false full wipe; force=true lighter reset]')]
+[doc('Reset nodes to maintenance mode [default wipes STATE+EPHEMERAL+local-hostpath; force=true wipes ALL partitions]')]
 reset force='false':
+    #!/usr/bin/env bash
+    set -euo pipefail
     command -v talhelper >/dev/null
-    wipe=""; if [ "{{ force }}" = "false" ]; then wipe="--system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL"; fi; talhelper gencommand reset --extra-flags="--reboot $wipe --graceful=false --wait=false" | bash
+    case "{{ force }}" in
+      false) wipe="--system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --system-labels-to-wipe u-local-hostpath" ;;
+      true)  wipe="" ;;
+      *) echo "force must be 'true' or 'false', got '{{ force }}'" >&2; exit 1 ;;
+    esac
+    talhelper gencommand reset --extra-flags="--reboot ${wipe} --graceful=false --wait=false" | bash
