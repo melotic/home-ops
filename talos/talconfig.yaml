@@ -22,37 +22,25 @@ nodes:
   - hostname: "k8s-niobe"
     ipAddress: "10.60.85.10"
     installDisk: "/dev/nvme0n1"
-    machineSpec:
-      secureboot: true
     controlPlane: true
-    userVolumes:
-      - name: local-hostpath
-        provisioning:
-          diskSelector:
-            match: system_disk
-          grow: false
-          minSize: 32GiB
-          maxSize: 32GiB
-    patches:
-      - "@./patches/k8s-niobe/storage-reshape.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "00:24:27:88:e6:a8"
         dhcp: false
         addresses:
           - "10.60.85.10/16"
-        routes:
+        routes: &netRoutes
           - network: "0.0.0.0/0"
             gateway: "10.60.0.1"
-        mtu: 1500
-        vlans:
+        mtu: &netMtu 1500
+        vlans: &netVlans
           - vlanId: 30
             mtu: 1500
           - vlanId: 25
             mtu: 1500
-        vip:
+        vip: &netVip
           ip: "10.60.8.10"
-    schematic:
+    schematic: &amdSchematic
       customization:
         systemExtensions:
           officialExtensions:
@@ -64,36 +52,17 @@ nodes:
   - hostname: "k8s-trinity"
     ipAddress: "10.60.85.11"
     installDisk: "/dev/nvme0n1"
-    machineSpec:
-      secureboot: true
     controlPlane: true
-    userVolumes:
-      - name: local-hostpath
-        provisioning:
-          diskSelector:
-            match: system_disk
-          grow: false
-          minSize: 32GiB
-          maxSize: 32GiB
-    patches:
-      - "@./patches/k8s-trinity/storage-reshape.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "04:0e:3c:92:31:01"
         dhcp: false
         addresses:
           - "10.60.85.11/16"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "10.60.0.1"
-        mtu: 1500
-        vlans:
-          - vlanId: 30
-            mtu: 1500
-          - vlanId: 25
-            mtu: 1500
-        vip:
-          ip: "10.60.8.10"
+        routes: *netRoutes
+        mtu: *netMtu
+        vlans: *netVlans
+        vip: *netVip
     schematic:
       customization:
         systemExtensions:
@@ -105,44 +74,18 @@ nodes:
   - hostname: "k8s-ghost"
     ipAddress: "10.60.85.12"
     installDisk: "/dev/nvme0n1"
-    machineSpec:
-      secureboot: true
     controlPlane: true
-    userVolumes:
-      - name: local-hostpath
-        provisioning:
-          diskSelector:
-            match: system_disk
-          grow: false
-          minSize: 32GiB
-          maxSize: 32GiB
-    patches:
-      - "@./patches/k8s-ghost/storage-reshape.yaml"
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "58:47:ca:71:21:77"
         dhcp: false
         addresses:
           - "10.60.85.12/16"
-        routes:
-          - network: "0.0.0.0/0"
-            gateway: "10.60.0.1"
-        mtu: 1500
-        vlans:
-          - vlanId: 30
-            mtu: 1500
-          - vlanId: 25
-            mtu: 1500
-        vip:
-          ip: "10.60.8.10"
-    schematic:
-      customization:
-        systemExtensions:
-          officialExtensions:
-            - siderolabs/amd-ucode
-            - siderolabs/amdgpu
-            - siderolabs/nfs-utils
-            - siderolabs/realtek-firmware
+        routes: *netRoutes
+        mtu: *netMtu
+        vlans: *netVlans
+        vip: *netVip
+    schematic: *amdSchematic
 
 # Global patches
 patches:
@@ -157,6 +100,16 @@ patches:
 
 # Controller patches
 controlPlane:
+  machineSpec:
+    secureboot: true
+  userVolumes:
+    - name: local-hostpath
+      provisioning:
+        diskSelector:
+          match: system_disk
+        grow: false
+        minSize: 32GiB
+        maxSize: 32GiB
   volumes:
     - name: EPHEMERAL
       provisioning:
@@ -168,3 +121,4 @@ controlPlane:
   patches:
     - "@./patches/controller/admission-controller-patch.yaml"
     - "@./patches/controller/cluster.yaml"
+    - "@./patches/controller/storage-reshape.yaml"
