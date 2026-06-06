@@ -75,7 +75,7 @@ spec:
         externalIP: ""
         gitlab:
           name: gitlab.melotic.dev
-        ssh: ssh.gitlab.melotic.dev
+        ssh: gitlab.melotic.dev
       ingress:
         configureCertmanager: false
         provider: none
@@ -284,11 +284,10 @@ spec:
             memory: 512Mi
       gitlab-shell:
         gatewayRoute:
-          enabled: false
+          enabled: true
+          sectionName: gitlab-ssh
         service:
-          type: LoadBalancer
-          annotations:
-            external-dns.alpha.kubernetes.io/hostname: ssh.gitlab.melotic.dev
+          type: ClusterIP
           internalPort: 2222
         resources:
           requests:
