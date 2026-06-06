@@ -274,6 +274,13 @@ entries:
         }
         .pf-c-form-control::placeholder { color: #2f6b41; }
 
+        /* App-library search field — constrain oversized default size */
+        input[part="search-input"],
+        #application-search-input {
+          font-size: 0.95rem;
+          line-height: 1.4;
+        }
+
         /* ---- Execute button --------------------------------------------- */
         .pf-c-login__main-body .pf-c-button.pf-m-primary,
         .pf-c-button.pf-m-primary {
@@ -295,14 +302,25 @@ entries:
           box-shadow: 0 0 14px rgba(0,255,65,0.25), inset 0 0 14px rgba(0,255,65,0.08);
           transition: color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
         }
-        /* brackets as flanking flex items so they stay centered with the label */
+        /* brackets flank the label as flex items; reset PatternFly's absolute
+         * ::after border-overlay base so "]" isn't pinned top-left */
         .pf-c-button.pf-m-primary::before,
         .pf-c-button.pf-m-primary::after {
+          position: static;
+          inset: auto;
+          border: 0;
+          width: auto;
+          height: auto;
+          margin: 0;
+          padding: 0;
           line-height: 1;
           font-weight: 700;
+          color: #00ff41;
         }
         .pf-c-button.pf-m-primary::before { content: "["; }
         .pf-c-button.pf-m-primary::after  { content: "]"; }
+        .pf-c-button.pf-m-primary:hover::before,
+        .pf-c-button.pf-m-primary:hover::after { color: #02140a; }
         .pf-c-button.pf-m-primary:hover {
           color: #02140a !important;
           --pf-c-button--m-primary--Color: #02140a;
@@ -315,6 +333,32 @@ entries:
 
         .pf-c-login__header,
         .pf-c-login__footer { color: #4f9d63; font-family: var(--ak-font-mono); }
+
+        /* ---- Admin + user console (cards, tables) ----------------------- */
+        .pf-c-card {
+          background: linear-gradient(180deg, rgba(5,20,10,0.85), rgba(0,8,4,0.92)) !important;
+          border: 1px solid #0d3b1e;
+          border-radius: 6px;
+          color: #b6ffc8;
+        }
+        .pf-c-card__title,
+        .pf-c-card__title i { color: #6effa0 !important; }
+
+        .pf-c-table {
+          --pf-c-table--BackgroundColor: transparent;
+          --pf-c-table--BorderColor: #0d3b1e;
+          --pf-c-table--cell--Color: #b6ffc8;
+          color: #b6ffc8;
+          font-family: var(--ak-font-mono);
+          background: transparent;
+        }
+        .pf-c-table thead th,
+        .pf-c-table__text,
+        .pf-c-table__button { color: #6effa0 !important; font-family: var(--ak-font-mono); }
+        .pf-c-table tbody tr { border-bottom: 1px solid rgba(13, 59, 30, 0.55); }
+        .pf-c-table tbody tr:hover,
+        .pf-c-table tbody tr:focus-within { background: rgba(0, 255, 65, 0.06) !important; }
+        .pf-c-table__button:hover .pf-c-table__text { color: #00ff41 !important; }
 
         /* Hide locale selector — single-user homelab */
         .pf-c-select.pf-m-align-right { display: none !important; }
