@@ -92,7 +92,6 @@ entries:
           --pf-c-page__main-nav--BackgroundColor: var(--ak-surface-panel);
           --pf-c-page__sidebar--BackgroundColor: var(--ak-surface-panel);
           --ak-c-page-navbar__brand---BackgroundColor: var(--ak-surface-panel);
-          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
         }
 
         /* ---- Animations ------------------------------------------------- */
@@ -426,6 +425,12 @@ entries:
         .pf-c-pagination__total-items,
         .pf-c-pagination .pf-c-options-menu__toggle-text { color: #8fdfa3; }
         .pf-c-pagination .pf-c-button:not(:disabled):not(.pf-m-disabled) { color: #8fdfa3 !important; }
+        /* authentik sets the bottom bar's surface via :host([theme="dark"])
+         * .pf-c-pagination (variables.css) — match that selector so the
+         * transparent value wins on source order instead of !important */
+        :host([theme="dark"]) .pf-c-pagination {
+          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
+        }
 
         /* progress / usage bars — canonical PatternFly vars + a green glow */
         .pf-c-progress {
