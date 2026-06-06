@@ -54,12 +54,24 @@ spec:
           annotations:
             summary: "Envoy proxy {{ $labels.pod }} has xDS connection failures"
             description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is failing to connect to the xDS control plane."
-        - alert: EnvoyXdsStreamReset
+        - alert: EnvoyXdsDisconnected
           expr: |
-            increase(envoy_cluster_upstream_cx_destroy{envoy_cluster_name="xds_cluster"}[15m]) > 1
+            envoy_control_plane_connected_state{namespace="network"} == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Envoy proxy {{ $labels.pod }} disconnected from xDS control plane"
+            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has not been connected to the envoy-gateway xDS control plane for 10m and cannot receive configuration updates."
+        - alert: EnvoyXdsConfigRejected
+          expr: |
+            (sum(increase(envoy_cluster_manager_cds_update_rejected[1h])) or vector(0))
+              + (sum(increase(envoy_listener_manager_lds_update_rejected[1h])) or vector(0))
+              + (sum(increase(envoy_http_rds_update_rejected[1h])) or vector(0))
+              + (sum(increase(envoy_sds_update_rejected[1h])) or vector(0)) > 0
           for: 5m
           labels:
             severity: critical
           annotations:
-            summary: "Envoy proxy {{ $labels.pod }} xDS stream destroyed repeatedly"
-            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has had multiple xDS stream resets, indicating persistent control plane connectivity issues."
+            summary: "Envoy proxies rejected an xDS config update"
+            description: "One or more Envoy proxies rejected a CDS/LDS/RDS/SDS update from the envoy-gateway control plane, indicating it is pushing invalid configuration."
