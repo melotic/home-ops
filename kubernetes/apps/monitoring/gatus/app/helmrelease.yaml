@@ -17,22 +17,33 @@ spec:
           reloader.stakater.com/auto: "true"
         initContainers:
           gatus-sidecar:
-            image:
+            image: &sidecarImage
               repository: ghcr.io/home-operations/gatus-sidecar
               tag: 0.0.19@sha256:a62610509ddb9d04ac562d13e096cecb391aa6647ac97d66ae5ba4db869bc6b8
             args:
               - --auto-httproute
               - --enable-httproute
               - --enable-service
-            securityContext:
+            securityContext: &sidecarSecurityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
-            resources:
+            resources: &sidecarResources
               requests:
                 cpu: 10m
               limits:
                 memory: 64Mi
+            restartPolicy: Always
+          gatus-sidecar-uptime:
+            image: *sidecarImage
+            args:
+              - --auto-httproute
+              - --gateway-name=envoy-internal
+              - --annotation-config=gatus.home-operations.com/uptime
+              - --prefix-httproute=uptime-
+              - --output=/config/gatus-uptime.yaml
+            securityContext: *sidecarSecurityContext
+            resources: *sidecarResources
             restartPolicy: Always
         containers:
           app:

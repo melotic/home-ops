@@ -133,6 +133,13 @@ metadata:
       ui:
         hide-hostname: true
         hide-url: true
+    gatus.home-operations.com/uptime: |-
+      group: internal-uptime
+      interval: 1m
+      conditions:
+        - "[STATUS] < 500"
+      ui:
+        hide-hostname: true
 spec:
   gatewayClassName: envoy
   infrastructure:
