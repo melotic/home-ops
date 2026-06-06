@@ -91,11 +91,11 @@ function apply_crds() {
     local -r helmfile_file="${ROOT_DIR}/bootstrap/helmfile.d/00-crds.yaml"
 
     if [[ ! -f "${helmfile_file}" ]]; then
-        log fatal "File does not exist" "file" "${helmfile_file}"
+        log fatal "File does not exist" "file=${helmfile_file}"
     fi
 
     if ! crds=$(helmfile --file "${helmfile_file}" template --quiet) || [[ -z "${crds}" ]]; then
-        log fatal "Failed to render CRDs from Helmfile" "file" "${helmfile_file}"
+        log fatal "Failed to render CRDs from Helmfile" "file=${helmfile_file}"
     fi
 
     if echo "${crds}" | kubectl diff --filename - &>/dev/null; then
@@ -104,7 +104,7 @@ function apply_crds() {
     fi
 
     if ! echo "${crds}" | kubectl apply --server-side --filename - &>/dev/null; then
-        log fatal "Failed to apply crds from Helmfile" "file" "${helmfile_file}"
+        log fatal "Failed to apply crds from Helmfile" "file=${helmfile_file}"
     fi
 
     log info "CRDs applied successfully"

@@ -12,6 +12,7 @@ function log() {
         [info]=2
         [warn]=3
         [error]=4
+        [fatal]=5
     )
 
     # Get the current log level's priority
@@ -32,6 +33,7 @@ function log() {
         [info]="\033[1m\033[38;5;87m"   # Cyan
         [warn]="\033[1m\033[38;5;192m"  # Yellow
         [error]="\033[1m\033[38;5;198m" # Red
+        [fatal]="\033[1m\033[38;5;160m" # Bright red
     )
 
     # Fallback to "info" if the color for the given level is not defined
@@ -53,7 +55,7 @@ function log() {
 
     # Determine output stream based on log level
     local output_stream="/dev/stdout"
-    if [[ "$level" == "error" ]]; then
+    if [[ "$level" == "error" || "$level" == "fatal" ]]; then
         output_stream="/dev/stderr"
     fi
 
@@ -61,8 +63,8 @@ function log() {
     printf "%s %b%s%b %s %b\n" "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
         "${color}" "${level^^}" "\033[0m" "${msg}" "${data}" >"${output_stream}"
 
-    # Exit if the log level is error
-    if [[ "$level" == "error" ]]; then
+    # Exit if the log level is error or fatal
+    if [[ "$level" == "error" || "$level" == "fatal" ]]; then
         exit 1
     fi
 }
