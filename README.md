@@ -109,6 +109,13 @@ just talos upgrade-node 10.10.10.10
 just talos upgrade-k8s
 ```
 
+- Node lifecycle (reboot/shutdown):
+
+```sh
+just talos reboot-node 10.10.10.10
+just talos shutdown-node 10.10.10.10
+```
+
 - Reset (destructive):
 
 ```sh

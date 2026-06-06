@@ -288,7 +288,11 @@ just talos generate-config                # Regenerate Talos machine configs
 just talos apply-node 10.60.85.10         # Apply config to a node
 just talos upgrade-node 10.60.85.10       # Upgrade Talos on a node
 just talos upgrade-k8s                    # Upgrade Kubernetes
+just talos reboot-node 10.60.85.10        # Reboot a node (powercycle)
+just talos shutdown-node 10.60.85.10      # Shut down a node
 just talos reset                          # DESTRUCTIVE: reset nodes
+just kube sync hr                         # Force-reconcile Flux/ExternalSecret resources
+just kube prune-pods                      # Delete Failed/Pending/Succeeded pods
 ```
 
 Recipes inherit `KUBECONFIG`, `SOPS_AGE_KEY_FILE`, and `TALOSCONFIG` from the
