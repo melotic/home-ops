@@ -28,6 +28,7 @@ spec:
         - authentik-blueprints
     geoip:
       enabled: true
+      updateInterval: 8
       existingSecret:
         accountId: MAXMIND_ACCOUNT_ID
         licenseKey: MAXMIND_LICENSE_KEY

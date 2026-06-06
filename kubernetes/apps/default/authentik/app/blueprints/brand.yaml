@@ -58,7 +58,11 @@ entries:
          *   accent:    #00ff41  (matrix green)
          */
 
-        :root, :host {
+        /* authentik scopes its dark palette to html[data-theme="dark"] (higher
+         * specificity than :root); matching that selector + :host (which wins
+         * inside each adopted shadow root) lets these tokens govern the theme
+         * without per-element !important overrides */
+        :root, :host, html[data-theme="dark"] {
           color-scheme: dark;
 
           --ak-font-mono:
@@ -79,6 +83,15 @@ entries:
           --pf-global--FontFamily--text: var(--ak-font-mono);
           --pf-global--FontFamily--heading: var(--ak-font-mono);
           --ak-flow-background: none;
+
+          /* semantic surface tokens — the console "panel" tint */
+          --ak-surface-panel: rgba(2,17,10,0.85);
+
+          /* drive PatternFly component surfaces from the tokens instead of
+           * overriding each element with !important */
+          --pf-c-page__main-nav--BackgroundColor: var(--ak-surface-panel);
+          --pf-c-page__sidebar--BackgroundColor: var(--ak-surface-panel);
+          --ak-c-page-navbar__brand---BackgroundColor: var(--ak-surface-panel);
         }
 
         /* ---- Animations ------------------------------------------------- */
@@ -194,13 +207,21 @@ entries:
         .pf-c-login__main-footer { padding: 0 2.4rem 1.8rem !important; }
 
         /* ---- Logo + title ----------------------------------------------- */
-        .pf-c-brand {
+        /* phosphor glow on every brand logo (login + console header) */
+        .pf-c-brand { filter: drop-shadow(0 0 10px rgba(0,255,65,0.55)); }
+        /* login screen: large, centered logo */
+        .pf-c-login .pf-c-brand {
           width: 230px;
           height: auto;
           max-width: 80%;
           margin: 0.25rem auto 0.5rem;
           display: block;
-          filter: drop-shadow(0 0 12px rgba(0,255,65,0.55));
+        }
+        /* user-interface header: left-aligned, header-sized logo */
+        .pf-c-page__header-brand .pf-c-brand {
+          width: auto;
+          max-height: 38px;
+          margin: 0;
         }
 
         .pf-c-login__main-header .pf-c-title {
@@ -261,6 +282,7 @@ entries:
           --pf-c-form-control--BorderLeftColor: #0d3b1e;
           --pf-c-form-control--BorderBottomColor: #00c853;
           --pf-c-form-control--Color: #b6ffc8;
+          --pf-c-form-control--placeholder--Color: #2f6b41;
           font-family: var(--ak-font-mono);
           border: 1px solid #0d3b1e;
           border-radius: 4px;
@@ -272,7 +294,21 @@ entries:
           border-color: #00ff41;
           box-shadow: 0 0 0 1px rgba(0,255,65,0.30), 0 0 16px rgba(0,255,65,0.30);
         }
-        .pf-c-form-control::placeholder { color: #2f6b41; }
+
+        /* App-library search field — constrain oversized default size */
+        input[part="search-input"],
+        #application-search-input {
+          font-size: 0.95rem;
+          line-height: 1.4;
+        }
+        /* search renders as an underline, so drop the boxy focus ring and
+         * keep a single glowing underline instead of a doubled rectangle */
+        input[part="search-input"]:focus,
+        #application-search-input:focus {
+          box-shadow: none;
+          border-color: transparent;
+          border-bottom-color: #00ff41;
+        }
 
         /* ---- Execute button --------------------------------------------- */
         .pf-c-login__main-body .pf-c-button.pf-m-primary,
@@ -295,18 +331,40 @@ entries:
           box-shadow: 0 0 14px rgba(0,255,65,0.25), inset 0 0 14px rgba(0,255,65,0.08);
           transition: color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
         }
-        /* brackets as flanking flex items so they stay centered with the label */
+        /* brackets flank the label as flex items; reset PatternFly's absolute
+         * ::after border-overlay base so "]" isn't pinned top-left */
         .pf-c-button.pf-m-primary::before,
         .pf-c-button.pf-m-primary::after {
+          position: static;
+          inset: auto;
+          border: 0;
+          width: auto;
+          height: auto;
+          margin: 0;
+          padding: 0;
           line-height: 1;
           font-weight: 700;
+          color: #00ff41;
         }
         .pf-c-button.pf-m-primary::before { content: "["; }
         .pf-c-button.pf-m-primary::after  { content: "]"; }
+        .pf-c-button.pf-m-primary:hover::before,
+        .pf-c-button.pf-m-primary:hover::after { color: #02140a; }
         .pf-c-button.pf-m-primary:hover {
           color: #02140a !important;
           --pf-c-button--m-primary--Color: #02140a;
           box-shadow: 0 0 26px rgba(0,255,65,0.65);
+        }
+
+        /* secondary buttons (e.g. "Admin interface") — drive PatternFly's own
+         * ::after border-overlay vars instead of forcing a real border */
+        .pf-c-button.pf-m-secondary {
+          --pf-c-button--m-secondary--Color: #00ff41;
+          --pf-c-button--m-secondary--after--BorderColor: #00c853;
+          --pf-c-button--m-secondary--hover--Color: #02140a;
+          --pf-c-button--m-secondary--hover--BackgroundColor: #00ff41;
+          --pf-c-button--m-secondary--hover--after--BorderColor: #00ff41;
+          font-family: var(--ak-font-mono);
         }
 
         /* ---- Misc ------------------------------------------------------- */
@@ -315,6 +373,104 @@ entries:
 
         .pf-c-login__header,
         .pf-c-login__footer { color: #4f9d63; font-family: var(--ak-font-mono); }
+
+        /* ---- Admin + user console (cards, tables) ----------------------- */
+        .pf-c-card {
+          background: linear-gradient(180deg, rgba(5,20,10,0.85), rgba(0,8,4,0.92)) !important;
+          border: 1px solid #0d3b1e;
+          border-radius: 6px;
+          color: #b6ffc8;
+        }
+        .pf-c-card__title,
+        .pf-c-card__title i { color: #6effa0 !important; }
+
+        .pf-c-table {
+          --pf-c-table--BackgroundColor: transparent;
+          --pf-c-table--BorderColor: #0d3b1e;
+          --pf-c-table--cell--Color: #b6ffc8;
+          color: #b6ffc8;
+          font-family: var(--ak-font-mono);
+          background: transparent;
+        }
+        .pf-c-table thead th,
+        .pf-c-table__text,
+        .pf-c-table__button { color: #6effa0 !important; font-family: var(--ak-font-mono); }
+        .pf-c-table tbody tr { border-bottom: 1px solid rgba(13, 59, 30, 0.55); }
+        .pf-c-table tbody tr:hover,
+        .pf-c-table tbody tr:focus-within { background: rgba(0, 255, 65, 0.06) !important; }
+        .pf-c-table__button:hover .pf-c-table__text { color: #00ff41 !important; }
+
+        /* ---- Console background (admin + user shell) ------------------- */
+        .pf-c-page,
+        .pf-c-page__main-section {
+          background-color: #020a05 !important;
+          background-image:
+            radial-gradient(1700px 1200px at 50% -8%, rgba(0,255,65,0.17), rgba(0,255,65,0.04) 52%, transparent 92%),
+            radial-gradient(1200px 760px at 100% 118%, rgba(0,200,83,0.08), transparent 82%) !important;
+          background-attachment: fixed !important;
+        }
+        .pf-c-page__sidebar { background: var(--ak-surface-panel) !important; }
+        /* admin top navbar inherits --pf-c-page__main-nav--BackgroundColor
+         * from :root; only the text colors need element targeting */
+        .main-content .page-title,
+        .main-content .page-description { color: #b6ffc8; }
+        .pf-c-toolbar { background: transparent !important; color: #b6ffc8; }
+
+        /* pagination bars — surface comes from the :root var; tint the text */
+        .pf-c-pagination,
+        .pf-c-pagination.pf-m-bottom {
+          color: #8fdfa3;
+          font-family: var(--ak-font-mono);
+        }
+        .pf-c-pagination__total-items,
+        .pf-c-pagination .pf-c-options-menu__toggle-text { color: #8fdfa3; }
+        .pf-c-pagination .pf-c-button:not(:disabled):not(.pf-m-disabled) { color: #8fdfa3 !important; }
+        /* authentik sets the bottom bar's surface via :host([theme="dark"])
+         * .pf-c-pagination (variables.css) — match that selector so the
+         * transparent value wins on source order instead of !important */
+        :host([theme="dark"]) .pf-c-pagination {
+          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
+        }
+
+        /* progress / usage bars — canonical PatternFly vars + a green glow */
+        .pf-c-progress {
+          --pf-c-progress__bar--BackgroundColor: rgba(0,255,65,0.12);
+          --pf-c-progress__indicator--BackgroundColor: #00ff41;
+        }
+        .pf-c-progress__indicator { box-shadow: 0 0 8px rgba(0,255,65,0.45); }
+
+        /* ---- Sidebar navigation (admin + user shell) ------------------- */
+        /* PatternFly declares its nav link vars on .pf-c-nav, so set them there
+         * — no per-state !important rules needed */
+        .pf-c-nav {
+          --pf-c-nav__link--Color: #8fdfa3;
+          --pf-c-nav__link--hover--Color: #b6ffc8;
+          --pf-c-nav__link--hover--BackgroundColor: rgba(0,255,65,0.06);
+          --pf-c-nav__link--focus--BackgroundColor: rgba(0,255,65,0.06);
+          --pf-c-nav__link--m-current--Color: #00ff41;
+          --pf-c-nav__link--m-current--BackgroundColor: rgba(0,255,65,0.10);
+          --pf-c-nav__link--m-current--after--BorderColor: #00ff41;
+        }
+        .pf-c-nav__link { font-family: var(--ak-font-mono); }
+        .pf-c-nav__section-title,
+        .pf-c-nav__subnav .pf-c-nav__link { color: #4f9d63; }
+        /* "Enterprise only" pill reads shared gray tokens; tint it locally */
+        .pf-c-nav__enterprise-notice {
+          color: #6effa0;
+          background-color: rgba(0,255,65,0.12);
+        }
+        /* sidebar scroll-shadow mask: match the green panel + green glow,
+         * otherwise it paints a black fade band over the tinted sidebar */
+        .ak-m-scroll-shadows {
+          --ak-m-scroll-shadows--BackgroundColor: #02110a;
+          --ak-m-scroll-shadows--ShadowColor: rgba(0,255,65,0.55);
+        }
+
+        /* admin/user shell brand logo — match the login logo's phosphor glow */
+        aside.brand .logo img,
+        .brand .logo img {
+          filter: drop-shadow(0 0 10px rgba(0,255,65,0.55));
+        }
 
         /* Hide locale selector — single-user homelab */
         .pf-c-select.pf-m-align-right { display: none !important; }

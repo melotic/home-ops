@@ -52,7 +52,7 @@ entries:
         - authentik.core.auth.TokenBackend
       configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
 
-  # Cloudflare Turnstile CAPTCHA — Managed widget mode
+  # Cloudflare Turnstile CAPTCHA — Invisible widget mode
   - model: authentik_stages_captcha.captchastage
     id: captcha
     identifiers:
@@ -62,7 +62,7 @@ entries:
       private_key: !Env TURNSTILE_SECRET_KEY
       js_url: https://challenges.cloudflare.com/turnstile/v0/api.js
       api_url: https://challenges.cloudflare.com/turnstile/v0/siteverify
-      interactive: true
+      interactive: false
 
   # Identification: single-page login with inline password + Turnstile
   # password_stage and captcha_stage are inline — they must NOT also be bound to the flow
