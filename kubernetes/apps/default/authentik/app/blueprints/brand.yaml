@@ -194,13 +194,21 @@ entries:
         .pf-c-login__main-footer { padding: 0 2.4rem 1.8rem !important; }
 
         /* ---- Logo + title ----------------------------------------------- */
-        .pf-c-brand {
+        /* phosphor glow on every brand logo (login + console header) */
+        .pf-c-brand { filter: drop-shadow(0 0 10px rgba(0,255,65,0.55)); }
+        /* login screen: large, centered logo */
+        .pf-c-login .pf-c-brand {
           width: 230px;
           height: auto;
           max-width: 80%;
           margin: 0.25rem auto 0.5rem;
           display: block;
-          filter: drop-shadow(0 0 12px rgba(0,255,65,0.55));
+        }
+        /* user-interface header: left-aligned, header-sized logo */
+        .pf-c-page__header-brand .pf-c-brand {
+          width: auto;
+          max-height: 38px;
+          margin: 0;
         }
 
         .pf-c-login__main-header .pf-c-title {
@@ -280,6 +288,14 @@ entries:
           font-size: 0.95rem;
           line-height: 1.4;
         }
+        /* search renders as an underline, so drop the boxy focus ring and
+         * keep a single glowing underline instead of a doubled rectangle */
+        input[part="search-input"]:focus,
+        #application-search-input:focus {
+          box-shadow: none;
+          border-color: transparent;
+          border-bottom-color: #00ff41;
+        }
 
         /* ---- Execute button --------------------------------------------- */
         .pf-c-login__main-body .pf-c-button.pf-m-primary,
@@ -327,6 +343,23 @@ entries:
           box-shadow: 0 0 26px rgba(0,255,65,0.65);
         }
 
+        /* secondary buttons (e.g. "Admin interface") — green outline */
+        .pf-c-button.pf-m-secondary {
+          --pf-c-button--m-secondary--Color: #00ff41;
+          --pf-c-button--m-secondary--BorderColor: #00c853;
+          color: #00ff41 !important;
+          border: 1px solid #00c853;
+          background: transparent;
+          font-family: var(--ak-font-mono);
+        }
+        /* reset PatternFly's absolute border-overlay so it doesn't double up */
+        .pf-c-button.pf-m-secondary::after { border: 0; }
+        .pf-c-button.pf-m-secondary:hover {
+          color: #02140a !important;
+          background: #00ff41;
+          border-color: #00ff41;
+        }
+
         /* ---- Misc ------------------------------------------------------- */
         a { color: #00ff41; }
         a:hover { color: #7dff9f; text-shadow: 0 0 8px rgba(0,255,65,0.45); }
@@ -359,6 +392,74 @@ entries:
         .pf-c-table tbody tr:hover,
         .pf-c-table tbody tr:focus-within { background: rgba(0, 255, 65, 0.06) !important; }
         .pf-c-table__button:hover .pf-c-table__text { color: #00ff41 !important; }
+
+        /* ---- Console background (admin + user shell) ------------------- */
+        .pf-c-page,
+        .pf-c-page__main-section {
+          background-color: #020a05 !important;
+          background-image:
+            radial-gradient(1700px 1200px at 50% -8%, rgba(0,255,65,0.17), rgba(0,255,65,0.04) 52%, transparent 92%),
+            radial-gradient(1200px 760px at 100% 118%, rgba(0,200,83,0.08), transparent 82%) !important;
+          background-attachment: fixed !important;
+        }
+        .pf-c-page__sidebar { background: rgba(2,17,10,0.85) !important; }
+        .pf-c-toolbar { background: transparent !important; color: #b6ffc8; }
+
+        /* pagination bars (top + the gray bottom footer) */
+        .pf-c-pagination,
+        .pf-c-pagination.pf-m-bottom {
+          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
+          background-color: transparent !important;
+          color: #8fdfa3;
+          font-family: var(--ak-font-mono);
+        }
+        .pf-c-pagination__total-items,
+        .pf-c-pagination .pf-c-options-menu__toggle-text { color: #8fdfa3; }
+        .pf-c-pagination .pf-c-button:not(:disabled):not(.pf-m-disabled) { color: #8fdfa3 !important; }
+
+        /* usage / progress bars in matrix green instead of default blue */
+        .pf-c-progress {
+          --pf-c-progress--bar--BackgroundColor: rgba(0,255,65,0.12);
+          --pf-c-progress__indicator--BackgroundColor: #00ff41;
+        }
+        .pf-c-progress__bar { background-color: rgba(0,255,65,0.12) !important; }
+        .pf-c-progress__indicator {
+          background-color: #00ff41 !important;
+          box-shadow: 0 0 8px rgba(0,255,65,0.45);
+        }
+
+        /* ---- Sidebar navigation (admin + user shell) ------------------- */
+        .pf-c-nav__link {
+          font-family: var(--ak-font-mono);
+          color: #8fdfa3;
+        }
+        .pf-c-nav__link:hover {
+          color: #b6ffc8;
+          background-color: rgba(0,255,65,0.06) !important;
+        }
+        .pf-c-nav__link.pf-m-current,
+        .pf-c-nav__link[aria-current="page"] {
+          color: #00ff41 !important;
+          background-color: rgba(0,255,65,0.10) !important;
+        }
+        .pf-c-nav__link.pf-m-current::after,
+        .pf-c-nav__link[aria-current="page"]::after {
+          border-left-color: #00ff41 !important;
+        }
+        .pf-c-nav__section-title,
+        .pf-c-nav__subnav .pf-c-nav__link { color: #4f9d63; }
+        /* sidebar scroll-shadow mask: match the green panel + green glow,
+         * otherwise it paints a black fade band over the tinted sidebar */
+        .ak-m-scroll-shadows {
+          --ak-m-scroll-shadows--BackgroundColor: #02110a;
+          --ak-m-scroll-shadows--ShadowColor: rgba(0,255,65,0.55);
+        }
+
+        /* admin/user shell brand logo — match the login logo's phosphor glow */
+        aside.brand .logo img,
+        .brand .logo img {
+          filter: drop-shadow(0 0 10px rgba(0,255,65,0.55));
+        }
 
         /* Hide locale selector — single-user homelab */
         .pf-c-select.pf-m-align-right { display: none !important; }
