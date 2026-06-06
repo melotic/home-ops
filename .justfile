@@ -5,6 +5,10 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 [group: 'Bootstrap']
 mod bootstrap
 
+# Kube Recipes
+[group: 'Kube']
+mod kube "kubernetes"
+
 # Talos Recipes
 [group: 'Talos']
 mod talos

@@ -28,8 +28,11 @@ talos:
     talhelper genconfig
     just log info "Applying Talos config to nodes" "mode" "insecure"
     talhelper gencommand apply --extra-flags="--insecure" | bash
-    just log info "Bootstrapping Kubernetes, retrying until the API responds"
-    until talhelper gencommand bootstrap | bash; do sleep 10; done
+    just log info "Bootstrapping Kubernetes, retrying until etcd is initialized"
+    until op="$(talhelper gencommand bootstrap | bash 2>&1)" || [[ "$op" == *"AlreadyExists"* ]]; do
+      just log info "Kubernetes bootstrap in progress, retrying in 10 seconds" "output" "$op"
+      sleep 10
+    done
     just log info "Fetching kubeconfig" "path" "$root"
     until talhelper gencommand kubeconfig --extra-flags="$root --force" | bash; do sleep 10; done
     just log info "Talos cluster bootstrap complete"
@@ -37,12 +40,19 @@ talos:
 [doc('Bootstrap apps into the Talos cluster')]
 [working-directory('..')]
 apps:
+    #!/usr/bin/env bash
+    set -euo pipefail
     test -f "$KUBECONFIG"
     test -f .sops.yaml
     test -f scripts/bootstrap-apps.sh
     test -f "$SOPS_AGE_KEY_FILE"
     command -v gum >/dev/null
-    if [ "$(uname)" = "Darwin" ]; then test -f /opt/homebrew/bin/bash || test -f /usr/local/bin/bash || { echo "Unsupported bash version, run 'brew install bash' to upgrade" >&2; exit 1; }; fi
+    if [ "$(uname)" = "Darwin" ]; then
+      bash_bin="$(command -v /opt/homebrew/bin/bash || command -v /usr/local/bin/bash || true)"
+      [ -n "$bash_bin" ] || { echo "Unsupported bash version, run 'brew install bash' to upgrade" >&2; exit 1; }
+    else
+      bash_bin="bash"
+    fi
     just log info "Bootstrapping apps into the cluster"
-    bash scripts/bootstrap-apps.sh
+    "$bash_bin" scripts/bootstrap-apps.sh
     just log info "App bootstrap complete"

@@ -22,21 +22,37 @@ validate:
 
 [confirm('Apply Talos config to the node [y|N]?')]
 [doc('Apply Talos config to a node [ip=required, mode=auto]')]
-apply-node ip mode='auto':
+apply-node ip mode='auto' *args:
     talosctl --nodes {{ ip }} get machineconfig
     talosctl config info
     test -f "$TALOSCONFIG"
     command -v talhelper >/dev/null && command -v talosctl >/dev/null
-    talhelper gencommand apply --node {{ ip }} --extra-flags '--mode={{ mode }}' | bash
+    talhelper gencommand apply --node {{ ip }} --extra-flags '--mode={{ mode }} {{ args }}' | bash
 
 [confirm('Upgrade Talos on the node [y|N]?')]
 [doc('Upgrade Talos on a single node [ip=required]')]
-upgrade-node ip:
+upgrade-node ip *args:
     talosctl --nodes {{ ip }} get machineconfig
     talosctl config info
     test -f "$TALOSCONFIG"
     command -v talhelper >/dev/null && command -v talosctl >/dev/null
-    talhelper gencommand upgrade --node {{ ip }} --extra-flags '--timeout=10m' | bash
+    talhelper gencommand upgrade --node {{ ip }} --extra-flags '--timeout=10m {{ args }}' | bash
+
+[confirm('Reboot the node [y|N]?')]
+[doc('Reboot a node [ip=required]')]
+reboot-node ip *args:
+    talosctl config info
+    test -f "$TALOSCONFIG"
+    command -v talosctl >/dev/null
+    talosctl --nodes {{ ip }} reboot --mode powercycle {{ args }}
+
+[confirm('Shut down the node [y|N]?')]
+[doc('Shut down a node [ip=required]')]
+shutdown-node ip *args:
+    talosctl config info
+    test -f "$TALOSCONFIG"
+    command -v talosctl >/dev/null
+    talosctl --nodes {{ ip }} shutdown --force {{ args }}
 
 [confirm('Upgrade Kubernetes on the cluster [y|N]?')]
 [doc('Upgrade Kubernetes')]
@@ -48,7 +64,7 @@ upgrade-k8s:
 
 [confirm('This will DESTROY the cluster and reset nodes to maintenance mode [y|N]?')]
 [doc('Reset nodes to maintenance mode [default wipes STATE+EPHEMERAL+local-hostpath; force=true wipes ALL partitions]')]
-reset force='false':
+reset force='false' *args:
     #!/usr/bin/env bash
     set -euo pipefail
     command -v talhelper >/dev/null
@@ -57,4 +73,4 @@ reset force='false':
       true)  wipe="" ;;
       *) echo "force must be 'true' or 'false', got '{{ force }}'" >&2; exit 1 ;;
     esac
-    talhelper gencommand reset --extra-flags="--reboot ${wipe} --graceful=false --wait=false" | bash
+    talhelper gencommand reset --extra-flags="--reboot ${wipe} --graceful=false --wait=false {{ args }}" | bash
