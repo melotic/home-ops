@@ -1,4 +1,5 @@
 set quiet
+set script-interpreter := ['bash', '-euo', 'pipefail']
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 [private]
@@ -22,14 +23,13 @@ validate:
 
 [confirm('Apply Talos config to the node [y|N]?')]
 [doc('Apply Talos config to a node [ip=required, mode=auto; pass --insecure for a node in maintenance mode]')]
+[script]
 apply-node ip mode='auto' *args:
-    #!/usr/bin/env bash
-    set -euo pipefail
     test -f "$TALOSCONFIG"
     command -v talhelper >/dev/null && command -v talosctl >/dev/null
     if [[ " {{ args }} " != *" --insecure "* ]]; then
-      talosctl --nodes {{ ip }} get machineconfig >/dev/null
-      talosctl config info >/dev/null
+        talosctl --nodes {{ ip }} get machineconfig >/dev/null
+        talosctl config info >/dev/null
     fi
     talhelper gencommand apply --node {{ ip }} --extra-flags '--mode={{ mode }} {{ args }}' | bash
 
@@ -68,13 +68,12 @@ upgrade-k8s:
 
 [confirm('This will DESTROY the cluster and reset nodes to maintenance mode [y|N]?')]
 [doc('Reset nodes to maintenance mode [default wipes STATE+EPHEMERAL+local-hostpath; force=true wipes ALL partitions]')]
+[script]
 reset force='false' *args:
-    #!/usr/bin/env bash
-    set -euo pipefail
     command -v talhelper >/dev/null
     case "{{ force }}" in
-      false) wipe="--system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --system-labels-to-wipe u-local-hostpath" ;;
-      true)  wipe="" ;;
-      *) echo "force must be 'true' or 'false', got '{{ force }}'" >&2; exit 1 ;;
+        false) wipe="--system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --system-labels-to-wipe u-local-hostpath" ;;
+        true)  wipe="" ;;
+        *) echo "force must be 'true' or 'false', got '{{ force }}'" >&2; exit 1 ;;
     esac
     talhelper gencommand reset --extra-flags="--reboot ${wipe} --graceful=false --wait=false {{ args }}" | bash

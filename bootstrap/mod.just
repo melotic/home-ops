@@ -1,4 +1,5 @@
 set quiet
+set script-interpreter := ['bash', '-euo', 'pipefail']
 set shell := ['bash', '-euo', 'pipefail', '-c']
 
 [private]
@@ -8,9 +9,8 @@ default:
 [confirm('Bootstrap the Talos cluster [y|N]?')]
 [doc('Bootstrap the Talos cluster')]
 [working-directory('..')]
+[script]
 talos:
-    #!/usr/bin/env bash
-    set -euo pipefail
     test -f .sops.yaml
     test -f "$SOPS_AGE_KEY_FILE"
     test -f talos/talconfig.yaml
@@ -39,9 +39,8 @@ talos:
 
 [doc('Bootstrap apps into the Talos cluster')]
 [working-directory('..')]
+[script]
 apps:
-    #!/usr/bin/env bash
-    set -euo pipefail
     test -f "$KUBECONFIG"
     test -f .sops.yaml
     test -f scripts/bootstrap-apps.sh
