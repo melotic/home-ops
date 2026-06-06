@@ -79,6 +79,18 @@ entries:
           --pf-global--FontFamily--text: var(--ak-font-mono);
           --pf-global--FontFamily--heading: var(--ak-font-mono);
           --ak-flow-background: none;
+
+          /* semantic surface tokens — the console "panel" tint */
+          --ak-surface-panel: rgba(2,17,10,0.85);
+
+          /* drive PatternFly component surfaces from the tokens instead of
+           * overriding each element with !important */
+          --pf-c-page__main-nav--BackgroundColor: var(--ak-surface-panel);
+          --pf-c-page__sidebar--BackgroundColor: var(--ak-surface-panel);
+          --ak-c-page-navbar__brand---BackgroundColor: var(--ak-surface-panel);
+          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
+          --pf-c-progress--bar--BackgroundColor: rgba(0,255,65,0.12);
+          --pf-c-progress__indicator--BackgroundColor: #00ff41;
         }
 
         /* ---- Animations ------------------------------------------------- */
@@ -402,14 +414,16 @@ entries:
             radial-gradient(1200px 760px at 100% 118%, rgba(0,200,83,0.08), transparent 82%) !important;
           background-attachment: fixed !important;
         }
-        .pf-c-page__sidebar { background: rgba(2,17,10,0.85) !important; }
+        .pf-c-page__sidebar { background: var(--ak-surface-panel) !important; }
+        /* admin top navbar inherits --pf-c-page__main-nav--BackgroundColor
+         * from :root; only the text colors need element targeting */
+        .main-content .page-title,
+        .main-content .page-description { color: #b6ffc8; }
         .pf-c-toolbar { background: transparent !important; color: #b6ffc8; }
 
-        /* pagination bars (top + the gray bottom footer) */
+        /* pagination bars — surface comes from the :root var; tint the text */
         .pf-c-pagination,
         .pf-c-pagination.pf-m-bottom {
-          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
-          background-color: transparent !important;
           color: #8fdfa3;
           font-family: var(--ak-font-mono);
         }
@@ -417,16 +431,8 @@ entries:
         .pf-c-pagination .pf-c-options-menu__toggle-text { color: #8fdfa3; }
         .pf-c-pagination .pf-c-button:not(:disabled):not(.pf-m-disabled) { color: #8fdfa3 !important; }
 
-        /* usage / progress bars in matrix green instead of default blue */
-        .pf-c-progress {
-          --pf-c-progress--bar--BackgroundColor: rgba(0,255,65,0.12);
-          --pf-c-progress__indicator--BackgroundColor: #00ff41;
-        }
-        .pf-c-progress__bar { background-color: rgba(0,255,65,0.12) !important; }
-        .pf-c-progress__indicator {
-          background-color: #00ff41 !important;
-          box-shadow: 0 0 8px rgba(0,255,65,0.45);
-        }
+        /* progress bar colours come from the :root vars; add the green glow */
+        .pf-c-progress__indicator { box-shadow: 0 0 8px rgba(0,255,65,0.45); }
 
         /* ---- Sidebar navigation (admin + user shell) ------------------- */
         .pf-c-nav__link {
@@ -448,6 +454,11 @@ entries:
         }
         .pf-c-nav__section-title,
         .pf-c-nav__subnav .pf-c-nav__link { color: #4f9d63; }
+        /* "Enterprise only" pill reads shared gray tokens; tint it locally */
+        .pf-c-nav__enterprise-notice {
+          color: #6effa0;
+          background-color: rgba(0,255,65,0.12);
+        }
         /* sidebar scroll-shadow mask: match the green panel + green glow,
          * otherwise it paints a black fade band over the tinted sidebar */
         .ak-m-scroll-shadows {
