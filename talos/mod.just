@@ -21,12 +21,16 @@ validate:
     talhelper validate talconfig
 
 [confirm('Apply Talos config to the node [y|N]?')]
-[doc('Apply Talos config to a node [ip=required, mode=auto]')]
+[doc('Apply Talos config to a node [ip=required, mode=auto; pass --insecure for a node in maintenance mode]')]
 apply-node ip mode='auto' *args:
-    talosctl --nodes {{ ip }} get machineconfig
-    talosctl config info
+    #!/usr/bin/env bash
+    set -euo pipefail
     test -f "$TALOSCONFIG"
     command -v talhelper >/dev/null && command -v talosctl >/dev/null
+    if [[ " {{ args }} " != *" --insecure "* ]]; then
+      talosctl --nodes {{ ip }} get machineconfig >/dev/null
+      talosctl config info >/dev/null
+    fi
     talhelper gencommand apply --node {{ ip }} --extra-flags '--mode={{ mode }} {{ args }}' | bash
 
 [confirm('Upgrade Talos on the node [y|N]?')]
