@@ -27,3 +27,14 @@ spec:
               The {{ $labels.name }} endpoint has a public DNS record and is exposed
           labels:
             severity: critical
+
+        - alert: GatusInternalRouteDown
+          expr: |-
+            gatus_results_endpoint_success{group="internal-uptime"} == 0
+          for: 5m
+          annotations:
+            summary: >-
+              Internal route {{ $labels.name }} is failing through envoy-internal
+              (HTTP 5xx/unreachable — possible stale EDS or backend down)
+          labels:
+            severity: critical

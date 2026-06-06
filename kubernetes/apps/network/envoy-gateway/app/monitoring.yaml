@@ -35,31 +35,3 @@ spec:
   selector:
     matchLabels:
       control-plane: envoy-gateway
----
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  name: envoy-xds-health
-spec:
-  groups:
-    - name: envoy-xds
-      rules:
-        - alert: EnvoyXdsConnectionFailures
-          expr: |
-            increase(envoy_cluster_upstream_cx_connect_fail{envoy_cluster_name="xds_cluster"}[10m]) > 0
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: "Envoy proxy {{ $labels.pod }} has xDS connection failures"
-            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is failing to connect to the xDS control plane."
-        - alert: EnvoyXdsStreamReset
-          expr: |
-            increase(envoy_cluster_upstream_cx_destroy{envoy_cluster_name="xds_cluster"}[15m]) > 1
-          for: 5m
-          labels:
-            severity: critical
-          annotations:
-            summary: "Envoy proxy {{ $labels.pod }} xDS stream destroyed repeatedly"
-            description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has had multiple xDS stream resets, indicating persistent control plane connectivity issues."
