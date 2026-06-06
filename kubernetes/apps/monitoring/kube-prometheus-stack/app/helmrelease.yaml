@@ -42,7 +42,7 @@ spec:
             cpu: 25m
             memory: 128Mi
           limits:
-            memory: 256Mi
+            memory: 128Mi
         storage:
           volumeClaimTemplate:
             spec:
@@ -90,7 +90,7 @@ spec:
           cpu: 50m
           memory: 128Mi
         limits:
-          memory: 256Mi
+          memory: 128Mi
       prometheusConfigReloader:
         resources:
           requests:
