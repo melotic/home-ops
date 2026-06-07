@@ -84,7 +84,7 @@ spec:
           cpu: 50m
           memory: 256Mi
         limits:
-          memory: 512Mi
+          memory: 256Mi
       extraEnvVars:
         - name: CONFIG_OVERWRITE_JSON
           valueFrom:
@@ -101,7 +101,7 @@ spec:
             cpu: 50m
             memory: 256Mi
           limits:
-            memory: 512Mi
+            memory: 256Mi
       controller:
         image:
           repository: docker.io/goharbor/harbor-registryctl
@@ -110,7 +110,7 @@ spec:
             cpu: 50m
             memory: 256Mi
           limits:
-            memory: 512Mi
+            memory: 256Mi
     jobservice:
       priorityClassName: app-high
       image:
@@ -131,7 +131,7 @@ spec:
           memory: 256Mi
         limits:
           cpu: null
-          memory: 512Mi
+          memory: 384Mi
     portal:
       priorityClassName: app-high
       image:

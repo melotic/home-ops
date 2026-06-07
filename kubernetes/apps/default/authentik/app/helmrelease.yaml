@@ -109,7 +109,7 @@ spec:
           cpu: 100m
           memory: 512Mi
         limits:
-          memory: 1Gi
+          memory: 768Mi
       envFrom:
         - secretRef:
             name: authentik-secret

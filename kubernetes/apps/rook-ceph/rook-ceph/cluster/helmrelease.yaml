@@ -16,6 +16,10 @@ spec:
       tag: v19.2.3-20250717@sha256:af0c5903e901e329adabe219dfc8d0c3efc1f05102a753902f33ee16c26b6cee
       allowUnsupported: false
     cephClusterSpec:
+      # Daemons already log to stdout (collected by victoria-logs); the file-based
+      # log collector + logrotate sidecars only duplicate that to disk.
+      logCollector:
+        enabled: false
       cephConfig:
         global:
           osd_pool_default_min_size: "2"
@@ -155,7 +159,7 @@ spec:
                 cpu: 100m
                 memory: 1Gi
               limits:
-                memory: 4Gi
+                memory: 2Gi
         storageClass:
           enabled: true
           name: ceph-filesystem
