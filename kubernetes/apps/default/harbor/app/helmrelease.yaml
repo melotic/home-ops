@@ -81,8 +81,8 @@ spec:
         repository: docker.io/goharbor/harbor-core
       resources:
         requests:
-          cpu: 25m
-          memory: 128Mi
+          cpu: 50m
+          memory: 256Mi
         limits:
           memory: 256Mi
       extraEnvVars:
@@ -98,8 +98,8 @@ spec:
           repository: docker.io/goharbor/registry-photon
         resources:
           requests:
-            cpu: 25m
-            memory: 128Mi
+            cpu: 50m
+            memory: 256Mi
           limits:
             memory: 256Mi
       controller:
@@ -107,8 +107,8 @@ spec:
           repository: docker.io/goharbor/harbor-registryctl
         resources:
           requests:
-            cpu: 25m
-            memory: 128Mi
+            cpu: 50m
+            memory: 256Mi
           limits:
             memory: 256Mi
     jobservice:
@@ -127,8 +127,8 @@ spec:
         repository: docker.io/goharbor/trivy-adapter-photon
       resources:
         requests:
-          cpu: 25m
-          memory: 192Mi
+          cpu: 50m
+          memory: 256Mi
         limits:
           cpu: null
           memory: 384Mi
