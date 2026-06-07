@@ -28,6 +28,8 @@ spec:
               AUTHENTIK_CUSTOM_NAME: authentik
               AUTHENTIK_ISSUER: "https://sso.melotic.dev/application/o/linkwarden/"
               MEILI_HOST: "http://localhost:7700"
+              HOME: /tmp
+              TMPDIR: /tmp
             envFrom:
               - secretRef:
                   name: linkwarden-secret
@@ -46,7 +48,7 @@ spec:
               readiness: *appProbes
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
             resources:
               requests:
@@ -60,6 +62,7 @@ spec:
               tag: v1.12.8@sha256:c9fac23131cca4db95173d41cc50fd5639121ee381795528fdd7522d7978a7b8
             env:
               MEILI_NO_ANALYTICS: "true"
+              TMPDIR: /tmp
               MEILI_MASTER_KEY:
                 secretKeyRef:
                   name: linkwarden-secret
@@ -79,7 +82,7 @@ spec:
               readiness: *meiliProbes
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
+              readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
             resources:
               requests:
