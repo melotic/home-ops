@@ -24,6 +24,9 @@ spec:
     substitute:
       APP: linkwarden
       VOLSYNC_CAPACITY: 10Gi
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
   sourceRef:
     kind: GitRepository
     name: flux-system
