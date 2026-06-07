@@ -18,6 +18,13 @@ spec:
     deployment:
       replicas: 2
       priorityClassName: cluster-critical
+      envoyGateway:
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 512Mi
     config:
       envoyGateway:
         provider:
