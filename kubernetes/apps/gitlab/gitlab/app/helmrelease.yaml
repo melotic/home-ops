@@ -40,6 +40,9 @@ spec:
           # the sensitive setup script against the same /srv/gitlab as puma.
           # Must redeclare preStop so the strategic merge does not drop the
           # chart's hardcoded graceful-shutdown hook.
+          # The chart omits spec.replicas (HPA-managed), so a broken HPA
+          # leaves the deployment at whatever replica count it had (0). Pin
+          # replicas: 1 directly so every Flux reconciliation resets it.
           - target:
               kind: Deployment
               name: gitlab-webservice-default
@@ -49,6 +52,7 @@ spec:
               metadata:
                 name: gitlab-webservice-default
               spec:
+                replicas: 1
                 template:
                   spec:
                     containers:
@@ -66,6 +70,16 @@ spec:
                                 - /bin/bash
                                 - -c
                                 - pkill -SIGINT -o ruby
+          - target:
+              kind: Deployment
+              name: gitlab-sidekiq-all-in-1-v2
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: gitlab-sidekiq-all-in-1-v2
+              spec:
+                replicas: 1
   values:
     global:
       edition: ee
@@ -211,8 +225,12 @@ spec:
           enabled: false
         service:
           type: ClusterIP
+        # Pin HPA to exactly 1 replica (homelab doesn't need auto-scaling).
+        # Previously the HPA left spec.replicas at 0 (broken metrics),
+        # which took down the GitLab API and caused downstream runner
+        # CrashLoopBackOff (503 on /api/v4/runners/verify).
         minReplicas: 1
-        maxReplicas: 2
+        maxReplicas: 1
         resources:
           requests:
             cpu: 500m
