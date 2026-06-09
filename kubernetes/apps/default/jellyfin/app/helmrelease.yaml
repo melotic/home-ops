@@ -56,14 +56,14 @@ spec:
       automountServiceAccountToken: false
       affinity:
         nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: [k8s-trinity]
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 100
-              preference:
-                matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values: [k8s-trinity]
-            - weight: 50
               preference:
                 matchExpressions:
                   - key: kubernetes.io/hostname
