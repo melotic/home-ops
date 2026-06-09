@@ -80,6 +80,50 @@ spec:
                 name: gitlab-sidekiq-all-in-1-v2
               spec:
                 replicas: 1
+          # The chart (10.0.1) has no hpa.enabled knob — its HPA templates are
+          # gated only by KEDA or disabling the whole component — so delete the
+          # HPA objects outright. This homelab pins replicas and does not want
+          # autoscaling; removing the HPAs also stops drift detection from
+          # fighting them over /spec/replicas.
+          - target:
+              kind: HorizontalPodAutoscaler
+              name: gitlab-webservice-default
+            patch: |
+              $patch: delete
+              apiVersion: autoscaling/v2
+              kind: HorizontalPodAutoscaler
+              metadata:
+                name: gitlab-webservice-default
+          - target:
+              kind: HorizontalPodAutoscaler
+              name: gitlab-sidekiq-all-in-1-v2
+            patch: |
+              $patch: delete
+              apiVersion: autoscaling/v2
+              kind: HorizontalPodAutoscaler
+              metadata:
+                name: gitlab-sidekiq-all-in-1-v2
+          - target:
+              kind: HorizontalPodAutoscaler
+              name: gitlab-gitlab-shell
+            patch: |
+              $patch: delete
+              apiVersion: autoscaling/v2
+              kind: HorizontalPodAutoscaler
+              metadata:
+                name: gitlab-gitlab-shell
+          # gitlab-shell omits spec.replicas (was HPA-managed 2-10); pin it now
+          # that its HPA is removed.
+          - target:
+              kind: Deployment
+              name: gitlab-gitlab-shell
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: gitlab-gitlab-shell
+              spec:
+                replicas: 2
   values:
     global:
       edition: ee
@@ -225,10 +269,12 @@ spec:
           enabled: false
         service:
           type: ClusterIP
-        # Pin HPA to exactly 1 replica (homelab doesn't need auto-scaling).
-        # Previously the HPA left spec.replicas at 0 (broken metrics),
-        # which took down the GitLab API and caused downstream runner
-        # CrashLoopBackOff (503 on /api/v4/runners/verify).
+        # HPAs are deleted outright via postRenderer (see above) — this homelab
+        # doesn't autoscale. min==max is a safety net: flux-local does NOT render
+        # postRenderers, so without it the CI diff would imply autoscaling, and if
+        # the delete ever no-ops the HPA stays pinned. Previously a broken HPA left
+        # spec.replicas at 0, taking down the GitLab API (503 on
+        # /api/v4/runners/verify).
         minReplicas: 1
         maxReplicas: 1
         resources:
@@ -307,6 +353,10 @@ spec:
         service:
           type: ClusterIP
           internalPort: 2222
+        # min==max=2 safety net (HPA deleted via postRenderer; replicas pinned to
+        # 2 in the Deployment postRenderer patch).
+        minReplicas: 2
+        maxReplicas: 2
         resources:
           requests:
             cpu: 50m
