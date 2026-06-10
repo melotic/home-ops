@@ -25,6 +25,9 @@ entries:
       redirect_uris:
         - url: "https://paperless.melotic.dev/accounts/oidc/authentik/login/callback/"
           matching_mode: strict
+      grant_types:
+        - authorization_code
+        - refresh_token
       property_mappings: *property_mappings
       signing_key: *signing_key
 
@@ -36,7 +39,8 @@ entries:
       slug: paperless
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, paperless-ngx]]
       policy_engine_mode: any
-      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/paperless-ngx.svg
+      group: Productivity
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/paperless-ngx.svg
       meta_description: Document management system
       meta_publisher: Paperless-ngx
       open_in_new_tab: true

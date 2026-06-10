@@ -39,7 +39,8 @@ entries:
       slug: linkwarden
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, linkwarden]]
       policy_engine_mode: any
-      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/linkwarden.svg
+      group: Productivity
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/linkwarden.svg
       meta_description: Bookmark manager
       meta_publisher: Linkwarden
       open_in_new_tab: true

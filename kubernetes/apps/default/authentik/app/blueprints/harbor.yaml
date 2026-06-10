@@ -26,6 +26,9 @@ entries:
       redirect_uris:
         - url: "https://harbor.melotic.dev/c/oidc/callback"
           matching_mode: strict
+      grant_types:
+        - authorization_code
+        - refresh_token
       property_mappings: *property_mappings
       signing_key: *signing_key
 
@@ -38,7 +41,8 @@ entries:
       slug: harbor
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, harbor]]
       policy_engine_mode: any
-      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/harbor.svg
+      group: Development
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/harbor.svg
       meta_description: Container registry
       meta_publisher: Harbor
       open_in_new_tab: true
