@@ -52,6 +52,9 @@ entries:
       redirect_uris:
         - url: "https://gitlab.melotic.dev/users/auth/openid_connect/callback"
           matching_mode: strict
+      grant_types:
+        - authorization_code
+        - refresh_token
       property_mappings: *groups_scope_mapping
       signing_key: *signing_key
 
@@ -64,7 +67,8 @@ entries:
       slug: gitlab
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, gitlab]]
       policy_engine_mode: any
-      meta_icon: https://about.gitlab.com/images/press/logo/svg/gitlab-icon-rgb.svg
+      group: Development
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/gitlab.svg
       meta_description: Self-hosted GitLab (internal)
       meta_publisher: GitLab
       open_in_new_tab: true
