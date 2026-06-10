@@ -67,6 +67,9 @@ spec:
             env:
               MEILI_NO_ANALYTICS: "true"
               TMPDIR: /tmp
+              # In-place DB migration on engine upgrade (e.g. Renovate bumps).
+              # Supported for DB >=v1.12 -> engine >=v1.13.
+              MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: "true"
               MEILI_MASTER_KEY:
                 secretKeyRef:
                   name: linkwarden-secret
