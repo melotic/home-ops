@@ -9,6 +9,7 @@ spec:
     kind: OCIRepository
     name: victoria-logs-collector
   interval: 1h
+  timeout: 10m
   values:
     fullnameOverride: victoria-logs-collector
     image:
