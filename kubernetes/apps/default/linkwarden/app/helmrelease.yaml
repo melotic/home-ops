@@ -1,0 +1,132 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: linkwarden
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: linkwarden
+  interval: 1h
+  values:
+    controllers:
+      linkwarden:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/linkwarden/linkwarden
+              tag: v2.14.1@sha256:31cf4bd2a2e111991fa5c9de03174c8698869c83722105c6ce529e4c911e6861
+            env:
+              TZ: America/Chicago
+              DATABASE_URL:
+                secretKeyRef:
+                  name: linkwarden-postgres
+                  key: uri
+              NEXTAUTH_URL: "https://linkwarden.melotic.dev/api/v1/auth"
+              NEXT_PUBLIC_DISABLE_REGISTRATION: "true"
+              NEXT_PUBLIC_CREDENTIALS_ENABLED: "false"
+              NEXT_PUBLIC_AUTHENTIK_ENABLED: "true"
+              AUTHENTIK_CUSTOM_NAME: authentik
+              AUTHENTIK_ISSUER: "https://sso.melotic.dev/application/o/linkwarden/"
+              MEILI_HOST: "http://localhost:7700"
+              HOME: /tmp
+              TMPDIR: /tmp
+            envFrom:
+              - secretRef:
+                  name: linkwarden-secret
+            probes:
+              liveness: &appProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/config
+                    port: &port 3000
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *appProbes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+          meilisearch:
+            image:
+              repository: docker.io/getmeili/meilisearch
+              tag: v1.12.8@sha256:c9fac23131cca4db95173d41cc50fd5639121ee381795528fdd7522d7978a7b8
+            env:
+              MEILI_NO_ANALYTICS: "true"
+              TMPDIR: /tmp
+              MEILI_MASTER_KEY:
+                secretKeyRef:
+                  name: linkwarden-secret
+                  key: MEILI_MASTER_KEY
+            probes:
+              liveness: &meiliProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 7700
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *meiliProbes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "linkwarden.melotic.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+    persistence:
+      data:
+        existingClaim: linkwarden
+        advancedMounts:
+          linkwarden:
+            app:
+              - path: /data/data
+                subPath: data
+            meilisearch:
+              - path: /meili_data
+                subPath: meili_data
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
