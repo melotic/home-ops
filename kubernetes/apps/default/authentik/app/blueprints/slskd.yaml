@@ -24,6 +24,7 @@ entries:
       slug: slskd
       provider: !Find [authentik_providers_proxy.proxyprovider, [name, slskd]]
       policy_engine_mode: any
-      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/slskd.svg
+      group: Media
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/slskd.svg
       meta_description: Soulseek client
       open_in_new_tab: true

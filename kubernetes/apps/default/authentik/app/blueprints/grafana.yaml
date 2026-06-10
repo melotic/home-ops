@@ -26,6 +26,9 @@ entries:
       redirect_uris:
         - url: "https://grafana.melotic.dev/login/generic_oauth"
           matching_mode: strict
+      grant_types:
+        - authorization_code
+        - refresh_token
       property_mappings: *property_mappings
       signing_key: *signing_key
 
@@ -38,7 +41,8 @@ entries:
       slug: grafana
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, grafana]]
       policy_engine_mode: any
-      meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/grafana.svg
+      group: Monitoring
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/grafana.svg
       meta_description: Metrics and dashboards
       meta_publisher: Grafana Labs
       open_in_new_tab: true

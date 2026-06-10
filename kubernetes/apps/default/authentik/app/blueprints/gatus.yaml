@@ -24,6 +24,7 @@ entries:
       slug: gatus
       provider: !Find [authentik_providers_proxy.proxyprovider, [name, gatus]]
       policy_engine_mode: any
-      meta_icon: kubernetes/apps/default/authentik/app/blueprints/gatus.yaml
+      group: Monitoring
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/gatus.svg
       meta_description: Uptime monitoring
       open_in_new_tab: true

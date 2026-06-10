@@ -103,6 +103,7 @@ entries:
       slug: ghidra-ldap
       provider: !KeyOf ghidra-ldap-provider
       policy_engine_mode: any
+      group: Development
       meta_description: Ghidra Server LDAP access
       meta_publisher: Ghidra
 

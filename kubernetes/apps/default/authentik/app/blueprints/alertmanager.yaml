@@ -24,6 +24,7 @@ entries:
       slug: alertmanager
       provider: !Find [authentik_providers_proxy.proxyprovider, [name, alertmanager]]
       policy_engine_mode: any
+      group: Monitoring
       meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/alertmanager.svg
       meta_description: Alert routing and management
       open_in_new_tab: true

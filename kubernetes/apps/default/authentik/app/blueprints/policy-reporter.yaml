@@ -41,6 +41,7 @@ entries:
       slug: policy-reporter
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, policy-reporter]]
       policy_engine_mode: any
+      group: Monitoring
       meta_icon: https://raw.githubusercontent.com/walkxcode/dashboard-icons/main/svg/kyverno.svg
       meta_description: Kyverno policy reporting dashboard
       meta_publisher: Kyverno
