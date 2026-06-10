@@ -25,6 +25,9 @@ entries:
       redirect_uris:
         - url: "https://linkwarden.melotic.dev/api/v1/auth/callback/authentik"
           matching_mode: strict
+      grant_types:
+        - authorization_code
+        - refresh_token
       property_mappings: *property_mappings
       signing_key: *signing_key
 
