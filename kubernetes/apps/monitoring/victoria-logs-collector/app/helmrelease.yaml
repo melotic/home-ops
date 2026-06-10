@@ -9,7 +9,6 @@ spec:
     kind: OCIRepository
     name: victoria-logs-collector
   interval: 1h
-  timeout: 10m
   values:
     fullnameOverride: victoria-logs-collector
     image:
@@ -61,7 +60,7 @@ spec:
         cpu: 50m
         memory: 128Mi
       limits:
-        memory: 256Mi
+        memory: 512Mi
     podSecurityContext:
       enabled: true
       runAsNonRoot: false
