@@ -13,7 +13,7 @@ configMapGenerator:
       - grafana.yaml=./blueprints/grafana.yaml
       - harbor.yaml=./blueprints/harbor.yaml
       - gitlab.yaml=./blueprints/gitlab.yaml
-      - linkwarden.yaml=./blueprints/linkwarden.yaml
+      - karakeep.yaml=./blueprints/karakeep.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
       - victoria-logs.yaml=./blueprints/victoria-logs.yaml
       - alertmanager.yaml=./blueprints/alertmanager.yaml

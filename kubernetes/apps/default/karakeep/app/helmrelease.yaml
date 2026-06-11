@@ -1,0 +1,183 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: karakeep
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: karakeep
+  interval: 1h
+  values:
+    controllers:
+      karakeep:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          # s6-overlay refuses to start non-root unless /run is owned by the run
+          # uid; chown the shared /run emptyDir (keep CAP_CHOWN — do not drop ALL).
+          fix-run:
+            image:
+              repository: docker.io/library/busybox
+              tag: latest@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d
+            command: ["sh", "-c", "chown 1000:1000 /run"]
+            securityContext:
+              runAsUser: 0
+              runAsNonRoot: false
+        containers:
+          web:
+            image:
+              repository: ghcr.io/karakeep-app/karakeep
+              tag: 0.32.0@sha256:64d6a9bbf2d37b5c808cf06b5d87f1f1c7846fdd3844724145a9741aeb06fd31
+            env:
+              DATA_DIR: /data
+              HOME: /tmp
+              MEILI_ADDR: http://localhost:7700
+              BROWSER_WEB_URL: http://localhost:9222
+              NEXTAUTH_URL: https://karakeep.melotic.dev
+              DISABLE_NEW_RELEASE_CHECK: "true"
+              DB_WAL_MODE: "true"
+              OAUTH_WELLKNOWN_URL: https://sso.melotic.dev/application/o/karakeep/.well-known/openid-configuration
+              OAUTH_PROVIDER_NAME: authentik
+            envFrom:
+              - secretRef:
+                  name: karakeep-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 3000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              # s6-overlay needs a writable root (it cannot chown the root-owned
+              # /run as non-root). Non-root is preserved; the writable rootfs +
+              # root fix-run init are covered by the root-and-writable-rootfs-infra
+              # Kyverno exception.
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+          chrome:
+            image:
+              repository: docker.io/zenika/alpine-chrome
+              tag: "124@sha256:6aa9e1882bf0c69b1dc001b3dc9cdb21e1da5ec8f46577b03640c2a60f181451"
+            args:
+              - --no-sandbox
+              - --disable-gpu
+              - --disable-dev-shm-usage
+              - --remote-debugging-address=0.0.0.0
+              - --remote-debugging-port=9222
+              - --hide-scrollbars
+            env:
+              HOME: /tmp
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 25m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+          meilisearch:
+            image:
+              repository: docker.io/getmeili/meilisearch
+              tag: v1.41.0@sha256:860fa4baed04ae1c235de870edab0c8006227546dea1bbb6411fbfc5e27cf1db
+            env:
+              MEILI_NO_ANALYTICS: "true"
+              MEILI_ENV: production
+              HOME: /tmp
+              MEILI_MASTER_KEY:
+                secretKeyRef:
+                  name: karakeep-secret
+                  key: MEILI_MASTER_KEY
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 25m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        seccompProfile:
+          type: RuntimeDefault
+    service:
+      app:
+        controller: karakeep
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - "karakeep.melotic.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+    persistence:
+      data:
+        existingClaim: karakeep
+        advancedMounts:
+          karakeep:
+            web:
+              - path: /data
+      meili:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        storageClass: ceph-block
+        advancedMounts:
+          karakeep:
+            meilisearch:
+              - path: /meili_data
+      run:
+        type: emptyDir
+        advancedMounts:
+          karakeep:
+            fix-run:
+              - path: /run
+            web:
+              - path: /run
+      web-tmp:
+        type: emptyDir
+        advancedMounts:
+          karakeep:
+            web:
+              - path: /tmp
+      chrome-tmp:
+        type: emptyDir
+        advancedMounts:
+          karakeep:
+            chrome:
+              - path: /tmp
+      meili-tmp:
+        type: emptyDir
+        advancedMounts:
+          karakeep:
+            meilisearch:
+              - path: /tmp
