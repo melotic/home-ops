@@ -78,8 +78,9 @@ metadata:
   annotations:
     policies.kyverno.io/reason: >-
       These workloads require both root and a writable root filesystem: paperless
-      (consumer pipeline), smartctl-exporter (raw device access), the Tailscale
-      operator/nameserver/proxies, and the OpenEBS localpv provisioner.
+      (consumer pipeline), karakeep (s6-overlay init chowns /run), smartctl-exporter
+      (raw device access), the Tailscale operator/nameserver/proxies, and the
+      OpenEBS localpv provisioner.
     policies.kyverno.io/intent: accepted-risk
     home-ops.melotic.dev/review-trigger: >-
       Re-evaluate per workload when its upstream chart supports running non-root
@@ -100,6 +101,10 @@ spec:
       - resources:
           namespaces: [default]
           names: [paperless-ngx, paperless-ngx-*]
+          kinds: [Pod, Deployment, ReplicaSet]
+      - resources:
+          namespaces: [default]
+          names: [karakeep, karakeep-*]
           kinds: [Pod, Deployment, ReplicaSet]
       - resources:
           namespaces: [monitoring]
