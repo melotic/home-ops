@@ -140,21 +140,19 @@ spec:
             namespace: network
             sectionName: https
     persistence:
+      # Single volsync-backed PVC shared by web (SQLite) and meilisearch (index)
+      # via isolated subPaths — mounting a generated PVC would collide with the
+      # volsync-created "karakeep" claim (app-template names it after the release).
       data:
         existingClaim: karakeep
         advancedMounts:
           karakeep:
             web:
               - path: /data
-      meili:
-        type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        size: 2Gi
-        storageClass: ceph-block
-        advancedMounts:
-          karakeep:
+                subPath: data
             meilisearch:
               - path: /meili_data
+                subPath: meili
       run:
         type: emptyDir
         advancedMounts:
