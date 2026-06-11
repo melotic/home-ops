@@ -135,11 +135,6 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-paperless
-        - name: linkwarden
-          ensure: present
-          login: true
-          passwordSecret:
-            name: postgres-user-linkwarden
         - name: gitlab
           ensure: present
           login: true

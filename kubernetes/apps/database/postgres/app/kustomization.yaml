@@ -9,7 +9,6 @@ resources:
   - ./databases/harbor.yaml
   - ./databases/gitlab.yaml
   - ./databases/lidarr.yaml
-  - ./databases/linkwarden.yaml
   - ./databases/paperless.yaml
   - ./databases/prowlarr.yaml
   - ./databases/radarr.yaml
@@ -28,7 +27,6 @@ resources:
   - ./roles/gitlab.yaml
   - ./roles/harbor.yaml
   - ./roles/lidarr.yaml
-  - ./roles/linkwarden.yaml
   - ./roles/paperless.yaml
   - ./roles/prowlarr.yaml
   - ./roles/radarr.yaml
