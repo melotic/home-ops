@@ -81,7 +81,7 @@ spec:
         repository: docker.io/goharbor/harbor-core
       resources:
         requests:
-          cpu: 50m
+          cpu: 10m
           memory: 256Mi
         limits:
           memory: 256Mi
@@ -98,7 +98,7 @@ spec:
           repository: docker.io/goharbor/registry-photon
         resources:
           requests:
-            cpu: 50m
+            cpu: 10m
             memory: 256Mi
           limits:
             memory: 256Mi
@@ -107,7 +107,7 @@ spec:
           repository: docker.io/goharbor/harbor-registryctl
         resources:
           requests:
-            cpu: 50m
+            cpu: 10m
             memory: 256Mi
           limits:
             memory: 256Mi
@@ -117,7 +117,7 @@ spec:
         repository: docker.io/goharbor/harbor-jobservice
       resources:
         requests:
-          cpu: 30m
+          cpu: 10m
           memory: 128Mi
         limits:
           memory: 256Mi
@@ -127,7 +127,7 @@ spec:
         repository: docker.io/goharbor/trivy-adapter-photon
       resources:
         requests:
-          cpu: 50m
+          cpu: 10m
           memory: 256Mi
         limits:
           cpu: null
