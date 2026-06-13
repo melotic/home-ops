@@ -29,7 +29,9 @@ spec:
         - authentik-blueprints
     geoip:
       enabled: true
-      updateInterval: 8
+      # MaxMind GeoLite2 databases update weekly; 24h avoids hitting daily download limits
+      # (both server and worker pods run independent geoipupdate sidecars)
+      updateInterval: 24
       existingSecret:
         accountId: MAXMIND_ACCOUNT_ID
         licenseKey: MAXMIND_LICENSE_KEY
