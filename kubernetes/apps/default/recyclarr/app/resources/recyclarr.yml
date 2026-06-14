@@ -178,6 +178,12 @@ sonarr:
         - trash_id: e1053c0ef622df3749fa43c22865663a # [Optional] SDR
           select:
             - 83304f261cf516bb208c18c54c0adf97 # SDR (no WEBDL)
+        - trash_id: bad5bc85573a0134e1e1987c46f67e98 # [Optional] Accessibility
+          select:
+            - 44ccbcbc74506f208973e1463b11705f # WiTH AD
+            - c196536ea8122397c5854040d01f2aa7 # WiTH ASL
+            - b40dc2e630723745aab9f1b94f4aab74 # WiTH BASL
+            - 0aef382c4ed4c5eb5d40109dfd351b72 # WiTH BSL
         - trash_id: f54985e5e96747cef58731f1cf4c9181 # [Streaming Services] Anime
           select:
             - a370d974bc7b80374de1d9ba7519760b # ABEMA
