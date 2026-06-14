@@ -1,0 +1,2 @@
+*.sops.yaml   @melotic
+/.sops.yaml   @melotic

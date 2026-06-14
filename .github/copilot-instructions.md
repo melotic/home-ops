@@ -112,7 +112,7 @@ After adding a new `ks.yaml`, add it to `kubernetes/apps/<namespace>/kustomizati
 
 ## Variable Substitution
 
-Flux performs `postBuild.substituteFrom` using a `cluster-secrets` Secret. Use `${SECRET_DOMAIN}` in resource definitions for the cluster's domain (e.g., hostnames, advertise URLs). This substitution is available in all app Kustomizations.
+Flux performs `postBuild.substituteFrom` using a `cluster-secrets` Secret. The cluster domain is no longer a secret — hardcode `melotic.dev` directly in resource definitions (hostnames, advertise URLs). The `cluster-secrets` substitution now provides only `${IPV6_PREFIX}`, available in all app Kustomizations.
 
 ---
 
@@ -184,7 +184,7 @@ Route example (inside HelmRelease values):
 route:
   app:
     hostnames:
-      - "{{ .Release.Name }}.${SECRET_DOMAIN}"
+      - "{{ .Release.Name }}.melotic.dev"
     parentRefs:
       - name: envoy-internal   # or envoy-external
         namespace: network
@@ -206,7 +206,7 @@ Network CIDRs:
 - **Ceph RBD** is the default StorageClass (`storageClass: ceph-block`).
 - **CephFS** is available as a non-default StorageClass (`storageClass: ceph-filesystem`).
 - **OpenEBS hostpath** is used for CNPG (`storageClass: openebs-hostpath`).
-- **NFS** share is available at `construct.${SECRET_DOMAIN}:/var/nfs/shared/data`, typically mounted at `/data`.
+- **NFS** share is available at `construct.melotic.dev:/var/nfs/shared/data`, typically mounted at `/data`.
 - Use `ReadWriteOnce` for most PVCs.
 
 ```yaml
@@ -217,7 +217,7 @@ persistence:
     storageClass: ceph-block
   data:
     type: nfs
-    server: construct.${SECRET_DOMAIN}
+    server: construct.melotic.dev
     path: /var/nfs/shared/data
     globalMounts:
       - path: /data
