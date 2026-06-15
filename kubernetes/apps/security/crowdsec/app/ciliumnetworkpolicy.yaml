@@ -9,8 +9,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: crowdsec
   ingress:
-    # LAPI :8080 reachable ONLY from the off-cluster Fedora endpoint /32s (same set as
-    # config.yaml.local allowed_ranges). fromCIDR is required for off-cluster sources.
     - fromCIDR:
         - 10.20.0.147/32
         - 10.20.0.119/32
@@ -18,7 +16,6 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    # Prometheus scrapes :6060 (ServiceMonitor, Plan 26-03).
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: monitoring
@@ -28,7 +25,6 @@ spec:
             - port: "6060"
               protocol: TCP
   egress:
-    # DNS
     - toEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": kube-system
@@ -40,7 +36,6 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    # CNPG Postgres (database namespace) — the only other egress; CAPI is off (no internet).
     - toEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": database
