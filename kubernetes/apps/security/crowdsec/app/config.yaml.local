@@ -1,0 +1,16 @@
+db_config:
+  type: pgx
+  host: postgres-cluster-rw.database.svc.cluster.local
+  port: 5432
+  user: crowdsec
+  password: $${POSTGRES_PASSWORD}
+  db_name: crowdsec
+  sslmode: require
+api:
+  server:
+    auto_registration:
+      enabled: true
+      token: $${CROWDSEC_REGISTRATION_TOKEN}
+      allowed_ranges:
+        - 10.20.0.147/32
+        - 10.20.0.119/32

@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/servicemonitor_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: crowdsec
+spec:
+  namespaceSelector:
+    matchNames:
+      - security
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: crowdsec
+  endpoints:
+    - port: metrics
+      path: /metrics
+      honorLabels: true
