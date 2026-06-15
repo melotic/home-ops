@@ -120,6 +120,11 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-atuin
+        - name: crowdsec
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-crowdsec
         - name: authentik
           ensure: present
           login: true

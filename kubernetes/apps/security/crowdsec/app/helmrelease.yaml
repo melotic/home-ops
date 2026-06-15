@@ -1,0 +1,106 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: crowdsec
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: crowdsec
+  interval: 1h
+  values:
+    controllers:
+      crowdsec:
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/crowdsecurity/crowdsec
+              tag: v1.7.8@sha256:2f527c9bb8b367120eb08b82890aa912ce96bfa1ada93dda0721700e4b4e0dde
+            env:
+              DISABLE_AGENT: "true"
+              DISABLE_ONLINE_API: "true"
+              CROWDSEC_BYPASS_DB_VOLUME_CHECK: "true"
+              CUSTOM_HOSTNAME: crowdsec-lapi
+              POSTGRES_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: crowdsec-postgres
+                    key: password
+            envFrom:
+              - secretRef:
+                  name: crowdsec
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8080
+                  initialDelaySeconds: 10
+                  periodSeconds: 15
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: "10.60.80.20"
+        externalTrafficPolicy: Local
+        loadBalancerSourceRanges:
+          - 10.20.0.147/32
+          - 10.20.0.119/32
+        ports:
+          lapi:
+            port: 8080
+          metrics:
+            port: 6060
+    persistence:
+      etc-crowdsec:
+        type: emptyDir
+        globalMounts:
+          - path: /etc/crowdsec
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /var/lib/crowdsec/data
+      varlog:
+        type: emptyDir
+        globalMounts:
+          - path: /var/log
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      config-local:
+        type: configMap
+        name: crowdsec-config-local
+        advancedMounts:
+          crowdsec:
+            app:
+              - path: /etc/crowdsec/config.yaml.local
+                subPath: config.yaml.local
+                readOnly: true
