@@ -6,6 +6,7 @@ resources:
   - ./databases/app.yaml
   - ./databases/atuin.yaml
   - ./databases/authentik.yaml
+  - ./databases/crowdsec.yaml
   - ./databases/harbor.yaml
   - ./databases/gitlab.yaml
   - ./databases/lidarr.yaml
@@ -24,6 +25,7 @@ resources:
   - ./prometheusrule-backup.yaml
   - ./roles/atuin.yaml
   - ./roles/authentik.yaml
+  - ./roles/crowdsec.yaml
   - ./roles/gitlab.yaml
   - ./roles/harbor.yaml
   - ./roles/lidarr.yaml
