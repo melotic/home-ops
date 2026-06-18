@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: tofu-controller
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: tofu-controller
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      strategy: rollback
+  values:
+    image:
+      repository: ghcr.io/flux-iac/tofu-controller
+      tag: v0.16.4@sha256:7f95e82a29c6f0c49965a1e248f2c1713593053819175dd2624c474b05ef5263
+    runner:
+      image:
+        repository: ghcr.io/flux-iac/tf-runner
+        tag: v0.16.4@sha256:fc3af4d9b99f54cc92d4aec51d83117dcf373b79d8ed1dc6f69a4ac154184725
+      allowedNamespaces:
+        - flux-system
+      serviceAccount:
+        create: true
+        allowedNamespaces:
+          - flux-system
+    rbac:
+      create: true
+    podSecurityContext:
+      fsGroup: 1337
+    securityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 65532
+      capabilities:
+        drop:
+          - ALL
+      seccompProfile:
+        type: RuntimeDefault
+    branchPlanner:
+      enabled: true
+      image:
+        repository: ghcr.io/flux-iac/branch-planner
+        tag: v0.16.4@sha256:3c5b41956209951b3d2ab07d0f95bc3e69e1e57a6714e70e6b18177bd01ca34a
