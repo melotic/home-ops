@@ -1,9 +1,0 @@
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: branch-planner
-data:
-  secretName: branch-planner-token
-  resources: |-
-    - namespace: flux-system

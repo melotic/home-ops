@@ -43,8 +43,3 @@ spec:
           - ALL
       seccompProfile:
         type: RuntimeDefault
-    branchPlanner:
-      enabled: true
-      image:
-        repository: ghcr.io/flux-iac/branch-planner
-        tag: v0.16.4@sha256:3c5b41956209951b3d2ab07d0f95bc3e69e1e57a6714e70e6b18177bd01ca34a
