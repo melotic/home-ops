@@ -16,6 +16,8 @@ spec:
     remediation:
       strategy: rollback
   values:
+    awsPackage:
+      install: false
     image:
       repository: ghcr.io/flux-iac/tofu-controller
       tag: v0.16.4@sha256:7f95e82a29c6f0c49965a1e248f2c1713593053819175dd2624c474b05ef5263
