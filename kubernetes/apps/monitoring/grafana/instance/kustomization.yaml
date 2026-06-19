@@ -16,3 +16,4 @@ resources:
   - ./grafanadashboards/kubernetes-volumes.yaml
   - ./grafanadashboards/node-exporter-full.yaml
   - ./grafanadashboards/vm-stack.yaml
+  - ./grafanadashboards/victorialogs-explorer.yaml
