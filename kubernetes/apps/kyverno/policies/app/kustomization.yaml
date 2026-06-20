@@ -13,4 +13,5 @@ resources:
   - ./08-require-image-registry-allowlist.yaml
   - ./exceptions/host-namespace-infra.yaml
   - ./exceptions/rook-ceph-storage.yaml
+  - ./exceptions/unsigned-image-signatures.yaml
   - ./exceptions/writable-rootfs-apps.yaml

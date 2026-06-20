@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: unsigned-image-signatures
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      tuppr and the perfectra1n volsync controller image are already pinned by
+      digest, but their current GHCR manifests do not publish cosign signatures.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/pinned-digests: >-
+      tuppr=sha256:bca79f9cfc4a75b318e160bd811948fa513327f178c32cf85713833be7a480e2;
+      volsync=sha256:79674d3c48685e21cadaac8e0afd14268130a0a51a10c41a9dd65096c1434a0f
+    home-ops.melotic.dev/review-trigger: >-
+      Remove these exceptions when upstream publishes cosign signatures for the
+      pinned tuppr and volsync image digests.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: verify-image-signature-cosign
+      ruleNames:
+        - verify-trusted-registries
+        - autogen-verify-trusted-registries
+        - autogen-cronjob-verify-trusted-registries
+  match:
+    any:
+      - resources:
+          namespaces: [system-upgrade]
+          names: [tuppr, tuppr-*]
+          kinds: [Pod, Deployment, ReplicaSet]
+      - resources:
+          namespaces: [volsync-system]
+          names: [volsync, volsync-*]
+          kinds: [Pod, Deployment, ReplicaSet]
+      - resources:
+          namespaces: [volsync-system]
+          names: [kopia-maint-*]
+          kinds: [Pod, Job]
