@@ -75,7 +75,7 @@ spec:
             conditions: ["[STATUS] == 200"]
         hostnames: ["{{ .Release.Name }}.melotic.dev"]
         parentRefs:
-          - name: envoy-external
+          - name: envoy-internal
             namespace: network
             sectionName: https
         rules:
