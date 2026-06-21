@@ -8,9 +8,6 @@ metadata:
     lbipam.cilium.io/ips: "10.60.80.54"
 spec:
   type: LoadBalancer
-  loadBalancerSourceRanges:
-    - 10.20.0.0/16
-    - 10.60.0.0/16
   selector:
     app.kubernetes.io/name: fluent-bit
     app.kubernetes.io/instance: fluent-bit
