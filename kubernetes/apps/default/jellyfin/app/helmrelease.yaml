@@ -81,6 +81,8 @@ spec:
         annotations:
           lbipam.cilium.io/ips: 10.60.80.8
         externalTrafficPolicy: Local
+        loadBalancerSourceRanges:
+          - 10.60.0.0/16
         ports:
           http:
             port: *port
