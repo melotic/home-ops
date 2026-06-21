@@ -66,8 +66,9 @@ spec:
         hostnames:
           - "kromgo.melotic.dev"
         parentRefs:
-          - name: envoy-external
+          - name: envoy-internal
             namespace: network
+            sectionName: https
         rules:
           - backendRefs:
               - identifier: app
