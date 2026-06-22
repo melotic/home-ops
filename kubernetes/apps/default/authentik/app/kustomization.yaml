@@ -24,6 +24,7 @@ configMapGenerator:
       - outpost.yaml=./blueprints/outpost.yaml
       - flow-login.yaml=./blueprints/flow-login.yaml
       - brand.yaml=./blueprints/brand.yaml
+      - reputation.yaml=./blueprints/reputation.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

@@ -323,6 +323,8 @@ On pull requests touching `kubernetes/**`, the `flux-local` workflow runs:
 
 Always ensure Kubernetes changes pass `mise exec -- flux-local test --enable-helm --all-namespaces --path kubernetes/flux/cluster -v --sources flux-system` before merging.
 
+PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/) with a meaningful component scope (e.g. `feat(envoy-gateway): …`) — the title becomes the squash-merge commit message.
+
 ---
 
 ## Renovate
