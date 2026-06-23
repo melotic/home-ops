@@ -15,9 +15,14 @@ spec:
       registry: docker.io
       tag: v1.50.0@sha256:89693ad27a728bb6971e533eb7b121ad00cf38efdbdda2ec4bf056a348f5ca82
     extraArgs:
-      tmpDataPath: /tmp
+      tmpDataPath: /var/lib/vl-collector
+      fileCollector.timeField: requestReceivedTimestamp
+      fileCollector.msgField: requestURI
     remoteWrite:
       - url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
+    fileCollector:
+      - glob: /var/log/audit/kube/kube-apiserver.log
+        extraFields: '{"log_type":"kube-audit"}'
     collector:
       msgField:
         - message
@@ -52,7 +57,9 @@ spec:
       includeNodeAnnotations: false
     persistence:
       volume:
-        emptyDir: {}
+        hostPath:
+          path: /var/lib/vl-collector
+          type: DirectoryOrCreate
     podMonitor:
       enabled: true
     resources:
@@ -77,3 +84,4 @@ spec:
       runAsGroup: 0
       capabilities:
         drop: ["ALL"]
+        add: ["DAC_READ_SEARCH"]
