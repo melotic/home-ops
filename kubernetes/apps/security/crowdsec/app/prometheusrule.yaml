@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: crowdsec-rules
+spec:
+  groups:
+    - name: crowdsec.rules
+      rules:
+        - alert: CrowdSecLAPIDown
+          expr: |-
+            up{job="crowdsec", namespace="security"} == 0
+          for: 5m
+          annotations:
+            summary: >-
+              CrowdSec LAPI is down: security decisions cannot be issued or
+              queried by bouncers
+          labels:
+            severity: critical
+            tier: security
+
+        - alert: CrowdSecCAPISyncFailing
+          expr: |-
+            increase(cs_papi_poll_errors_total{namespace="security"}[15m]) > 0
+          for: 15m
+          annotations:
+            summary: >-
+              CrowdSec central-API blocklist sync is failing: community threat
+              intelligence is going stale
+          labels:
+            severity: critical
+            tier: security

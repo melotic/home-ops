@@ -1,0 +1,68 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: vmalert
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: vmalert
+  interval: 1h
+  values:
+    fullnameOverride: vmalert
+    server:
+      image:
+        registry: docker.io
+      datasource:
+        url: http://victoria-logs-server.monitoring.svc.cluster.local:9428
+      notifier:
+        url: http://kube-prometheus-stack-alertmanager.monitoring.svc.cluster.local:9093
+      extraArgs:
+        rule.defaultRuleType: vlogs
+        external.url: https://victoria-logs.melotic.dev
+      extraVolumes:
+        - name: tmp
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop: ["ALL"]
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
+      config:
+        alerts:
+          groups:
+            - name: unifi-ids
+              type: vlogs
+              interval: 5m
+              rules:
+                - alert: UniFiIDSThreatBurst
+                  expr: '"UNIFIpolicyType=IDS/IPS" | stats count() as detections | filter detections:>10'
+                  for: 0m
+                  labels:
+                    severity: critical
+                    tier: security
+                  annotations:
+                    summary: >-
+                      UniFi IDS/IPS reported {{ $value }} threat detections in the
+                      last 5 minutes (active targeting at the WAN edge)
+    alertmanager:
+      enabled: false
+    serviceMonitor:
+      enabled: true

@@ -9,6 +9,7 @@ resources:
   - ./ciliumnetworkpolicy.yaml
   - ./monitoring.yaml
   - ./grafanadashboard.yaml
+  - ./prometheusrule.yaml
 configMapGenerator:
   - name: crowdsec-config-local
     files:

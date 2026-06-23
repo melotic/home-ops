@@ -76,7 +76,7 @@ spec:
         [PARSER]
             Name                 syslog-rfc3164-local
             Format               regex
-            Regex                ^\<(?<pri>[0-9]{1,5})\>(?<time>[A-Za-z]{3}\s+[0-9]{1,2}\s+[0-9]{2}:[0-9]{2}:[0-9]{2})\s+(?<host>[^ ]+)\s+(?<ident>[^\[:{ ]+)(?:\[(?<pid>[0-9]+)\])?[: ]*(?<message>.*)$
+            Regex                ^\<(?<pri>[0-9]{1,5})\>(?<time>[A-Za-z]{3}\s+[0-9]{1,2}\s+[0-9]{2}:[0-9]{2}:[0-9]{2})\s+(?<host>[^ ]+)\s+(?<message>.*)$
             Time_Key             time
             Time_Format          %b %d %H:%M:%S
             Time_System_Timezone On
@@ -86,7 +86,7 @@ spec:
             Match                syslog.*
             Host                 victoria-logs-server.monitoring.svc.cluster.local
             Port                 9428
-            URI                  /insert/jsonline?_stream_fields=host,ident&_msg_field=message,log&_time_field=date
+            URI                  /insert/jsonline?_stream_fields=host&_msg_field=message,log&_time_field=date
             Format               json_lines
             json_date_format     iso8601
             Compress             gzip

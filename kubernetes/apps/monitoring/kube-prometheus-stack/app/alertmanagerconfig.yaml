@@ -33,6 +33,12 @@ spec:
             value: ImagePullBackOff|ErrImagePull|InvalidImageName|CreateContainerConfigError
             matchType: =~
         continue: true
+      - receiver: pushover-escalation
+        matchers:
+          - name: tier
+            value: security
+            matchType: =
+        continue: true
       - receiver: webhook
         matchers:
           - name: severity
