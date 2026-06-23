@@ -19,3 +19,4 @@ resources:
   - ./unpoller/ks.yaml
   - ./victoria-logs-collector/ks.yaml
   - ./victoria-logs/ks.yaml
+  - ./vmalert/ks.yaml
