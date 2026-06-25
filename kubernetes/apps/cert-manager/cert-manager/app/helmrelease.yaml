@@ -18,7 +18,7 @@ spec:
     replicaCount: 1
     image:
       repository: quay.io/jetstack/cert-manager-controller
-      tag: v1.20.2
+      tag: v1.20.3
       digest: sha256:fe0623d7d04a382c888f03343a3a2da716e0d96ad3d5d790c0ebcbcb2a4329a5
     webhook:
       image:
