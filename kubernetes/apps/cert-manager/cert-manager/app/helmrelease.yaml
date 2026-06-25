@@ -28,7 +28,7 @@ spec:
     cainjector:
       image:
         repository: quay.io/jetstack/cert-manager-cainjector
-        tag: v1.20.2
+        tag: v1.20.3
         digest: sha256:6f5a644135887b2aa7d5cc145072fa56421560e3586ff1f184358022d490f4e1
     acmesolver:
       image:
