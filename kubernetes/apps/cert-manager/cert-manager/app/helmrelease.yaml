@@ -23,7 +23,7 @@ spec:
     webhook:
       image:
         repository: quay.io/jetstack/cert-manager-webhook
-        tag: v1.20.2
+        tag: v1.20.3
         digest: sha256:baf651128b9f05c426cbd5e60e2036bf382c99ca270f49d0757d6f7d2452f4e5
     cainjector:
       image:
