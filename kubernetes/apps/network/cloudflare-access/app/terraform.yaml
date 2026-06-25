@@ -1,0 +1,20 @@
+---
+apiVersion: infra.contrib.fluxcd.io/v1alpha2
+kind: Terraform
+metadata:
+  name: cloudflare-access
+  namespace: network
+spec:
+  interval: 1h
+  approvePlan: auto
+  destroyResourcesOnDeletion: false
+  path: ./kubernetes/apps/network/cloudflare-access/app/terraform
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  varsFrom:
+    - kind: Secret
+      name: cf-access-tfvars
+  writeOutputsToSecret:
+    name: cloudflare-access-outputs
