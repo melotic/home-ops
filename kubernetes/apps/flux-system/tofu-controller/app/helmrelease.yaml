@@ -29,6 +29,7 @@ spec:
         create: true
         allowedNamespaces:
           - flux-system
+          - network
     rbac:
       create: true
     podSecurityContext:

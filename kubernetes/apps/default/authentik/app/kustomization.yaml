@@ -25,6 +25,7 @@ configMapGenerator:
       - flow-login.yaml=./blueprints/flow-login.yaml
       - brand.yaml=./blueprints/brand.yaml
       - reputation.yaml=./blueprints/reputation.yaml
+      - cloudflare-access.yaml=./blueprints/cloudflare-access.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
