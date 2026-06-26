@@ -40,7 +40,9 @@ spec:
 
         - alert: VolSyncSourceStaleWarning
           expr: |-
-            max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role="source"}[18h])) < 1
+            (max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role="source"}[18h])) < 1)
+              and on (obj_namespace, obj_name)
+            kube_customresource_volsync_replicationsource_info
           annotations:
             summary: >-
               {{ $labels.obj_namespace }}/{{ $labels.obj_name }} has no completed VolSync source sync in more than 18 hours
@@ -50,7 +52,9 @@ spec:
 
         - alert: VolSyncSourceStaleCritical
           expr: |-
-            max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role="source"}[24h])) < 1
+            (max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role="source"}[24h])) < 1)
+              and on (obj_namespace, obj_name)
+            kube_customresource_volsync_replicationsource_info
           annotations:
             summary: >-
               {{ $labels.obj_namespace }}/{{ $labels.obj_name }} has no completed VolSync source sync in more than 24 hours
