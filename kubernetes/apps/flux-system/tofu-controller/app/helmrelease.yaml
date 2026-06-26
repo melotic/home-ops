@@ -16,6 +16,9 @@ spec:
     remediation:
       strategy: rollback
   values:
+    # Required so a Terraform CR in an app namespace (network) can reference the
+    # shared GitRepository in flux-system.
+    allowCrossNamespaceRefs: true
     awsPackage:
       install: false
     image:
