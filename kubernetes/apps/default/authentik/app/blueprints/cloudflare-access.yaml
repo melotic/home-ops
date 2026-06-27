@@ -26,7 +26,7 @@ entries:
       scope_name: groups
       description: "User group membership"
       expression: |
-        return {"groups": [group.name for group in request.user.groups.all()]}
+        return {"groups": [group.name for group in request.user.all_groups()]}
 
   # OAuth2/OIDC provider for Cloudflare Access
   - model: authentik_providers_oauth2.oauth2provider
