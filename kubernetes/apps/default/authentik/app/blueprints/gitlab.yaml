@@ -27,7 +27,7 @@ entries:
       scope_name: groups
       expression: |
         return {
-          "groups": [group.name for group in user.ak_groups.all()]
+          "groups": [group.name for group in user.all_groups()]
         }
 
   # GitLab administrators group

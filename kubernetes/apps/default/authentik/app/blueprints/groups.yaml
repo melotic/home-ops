@@ -1,0 +1,27 @@
+---
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
+version: 1
+metadata:
+  name: Group hierarchy and access personas
+entries:
+  # The "operators" persona aggregates every access-gating group as a PARENT.
+  # Authentik resolves membership upward: User.all_groups() returns direct groups
+  # plus all ancestors, and Group.is_member() is true for a group or any of its
+  # parents. So a single membership in "operators" cascades into ztna-users,
+  # gitlab-admins and ghidra-users without adding the user to each one.
+  #
+  # The parent groups are declared in their own app blueprints (cloudflare-access,
+  # gitlab, ghidra-server); !Find resolves them at import time. On a cold bootstrap
+  # those blueprints must import first; Authentik retries failed blueprints, so the
+  # parentage self-heals on a later reconcile if it ever races.
+  - model: authentik_core.group
+    id: operators
+    identifiers:
+      name: operators
+    attrs:
+      name: operators
+      is_superuser: false
+      parents:
+        - !Find [authentik_core.group, [name, ztna-users]]
+        - !Find [authentik_core.group, [name, gitlab-admins]]
+        - !Find [authentik_core.group, [name, ghidra-users]]
