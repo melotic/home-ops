@@ -53,17 +53,19 @@ resource "cloudflare_zero_trust_access_application" "searxng" {
   ]
   auto_redirect_to_identity = false
   policies = [{
-    id         = cloudflare_zero_trust_access_policy.searxng_allow.id
+    id         = cloudflare_zero_trust_access_policy.ztna_users.id
     precedence = 1
   }]
 }
 
-# Allow policy: the primary rule matches the ztna-users group from the Authentik
-# OIDC id_token; the secondary rule allows the operator email as the One-time PIN
-# break-glass path (One-time PIN identities carry no groups claim).
-resource "cloudflare_zero_trust_access_policy" "searxng_allow" {
+# Shared, reusable allow policy for the ZTNA front door. Attach it to any Access
+# application that should be gated on Authentik group membership: the primary
+# rule matches the ztna-users group from the Authentik OIDC id_token, and the
+# operator-email rule is a One-time PIN break-glass path (One-time PIN identities
+# carry no groups claim) available to every app that references this policy.
+resource "cloudflare_zero_trust_access_policy" "ztna_users" {
   account_id = var.account_id
-  name       = "searxng-ztna-users"
+  name       = "allow-ztna-users"
   decision   = "allow"
   include = [
     {
@@ -79,6 +81,13 @@ resource "cloudflare_zero_trust_access_policy" "searxng_allow" {
       }
     },
   ]
+}
+
+# The policy was renamed from searxng_allow; preserve its identity so the rename
+# is an in-place update instead of a destroy and recreate.
+moved {
+  from = cloudflare_zero_trust_access_policy.searxng_allow
+  to   = cloudflare_zero_trust_access_policy.ztna_users
 }
 
 output "authentik_idp_id" {
