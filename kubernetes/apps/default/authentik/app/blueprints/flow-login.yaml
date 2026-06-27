@@ -166,6 +166,15 @@ entries:
             return False
 
         result = ak_call_policy("melotic-geoip-restriction")
+        if not result.passing:
+            # A public IP absent from the bundled free GeoLite2-City DB
+            # (VPN / iCloud Private Relay / datacenter / CGNAT egress, which the
+            # full MaxMind DB covers but the free tier does not) makes the GeoIP
+            # policy raise GeoIPNotFoundException -> non-passing. Treat "not
+            # found" as geo-unknown and fail open; password, enforced MFA and
+            # Turnstile still gate the login. Resolvable non-US IPs stay denied.
+            if any("not found" in str(message).lower() for message in (result.messages or [])):
+                return True
         return result.passing
 
   # Tombstone: remove the old direct GeoIP binding (replaced by wrapper)
