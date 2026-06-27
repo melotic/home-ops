@@ -26,6 +26,7 @@ configMapGenerator:
       - brand.yaml=./blueprints/brand.yaml
       - reputation.yaml=./blueprints/reputation.yaml
       - cloudflare-access.yaml=./blueprints/cloudflare-access.yaml
+      - groups.yaml=./blueprints/groups.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:
