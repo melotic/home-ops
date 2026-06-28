@@ -12,6 +12,10 @@ spec:
   values:
     controllers:
       karakeep:
+        # ponytail: pin replicas so an out-of-band `kubectl scale` can't silently
+        # drift this to 0 again (it did — 17d at 0/0 with a live route). Drift
+        # detection is off, so git must own the count.
+        replicas: 1
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
