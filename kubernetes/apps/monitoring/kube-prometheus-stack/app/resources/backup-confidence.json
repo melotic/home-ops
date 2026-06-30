@@ -16,7 +16,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -48,7 +48,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "(time() - kube_cronjob_status_last_successful_time{namespace=\"default\", cronjob=\"nas-backup\"}) / 3600",
           "legendFormat": "nas-backup",
           "refId": "A"
@@ -58,7 +58,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -89,7 +89,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "(time() - kube_cronjob_status_last_successful_time{namespace=\"default\", cronjob=\"kopia-verify\"}) / 3600",
           "legendFormat": "kopia-verify",
           "refId": "A"
@@ -99,7 +99,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -130,7 +130,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "(time() - kube_cronjob_status_last_successful_time{namespace=\"default\", cronjob=\"kopia-azure-sync\"}) / 3600",
           "legendFormat": "kopia-azure-sync",
           "refId": "A"
@@ -148,7 +148,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -179,7 +179,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "sum(max by (obj_namespace, obj_name) (increase(volsync_sync_duration_seconds_count{role=\"source\"}[18h])) < bool 1)",
           "legendFormat": "stale sources",
           "refId": "A"
@@ -189,7 +189,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -220,7 +220,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "(time() - max(kube_job_status_completion_time{namespace=\"volsync-system\", job_name=~\"kopia-maint-.*\"})) / 3600",
           "legendFormat": "kopia-maintenance",
           "refId": "A"
@@ -230,7 +230,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -261,7 +261,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "sum(volsync_volume_out_of_sync{role=\"source\"})",
           "legendFormat": "out-of-sync sources",
           "refId": "A"
@@ -279,7 +279,7 @@
       "type": "row"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -310,7 +310,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "(time() - max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace=\"database\"})) / 3600",
           "legendFormat": "cnpg-backup",
           "refId": "A"
@@ -320,7 +320,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -351,7 +351,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "max(cnpg_pg_stat_archiver_seconds_since_last_archival{namespace=\"database\"})",
           "legendFormat": "wal-archive-lag",
           "refId": "A"
@@ -361,7 +361,7 @@
       "type": "stat"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+      "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
       "fieldConfig": {
         "defaults": {
           "color": { "mode": "thresholds" },
@@ -391,7 +391,7 @@
       "pluginVersion": "12.0.0",
       "targets": [
         {
-          "datasource": { "type": "prometheus", "uid": "${DS_PROMETHEUS}" },
+          "datasource": { "type": "prometheus", "uid": "$${DS_PROMETHEUS}" },
           "expr": "max(barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp{namespace=\"database\"}) > bool max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace=\"database\"})",
           "legendFormat": "latest-failed-newer",
           "refId": "A"
