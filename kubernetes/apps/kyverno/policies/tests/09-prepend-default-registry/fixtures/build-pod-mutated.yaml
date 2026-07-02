@@ -1,0 +1,39 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: runner-build-pod
+  namespace: gitlab-runner
+spec:
+  containers:
+    - command:
+        - sh
+        - -c
+        - sleep 1
+      image: docker.io/rust:1.96
+      name: build
+    - command:
+        - sh
+        - -c
+        - sleep 1
+      image: docker.io/alpine:3.19
+      name: helper
+    - command:
+        - sh
+        - -c
+        - sleep 1
+      image: docker.io/docker:27-dind
+      name: svc-0
+    - command:
+        - sh
+        - -c
+        - sleep 1
+      image: docker.io/library/busybox:1.37.0
+      name: already-prefixed
+  initContainers:
+    - command:
+        - sh
+        - -c
+        - "true"
+      image: registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:ubuntu-x86_64-v19.1.1
+      name: init-permissions

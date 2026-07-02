@@ -1,0 +1,16 @@
+---
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: prepend-default-registry-test
+policies:
+  - ../../app/09-prepend-default-registry.yaml
+resources:
+  - fixtures/build-pod.yaml
+results:
+  - policy: prepend-default-registry
+    rule: normalize-bare-images
+    resources: [runner-build-pod]
+    kind: Pod
+    patchedResources: fixtures/build-pod-mutated.yaml
+    result: pass
