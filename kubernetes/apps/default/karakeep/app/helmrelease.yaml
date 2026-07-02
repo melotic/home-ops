@@ -80,7 +80,7 @@ spec:
           chrome:
             image:
               repository: docker.io/zenika/alpine-chrome
-              tag: "124@sha256:b90f42f9f5449ae2c3efa56b46028e7c9ef92327a8f9f1d93b7163322d07a1d5"
+              tag: "124@sha256:d7dbafdaaa1da37a64392fb02aac05eb09523325171652e18bd79edf1ca3f16d"
             args:
               - --no-sandbox
               - --disable-gpu
