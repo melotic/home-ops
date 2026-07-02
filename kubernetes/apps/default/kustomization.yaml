@@ -12,6 +12,7 @@ resources:
   - ./authentik/ks.yaml
   - ./beets/ks.yaml
   - ./echo/ks.yaml
+  - ./excalidraw/ks.yaml
   - ./ghidra-server/ks.yaml
   - ./harbor/ks.yaml
   - ./home-assistant/ks.yaml
