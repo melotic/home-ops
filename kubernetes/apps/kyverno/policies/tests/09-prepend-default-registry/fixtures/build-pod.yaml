@@ -1,0 +1,26 @@
+---
+# A runner build pod: bare images (build/helper/service) plus a helper initContainer
+# that already has a registry.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: runner-build-pod
+  namespace: gitlab-runner
+spec:
+  initContainers:
+    - name: init-permissions
+      image: registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:ubuntu-x86_64-v19.1.1
+      command: ["sh", "-c", "true"]
+  containers:
+    - name: build
+      image: rust:1.96
+      command: ["sh", "-c", "sleep 1"]
+    - name: helper
+      image: alpine:3.19
+      command: ["sh", "-c", "sleep 1"]
+    - name: svc-0
+      image: docker:27-dind
+      command: ["sh", "-c", "sleep 1"]
+    - name: already-prefixed
+      image: docker.io/library/busybox:1.37.0
+      command: ["sh", "-c", "sleep 1"]

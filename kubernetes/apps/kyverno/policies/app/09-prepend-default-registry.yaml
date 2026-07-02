@@ -1,0 +1,39 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
+# Mutate runs before validate, so allowlist 08 sees the prepended image.
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: prepend-default-registry
+  annotations:
+    policies.kyverno.io/title: Prepend Default Registry
+    policies.kyverno.io/category: Supply Chain
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/description: >-
+      CI jobs run bare DockerHub images like rust:1.96 that allowlist 08 rejects
+      (no registry prefix), so the job never starts. This prepends docker.io/ so it
+      passes; no-op when the image already has one. Scoped to gitlab-runner.
+spec:
+  background: false
+  rules:
+    - name: normalize-bare-images
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces: [gitlab-runner]
+      mutate:
+        foreach:
+          - list: "request.object.spec.containers"
+            patchStrategicMerge:
+              spec:
+                containers:
+                  - name: "{{ element.name }}"
+                    image: "{{ image_normalize(element.image) }}"
+          - list: "request.object.spec.initContainers || `[]`"
+            patchStrategicMerge:
+              spec:
+                initContainers:
+                  - name: "{{ element.name }}"
+                    image: "{{ image_normalize(element.image) }}"
