@@ -176,8 +176,6 @@ spec:
             [runners.kubernetes.helper_container_security_context]
               allow_privilege_escalation = false
               read_only_root_filesystem = false
-              run_as_non_root = true
-              run_as_user = 1000
               [runners.kubernetes.helper_container_security_context.capabilities]
                 drop = ["ALL"]
               [runners.kubernetes.helper_container_security_context.seccomp_profile]
@@ -193,9 +191,7 @@ spec:
                 drop = ["ALL"]
               [runners.kubernetes.service_container_security_context.seccomp_profile]
                 type = "RuntimeDefault"
-            # The auto-injected init-permissions container only drops NET_RAW by
-            # default, which violates the namespace's restricted PSS. Mirror the
-            # helper container's hardened context so build pods are admitted.
+            # init-permissions defaults root; pin a non-root UID so kubelet admits it.
             [runners.kubernetes.init_permissions_container_security_context]
               allow_privilege_escalation = false
               read_only_root_filesystem = true
