@@ -110,6 +110,7 @@ spec:
       config: |
         [[runners]]
           executor = "kubernetes"
+          pre_build_script = "command -v git >/dev/null 2>&1 && git config --global --add safe.directory \"$CI_PROJECT_DIR\" || true"
           # Avoid long-polling request bottleneck (chart logs WARNING when =1).
           request_concurrency = 4
           cache_dir = "/cache"
