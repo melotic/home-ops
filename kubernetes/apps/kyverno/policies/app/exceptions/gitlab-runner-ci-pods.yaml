@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v2/policyexception.json
+apiVersion: kyverno.io/v2
+kind: PolicyException
+metadata:
+  name: gitlab-runner-ci-pods
+  namespace: kyverno
+  annotations:
+    policies.kyverno.io/reason: >-
+      GitLab Runner build/service containers execute arbitrary project CI images.
+      Those images commonly need their native UID/rootfs during setup (`apk add`,
+      apt, language toolchains), and project-level tags are not remediated by
+      home-ops Renovate digest pinning. The runner still sets no-priv-esc,
+      dropped capabilities, seccomp, and non-privileged pods.
+    policies.kyverno.io/intent: accepted-risk
+    home-ops.melotic.dev/review-trigger: >-
+      Re-evaluate if CI moves to curated non-root images or per-project runners.
+spec:
+  background: true # MUST be true so background-scan PolicyReports flip fail→skip
+  exceptions:
+    - policyName: require-non-root-and-readonly-fs
+      ruleNames:
+        - check-runAsNonRoot
+        - check-readOnlyRootFilesystem
+  match:
+    any:
+      - resources:
+          namespaces: [gitlab-runner]
+          names: [runner-*]
+          kinds: [Pod]

@@ -6,6 +6,6 @@ namespace: gitlab-runner
 components:
   - ../../components/alerts
   - ../../components/common
-  - ../../components/psa/restricted
+  - ../../components/psa/baseline
 resources:
   - ./runner/ks.yaml

@@ -12,6 +12,7 @@ resources:
   - ./07-disallow-untrusted-images.yaml
   - ./08-require-image-registry-allowlist.yaml
   - ./09-prepend-default-registry.yaml
+  - ./exceptions/gitlab-runner-ci-pods.yaml
   - ./exceptions/host-namespace-infra.yaml
   - ./exceptions/rook-ceph-storage.yaml
   - ./exceptions/unsigned-image-signatures.yaml

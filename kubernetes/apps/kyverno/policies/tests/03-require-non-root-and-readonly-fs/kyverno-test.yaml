@@ -10,6 +10,7 @@ resources:
   - fixtures/bad-container-nonroot-false.yaml
   - fixtures/bad-readonly-false.yaml
   - fixtures/bad-readonly-missing.yaml
+  - fixtures/gitlab-runner-build-pod.yaml
 results:
   - policy: require-non-root-and-readonly-fs
     rule: check-runAsNonRoot
@@ -49,5 +50,15 @@ results:
   - policy: require-non-root-and-readonly-fs
     rule: check-readOnlyRootFilesystem
     resources: [bad-readonly-missing]
+    kind: Pod
+    result: fail
+  - policy: require-non-root-and-readonly-fs
+    rule: check-runAsNonRoot
+    resources: [gitlab-runner-build-pod]
+    kind: Pod
+    result: fail
+  - policy: require-non-root-and-readonly-fs
+    rule: check-readOnlyRootFilesystem
+    resources: [gitlab-runner-build-pod]
     kind: Pod
     result: fail

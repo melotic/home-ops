@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: runner-build-pod
+  namespace: gitlab-runner
+spec:
+  securityContext:
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  containers:
+    - name: build
+      image: docker.io/library/alpine:3.20
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false
+        capabilities:
+          drop: [ALL]
+        seccompProfile:
+          type: RuntimeDefault
+    - name: helper
+      image: registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:ubuntu-x86_64-v19.1.1
+      securityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: false
+        runAsNonRoot: true
+        runAsUser: 1000
+        capabilities:
+          drop: [ALL]
+        seccompProfile:
+          type: RuntimeDefault
