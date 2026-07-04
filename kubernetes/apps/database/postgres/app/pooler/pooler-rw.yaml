@@ -31,6 +31,8 @@ spec:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: kubernetes.io/hostname
+              matchLabelKeys:
+                - pod-template-hash
               labelSelector:
                 matchLabels:
                   cnpg.io/poolerName: postgres-cluster-pooler-rw
