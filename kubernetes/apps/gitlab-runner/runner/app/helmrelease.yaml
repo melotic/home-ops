@@ -169,8 +169,6 @@ spec:
             [runners.kubernetes.build_container_security_context]
               allow_privilege_escalation = false
               read_only_root_filesystem = false
-              [runners.kubernetes.build_container_security_context.capabilities]
-                drop = ["ALL"]
               [runners.kubernetes.build_container_security_context.seccomp_profile]
                 type = "RuntimeDefault"
             [runners.kubernetes.helper_container_security_context]
