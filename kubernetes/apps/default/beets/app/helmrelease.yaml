@@ -14,7 +14,8 @@ spec:
       beets:
         type: cronjob
         cronjob:
-          schedule: "0 12 * * *"
+          timeZone: America/Chicago
+          schedule: "0 2 * * *"
           concurrencyPolicy: Forbid
           successfulJobsHistory: 3
           failedJobsHistory: 3
