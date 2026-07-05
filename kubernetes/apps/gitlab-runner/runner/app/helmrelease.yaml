@@ -113,7 +113,7 @@ spec:
           # Keep job intake aligned with the global concurrency cap so CI does
           # not burst disk-heavy build pods across the OSD nodes and amplify
           # Ceph BlueStore latency.
-          request_concurrency = 2
+          request_concurrency = 1
           cache_dir = "/cache"
           [runners.cache]
             Type = "s3"
@@ -221,5 +221,5 @@ spec:
               mount_path = "/certs"
               read_only = true
 
-    concurrent: 2
+    concurrent: 1
     checkInterval: 3
