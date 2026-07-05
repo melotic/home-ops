@@ -8,4 +8,5 @@ components:
   - ../../components/common
   - ../../components/psa/baseline
 resources:
+  - ./renovate/ks.yaml
   - ./runner/ks.yaml
