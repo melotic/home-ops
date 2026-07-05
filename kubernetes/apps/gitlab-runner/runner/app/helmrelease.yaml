@@ -103,6 +103,14 @@ spec:
       limits:
         memory: 256Mi
 
+    # One manager pod at a time; otherwise config reloads briefly double the
+    # runner intake cap while disk-heavy jobs are already saturating the OSD node.
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxSurge: 0
+        maxUnavailable: 1
+
     # config.toml for the K8s executor — controls per-job pod security.
     runners:
       cache:
