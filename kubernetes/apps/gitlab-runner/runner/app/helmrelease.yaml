@@ -112,6 +112,7 @@ spec:
           executor = "kubernetes"
           # Keep job intake single-file so disk-heavy CI cannot pile onto the
           # same NVMe/OSD and amplify Ceph/etcd latency or SMART temperature.
+          limit = 1
           request_concurrency = 1
           cache_dir = "/cache"
           [runners.cache]
@@ -160,6 +161,21 @@ spec:
             poll_timeout = 600
             pod_termination_grace_period_seconds = 30
             cleanup_resources_timeout = "10m"
+            # Cap job pods so bursty compile jobs cannot saturate the same
+            # NVMe backing Ceph + etcd. Scheduler also gets real requests
+            # instead of placing unbounded build/helper containers blind.
+            cpu_request = "500m"
+            cpu_limit = "1500m"
+            memory_request = "1Gi"
+            memory_limit = "4Gi"
+            ephemeral_storage_request = "2Gi"
+            ephemeral_storage_limit = "10Gi"
+            helper_cpu_request = "50m"
+            helper_cpu_limit = "250m"
+            helper_memory_request = "128Mi"
+            helper_memory_limit = "512Mi"
+            helper_ephemeral_storage_request = "256Mi"
+            helper_ephemeral_storage_limit = "1Gi"
             print_pod_warning_events = true
             service_account = "gitlab-runner"
             allow_privilege_escalation = false
