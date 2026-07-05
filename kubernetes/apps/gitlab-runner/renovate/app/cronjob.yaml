@@ -1,0 +1,64 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/batch/cronjob_v1.json
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: renovate
+spec:
+  timeZone: America/Chicago
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 7200
+      backoffLimit: 1
+      ttlSecondsAfterFinished: 86400
+      template:
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          securityContext:
+            runAsNonRoot: true
+          containers:
+            - name: renovate
+              image: docker.io/renovate/renovate:43.252.1-full
+              env:
+                - name: LOG_LEVEL
+                  value: info
+                - name: RENOVATE_PLATFORM
+                  value: gitlab
+                - name: RENOVATE_ENDPOINT
+                  value: https://gitlab.melotic.dev/api/v4/
+                - name: RENOVATE_AUTODISCOVER
+                  value: "true"
+                - name: RENOVATE_BASE_DIR
+                  value: /tmp/renovate
+                - name: RENOVATE_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate
+                      key: RENOVATE_TOKEN
+                - name: RENOVATE_AUTODISCOVER_FILTER
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate
+                      key: RENOVATE_AUTODISCOVER_FILTER
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities:
+                  drop: ["ALL"]
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 512Mi
+                limits:
+                  memory: 2Gi
+          volumes:
+            - name: tmp
+              emptyDir: {}
