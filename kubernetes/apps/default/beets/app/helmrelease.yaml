@@ -43,7 +43,7 @@ spec:
                 set -e
                 export PATH="/lsiopy/bin:$PATH"
                 echo "[$(date)] Starting beets incremental import..."
-                beet -c /config/config.yaml import -q /data/media/music
+                nice -n 19 beet -c /config/config.yaml import -q /data/media/music
                 echo "[$(date)] Beets import complete."
             securityContext:
               allowPrivilegeEscalation: false
@@ -51,9 +51,10 @@ spec:
               capabilities: {drop: ["ALL"]}
             resources:
               requests:
-                cpu: 100m
+                cpu: 50m
                 memory: 512Mi
               limits:
+                cpu: 750m
                 memory: 2Gi
     persistence:
       config:

@@ -7,6 +7,7 @@ data:
   config.yaml: |-
     directory: /data/media/music
     library: /config/library.db
+    threaded: no
 
     import:
       incremental: yes
