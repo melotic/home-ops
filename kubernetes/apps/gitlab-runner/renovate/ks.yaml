@@ -10,8 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: gitlab
-      namespace: gitlab
     - name: onepassword
       namespace: external-secrets
   path: ./kubernetes/apps/gitlab-runner/renovate/app
