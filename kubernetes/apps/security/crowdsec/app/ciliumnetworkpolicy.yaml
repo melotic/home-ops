@@ -20,10 +20,6 @@ spec:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": database
             "k8s:cnpg.io/poolerName": postgres-cluster-pooler-rw
-      toPorts:
-        - ports:
-            - port: "5432"
-              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: monitoring
