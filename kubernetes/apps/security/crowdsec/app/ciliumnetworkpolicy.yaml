@@ -36,6 +36,12 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
+    - toCIDR:
+        - 10.43.193.18/32
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
     - toEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": database
