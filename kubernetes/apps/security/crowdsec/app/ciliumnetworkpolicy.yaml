@@ -36,10 +36,7 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    - toEndpoints:
-        - matchLabels:
-            "k8s:io.kubernetes.pod.namespace": database
-      toPorts:
-        - ports:
-            - port: "5432"
-              protocol: TCP
+    - toServices:
+        - k8sService:
+            serviceName: postgres-cluster-rw
+            namespace: database
