@@ -1,6 +1,6 @@
 db_config:
   type: pgx
-  host: postgres-cluster-rw.database.svc.cluster.local
+  host: postgres-cluster-pooler-rw.database.svc.cluster.local
   port: 5432
   user: crowdsec
   password: $${POSTGRES_PASSWORD}
