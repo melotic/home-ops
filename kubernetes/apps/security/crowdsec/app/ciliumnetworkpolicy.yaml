@@ -38,5 +38,5 @@ spec:
               - matchPattern: "*"
     - toServices:
         - k8sService:
-            serviceName: postgres-cluster-rw
+            serviceName: postgres-cluster-pooler-rw
             namespace: database
