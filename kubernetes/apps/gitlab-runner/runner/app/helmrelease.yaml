@@ -187,6 +187,14 @@ spec:
             print_pod_warning_events = true
             service_account = "gitlab-runner"
             allow_privilege_escalation = false
+            [runners.kubernetes.affinity]
+              [runners.kubernetes.affinity.node_affinity]
+                [runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution]
+                  [[runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution.node_selector_terms]]
+                    [[runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution.node_selector_terms.match_expressions]]
+                      key = "kubernetes.io/hostname"
+                      operator = "NotIn"
+                      values = ["k8s-ghost"]
             [runners.kubernetes.pod_security_context]
               fs_group = 1000
             [runners.kubernetes.pod_security_context.seccomp_profile]
