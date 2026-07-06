@@ -1,0 +1,104 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/rbac.authorization.k8s.io/clusterrole_v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kai-homelab-read
+rules:
+  - apiGroups: [""]
+    resources:
+      - configmaps
+      - endpoints
+      - events
+      - namespaces
+      - nodes
+      - persistentvolumeclaims
+      - persistentvolumes
+      - pods
+      - pods/log
+      - services
+      - serviceaccounts
+    verbs: [get, list, watch]
+  - apiGroups: [apps]
+    resources:
+      - daemonsets
+      - deployments
+      - replicasets
+      - statefulsets
+    verbs: [get, list, watch]
+  - apiGroups: [autoscaling]
+    resources: [horizontalpodautoscalers]
+    verbs: [get, list, watch]
+  - apiGroups: [batch]
+    resources:
+      - cronjobs
+      - jobs
+    verbs: [get, list, watch]
+  - apiGroups: [discovery.k8s.io]
+    resources: [endpointslices]
+    verbs: [get, list, watch]
+  - apiGroups: [external-secrets.io]
+    resources:
+      - clusterexternalsecrets
+      - clustersecretstores
+      - externalsecrets
+      - secretstores
+    verbs: [get, list, watch]
+  - apiGroups: [gateway.envoyproxy.io]
+    resources:
+      - backendtrafficpolicies
+      - clienttrafficpolicies
+      - envoyproxies
+      - securitypolicies
+    verbs: [get, list, watch]
+  - apiGroups: [helm.toolkit.fluxcd.io]
+    resources: [helmreleases]
+    verbs: [get, list, watch]
+  - apiGroups: [kustomize.toolkit.fluxcd.io]
+    resources: [kustomizations]
+    verbs: [get, list, watch]
+  - apiGroups: [source.toolkit.fluxcd.io]
+    resources:
+      - buckets
+      - gitrepositories
+      - helmcharts
+      - helmrepositories
+      - ocirepositories
+    verbs: [get, list, watch]
+  - apiGroups: [metrics.k8s.io]
+    resources:
+      - nodes
+      - pods
+    verbs: [get, list, watch]
+  - apiGroups: [monitoring.coreos.com]
+    resources:
+      - alertmanagerconfigs
+      - podmonitors
+      - probes
+      - prometheusrules
+      - servicemonitors
+    verbs: [get, list, watch]
+  - apiGroups: [reports.kyverno.io]
+    resources:
+      - clusterephemeralreports
+      - ephemeralreports
+    verbs: [get, list, watch]
+  - apiGroups: [wgpolicyk8s.io]
+    resources:
+      - clusterpolicyreports
+      - policyreports
+    verbs: [get, list, watch]
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/rbac.authorization.k8s.io/clusterrolebinding_v1.json
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kai-homelab-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kai-homelab-read
+subjects:
+  - kind: ServiceAccount
+    name: kai
+    namespace: default
