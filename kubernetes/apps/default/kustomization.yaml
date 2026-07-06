@@ -17,6 +17,7 @@ resources:
   - ./harbor/ks.yaml
   - ./home-assistant/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./kai-rbac/ks.yaml
   - ./karakeep/ks.yaml
   - ./kopia-azure-sync/ks.yaml
   - ./kopia-verify/ks.yaml

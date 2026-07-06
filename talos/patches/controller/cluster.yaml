@@ -5,6 +5,67 @@ cluster:
     extraArgs:
       # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
       enable-aggregator-routing: true
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      # RequestReceived doubles volume for most short requests while adding little
+      # investigation value. Keep completion/watch records and security-sensitive
+      # resources below.
+      omitStages:
+        - RequestReceived
+      rules:
+        # Drop high-volume health/discovery probes from kube components.
+        - level: None
+          nonResourceURLs:
+            - /healthz*
+            - /livez*
+            - /readyz*
+            - /version
+            - /openapi*
+        # Leader-election leases are hot-loop background control-plane noise.
+        - level: None
+          verbs: [get, update, patch, watch]
+          resources:
+            - group: coordination.k8s.io
+              resources: [leases]
+        # Kyverno cleanup checks its own permissions constantly; audit the
+        # resulting report changes, not the repetitive self-SARs.
+        - level: None
+          users:
+            - system:serviceaccount:kyverno:kyverno-cleanup-controller
+          verbs: [create]
+          resources:
+            - group: authorization.k8s.io
+              resources: [selfsubjectaccessreviews]
+        # Keep secret access visible; reads are security-sensitive too.
+        - level: Metadata
+          resources:
+            - group: ""
+              resources: [secrets]
+        # Keep security-sensitive configuration changes at Metadata.
+        - level: Metadata
+          verbs: [create, update, patch, delete, deletecollection]
+          resources:
+            - group: ""
+              resources: [configmaps, serviceaccounts]
+            - group: rbac.authorization.k8s.io
+              resources: [roles, rolebindings, clusterroles, clusterrolebindings]
+            - group: admissionregistration.k8s.io
+              resources: [mutatingwebhookconfigurations, validatingwebhookconfigurations]
+            - group: certificates.k8s.io
+              resources: [certificatesigningrequests]
+            - group: gateway.envoyproxy.io
+              resources: [securitypolicies]
+            - group: external-secrets.io
+              resources: [externalsecrets, secretstores, clusterexternalsecrets, clustersecretstores]
+        # Preserve an investigation trail for pod/exec/log/proxy access.
+        - level: Metadata
+          resources:
+            - group: ""
+              resources: [pods/exec, pods/attach, pods/portforward, pods/proxy, pods/log]
+        # Everything else stays visible at metadata level, but without the
+        # RequestReceived duplicate stage above.
+        - level: Metadata
   controllerManager:
     extraArgs:
       bind-address: 0.0.0.0
