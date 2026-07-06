@@ -36,7 +36,11 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    - toServices:
-        - k8sService:
-            serviceName: postgres-cluster-pooler-rw
-            namespace: database
+    - toEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": database
+            "k8s:cnpg.io/poolerName": postgres-cluster-pooler-rw
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
