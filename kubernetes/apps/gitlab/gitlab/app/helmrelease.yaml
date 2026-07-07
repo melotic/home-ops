@@ -293,7 +293,7 @@ spec:
           /srv/gitlab/bin/rake gitlab:db:configure
 
           # ponytail: GitLab 19 requires oauth_applications.organization_id, but chart 10.1.1's setup script omits it.
-          /srv/gitlab/bin/rails runner -e production <<'RUBY'
+          /srv/gitlab/bin/rails runner -e production - <<'RUBY'
           app_path = '/etc/gitlab/oauth-secrets/gitlab-pages'
           if File.directory?(app_path)
             uid = File.read(File.join(app_path, 'appid')).strip
