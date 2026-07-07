@@ -279,14 +279,14 @@ spec:
           set -e;
           /scripts/wait-for-deps;
 
-          ROOT_PASSWORD_FILE="${ROOT_PASSWORD_FILE:-/srv/gitlab/config/initial_root_password}"
-          if [ -f "${ROOT_PASSWORD_FILE}" ]; then
-            export GITLAB_ROOT_PASSWORD=$(cat "${ROOT_PASSWORD_FILE}")
+          ROOT_PASSWORD_FILE="/srv/gitlab/config/initial_root_password"
+          if [ -f "$ROOT_PASSWORD_FILE" ]; then
+            export GITLAB_ROOT_PASSWORD=$(cat "$ROOT_PASSWORD_FILE")
           fi
 
-          SHARED_RUNNERS_REGISTRATION_TOKEN_FILE="${SHARED_RUNNERS_REGISTRATION_TOKEN_FILE:-/srv/gitlab/config/gitlab_shared_runners_registration_token}"
-          if [ -f "${SHARED_RUNNERS_REGISTRATION_TOKEN_FILE}" ] && [ -r "${SHARED_RUNNERS_REGISTRATION_TOKEN_FILE}" ]; then
-            export GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN=$(cat "${SHARED_RUNNERS_REGISTRATION_TOKEN_FILE}")
+          SHARED_RUNNERS_REGISTRATION_TOKEN_FILE="/srv/gitlab/config/gitlab_shared_runners_registration_token"
+          if [ -f "$SHARED_RUNNERS_REGISTRATION_TOKEN_FILE" ] && [ -r "$SHARED_RUNNERS_REGISTRATION_TOKEN_FILE" ]; then
+            export GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN=$(cat "$SHARED_RUNNERS_REGISTRATION_TOKEN_FILE")
           fi
 
           cd /srv/gitlab
