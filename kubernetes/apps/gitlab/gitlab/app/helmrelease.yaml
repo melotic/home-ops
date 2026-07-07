@@ -185,6 +185,7 @@ spec:
         enabled: false
       pages:
         enabled: true
+        accessControl: true
         namespaceInPath: true
         objectStore:
           enabled: true
