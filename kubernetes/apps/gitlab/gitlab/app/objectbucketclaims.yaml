@@ -91,6 +91,17 @@ spec:
 apiVersion: objectbucket.io/v1alpha1
 kind: ObjectBucketClaim
 metadata:
+  name: gitlab-pages
+spec:
+  additionalConfig:
+    bucketOwner: gitlab-rgw
+  bucketName: gitlab-pages
+  storageClassName: gitlab-rgw-bucket
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/objectbucket.io/objectbucketclaim_v1alpha1.json
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
   name: gitlab-backups
 spec:
   additionalConfig:
