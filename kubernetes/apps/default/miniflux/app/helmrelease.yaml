@@ -1,0 +1,100 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: miniflux
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: miniflux
+  interval: 1h
+  values:
+    controllers:
+      miniflux:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/miniflux/miniflux
+              tag: 2.3.2@sha256:cd353a6af9ce663291f405eddef26fa0d567f486b521c5d34e3fb50e41938b9a
+            env:
+              BASE_URL: https://reader.melotic.dev
+              CREATE_ADMIN: "1"
+              DATABASE_URL:
+                valueFrom:
+                  secretKeyRef:
+                    name: miniflux-postgres
+                    key: uri
+              LISTEN_ADDR: 0.0.0.0:8080
+              OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://sso.melotic.dev/application/o/miniflux/
+              OAUTH2_OIDC_PROVIDER_NAME: authentik
+              OAUTH2_PROVIDER: oidc
+              OAUTH2_REDIRECT_URL: https://reader.melotic.dev/oauth2/oidc/callback
+              OAUTH2_USER_CREATION: "1"
+              PGSSLMODE: disable
+              RUN_MIGRATIONS: "1"
+              TZ: Etc/UTC
+            envFrom:
+              - secretRef:
+                  name: miniflux-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /liveness
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readiness
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - reader.melotic.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+    persistence:
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

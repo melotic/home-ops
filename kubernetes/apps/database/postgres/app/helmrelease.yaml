@@ -110,6 +110,11 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-lidarr
+        - name: miniflux
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-miniflux
         - name: prowlarr
           ensure: present
           login: true
