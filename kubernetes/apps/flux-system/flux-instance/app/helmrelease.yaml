@@ -21,8 +21,8 @@ spec:
   values:
     instance:
       distribution:
-        # renovate: datasource=github-releases depName=controlplaneio-fluxcd/distribution
-        version: 2.9.1
+        # renovate: datasource=github-releases depName=controlplaneio-fluxcd/distribution allowedVersions=/^v?2\.9\.0$/
+        version: 2.9.0
       cluster:
         networkPolicy: false
       components:
