@@ -133,6 +133,8 @@ spec:
         externalIP: ""
         gitlab:
           name: gitlab.melotic.dev
+        pages:
+          name: pages.melotic.dev
         ssh: gitlab.melotic.dev
       ingress:
         configureCertmanager: false
@@ -181,6 +183,15 @@ spec:
         enabled: false
       registry:
         enabled: false
+      pages:
+        enabled: true
+        namespaceInPath: true
+        objectStore:
+          enabled: true
+          bucket: gitlab-pages
+          connection:
+            secret: gitlab-object-store-connection
+            key: connection
       smtp:
         enabled: true
         address: smtp-relay.default.svc.cluster.local
@@ -363,5 +374,19 @@ spec:
             memory: 128Mi
           limits:
             memory: 256Mi
+      gitlab-pages:
+        gatewayRoute:
+          sectionName: https
+        ingress:
+          enabled: false
+        hpa:
+          minReplicas: 1
+          maxReplicas: 1
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 512Mi
     registry:
       enabled: false
