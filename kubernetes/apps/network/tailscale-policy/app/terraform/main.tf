@@ -12,11 +12,9 @@ provider "tailscale" {
   oauth_client_secret = var.oauth_client_secret
 }
 
-# Owns the ENTIRE tailnet policy file. The policy lives in policy.hujson
-# (HuJSON: comments + trailing commas preserved, readable PR diffs).
-# reset_acl_on_destroy=false so a destroy never reverts the tailnet to the
-# permit-all default. overwrite_existing_content=true to adopt the existing
-# console-managed policy without a manual import step.
+# This resource owns the whole policy file, so policy.hujson is the source of
+# truth. Keep reset_acl_on_destroy off; a destroy should not drop the tailnet
+# back to permit-all.
 resource "tailscale_acl" "policy" {
   acl                        = file("${path.module}/policy.hujson")
   overwrite_existing_content = true
