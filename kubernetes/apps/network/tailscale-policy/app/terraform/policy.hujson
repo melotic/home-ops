@@ -29,12 +29,19 @@
 			"ip":  ["*"],
 		},
 		// The one live cluster->tailnet flow: Prometheus egress to disco-ninja.
+		// disco-ninja is referenced via the hosts alias below (grants require a
+		// hosts entry or full MagicDNS name — a bare hostname is rejected).
 		{
 			"src": ["tag:k8s"],
 			"dst": ["disco-ninja"],
 			"ip":  ["tcp:443"],
 		},
 	],
+
+	// Named aliases for devices referenced in grants.
+	"hosts": {
+		"disco-ninja": "100.108.57.7", // melotic@github personal box (Prometheus remote-write target)
+	},
 
 	// Legacy permit-all — REMOVED in the final hardening PR. Retained this
 	// stage so narrowing the connector route can't lock anything out.
