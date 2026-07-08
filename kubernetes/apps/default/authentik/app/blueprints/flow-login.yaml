@@ -64,26 +64,9 @@ entries:
       api_url: https://challenges.cloudflare.com/turnstile/v0/siteverify
       interactive: false
 
-  # Identification: single-page login with inline password + Turnstile
-  # password_stage and captcha_stage are inline — they must NOT also be bound to the flow
-  - model: authentik_stages_identification.identificationstage
-    id: identification
-    identifiers:
-      name: melotic-identification
-    attrs:
-      password_stage: !KeyOf password
-      captcha_stage: !KeyOf captcha
-      # webauthn_stage: passkey autofill (2025.12+), reuses the mfa stage.
-      # discoverable passkey signs in on page load, no password.
-      webauthn_stage: !KeyOf mfa
-      user_fields:
-        - email
-        - username
-      show_matched_user: true
-      show_source_labels: true
-
   # MFA validation — enforced, not optional
   # not_configured_action: configure forces MFA setup on first login
+  # Keep above identification: !KeyOf only resolves entries applied earlier, and identification points here via webauthn_stage.
   - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
     id: mfa
     identifiers:
@@ -98,6 +81,22 @@ entries:
         - !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, default-authenticator-totp-setup]]
         - !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]
         - !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-authenticator-static-setup]]
+
+  # Identification: single-page login with inline password + Turnstile
+  # password_stage and captcha_stage are inline — they must NOT also be bound to the flow
+  - model: authentik_stages_identification.identificationstage
+    id: identification
+    identifiers:
+      name: melotic-identification
+    attrs:
+      password_stage: !KeyOf password
+      captcha_stage: !KeyOf captcha
+      webauthn_stage: !KeyOf mfa
+      user_fields:
+        - email
+        - username
+      show_matched_user: true
+      show_source_labels: true
 
   # Login: create the session
   - model: authentik_stages_user_login.userloginstage
@@ -120,8 +119,7 @@ entries:
       stage: !KeyOf mfa
       order: 30
     attrs:
-      # re-eval so the skip policy sees auth_method from the passkey login at
-      # order 10, not at plan time before it's set
+      # Without this the skip policy runs at plan time, before the passkey login sets auth_method, and never fires.
       re_evaluate_policies: true
 
   - model: authentik_flows.flowstagebinding
@@ -132,8 +130,7 @@ entries:
 
   # --- Policies ---
 
-  # skip mfa after a passwordless passkey login (it already satisfied mfa).
-  # mirrors authentik's default flow.
+  # Mirrors Authentik's stock default-authentication-flow skip.
   - model: authentik_policies_expression.expressionpolicy
     id: mfa-skip-passwordless
     identifiers:
@@ -143,7 +140,7 @@ entries:
         flow_plan = request.context.get("flow_plan")
         if not flow_plan:
             return True
-        # auth_webauthn_pwl == passwordless passkey; false skips the stage
+        # auth_webauthn_pwl is Authentik's marker for a passwordless passkey login; returning False drops this stage.
         return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")
 
   - model: authentik_policies.policybinding
@@ -152,7 +149,7 @@ entries:
       target: !KeyOf mfa-binding
       policy: !KeyOf mfa-skip-passwordless
     attrs:
-      # fail safe: an error here keeps mfa instead of skipping it
+      # Fail safe: a policy error counts as passing, which keeps MFA rather than skipping it.
       failure_result: true
 
   # GeoIP: restrict logins to allowed countries + impossible travel detection
