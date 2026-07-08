@@ -1,0 +1,80 @@
+// Zion tailnet policy — managed by GitOps (kubernetes/apps/network/tailscale-policy).
+// Do not edit in the admin console; tofu-controller overwrites it on reconcile.
+//
+// STAGE 1 of the subnet-router hardening (see PRs in melotic/home-ops):
+//   - drops the funnel nodeAttr (no member should publicly Funnel-expose)
+//   - adds a dedicated tag:zion-gw for the subnet router (operator-owned)
+//   - adds the deny-default grants block ALONGSIDE the legacy permit-all acls
+//     (grants are additive here — the tailnet stays permissive this stage so
+//      the connector retag + route narrowing in the next PR can't strand a
+//      route). The permit-all acls block is removed in the final stage, which
+//      is the moment deny-default actually takes effect.
+{
+	// Real user identity in this tailnet is the owner role (all devices are
+	// melotic@github). Use autogroup:admin so the admin grant can't silently
+	// desync from a hardcoded email string.
+	"grants": [
+		// Admins reach every advertised route, forced through the zion router
+		// (via withdraws these routes from anyone without this grant). ip:* so
+		// HTTPS, Talos apid/kube, and DNS all work for you.
+		{
+			"src": ["autogroup:admin"],
+			"dst": [
+				"10.60.88.1/32", // envoy-internal gateway (every internal svc by domain)
+				"10.60.80.1/32", // envoy-external gateway (public svcs over VPN via UDM)
+				"10.60.0.1/32",  // UniFi resolver (split DNS)
+				"10.60.85.10/32", "10.60.85.11/32", "10.60.85.12/32", // Talos nodes
+			],
+			"via": ["tag:zion-gw"],
+			"ip":  ["*"],
+		},
+		// The one live cluster->tailnet flow: Prometheus egress to disco-ninja.
+		{
+			"src": ["tag:k8s"],
+			"dst": ["disco-ninja"],
+			"ip":  ["tcp:443"],
+		},
+	],
+
+	// Legacy permit-all — REMOVED in the final hardening PR. Retained this
+	// stage so narrowing the connector route can't lock anything out.
+	"acls": [
+		{
+			"action": "accept",
+			"src":    ["*"],
+			"dst":    ["*:*"],
+		},
+	],
+
+	"tagOwners": {
+		"tag:k8s-operator": [],
+		"tag:k8s":          ["tag:k8s-operator"], // operator + proxy pods
+		"tag:zion-gw":      ["tag:k8s-operator"], // dedicated subnet router
+		"tag:ci":           ["justinmp215@gmail.com"],
+		"tag:server":       ["autogroup:admin"],
+	},
+
+	// Tailscale SSH — preserved verbatim from the live policy.
+	"ssh": [
+		{
+			"action": "check",
+			"src":    ["autogroup:member"],
+			"dst":    ["autogroup:self"],
+			"users":  ["autogroup:nonroot", "root"],
+		},
+		{
+			"src":    ["autogroup:admin"],
+			"dst":    ["tag:server"],
+			"users":  ["autogroup:nonroot"],
+			"action": "accept",
+		},
+		{
+			"src":    ["tag:ci"],
+			"dst":    ["tag:server"],
+			"users":  ["root", "justin"],
+			"action": "accept",
+		},
+	],
+
+	// funnel nodeAttr intentionally removed (was: funnel on autogroup:member).
+}
