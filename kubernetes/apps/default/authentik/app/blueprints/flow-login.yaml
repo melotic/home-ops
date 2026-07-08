@@ -73,6 +73,9 @@ entries:
     attrs:
       password_stage: !KeyOf password
       captcha_stage: !KeyOf captcha
+      # webauthn_stage: passkey autofill (2025.12+), reuses the mfa stage.
+      # discoverable passkey signs in on page load, no password.
+      webauthn_stage: !KeyOf mfa
       user_fields:
         - email
         - username
@@ -111,10 +114,15 @@ entries:
       order: 10
 
   - model: authentik_flows.flowstagebinding
+    id: mfa-binding
     identifiers:
       target: !KeyOf flow
       stage: !KeyOf mfa
       order: 30
+    attrs:
+      # re-eval so the skip policy sees auth_method from the passkey login at
+      # order 10, not at plan time before it's set
+      re_evaluate_policies: true
 
   - model: authentik_flows.flowstagebinding
     identifiers:
@@ -123,6 +131,29 @@ entries:
       order: 100
 
   # --- Policies ---
+
+  # skip mfa after a passwordless passkey login (it already satisfied mfa).
+  # mirrors authentik's default flow.
+  - model: authentik_policies_expression.expressionpolicy
+    id: mfa-skip-passwordless
+    identifiers:
+      name: melotic-mfa-skip-passwordless
+    attrs:
+      expression: |
+        flow_plan = request.context.get("flow_plan")
+        if not flow_plan:
+            return True
+        # auth_webauthn_pwl == passwordless passkey; false skips the stage
+        return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 10
+      target: !KeyOf mfa-binding
+      policy: !KeyOf mfa-skip-passwordless
+    attrs:
+      # fail safe: an error here keeps mfa instead of skipping it
+      failure_result: true
 
   # GeoIP: restrict logins to allowed countries + impossible travel detection
   - model: authentik_policies_geoip.geoippolicy
