@@ -1,14 +1,13 @@
 // Zion tailnet policy — managed by GitOps (kubernetes/apps/network/tailscale-policy).
 // Do not edit in the admin console; tofu-controller overwrites it on reconcile.
 //
-// STAGE 1 of the subnet-router hardening (see PRs in melotic/home-ops):
-//   - drops the funnel nodeAttr (no member should publicly Funnel-expose)
-//   - adds a dedicated tag:zion-gw for the subnet router (operator-owned)
-//   - adds the deny-default grants block ALONGSIDE the legacy permit-all acls
-//     (grants are additive here — the tailnet stays permissive this stage so
-//      the connector retag + route narrowing in the next PR can't strand a
-//      route). The permit-all acls block is removed in the final stage, which
-//      is the moment deny-default actually takes effect.
+// STAGE 2 of the subnet-router hardening (see PRs in melotic/home-ops):
+//   - the connector is retagged tag:zion-gw and its route narrowed to six /32s
+//   - autoApprovers auto-approve ONLY the two gateway /32s for tag:zion-gw;
+//     the resolver and Talos nodes stay manual-approval
+//   - grants + tag:zion-gw + funnel-drop from stage 1 remain; the legacy
+//     permit-all acls block is still present and is removed in the final stage
+//     (that removal is the moment deny-default actually takes effect).
 {
 	// Real user identity in this tailnet is the owner role (all devices are
 	// melotic@github). Use autogroup:admin so the admin grant can't silently
@@ -41,6 +40,19 @@
 	// Named aliases for devices referenced in grants.
 	"hosts": {
 		"disco-ninja": "100.108.57.7", // melotic@github personal box (Prometheus remote-write target)
+	},
+
+	// Auto-approve ONLY the two gateway routes advertised by the zion subnet
+	// router. The resolver (10.60.0.1/32) and Talos nodes (10.60.85.x/32) are
+	// deliberately absent — they require manual approval, so a compromised
+	// operator OAuth minting a rogue tag:zion-gw node cannot self-approve a
+	// path to the DNS resolver or the control plane. New tagged nodes still
+	// fire the nodeNeedsApproval webhook for those routes.
+	"autoApprovers": {
+		"routes": {
+			"10.60.88.1/32": ["tag:zion-gw"], // envoy-internal gateway
+			"10.60.80.1/32": ["tag:zion-gw"], // envoy-external gateway
+		},
 	},
 
 	// Legacy permit-all — REMOVED in the final hardening PR. Retained this
