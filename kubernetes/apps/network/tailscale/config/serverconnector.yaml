@@ -6,6 +6,20 @@ metadata:
 spec:
   replicas: 1
   hostnamePrefix: *name
+  # Dedicated tag so ACL autoApprovers + deny tests target this router
+  # precisely (not the shared tag:k8s proxy pods). Immutable once created —
+  # changing it makes the operator recreate the node.
+  tags:
+    - tag:zion-gw
   subnetRouter:
+    # Narrowed from 10.60.0.0/16 to exactly the reachable targets. No subnet
+    # scan surface: a popped tag:k8s pod sees only these /32s (and is denied
+    # even those by the policy deny tests). Gateways auto-approve; resolver +
+    # Talos nodes are manual-approval only.
     advertiseRoutes:
-      - 10.60.0.0/16
+      - 10.60.88.1/32 # envoy-internal gateway (every internal service by domain)
+      - 10.60.80.1/32 # envoy-external gateway (public services over VPN via UDM)
+      - 10.60.0.1/32 # UniFi resolver (split DNS)
+      - 10.60.85.10/32 # Talos node k8s-niobe
+      - 10.60.85.11/32 # Talos node k8s-trinity
+      - 10.60.85.12/32 # Talos node k8s-ghost
