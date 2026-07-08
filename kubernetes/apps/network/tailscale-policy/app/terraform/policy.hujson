@@ -1,13 +1,13 @@
 // Zion tailnet policy — managed by GitOps (kubernetes/apps/network/tailscale-policy).
 // Do not edit in the admin console; tofu-controller overwrites it on reconcile.
 //
-// STAGE 2 of the subnet-router hardening (see PRs in melotic/home-ops):
-//   - the connector is retagged tag:zion-gw and its route narrowed to six /32s
-//   - autoApprovers auto-approve ONLY the two gateway /32s for tag:zion-gw;
-//     the resolver and Talos nodes stay manual-approval
-//   - grants + tag:zion-gw + funnel-drop from stage 1 remain; the legacy
-//     permit-all acls block is still present and is removed in the final stage
-//     (that removal is the moment deny-default actually takes effect).
+// STAGE 3 (final) of the subnet-router hardening (see PRs in melotic/home-ops):
+//   - removes the legacy permit-all acls block: the tailnet is now
+//     deny-by-default (grants are the only allow rules).
+//   - adds tests that fail `terraform apply` (validated server-side) if the
+//     segmentation ever regresses: admins keep gateway/resolver/node reach,
+//     and a popped tag:k8s pod must NOT be able to pivot to any gateway or the
+//     resolver over the tailnet.
 {
 	// Real user identity in this tailnet is the owner role (all devices are
 	// melotic@github). Use autogroup:admin so the admin grant can't silently
@@ -55,13 +55,30 @@
 		},
 	},
 
-	// Legacy permit-all — REMOVED in the final hardening PR. Retained this
-	// stage so narrowing the connector route can't lock anything out.
-	"acls": [
+	// Deny-by-default: no acls block. Grants above are the only allow rules.
+	// Tests below are validated server-side on every apply and fail the apply
+	// if segmentation regresses.
+	"tests": [
+		// Admins retain full reach to the gateways, resolver, and control plane.
+		// Test src must be a concrete principal (a role autogroup is rejected):
+		// melotic@github is the tailnet owner and resolves via autogroup:admin.
 		{
-			"action": "accept",
-			"src":    ["*"],
-			"dst":    ["*:*"],
+			"src":    "melotic@github",
+			"accept": ["10.60.88.1:443", "10.60.80.1:443", "10.60.0.1:53", "10.60.85.10:6443", "10.60.85.10:50000"],
+		},
+		// A popped tag:k8s pod keeps ONLY its Prometheus egress and must NOT be
+		// able to pivot through the router to any gateway, the DNS resolver, or
+		// the Talos control plane.
+		{
+			"src":    "tag:k8s",
+			"accept": ["100.108.57.7:443"], // disco-ninja (the one allowed flow)
+			"deny": [
+				"10.60.88.1:443",   // internal gateway
+				"10.60.80.1:443",   // external gateway
+				"10.60.0.1:53",     // DNS resolver
+				"10.60.85.10:6443", // Talos kube-apiserver
+				"10.60.85.10:50000", // Talos apid
+			],
 		},
 	],
 
