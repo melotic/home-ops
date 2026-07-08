@@ -274,51 +274,6 @@ spec:
     gitlab-runner:
       install: false
     gitlab:
-      migrations:
-        scriptTpl: |
-          set -e;
-          /scripts/wait-for-deps;
-
-          ROOT_PASSWORD_FILE="/srv/gitlab/config/initial_root_password"
-          if [ -f "$ROOT_PASSWORD_FILE" ]; then
-            export GITLAB_ROOT_PASSWORD=$(cat "$ROOT_PASSWORD_FILE")
-          fi
-
-          SHARED_RUNNERS_REGISTRATION_TOKEN_FILE="/srv/gitlab/config/gitlab_shared_runners_registration_token"
-          if [ -f "$SHARED_RUNNERS_REGISTRATION_TOKEN_FILE" ] && [ -r "$SHARED_RUNNERS_REGISTRATION_TOKEN_FILE" ]; then
-            export GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN=$(cat "$SHARED_RUNNERS_REGISTRATION_TOKEN_FILE")
-          fi
-
-          cd /srv/gitlab
-          /srv/gitlab/bin/rake gitlab:db:configure
-
-          # ponytail: GitLab 19 requires oauth_applications.organization_id, but chart 10.1.1's setup script omits it.
-          # `rails runner` needs a code-source arg; `-` reads the heredoc from stdin, else it prints usage and exits 1.
-          /srv/gitlab/bin/rails runner -e production - <<'RUBY'
-          app_path = '/etc/gitlab/oauth-secrets/gitlab-pages'
-          if File.directory?(app_path)
-            uid = File.read(File.join(app_path, 'appid')).strip
-            secret = File.read(File.join(app_path, 'appsecret')).strip
-            redirect_uri = File.read(File.join(app_path, 'redirecturi')).strip
-            app_name = 'Gitlab Pages'
-            existing = Doorkeeper::Application.where({ redirect_uri: redirect_uri, name: app_name }).by_uid_and_secret(uid, secret)
-            unless existing
-              organization_id = Organizations::Organization.default_organization.id
-              Doorkeeper::Application.create!(
-                redirect_uri: redirect_uri,
-                name: app_name,
-                uid: uid,
-                secret: secret,
-                scopes: 'api',
-                confidential: true,
-                trusted: true,
-                organization_id: organization_id
-              )
-            end
-          end
-          RUBY
-
-          /srv/gitlab/bin/rails runner -e production /scripts/custom-instance-setup
       webservice:
         gatewayRoute:
           sectionName: https
