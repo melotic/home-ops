@@ -1,35 +1,20 @@
-// Zion tailnet policy — managed by GitOps (kubernetes/apps/network/tailscale-policy).
-// Do not edit in the admin console; tofu-controller overwrites it on reconcile.
-//
-// STAGE 3 (final) of the subnet-router hardening (see PRs in melotic/home-ops):
-//   - removes the legacy permit-all acls block: the tailnet is now
-//     deny-by-default (grants are the only allow rules).
-//   - adds tests that fail `terraform apply` (validated server-side) if the
-//     segmentation ever regresses: admins keep gateway/resolver/node reach,
-//     and a popped tag:k8s pod must NOT be able to pivot to any gateway or the
-//     resolver over the tailnet.
+// Managed by tofu-controller (network/tailscale-policy). Edits in the admin
+// console get overwritten on reconcile.
 {
-	// Real user identity in this tailnet is the owner role (all devices are
-	// melotic@github). Use autogroup:admin so the admin grant can't silently
-	// desync from a hardcoded email string.
 	"grants": [
-		// Admins reach every advertised route, forced through the zion router
-		// (via withdraws these routes from anyone without this grant). ip:* so
-		// HTTPS, Talos apid/kube, and DNS all work for you.
 		{
 			"src": ["autogroup:admin"],
 			"dst": [
-				"10.60.88.1/32", // envoy-internal gateway (every internal svc by domain)
-				"10.60.80.1/32", // envoy-external gateway (public svcs over VPN via UDM)
-				"10.60.0.1/32",  // UniFi resolver (split DNS)
-				"10.60.85.10/32", "10.60.85.11/32", "10.60.85.12/32", // Talos nodes
+				"10.60.88.1/32",
+				"10.60.80.1/32",
+				"10.60.0.1/32",
+				"10.60.85.10/32", "10.60.85.11/32", "10.60.85.12/32",
 			],
 			"via": ["tag:zion-gw"],
 			"ip":  ["*"],
 		},
-		// The one live cluster->tailnet flow: Prometheus egress to disco-ninja.
-		// disco-ninja is referenced via the hosts alias below (grants require a
-		// hosts entry or full MagicDNS name — a bare hostname is rejected).
+		// Prometheus remote-write egress. dst is the hosts alias below; a bare
+		// hostname fails ACL compilation.
 		{
 			"src": ["tag:k8s"],
 			"dst": ["disco-ninja"],
@@ -37,60 +22,49 @@
 		},
 	],
 
-	// Named aliases for devices referenced in grants.
 	"hosts": {
-		"disco-ninja": "100.108.57.7", // melotic@github personal box (Prometheus remote-write target)
+		"disco-ninja": "100.108.57.7",
 	},
 
-	// Auto-approve ONLY the two gateway routes advertised by the zion subnet
-	// router. The resolver (10.60.0.1/32) and Talos nodes (10.60.85.x/32) are
-	// deliberately absent — they require manual approval, so a compromised
-	// operator OAuth minting a rogue tag:zion-gw node cannot self-approve a
-	// path to the DNS resolver or the control plane. New tagged nodes still
-	// fire the nodeNeedsApproval webhook for those routes.
+	// Resolver and Talos nodes are left out on purpose: they stay
+	// manual-approval so a stolen operator key can't stand up a rogue router
+	// to the DNS resolver or control plane and self-approve it.
 	"autoApprovers": {
 		"routes": {
-			"10.60.88.1/32": ["tag:zion-gw"], // envoy-internal gateway
-			"10.60.80.1/32": ["tag:zion-gw"], // envoy-external gateway
+			"10.60.88.1/32": ["tag:zion-gw"],
+			"10.60.80.1/32": ["tag:zion-gw"],
 		},
 	},
 
-	// Deny-by-default: no acls block. Grants above are the only allow rules.
-	// Tests below are validated server-side on every apply and fail the apply
-	// if segmentation regresses.
+	// No acls block, so the tailnet is deny-by-default. These tests gate the
+	// apply: admin keeps full reach, and a compromised tag:k8s pod stays walled
+	// off from the gateways, resolver, and control plane.
 	"tests": [
-		// Admins retain full reach to the gateways, resolver, and control plane.
-		// Test src must be a concrete principal (a role autogroup is rejected):
-		// melotic@github is the tailnet owner and resolves via autogroup:admin.
 		{
 			"src":    "melotic@github",
 			"accept": ["10.60.88.1:443", "10.60.80.1:443", "10.60.0.1:53", "10.60.85.10:6443", "10.60.85.10:50000"],
 		},
-		// A popped tag:k8s pod keeps ONLY its Prometheus egress and must NOT be
-		// able to pivot through the router to any gateway, the DNS resolver, or
-		// the Talos control plane.
 		{
 			"src":    "tag:k8s",
-			"accept": ["100.108.57.7:443"], // disco-ninja (the one allowed flow)
+			"accept": ["100.108.57.7:443"],
 			"deny": [
-				"10.60.88.1:443",   // internal gateway
-				"10.60.80.1:443",   // external gateway
-				"10.60.0.1:53",     // DNS resolver
-				"10.60.85.10:6443", // Talos kube-apiserver
-				"10.60.85.10:50000", // Talos apid
+				"10.60.88.1:443",
+				"10.60.80.1:443",
+				"10.60.0.1:53",
+				"10.60.85.10:6443",
+				"10.60.85.10:50000",
 			],
 		},
 	],
 
 	"tagOwners": {
 		"tag:k8s-operator": [],
-		"tag:k8s":          ["tag:k8s-operator"], // operator + proxy pods
-		"tag:zion-gw":      ["tag:k8s-operator"], // dedicated subnet router
+		"tag:k8s":          ["tag:k8s-operator"],
+		"tag:zion-gw":      ["tag:k8s-operator"],
 		"tag:ci":           ["justinmp215@gmail.com"],
 		"tag:server":       ["autogroup:admin"],
 	},
 
-	// Tailscale SSH — preserved verbatim from the live policy.
 	"ssh": [
 		{
 			"action": "check",
@@ -111,6 +85,4 @@
 			"action": "accept",
 		},
 	],
-
-	// funnel nodeAttr intentionally removed (was: funnel on autogroup:member).
 }
