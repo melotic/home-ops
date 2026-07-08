@@ -28,6 +28,7 @@ spec:
                   secretKeyRef:
                     name: miniflux-postgres
                     key: uri
+              DISABLE_LOCAL_AUTH: "true"
               LISTEN_ADDR: 0.0.0.0:8080
               OAUTH2_OIDC_DISCOVERY_ENDPOINT: https://sso.melotic.dev/application/o/miniflux/
               OAUTH2_OIDC_PROVIDER_NAME: authentik
@@ -91,7 +92,7 @@ spec:
         hostnames:
           - reader.melotic.dev
         parentRefs:
-          - name: envoy-internal
+          - name: envoy-external
             namespace: network
             sectionName: https
     persistence:
