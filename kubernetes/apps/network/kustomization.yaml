@@ -15,4 +15,5 @@ resources:
   - ./envoy-gateway/ks.yaml
   - ./tailscale/ks.yaml
   - ./tailscale-dns/ks.yaml
+  - ./tailscale-policy/ks.yaml
   - ./unifi-dns/ks.yaml
