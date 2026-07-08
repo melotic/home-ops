@@ -38,7 +38,7 @@ spec:
     startupapicheck:
       image:
         repository: quay.io/jetstack/cert-manager-startupapicheck
-        tag: v1.20.3
+        tag: v1.21.0
         digest: sha256:4e2a69b4a0cc9627905bbeecf720f95d5153ca39cacdab923d2748e73556792b
     dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
     dns01RecursiveNameserversOnly: true
