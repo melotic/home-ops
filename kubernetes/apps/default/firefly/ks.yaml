@@ -1,0 +1,30 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app firefly
+  namespace: &namespace default
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/cnpg-database
+  dependsOn:
+    - name: postgres
+      namespace: database
+  path: ./kubernetes/apps/default/firefly/app
+  postBuild:
+    substitute:
+      APP: firefly
+      ONEPASSWORD_ITEM: firefly-postgres
+      PG_DATABASE: firefly
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
+      PG_USER: firefly
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  wait: false
