@@ -130,6 +130,11 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-crowdsec
+        - name: firefly
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-firefly
         - name: authentik
           ensure: present
           login: true

@@ -1,0 +1,13 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: firefly
+spec:
+  name: firefly
+  owner: firefly
+  cluster:
+    name: postgres-cluster
+  schemas:
+    - name: public
+      owner: firefly

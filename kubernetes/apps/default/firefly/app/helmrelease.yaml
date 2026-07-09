@@ -1,0 +1,232 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: firefly
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: firefly
+  interval: 1h
+  values:
+    controllers:
+      firefly:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          # ---------------------------------------------------------------
+          # Firefly III core (web UI + REST API + webhook emitter)
+          # ---------------------------------------------------------------
+          app:
+            image:
+              repository: fireflyiii/core
+              tag: version-6.6.6@sha256:ae69fdd95cdef9038cd7a460a5aec731f14813973e4f096511d5a4ea9ff0e972
+            env:
+              TZ: America/Chicago
+              APP_ENV: production
+              APP_URL: "https://firefly.melotic.dev"
+              SITE_OWNER: justinmp215@gmail.com
+              DEFAULT_LANGUAGE: en_US
+              TRUSTED_PROXIES: "**"
+              LOG_CHANNEL: stack
+              APP_LOG_LEVEL: notice
+              DB_CONNECTION: pgsql
+              DB_HOST: postgres-cluster-rw.database.svc.cluster.local
+              DB_PORT: "5432"
+              DB_DATABASE: firefly
+              DB_USERNAME:
+                secretKeyRef:
+                  name: &pgsecret firefly-postgres
+                  key: username
+              DB_PASSWORD:
+                secretKeyRef:
+                  name: *pgsecret
+                  key: password
+              APP_KEY:
+                secretKeyRef:
+                  name: &secret firefly-secret
+                  key: APP_KEY
+              STATIC_CRON_TOKEN:
+                secretKeyRef:
+                  name: *secret
+                  key: STATIC_CRON_TOKEN
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 25m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+          # ---------------------------------------------------------------
+          # Data Importer (SimpleFIN -> Firefly, headless autoimport)
+          # ---------------------------------------------------------------
+          importer:
+            image:
+              repository: fireflyiii/data-importer
+              tag: version-2.3.3@sha256:376b52a3abc92ea459b9b77c7be594e5abf9c845e80eccbbe6bda0af67859c31
+            env:
+              TZ: America/Chicago
+              APP_URL: "https://firefly-import.melotic.dev"
+              APP_ENV: production
+              LOG_CHANNEL: stack
+              TRUSTED_PROXIES: "**"
+              EXPECT_SECURE_URL: "true"
+              # Talk to core over localhost within the same pod
+              FIREFLY_III_URL: "http://localhost:8080"
+              VANITY_URL: "https://firefly.melotic.dev"
+              FIREFLY_III_ACCESS_TOKEN:
+                secretKeyRef:
+                  name: *secret
+                  key: FIREFLY_III_ACCESS_TOKEN
+              # SimpleFIN bank feed (operator pastes token into 1Password)
+              SIMPLEFIN_TOKEN:
+                secretKeyRef:
+                  name: *secret
+                  key: SIMPLEFIN_TOKEN
+              # Headless sync: allow POST /autoimport with this secret
+              CAN_POST_AUTOIMPORT: "true"
+              AUTO_IMPORT_SECRET:
+                secretKeyRef:
+                  name: *secret
+                  key: WEBHOOK_SECRET
+              IMPORT_DIR_ALLOWLIST: /import
+            probes:
+              liveness: &iprobes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: 8081
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+              readiness: *iprobes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+          # ---------------------------------------------------------------
+          # MCP server (@firefly-iii-mcp/server) - ALL tools (preset: full)
+          # No include/exclude filter: SimpleFIN is read-only upstream, so
+          # no MCP tool can move real money; worst case is a recoverable
+          # local-ledger edit that re-syncs from the bank feed.
+          # ---------------------------------------------------------------
+          mcp:
+            image:
+              repository: node
+              tag: 22-alpine@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2
+            command:
+              - npx
+              - -y
+              - "@firefly-iii-mcp/server@1.4.0"
+            env:
+              PORT: "3000"
+              FIREFLY_III_BASE_URL: "http://localhost:8080"
+              FIREFLY_III_PRESET: full
+              FIREFLY_III_PAT:
+                secretKeyRef:
+                  name: *secret
+                  key: FIREFLY_III_PAT
+            probes:
+              liveness: &mprobes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: 3000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+              readiness: *mprobes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: firefly
+        ports:
+          http:
+            port: 8080
+      mcp:
+        controller: firefly
+        ports:
+          http:
+            port: 3000
+      importer:
+        controller: firefly
+        ports:
+          http:
+            port: 8081
+    route:
+      app:
+        hostnames:
+          - "firefly.melotic.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: 8080
+      importer:
+        hostnames:
+          - "firefly-import.melotic.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: importer
+                port: 8081
+    persistence:
+      upload:
+        type: emptyDir
+      import:
+        type: emptyDir
+        advancedMounts:
+          firefly:
+            importer:
+              - path: /import
