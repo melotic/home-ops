@@ -62,8 +62,13 @@ importer picks it up automatically (it has `reloader` auto-restart).
 Firefly UI → **Options → Webhooks → New webhook**:
 - Trigger: **After transaction creation**
 - Response: **Transaction details**
+- Delivery: **JSON**
 - URL: `https://disco-ninja.tail88eb4.ts.net/hooks/firefly-txn`
 - Secret: **1Password → Zion → `firefly` → `WEBHOOK_SECRET`**
+
+The Hermes subscription accepts any POST on this route (no event filter),
+so no extra header config is needed. Verified working: a signed test
+POST triggered a live agent run (gateway log `POST route=firefly-txn`).
 
 Now every new transaction fires → Hermes classifies + reconciles it →
 replies in Discord.
