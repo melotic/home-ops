@@ -11,13 +11,14 @@ spec:
   interval: 1h
   values:
     controllers:
+      # =================================================================
+      # Controller 1: Firefly III core + MCP sidecar (shares localhost)
+      # =================================================================
       firefly:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
-          # ---------------------------------------------------------------
           # Firefly III core (web UI + REST API + webhook emitter)
-          # ---------------------------------------------------------------
           app:
             image:
               repository: docker.io/fireflyiii/core
@@ -74,68 +75,11 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-          # ---------------------------------------------------------------
-          # Data Importer (SimpleFIN -> Firefly, headless autoimport)
-          # ---------------------------------------------------------------
-          importer:
-            image:
-              repository: docker.io/fireflyiii/data-importer
-              tag: version-2.3.3@sha256:376b52a3abc92ea459b9b77c7be594e5abf9c845e80eccbbe6bda0af67859c31
-            env:
-              TZ: America/Chicago
-              APP_URL: "https://firefly-import.melotic.dev"
-              APP_ENV: production
-              LOG_CHANNEL: stack
-              TRUSTED_PROXIES: "**"
-              EXPECT_SECURE_URL: "true"
-              # Talk to core over localhost within the same pod
-              FIREFLY_III_URL: "http://localhost:8080"
-              VANITY_URL: "https://firefly.melotic.dev"
-              FIREFLY_III_ACCESS_TOKEN:
-                secretKeyRef:
-                  name: *secret
-                  key: FIREFLY_III_ACCESS_TOKEN
-              # SimpleFIN bank feed (operator pastes token into 1Password)
-              SIMPLEFIN_TOKEN:
-                secretKeyRef:
-                  name: *secret
-                  key: SIMPLEFIN_TOKEN
-              # Headless sync: allow POST /autoimport with this secret
-              CAN_POST_AUTOIMPORT: "true"
-              AUTO_IMPORT_SECRET:
-                secretKeyRef:
-                  name: *secret
-                  key: WEBHOOK_SECRET
-              IMPORT_DIR_ALLOWLIST: /import
-            probes:
-              liveness: &iprobes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: 8081
-                  initialDelaySeconds: 30
-                  periodSeconds: 30
-                  timeoutSeconds: 5
-                  failureThreshold: 6
-              readiness: *iprobes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: false
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 10m
-                memory: 128Mi
-              limits:
-                memory: 512Mi
-          # ---------------------------------------------------------------
-          # MCP server (@firefly-iii-mcp/server) - ALL tools (preset: full)
-          # No include/exclude filter: SimpleFIN is read-only upstream, so
-          # no MCP tool can move real money; worst case is a recoverable
-          # local-ledger edit that re-syncs from the bank feed.
-          # ---------------------------------------------------------------
+          # MCP server (@firefly-iii-mcp/server) - ALL tools (preset: full).
+          # Shares the pod with core so it reaches the API over localhost:8080.
+          # No include/exclude filter: SimpleFIN is read-only upstream, so no
+          # MCP tool can move real money; worst case is a recoverable local
+          # ledger edit that re-syncs from the bank feed.
           mcp:
             image:
               repository: docker.io/library/node
@@ -176,6 +120,65 @@ spec:
                 memory: 128Mi
               limits:
                 memory: 512Mi
+      # =================================================================
+      # Controller 2: Data Importer (own pod - also binds 8080 internally,
+      # so it CANNOT share a pod with core). Reaches core over the service.
+      # =================================================================
+      firefly-importer:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/fireflyiii/data-importer
+              tag: version-2.3.3@sha256:376b52a3abc92ea459b9b77c7be594e5abf9c845e80eccbbe6bda0af67859c31
+            env:
+              TZ: America/Chicago
+              APP_URL: "https://firefly-import.melotic.dev"
+              APP_ENV: production
+              LOG_CHANNEL: stack
+              TRUSTED_PROXIES: "**"
+              EXPECT_SECURE_URL: "true"
+              # Reach core over the in-cluster service (separate pod now)
+              FIREFLY_III_URL: "http://firefly.default.svc.cluster.local:8080"
+              VANITY_URL: "https://firefly.melotic.dev"
+              FIREFLY_III_ACCESS_TOKEN:
+                secretKeyRef:
+                  name: *secret
+                  key: FIREFLY_III_ACCESS_TOKEN
+              SIMPLEFIN_TOKEN:
+                secretKeyRef:
+                  name: *secret
+                  key: SIMPLEFIN_TOKEN
+              CAN_POST_AUTOIMPORT: "true"
+              AUTO_IMPORT_SECRET:
+                secretKeyRef:
+                  name: *secret
+                  key: WEBHOOK_SECRET
+              IMPORT_DIR_ALLOWLIST: /import
+            probes:
+              liveness: &iprobes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 6
+              readiness: *iprobes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
     defaultPodOptions:
       automountServiceAccountToken: false
       securityContext:
@@ -196,10 +199,10 @@ spec:
           http:
             port: 3000
       importer:
-        controller: firefly
+        controller: firefly-importer
         ports:
           http:
-            port: 8081
+            port: 8080
     route:
       app:
         hostnames:
@@ -222,13 +225,11 @@ spec:
         rules:
           - backendRefs:
               - identifier: importer
-                port: 8081
+                port: 8080
     persistence:
-      upload:
-        type: emptyDir
       import:
         type: emptyDir
         advancedMounts:
-          firefly:
-            importer:
+          firefly-importer:
+            app:
               - path: /import
