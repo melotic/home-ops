@@ -13,6 +13,14 @@
 			"via": ["tag:zion-gw"],
 			"ip":  ["*"],
 		},
+		// Your own devices reach each other (iPhone to disco-ninja, etc). The
+		// SSH block below still gates the actual login; this is the network
+		// layer it needs. Excludes tagged devices, so tag:k8s gains nothing.
+		{
+			"src": ["autogroup:member"],
+			"dst": ["autogroup:self"],
+			"ip":  ["*"],
+		},
 		// Prometheus remote-write egress. dst is the hosts alias below; a bare
 		// hostname fails ACL compilation.
 		{
@@ -42,7 +50,7 @@
 	"tests": [
 		{
 			"src":    "melotic@github",
-			"accept": ["10.60.88.1:443", "10.60.80.1:443", "10.60.0.1:53", "10.60.85.10:6443", "10.60.85.10:50000"],
+			"accept": ["10.60.88.1:443", "10.60.80.1:443", "10.60.0.1:53", "10.60.85.10:6443", "10.60.85.10:50000", "100.108.57.7:22"],
 		},
 		{
 			"src":    "tag:k8s",
