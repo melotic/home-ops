@@ -20,7 +20,7 @@ spec:
           # ---------------------------------------------------------------
           app:
             image:
-              repository: fireflyiii/core
+              repository: docker.io/fireflyiii/core
               tag: version-6.6.6@sha256:ae69fdd95cdef9038cd7a460a5aec731f14813973e4f096511d5a4ea9ff0e972
             env:
               TZ: America/Chicago
@@ -79,7 +79,7 @@ spec:
           # ---------------------------------------------------------------
           importer:
             image:
-              repository: fireflyiii/data-importer
+              repository: docker.io/fireflyiii/data-importer
               tag: version-2.3.3@sha256:376b52a3abc92ea459b9b77c7be594e5abf9c845e80eccbbe6bda0af67859c31
             env:
               TZ: America/Chicago
@@ -138,7 +138,7 @@ spec:
           # ---------------------------------------------------------------
           mcp:
             image:
-              repository: node
+              repository: docker.io/library/node
               tag: 22-alpine@sha256:16e22a550f3863206a3f701448c45f7912c6896a62de43add43bb9c86130c3e2
             command:
               - npx
