@@ -146,6 +146,8 @@ spec:
               - "@firefly-iii-mcp/server@1.4.0"
             env:
               PORT: "3000"
+              HOME: /tmp
+              NPM_CONFIG_CACHE: /tmp/.npm
               FIREFLY_III_BASE_URL: "http://localhost:8080"
               FIREFLY_III_PRESET: full
               FIREFLY_III_PAT:
@@ -178,9 +180,9 @@ spec:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
+        runAsUser: 33
+        runAsGroup: 33
+        fsGroup: 33
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
