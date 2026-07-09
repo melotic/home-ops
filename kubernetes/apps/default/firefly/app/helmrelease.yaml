@@ -233,6 +233,17 @@ spec:
           - backendRefs:
               - identifier: importer
                 port: 8080
+      mcp:
+        hostnames:
+          - "firefly-mcp.melotic.dev"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: mcp
+                port: 3000
     persistence:
       import:
         type: emptyDir
