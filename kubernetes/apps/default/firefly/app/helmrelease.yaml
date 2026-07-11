@@ -32,6 +32,8 @@ spec:
               APP_URL: "https://firefly.melotic.dev"
               SITE_OWNER: justinmp215@gmail.com
               DEFAULT_LANGUAGE: en_US
+              AUTHENTICATION_GUARD: remote_user_guard
+              AUTHENTICATION_GUARD_HEADER: HTTP_X_AUTHENTIK_EMAIL
               TRUSTED_PROXIES: "**"
               LOG_CHANNEL: stack
               APP_LOG_LEVEL: notice
@@ -134,7 +136,7 @@ spec:
               LOG_CHANNEL: stack
               TRUSTED_PROXIES: "**"
               EXPECT_SECURE_URL: "true"
-              FIREFLY_III_URL: "http://firefly.default.svc.cluster.local:8080"
+              FIREFLY_III_URL: "http://firefly-app.default.svc.cluster.local:8080"
               VANITY_URL: "https://firefly.melotic.dev"
               FIREFLY_III_ACCESS_TOKEN:
                 secretKeyRef:

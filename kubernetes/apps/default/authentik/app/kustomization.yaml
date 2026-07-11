@@ -20,6 +20,7 @@ configMapGenerator:
       - alertmanager.yaml=./blueprints/alertmanager.yaml
       - slskd.yaml=./blueprints/slskd.yaml
       - gatus.yaml=./blueprints/gatus.yaml
+      - firefly.yaml=./blueprints/firefly.yaml
       - ghidra-server.yaml=./blueprints/ghidra-server.yaml
       - policy-reporter.yaml=./blueprints/policy-reporter.yaml
       - outpost.yaml=./blueprints/outpost.yaml

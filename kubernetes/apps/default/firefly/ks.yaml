@@ -22,6 +22,8 @@ spec:
       PG_DATABASE: firefly
       PG_HOST: postgres-cluster-rw.database.svc.cluster.local
       PG_USER: firefly
+      AUTH_POLICY_NAME: firefly-auth
+      AUTH_HTTPROUTE: firefly-app
   sourceRef:
     kind: GitRepository
     name: flux-system
