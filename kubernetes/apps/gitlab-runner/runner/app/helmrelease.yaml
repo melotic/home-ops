@@ -103,8 +103,7 @@ spec:
       limits:
         memory: 256Mi
 
-    # One manager pod at a time; otherwise config reloads briefly double the
-    # runner intake cap while disk-heavy jobs are already saturating the OSD node.
+    # Keep one manager pod active during rollouts to avoid overlapping intake.
     strategy:
       type: RollingUpdate
       rollingUpdate:
@@ -118,10 +117,9 @@ spec:
       config: |
         [[runners]]
           executor = "kubernetes"
-          # Keep job intake single-file so disk-heavy CI cannot pile onto the
-          # same NVMe/OSD and amplify Ceph/etcd latency or SMART temperature.
-          limit = 1
-          request_concurrency = 1
+          # Allow two jobs while keeping intake aligned with the job limit.
+          limit = 2
+          request_concurrency = 2
           cache_dir = "/cache"
           [runners.cache]
             Type = "s3"
@@ -252,5 +250,5 @@ spec:
               mount_path = "/certs"
               read_only = true
 
-    concurrent: 1
+    concurrent: 2
     checkInterval: 3
