@@ -6,3 +6,5 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./ocirepository.yaml
+components:
+  - ../../../../components/authentik-proxy
