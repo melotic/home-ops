@@ -16,6 +16,7 @@ spec:
   values:
     controllers:
       slskd:
+        replicas: 0
         strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
