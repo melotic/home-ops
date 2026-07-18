@@ -43,6 +43,7 @@ spec:
               DISABLE_NEW_RELEASE_CHECK: "true"
               DISABLE_PASSWORD_AUTH: "true"
               HOME: /tmp
+              INFERENCE_JOB_TIMEOUT_SEC: "600"
               MEILI_ADDR: http://localhost:7700
               NEXTAUTH_URL: https://karakeep.melotic.dev
               OAUTH_AUTO_REDIRECT: "true"
