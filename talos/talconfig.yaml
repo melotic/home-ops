@@ -97,6 +97,7 @@ patches:
   - "@./patches/global/machine-seccomp.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
+  - "@./patches/global/machine-watchdog.yaml"
 
 # Controller patches
 controlPlane:
