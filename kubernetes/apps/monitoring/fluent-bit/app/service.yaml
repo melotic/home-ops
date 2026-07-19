@@ -16,3 +16,15 @@ spec:
       port: 514
       targetPort: 5140
       protocol: UDP
+    - name: talos-niobe
+      port: 5141
+      targetPort: 5141
+      protocol: TCP
+    - name: talos-trinity
+      port: 5142
+      targetPort: 5142
+      protocol: TCP
+    - name: talos-ghost
+      port: 5143
+      targetPort: 5143
+      protocol: TCP
