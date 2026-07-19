@@ -31,6 +31,18 @@ spec:
         port: 5140
         containerPort: 5140
         protocol: UDP
+      - name: talos-niobe
+        port: 5141
+        containerPort: 5141
+        protocol: TCP
+      - name: talos-trinity
+        port: 5142
+        containerPort: 5142
+        protocol: TCP
+      - name: talos-ghost
+        port: 5143
+        containerPort: 5143
+        protocol: TCP
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1000
@@ -71,7 +83,37 @@ spec:
             Port              5140
             Parser            syslog-rfc3164-local
             Buffer_Chunk_Size 64000
-      filters: ""
+        [INPUT]
+            Name              tcp
+            Tag               talos.niobe
+            Listen            0.0.0.0
+            Port              5141
+            Format            json
+        [INPUT]
+            Name              tcp
+            Tag               talos.trinity
+            Listen            0.0.0.0
+            Port              5142
+            Format            json
+        [INPUT]
+            Name              tcp
+            Tag               talos.ghost
+            Listen            0.0.0.0
+            Port              5143
+            Format            json
+      filters: |
+        [FILTER]
+            Name          record_modifier
+            Match         talos.niobe
+            Record        node k8s-niobe
+        [FILTER]
+            Name          record_modifier
+            Match         talos.trinity
+            Record        node k8s-trinity
+        [FILTER]
+            Name          record_modifier
+            Match         talos.ghost
+            Record        node k8s-ghost
       customParsers: |-
         [PARSER]
             Name                 syslog-rfc3164-local
@@ -89,6 +131,15 @@ spec:
             URI                  /insert/jsonline?_stream_fields=host&_msg_field=message,log&_time_field=date
             Format               json_lines
             json_date_format     iso8601
+            Compress             gzip
+            Log_response_payload false
+        [OUTPUT]
+            Name                 http
+            Match                talos.*
+            Host                 victoria-logs-server.monitoring.svc.cluster.local
+            Port                 9428
+            URI                  /insert/jsonline?_stream_fields=node&_msg_field=msg&_time_field=talos-time
+            Format               json_lines
             Compress             gzip
             Log_response_payload false
     dashboards:

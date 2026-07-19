@@ -23,6 +23,13 @@ nodes:
     ipAddress: "10.60.85.10"
     installDisk: "/dev/nvme0n1"
     controlPlane: true
+    patches:
+      - |-
+        machine:
+          logging:
+            destinations:
+              - endpoint: "tcp://10.60.80.54:5141"
+                format: json_lines
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "00:24:27:88:e6:a8"
@@ -53,6 +60,13 @@ nodes:
     ipAddress: "10.60.85.11"
     installDisk: "/dev/nvme0n1"
     controlPlane: true
+    patches:
+      - |-
+        machine:
+          logging:
+            destinations:
+              - endpoint: "tcp://10.60.80.54:5142"
+                format: json_lines
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "04:0e:3c:92:31:01"
@@ -75,6 +89,13 @@ nodes:
     ipAddress: "10.60.85.12"
     installDisk: "/dev/nvme0n1"
     controlPlane: true
+    patches:
+      - |-
+        machine:
+          logging:
+            destinations:
+              - endpoint: "tcp://10.60.80.54:5143"
+                format: json_lines
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: "58:47:ca:71:21:77"
