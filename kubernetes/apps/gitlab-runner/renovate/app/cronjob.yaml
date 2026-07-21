@@ -31,7 +31,7 @@ spec:
             runAsNonRoot: true
           containers:
             - name: renovate
-              image: docker.io/renovate/renovate:43.272.8-full
+              image: docker.io/renovate/renovate:43.275.0-full
               env:
                 - name: LOG_LEVEL
                   value: info
