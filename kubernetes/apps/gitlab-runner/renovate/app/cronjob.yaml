@@ -48,6 +48,11 @@ spec:
                     secretKeyRef:
                       name: renovate
                       key: RENOVATE_TOKEN
+                - name: GITHUB_COM_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: github-status-token-secret
+                      key: token
                 - name: RENOVATE_AUTODISCOVER_FILTER
                   valueFrom:
                     secretKeyRef:
