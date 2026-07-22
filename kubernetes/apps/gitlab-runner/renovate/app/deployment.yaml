@@ -40,6 +40,10 @@ spec:
               containerPort: 8080
               protocol: TCP
           env:
+            - name: LOG_LEVEL
+              value: debug
+            - name: RENOVATE_ONBOARDING_CONFIG
+              value: '{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["config:best-practices"]}'
             - name: MEND_RNV_PLATFORM
               value: gitlab
             - name: MEND_RNV_ENDPOINT
