@@ -9,10 +9,22 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../components/cnpg-database
   dependsOn:
+    - name: postgres
+      namespace: database
     - name: onepassword
       namespace: external-secrets
   path: ./kubernetes/apps/gitlab-runner/renovate/app
+  postBuild:
+    substitute:
+      APP: renovate
+      ONEPASSWORD_ITEM: andtkeb6y2rfszjfubuwmclz4i
+      PG_DATABASE: renovate
+      PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
+      PG_USER: renovate
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

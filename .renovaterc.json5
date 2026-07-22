@@ -78,12 +78,6 @@
       commitMessageTopic: "image {{depName}}",
     },
     {
-      description: "Limit Renovate self-updates",
-      matchDatasources: ["docker"],
-      matchPackageNames: ["docker.io/renovate/renovate"],
-      extends: ["schedule:earlyMondays"],
-    },
-    {
       // Pin container image digests, but not OCIRepository chart refs
       // (ocirepository.yaml) — both are datasource=docker via the flux manager.
       description: "Pin container image digests (HelmRelease values only)",

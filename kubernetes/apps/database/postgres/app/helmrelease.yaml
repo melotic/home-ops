@@ -155,6 +155,11 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-gitlab
+        - name: renovate
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-renovate
       storage:
         size: 16Gi
         storageClass: openebs-hostpath

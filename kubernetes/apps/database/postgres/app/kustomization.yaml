@@ -15,6 +15,7 @@ resources:
   - ./databases/paperless.yaml
   - ./databases/prowlarr.yaml
   - ./databases/radarr.yaml
+  - ./databases/renovate.yaml
   - ./databases/seerr.yaml
   - ./databases/sonarr.yaml
   - ./externalsecret-backup.yaml
@@ -36,5 +37,6 @@ resources:
   - ./roles/paperless.yaml
   - ./roles/prowlarr.yaml
   - ./roles/radarr.yaml
+  - ./roles/renovate.yaml
   - ./roles/seerr.yaml
   - ./roles/sonarr.yaml
