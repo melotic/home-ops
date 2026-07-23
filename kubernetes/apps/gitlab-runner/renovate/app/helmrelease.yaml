@@ -154,6 +154,9 @@ spec:
               - op: test
                 path: /spec/template/spec/containers/0/name
                 value: mend-renovate-ce
+              - op: replace
+                path: /spec/template/spec/containers/0/name
+                value: renovate
               - op: add
                 path: /spec/template/spec/containers/0/startupProbe
                 value:
