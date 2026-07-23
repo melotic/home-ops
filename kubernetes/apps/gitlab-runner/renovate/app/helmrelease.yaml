@@ -87,8 +87,6 @@ spec:
       - name: tmp
         mountPath: /tmp
     service:
-      annotations:
-        kustomize.toolkit.fluxcd.io/prune: disabled
       ports:
         http: 8080
     annotations:
@@ -166,16 +164,6 @@ spec:
                   periodSeconds: 5
                   timeoutSeconds: 1
                   failureThreshold: 60
-          - target:
-              kind: Deployment
-              name: renovate
-            patch: |
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: renovate
-                annotations:
-                  kustomize.toolkit.fluxcd.io/prune: disabled
           - target:
               kind: Secret
               name: mend-renovate-ce
