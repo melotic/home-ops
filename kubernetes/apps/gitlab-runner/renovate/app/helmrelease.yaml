@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -7,196 +7,139 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: renovate
+    name: renovate-app-template
   interval: 1h
+  upgrade:
+    force: true
   values:
-    fullnameOverride: renovate
-    image:
-      repository: ghcr.io/mend/renovate-ce
-      tag: 15.0.0-full@sha256:6ee8e044233feaecd8a11ce5205225ea40e0918aabaefc9d8088ed739cea5e01
-      useFull: false
-    renovate:
-      extraEnvVars:
-        - name: LOG_LEVEL
-          value: debug
-        - name: RENOVATE_ONBOARDING_CONFIG
-          value: '{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["config:best-practices"]}'
-        - name: MEND_RNV_PLATFORM
-          value: gitlab
-        - name: MEND_RNV_ENDPOINT
-          value: https://gitlab.melotic.dev/api/v4/
-        - name: MEND_RNV_ACCEPT_TOS
-          value: "y"
-        - name: MEND_RNV_WEBHOOK_URL
-          value: https://renovate-webhook.melotic.dev/webhook
-        - name: MEND_RNV_CRON_JOB_SCHEDULER_ALL
-          value: "0 * * * *"
-        - name: MEND_RNV_CRON_APP_SYNC
-          value: "0 */4 * * *"
-        - name: MEND_RNV_DATA_HANDLER_TYPE
-          value: postgresql
-        - name: PGHOST
-          value: postgres-cluster-pooler-rw.database.svc.cluster.local
-        - name: PGPORT
-          value: "5432"
-        - name: PGDATABASE
-          value: renovate
-        - name: PGUSER
-          value: renovate
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: renovate-postgres
-              key: password
-        - name: MEND_RNV_GITLAB_PAT
-          valueFrom:
-            secretKeyRef:
-              name: renovate
-              key: MEND_RNV_GITLAB_PAT
-        - name: MEND_RNV_LICENSE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: renovate
-              key: MEND_RNV_LICENSE_KEY
-        - name: MEND_RNV_WEBHOOK_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: renovate
-              key: MEND_RNV_WEBHOOK_SECRET
-        - name: MEND_RNV_AUTODISCOVER_FILTER
-          valueFrom:
-            secretKeyRef:
-              name: renovate
-              key: MEND_RNV_AUTODISCOVER_FILTER
-        - name: GITHUB_COM_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: github-status-token-secret
-              key: token
-      logFormat: null
-      logLevel: null
-      mendRnvSqliteFilePath: null
-      mendRnvWorkerCleanup: null
-    serviceAccount:
-      create: false
-    disableCacheVolume: true
-    extraVolumes:
-      - name: tmp
-        emptyDir: {}
-    extraVolumeMounts:
-      - name: tmp
-        mountPath: /tmp
-    service:
-      annotations:
-        kustomize.toolkit.fluxcd.io/prune: disabled
-      ports:
-        http: 8080
-    annotations:
-      reloader.stakater.com/auto: "true"
-    affinity:
-      nodeAffinity:
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions:
-                - key: kubernetes.io/hostname
-                  operator: NotIn
-                  values: ["k8s-ghost"]
-    podSecurityContext:
-      runAsNonRoot: true
-      seccompProfile:
-        type: RuntimeDefault
-    containerSecurityContext:
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      capabilities:
-        drop: ["ALL"]
-    resources:
-      requests:
-        cpu: 100m
-        memory: 512Mi
-      limits:
-        memory: 2Gi
-    terminationGracePeriodSeconds: 60
-    livenessProbe:
-      initialDelaySeconds: 2
-      httpGet:
-        path: /health
-        port: http
-      periodSeconds: 10
-      timeoutSeconds: 1
-      failureThreshold: 3
-      successThreshold: 1
-    readinessProbe:
-      httpGet:
-        path: /health
-        port: http
-      periodSeconds: 10
-      timeoutSeconds: 1
-      failureThreshold: 3
-      successThreshold: 1
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Deployment
-              name: renovate
-            patch: |
-              - op: replace
-                path: /spec/selector/matchLabels
-                value:
-                  app.kubernetes.io/name: renovate
-              - op: replace
-                path: /spec/template/metadata/labels/app.kubernetes.io~1name
-                value: renovate
-              - op: add
-                path: /spec/template/spec/automountServiceAccountToken
-                value: false
-              - op: test
-                path: /spec/template/spec/containers/0/name
-                value: mend-renovate-ce
-              - op: replace
-                path: /spec/template/spec/containers/0/name
-                value: renovate
-              - op: add
-                path: /spec/template/spec/containers/0/startupProbe
-                value:
+    controllers:
+      renovate:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          renovate:
+            image:
+              repository: ghcr.io/mend/renovate-ce
+              tag: 15.0.0-full@sha256:6ee8e044233feaecd8a11ce5205225ea40e0918aabaefc9d8088ed739cea5e01
+            env:
+              LOG_LEVEL: debug
+              RENOVATE_ONBOARDING_CONFIG: '{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["config:best-practices"]}'
+              MEND_RNV_PLATFORM: gitlab
+              MEND_RNV_ENDPOINT: https://gitlab.melotic.dev/api/v4/
+              MEND_RNV_ACCEPT_TOS: "y"
+              MEND_RNV_WEBHOOK_URL: https://renovate-webhook.melotic.dev/webhook
+              MEND_RNV_CRON_JOB_SCHEDULER_ALL: "0 * * * *"
+              MEND_RNV_CRON_APP_SYNC: "0 */4 * * *"
+              MEND_RNV_DATA_HANDLER_TYPE: postgresql
+              PGHOST: postgres-cluster-pooler-rw.database.svc.cluster.local
+              PGPORT: "5432"
+              PGDATABASE: renovate
+              PGUSER: renovate
+              PGPASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: renovate-postgres
+                    key: password
+              GITHUB_COM_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: github-status-token-secret
+                    key: token
+            envFrom:
+              - secretRef:
+                  name: renovate
+            ports:
+              - name: http
+                containerPort: 8080
+                protocol: TCP
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
                   httpGet:
                     path: /health
                     port: http
                   periodSeconds: 5
                   timeoutSeconds: 1
                   failureThreshold: 60
-          - target:
-              kind: Deployment
-              name: renovate
-            patch: |
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: renovate
-                annotations:
-                  kustomize.toolkit.fluxcd.io/prune: disabled
-          - target:
-              kind: Secret
-              name: mend-renovate-ce
-            patch: |
-              apiVersion: v1
-              kind: Secret
-              metadata:
-                name: mend-renovate-ce
-              $patch: delete
-          - target:
-              kind: Service
-              name: renovate
-            patch: |-
-              - op: replace
-                path: /spec/selector
-                value:
-                  app.kubernetes.io/name: renovate
-              - op: replace
-                path: /spec/ports
-                value:
-                  - name: http
-                    port: 8080
-                    targetPort: http
-                    protocol: TCP
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: http
+                  initialDelaySeconds: 2
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+                  successThreshold: 1
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: http
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+                  successThreshold: 1
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 60
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: ["k8s-ghost"]
+    serviceAccount:
+      default:
+        enabled: false
+    service:
+      app:
+        controller: renovate
+        ports:
+          http:
+            port: 8080
+            targetPort: http
+            protocol: TCP
+    configMaps:
+      config:
+        data:
+          config.js: |-
+            module.exports = {
+              // Enter self-hosted configuration options here.
+              // https://docs.renovatebot.com/self-hosted-configuration/
+            }
+    persistence:
+      config:
+        type: configMap
+        identifier: config
+        globalMounts:
+          - path: /usr/src/app/config.js
+            subPath: config.js
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
