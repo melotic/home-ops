@@ -9,8 +9,6 @@ spec:
     kind: OCIRepository
     name: renovate-app-template
   interval: 1h
-  upgrade:
-    force: true
   values:
     controllers:
       renovate:
