@@ -4,6 +4,12 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: renovate
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+    meta.helm.sh/release-name: renovate
+    meta.helm.sh/release-namespace: gitlab-runner
 spec:
   replicas: 1
   strategy:
