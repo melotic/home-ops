@@ -50,6 +50,7 @@ spec:
               USERMAP_GID: "1000"
               PAPERLESS_OCR_LANGUAGE: eng
               PAPERLESS_CONSUMER_POLLING_INTERVAL: "60"
+              PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true"
               # ponytail: OCR currently OOMs at 2Gi with parallel consumes; raise memory before raising these.
               PAPERLESS_TASK_WORKERS: "1"
               PAPERLESS_THREADS_PER_WORKER: "1"
