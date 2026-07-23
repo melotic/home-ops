@@ -114,4 +114,28 @@ spec:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
         name: kyverno
+    - # Temporary Renovate chart-transition safety. Remove after the native chart is stable.
+      patch: |-
+        - op: add
+          path: /spec/patches/-
+          value:
+            patch: |-
+              - op: remove
+                path: /spec/rollback
+              - op: remove
+                path: /spec/upgrade/cleanupOnFail
+              - op: remove
+                path: /spec/upgrade/remediation
+              - op: replace
+                path: /spec/upgrade/strategy/name
+                value: RetryOnFailure
+            target:
+              group: helm.toolkit.fluxcd.io
+              kind: HelmRelease
+              name: renovate
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        name: renovate
+        namespace: gitlab-runner
   wait: false
