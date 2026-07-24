@@ -49,6 +49,7 @@ spec:
               USERMAP_UID: "1000"
               USERMAP_GID: "1000"
               PAPERLESS_OCR_LANGUAGE: eng
+              PAPERLESS_ARCHIVE_FILE_GENERATION: "auto"
               PAPERLESS_CONSUMER_POLLING_INTERVAL: "60"
               PAPERLESS_CONSUMER_DELETE_DUPLICATES: "true"
               # ponytail: OCR currently OOMs at 2Gi with parallel consumes; raise memory before raising these.
