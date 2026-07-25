@@ -14,19 +14,16 @@ spec:
         name: open-webui
       version: 15.2.0
   install:
-    disableWait: true
     remediation:
       retries: 3
   upgrade:
-    disableWait: true
     cleanupOnFail: true
-    force: true
     remediation:
       retries: 3
   values:
     fullnameOverride: open-webui
     copyAppData:
-      command: ["sh", "-c", "cp -R -n /app/backend/data/. /tmp/app-data/ || true"]
+      command: ["sh", "-c", "cp -R -n /app/backend/data/. /tmp/app-data/"]
     annotations:
       reloader.stakater.com/auto: "true"
     ollama:
@@ -44,6 +41,10 @@ spec:
       tag: v0.10.2-slim@sha256:f03f7fcdaf5e3381b3d505c0e66f2bf4e82d1918082022b85dee7da1299b6efd
       pullPolicy: IfNotPresent
     replicaCount: 1
+    workload:
+      kind: Deployment
+    strategy:
+      type: Recreate
     persistence:
       existingClaim: open-webui-data
     serviceAccount:
