@@ -94,8 +94,23 @@ spec:
       RAG_EMBEDDING_ENGINE: openai
       RAG_EMBEDDING_MODEL: embeddinggemma
       RAG_EMBEDDING_QUERY_PREFIX: "task: search result | query: "
+      RAG_EXTERNAL_RERANKER_API_KEY: none
+      RAG_EXTERNAL_RERANKER_TIMEOUT: "60"
+      RAG_EXTERNAL_RERANKER_URL: http://llama-swap.default.svc.cluster.local:8080/v1/rerank
       RAG_OPENAI_API_BASE_URL: http://llama-swap.default.svc.cluster.local:8080/v1
       RAG_OPENAI_API_KEY: none
+      RAG_RERANKING_ENGINE: external
+      RAG_RERANKING_MODEL: bge-rerank
+      SEARXNG_QUERY_URL: http://searxng.default.svc.cluster.local:8080/search
+      WEB_SEARCH_ENGINE: searxng
+      WEB_SEARCH_RESULT_COUNT: "3"
+      ENABLE_IMAGE_GENERATION: "true"
+      ENABLE_RAG_HYBRID_SEARCH: "true"
+      ENABLE_WEB_SEARCH: "true"
+      IMAGE_GENERATION_ENGINE: openai
+      IMAGE_GENERATION_MODEL: z-image
+      IMAGES_OPENAI_API_BASE_URL: http://llama-swap.default.svc.cluster.local:8080/v1
+      IMAGES_OPENAI_API_KEY: none
       WEBUI_SECRET_KEY:
         valueFrom:
           secretKeyRef:
