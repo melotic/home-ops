@@ -23,6 +23,8 @@ spec:
       retries: 3
   values:
     fullnameOverride: open-webui
+    copyAppData:
+      command: ["sh", "-c", "cp -R -n /app/backend/data/. /tmp/app-data/ || true"]
     annotations:
       reloader.stakater.com/auto: "true"
     ollama:
