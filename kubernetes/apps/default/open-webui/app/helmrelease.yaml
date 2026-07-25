@@ -89,7 +89,11 @@ spec:
       HOME: /tmp
       OAUTH_AUTO_REDIRECT: "true"
       OPENID_REDIRECT_URI: https://open-webui.melotic.dev/oauth/oidc/login/callback
-      RAG_EMBEDDING_BATCH_SIZE: "16"
+      CHUNK_MIN_SIZE_TARGET: "500"
+      CHUNK_OVERLAP: "150"
+      CHUNK_SIZE: "1500"
+      RAG_EMBEDDING_BATCH_SIZE: "32"
+      RAG_EMBEDDING_CONCURRENT_REQUESTS: "1"
       RAG_EMBEDDING_CONTENT_PREFIX: "title: none | text: "
       RAG_EMBEDDING_ENGINE: openai
       RAG_EMBEDDING_MODEL: embeddinggemma
@@ -102,6 +106,7 @@ spec:
       RAG_RERANKING_ENGINE: external
       RAG_RERANKING_MODEL: bge-rerank
       SEARXNG_QUERY_URL: http://searxng.default.svc.cluster.local:8080/search
+      TASK_MODEL_EXTERNAL: task-qwen4b
       WEB_SEARCH_ENGINE: searxng
       WEB_SEARCH_RESULT_COUNT: "3"
       ENABLE_IMAGE_GENERATION: "true"
