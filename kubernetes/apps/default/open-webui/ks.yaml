@@ -10,23 +10,24 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/volsync
+    - ../../../../components/cnpg-database
   dependsOn:
     - name: authentik
       namespace: default
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
+    - name: dragonfly
+      namespace: database
+    - name: postgres
+      namespace: database
     - name: tailscale-policy
       namespace: network
-    - name: volsync
-      namespace: volsync-system
   path: ./kubernetes/apps/default/open-webui/app
   postBuild:
     substitute:
       APP: *app
-      VOLSYNC_CAPACITY: 5Gi
-      VOLSYNC_PUID: "1000"
-      VOLSYNC_PGID: "1000"
+      ONEPASSWORD_ITEM: open-webui-postgres
+      PG_DATABASE: openwebui
+      PG_HOST: postgres-cluster-rw.database.svc.cluster.local
+      PG_USER: openwebui
   sourceRef:
     kind: GitRepository
     name: flux-system

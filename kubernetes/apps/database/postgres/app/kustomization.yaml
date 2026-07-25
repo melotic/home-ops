@@ -12,6 +12,7 @@ resources:
   - ./databases/gitlab.yaml
   - ./databases/lidarr.yaml
   - ./databases/miniflux.yaml
+  - ./databases/openwebui.yaml
   - ./databases/paperless.yaml
   - ./databases/prowlarr.yaml
   - ./databases/radarr.yaml
@@ -34,6 +35,7 @@ resources:
   - ./roles/harbor.yaml
   - ./roles/lidarr.yaml
   - ./roles/miniflux.yaml
+  - ./roles/openwebui.yaml
   - ./roles/paperless.yaml
   - ./roles/prowlarr.yaml
   - ./roles/radarr.yaml
