@@ -14,9 +14,11 @@ spec:
         name: open-webui
       version: 15.2.0
   install:
+    disableWait: true
     remediation:
       retries: 3
   upgrade:
+    disableWait: true
     cleanupOnFail: true
     force: true
     remediation:
