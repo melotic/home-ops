@@ -21,12 +21,13 @@
 			"dst": ["autogroup:self"],
 			"ip":  ["*"],
 		},
-		// Prometheus remote-write egress. dst is the hosts alias below; a bare
-		// hostname fails ACL compilation.
+		// Cluster egress to disco-ninja. dst is the hosts alias below; a bare
+		// hostname fails ACL compilation. 443 is Prometheus remote-write; 8080 is
+		// llama-swap's OpenAI-compatible API.
 		{
 			"src": ["tag:k8s"],
 			"dst": ["disco-ninja"],
-			"ip":  ["tcp:443"],
+			"ip":  ["tcp:443", "tcp:8080"],
 		},
 	],
 
@@ -54,7 +55,7 @@
 		},
 		{
 			"src":    "tag:k8s",
-			"accept": ["100.108.57.7:443"],
+			"accept": ["100.108.57.7:443", "100.108.57.7:8080"],
 			"deny": [
 				"10.60.88.1:443",
 				"10.60.80.1:443",

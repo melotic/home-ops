@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: open-webui
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: open-webui
+  interval: 1h
+  upgrade:
+    cleanupOnFail: true
+    remediation: {retries: 3}
+  values:
+    controllers:
+      open-webui:
+        replicas: 1
+        strategy: Recreate
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/open-webui/open-webui
+              tag: v0.10.2-slim@sha256:f03f7fcdaf5e3381b3d505c0e66f2bf4e82d1918082022b85dee7da1299b6efd
+            env:
+              HOME: /tmp
+              WEBUI_URL: https://open-webui.melotic.dev
+              # OAuth remains GitOps-authoritative. Other admin settings seed on first boot and persist in the PVC.
+              ENABLE_OAUTH_PERSISTENT_CONFIG: "false"
+              ENABLE_SIGNUP: "false"
+              ENABLE_OAUTH_SIGNUP: "true"
+              ENABLE_LOGIN_FORM: "false"
+              ENABLE_PASSWORD_AUTH: "false"
+              OAUTH_AUTO_REDIRECT: "true"
+              AIOHTTP_CLIENT_TIMEOUT: "600"
+              AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST: "30"
+              OAUTH_PROVIDER_NAME: authentik
+              OPENID_PROVIDER_URL: https://sso.melotic.dev/application/o/open-webui/.well-known/openid-configuration
+              OPENID_REDIRECT_URI: https://open-webui.melotic.dev/oauth/oidc/login/callback
+              OAUTH_SCOPES: openid email profile
+              DEFAULT_USER_ROLE: pending
+              ENABLE_PROFILE_IMAGE_URL_FORWARDING: "false"
+              ENABLE_OPENAI_API: "true"
+              ENABLE_OLLAMA_API: "false"
+              OPENAI_API_BASE_URL: http://llama-swap.default.svc.cluster.local:8080/v1
+              OPENAI_API_KEY: none
+              RAG_EMBEDDING_ENGINE: openai
+              RAG_OPENAI_API_BASE_URL: http://llama-swap.default.svc.cluster.local:8080/v1
+              RAG_OPENAI_API_KEY: none
+              RAG_EMBEDDING_MODEL: embeddinggemma
+              RAG_EMBEDDING_BATCH_SIZE: "16"
+              # EmbeddingGemma's asymmetric retrieval prompts. Trailing spaces are intentional.
+              RAG_EMBEDDING_QUERY_PREFIX: "task: search result | query: "
+              RAG_EMBEDDING_CONTENT_PREFIX: "title: none | text: "
+            envFrom:
+              - secretRef:
+                  name: open-webui-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8080
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probe
+            securityContext:
+              allowPrivilegeEscalation: false
+              # Open WebUI rewrites bundled static assets at boot; its image is not read-only-root compatible.
+              readOnlyRootFilesystem: false
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      # Open WebUI's startup writes bundled static assets and must retain image-default root.
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+    service:
+      app:
+        controller: open-webui
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        hostnames:
+          - open-webui.melotic.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+    persistence:
+      data:
+        existingClaim: open-webui
+        globalMounts:
+          - path: /app/backend/data
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
