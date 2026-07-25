@@ -115,6 +115,11 @@ spec:
           login: true
           passwordSecret:
             name: postgres-user-miniflux
+        - name: openwebui
+          ensure: present
+          login: true
+          passwordSecret:
+            name: postgres-user-openwebui
         - name: prowlarr
           ensure: present
           login: true
