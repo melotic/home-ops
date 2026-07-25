@@ -192,7 +192,7 @@ spec:
                     [[runners.kubernetes.affinity.node_affinity.required_during_scheduling_ignored_during_execution.node_selector_terms.match_expressions]]
                       key = "kubernetes.io/hostname"
                       operator = "NotIn"
-                      values = ["k8s-ghost"]
+                      values = ["k8s-ghost", "k8s-niobe"]
             [runners.kubernetes.pod_security_context]
               fs_group = 1000
             [runners.kubernetes.pod_security_context.seccomp_profile]
