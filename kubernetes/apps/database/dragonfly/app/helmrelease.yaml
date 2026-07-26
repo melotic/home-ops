@@ -55,12 +55,15 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     service:
       app:
+        annotations:
+          helm.sh/resource-policy: keep
         ports:
           redis:
             port: *port
     persistence:
       data:
         accessMode: ReadWriteOnce
+        retain: true
         size: 1Gi
         storageClass: ceph-block
         globalMounts:
