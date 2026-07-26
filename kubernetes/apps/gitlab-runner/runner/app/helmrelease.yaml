@@ -167,13 +167,13 @@ spec:
             poll_timeout = 600
             pod_termination_grace_period_seconds = 30
             cleanup_resources_timeout = "10m"
-            # /builds is a 4Gi tmpfs, which counts against the build container's
-            # memory budget. The 6Gi cap leaves 2Gi for Rust's compiler and linker.
-            # The 3Gi request preserves placement headroom for four concurrent jobs.
+            # /builds is an 8Gi tmpfs, which counts against the build container's
+            # memory budget. The 10Gi cap leaves 2Gi for Rust's compiler and linker.
+            # 6Gi requests distribute four worst-case builds across current capacity.
             cpu_request = "500m"
             cpu_limit = "1500m"
-            memory_request = "3Gi"
-            memory_limit = "6Gi"
+            memory_request = "6Gi"
+            memory_limit = "10Gi"
             ephemeral_storage_request = "2Gi"
             ephemeral_storage_limit = "10Gi"
             helper_cpu_request = "50m"
@@ -226,7 +226,7 @@ spec:
               name = "build-tmp"
               mount_path = "/builds"
               medium = "Memory"
-              size_limit = "4Gi"
+              size_limit = "8Gi"
               mount_propagation = "None"
             [[runners.kubernetes.volumes.empty_dir]]
               name = "tmp"
