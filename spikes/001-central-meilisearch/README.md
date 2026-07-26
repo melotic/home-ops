@@ -21,21 +21,21 @@ Given Karakeep and LibreChat each run Meilisearch v1.50.0, when they use one ins
 - Upgrade cadence becomes shared, although both are already on the same release.
 - Karakeep currently backs its index up with the app PVC. Centralization must either add a Meilisearch dump/snapshot job or explicitly treat indexes as rebuildable caches.
 
-## Accepted tradeoff
+## Why the shared shape loses
 
-- One process couples CPU, memory, the [serial task queue](https://www.meilisearch.com/docs/capabilities/indexing/tasks_and_batches/async_operations), upgrades, and backups.
-- Both applications receive the shared master key initially because their upstream integrations expect `MEILI_MASTER_KEY`.
-- [Dumps and snapshots](https://www.meilisearch.com/docs/learn/data_backup/snapshots_vs_dumps) cover the entire instance rather than one application.
-- This is acceptable here because both indexes are small, derived, rebuildable, and currently use the same Meilisearch release.
+- Index-scoped API keys can prevent direct cross-index access, but they do not isolate CPU, memory, the serial task queue, upgrades, or backups.
+- Both applications call the credential `MEILI_MASTER_KEY` and upstream expects broad administrative behavior. Replacing that with scoped keys is technically possible, but it becomes our unsupported integration to maintain whenever either app adds an index or action.
+- Karakeep documents version-sensitive upgrades and reindex recovery. LibreChat has its own [reset procedure](https://www.librechat.ai/docs/configuration/meilisearch#reset-synchronization). A shared instance forces both applications onto one upgrade and rollback window.
+- [Dumps and snapshots](https://www.meilisearch.com/docs/learn/data_backup/snapshots_vs_dumps) cover the entire instance. Sharing removes per-application restore granularity even though both indexes can be rebuilt from their authoritative databases.
+- A Karakeep or LibreChat reindex consumes the same [serial task queue](https://www.meilisearch.com/docs/capabilities/indexing/tasks_and_batches/async_operations) and can delay the other application.
 
 ## Minimal production shape
 
-- One app-template Meilisearch workload in `database`.
-- One master key from 1Password consumed by both applications.
-- Karakeep points `MEILI_ADDR` at the shared service and drops its sidecar.
-- LibreChat disables its bundled Meilisearch dependency and sets `MEILI_HOST` explicitly.
-- Treat indexes as rebuildable projections. Back up Karakeep SQLite/assets and LibreChat's MongoDB data rather than the shared search index.
+- Leave Karakeep's sidecar and LibreChat's StatefulSet application-owned.
+- Treat both indexes as rebuildable projections. Back up Karakeep SQLite/assets and LibreChat's document database, not long-lived copies of every search index.
+- Right-size or remove redundant Meilisearch backup retention before adding shared infrastructure.
+- Reconsider centralization only after several more consumers make measured pod/storage savings larger than the shared failure and maintenance cost.
 
-## Decision: ACCEPTED
+## Verdict: REJECTED
 
-Centralize it in `database`. This knowingly accepts a shared failure, task, upgrade, and restore boundary in exchange for one managed search service and removal of duplicate application-owned deployments. Karakeep uses `bookmarks`; LibreChat uses `convos` and `messages`, so current index names do not collide.
+Keep them separate. Sharing is technically possible, but one fewer small pod is not worth coupling two otherwise independent applications.
