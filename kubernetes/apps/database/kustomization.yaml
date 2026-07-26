@@ -11,5 +11,4 @@ resources:
   - ./dragonfly-operator/source.yaml
   - ./dragonfly-operator/ks.yaml
   - ./dragonfly/ks.yaml
-  - ./meilisearch/ks.yaml
   - ./postgres/ks.yaml
