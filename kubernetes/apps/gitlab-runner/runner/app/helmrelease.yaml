@@ -117,9 +117,9 @@ spec:
       config: |
         [[runners]]
           executor = "kubernetes"
-          # Allow two jobs while keeping intake aligned with the job limit.
-          limit = 2
-          request_concurrency = 2
+          # Allow four jobs while keeping intake aligned with the job limit.
+          limit = 4
+          request_concurrency = 4
           cache_dir = "/cache"
           [runners.cache]
             Type = "s3"
@@ -243,5 +243,5 @@ spec:
               mount_path = "/certs"
               read_only = true
 
-    concurrent: 2
+    concurrent: 4
     checkInterval: 3
