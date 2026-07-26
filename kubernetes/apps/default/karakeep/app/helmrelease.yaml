@@ -124,7 +124,8 @@ spec:
                 cpu: 25m
                 memory: 256Mi
               limits:
-                memory: 1Gi
+                # Full settings reindexing exceeded 1Gi during the app-owned restore.
+                memory: 2Gi
     defaultPodOptions:
       automountServiceAccountToken: false
       securityContext:
