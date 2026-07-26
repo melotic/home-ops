@@ -150,3 +150,5 @@ spec:
               credentials:
                 name: alertmanager-webhook-secret
                 key: WEBHOOK_TOKEN
+            tlsConfig:
+              serverName: disco-ninja.tail88eb4.ts.net
