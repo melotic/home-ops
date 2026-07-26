@@ -23,7 +23,7 @@ spec:
       reloader.stakater.com/auto: "true"
     enableServiceLinks: false
     image:
-      registry: registry.librechat.ai
+      registry: ghcr.io
       repository: danny-avila/librechat
       tag: v0.8.7@sha256:c5db3331b845e1f289f8d04c0c77936c4bbe372f76730a804abc1c37e44d23a9
     ingress:
@@ -179,6 +179,7 @@ spec:
     meilisearch:
       enabled: true
       image:
+        repository: docker.io/getmeili/meilisearch
         tag: v1.7.3@sha256:19b825993dbe80c61eec65de7e7096cd545a09a744d8d00f3dd117185ebb36f9
       environment:
         MEILI_ENV: production
