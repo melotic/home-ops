@@ -167,13 +167,13 @@ spec:
             poll_timeout = 600
             pod_termination_grace_period_seconds = 30
             cleanup_resources_timeout = "10m"
-            # Cap job pods so bursty compile jobs cannot saturate the same
-            # NVMe backing Ceph + etcd. Scheduler also gets real requests
-            # instead of placing unbounded build/helper containers blind.
+            # /builds is a 4Gi tmpfs, which counts against the build container's
+            # memory budget. The 6Gi cap leaves 2Gi for Rust's compiler and linker.
+            # The 3Gi request preserves placement headroom for four concurrent jobs.
             cpu_request = "500m"
             cpu_limit = "1500m"
-            memory_request = "1Gi"
-            memory_limit = "4Gi"
+            memory_request = "3Gi"
+            memory_limit = "6Gi"
             ephemeral_storage_request = "2Gi"
             ephemeral_storage_limit = "10Gi"
             helper_cpu_request = "50m"
@@ -226,7 +226,7 @@ spec:
               name = "build-tmp"
               mount_path = "/builds"
               medium = "Memory"
-              size_limit = "2Gi"
+              size_limit = "4Gi"
               mount_propagation = "None"
             [[runners.kubernetes.volumes.empty_dir]]
               name = "tmp"
