@@ -1,0 +1,204 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: librechat
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: librechat
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: librechat
+    replicaCount: 1
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    enableServiceLinks: false
+    image:
+      registry: registry.librechat.ai
+      repository: danny-avila/librechat
+      tag: v0.8.7@sha256:c5db3331b845e1f289f8d04c0c77936c4bbe372f76730a804abc1c37e44d23a9
+    ingress:
+      enabled: false
+    serviceAccount:
+      automount: false
+    podSecurityContext:
+      fsGroup: 2000
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      readOnlyRootFilesystem: false
+      runAsNonRoot: true
+      runAsUser: 1000
+    updateStrategy:
+      type: Recreate
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        memory: 2Gi
+    global:
+      librechat:
+        existingSecretName: librechat-credentials-env
+        env:
+          - name: ALLOW_ACCOUNT_DELETION
+            value: "false"
+          - name: ALLOW_EMAIL_LOGIN
+            value: "false"
+          - name: ALLOW_PASSWORD_RESET
+            value: "false"
+          - name: ALLOW_REGISTRATION
+            value: "false"
+          - name: ALLOW_SOCIAL_LOGIN
+            value: "true"
+          - name: ALLOW_SOCIAL_REGISTRATION
+            value: "true"
+          - name: APP_TITLE
+            value: LibreChat
+          - name: DOMAIN_CLIENT
+            value: https://librechat.melotic.dev
+          - name: DOMAIN_SERVER
+            value: https://librechat.melotic.dev
+          - name: LLAMA_SWAP_API_KEY
+            value: none
+          - name: LLAMA_SWAP_BASE_URL
+            value: http://llama-swap.default.svc.cluster.local:8080/v1
+          - name: MONGO_URI
+            valueFrom:
+              secretKeyRef:
+                name: librechat-credentials-env
+                key: MONGO_URI
+          - name: NO_INDEX
+            value: "true"
+          - name: OPENID_ADMIN_ROLE
+            value: operators
+          - name: OPENID_ADMIN_ROLE_PARAMETER_PATH
+            value: groups
+          - name: OPENID_ADMIN_ROLE_TOKEN_KIND
+            value: id
+          - name: OPENID_AUTO_REDIRECT
+            value: "true"
+          - name: OPENID_BUTTON_LABEL
+            value: Login with Authentik
+          - name: OPENID_CALLBACK_URL
+            value: /oauth/openid/callback
+          - name: OPENID_IMAGE_URL
+            value: https://cdn.jsdelivr.net/gh/selfhst/icons/png/authentik.png
+          - name: OPENID_ISSUER
+            value: https://sso.melotic.dev/application/o/librechat/.well-known/openid-configuration
+          - name: OPENID_SCOPE
+            value: openid profile email
+          - name: OPENID_USE_END_SESSION_ENDPOINT
+            value: "true"
+    librechat:
+      configEnv: null
+      configYamlContent: |
+        version: 1.3.13
+        cache: true
+        interface:
+          customWelcome: "Local models, private infrastructure."
+          modelSelect: true
+          parameters: true
+          presets: true
+          prompts:
+            use: true
+            create: true
+            share: false
+            public: false
+          bookmarks: true
+          multiConvo: true
+          agents:
+            use: true
+            create: true
+            share: false
+            public: false
+          marketplace:
+            use: false
+        registration:
+          socialLogins:
+            - openid
+        endpoints:
+          custom:
+            - name: Local
+              apiKey: "${LLAMA_SWAP_API_KEY}"
+              baseURL: "${LLAMA_SWAP_BASE_URL}"
+              models:
+                default:
+                  - task-qwen4b
+                fetch: true
+              titleConvo: true
+              titleModel: task-qwen4b
+              summarize: false
+              modelDisplayLabel: Local
+      imageVolume:
+        enabled: false
+    volumes:
+      - name: image-volume
+        persistentVolumeClaim:
+          claimName: librechat-images
+    volumeMounts:
+      - name: image-volume
+        mountPath: /app/client/public/images
+    librechat-rag-api:
+      enabled: false
+    mongodb:
+      enabled: true
+      image:
+        repository: bitnamilegacy/mongodb
+        digest: sha256:2579e968033ec9f97035e91a215a4fb3943eb706eb3871b3d0d1d072e2f45605
+      auth:
+        enabled: true
+        usernames:
+          - librechat
+        databases:
+          - LibreChat
+        existingSecret: librechat-credentials-env
+      automountServiceAccountToken: false
+      persistence:
+        storageClass: ceph-block
+        size: 8Gi
+        resourcePolicy: keep
+      resources:
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          memory: 1Gi
+    meilisearch:
+      enabled: true
+      image:
+        tag: v1.7.3@sha256:19b825993dbe80c61eec65de7e7096cd545a09a744d8d00f3dd117185ebb36f9
+      environment:
+        MEILI_ENV: production
+        MEILI_NO_ANALYTICS: true
+      auth:
+        existingMasterKeySecret: librechat-credentials-env
+      serviceAccount:
+        create: false
+        name: librechat
+      persistence:
+        enabled: true
+        storageClass: ceph-block
+        size: 5Gi
+        annotations:
+          helm.sh/resource-policy: keep
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          memory: 1Gi
+    redis:
+      enabled: false
