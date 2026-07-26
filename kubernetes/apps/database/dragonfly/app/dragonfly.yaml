@@ -17,7 +17,7 @@ spec:
   enableReplicationReadinessGate: true
   networkPolicyEnabled: true
   serviceSpec:
-    name: dragonfly-ha
+    name: dragonfly
     type: ClusterIP
   resources:
     requests:
