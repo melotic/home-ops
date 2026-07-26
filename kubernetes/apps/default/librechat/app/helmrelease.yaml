@@ -80,6 +80,8 @@ spec:
               secretKeyRef:
                 name: librechat-credentials-env
                 key: MONGO_URI
+          - name: MEILI_HOST
+            value: http://meilisearch.database.svc.cluster.local:7700
           - name: NO_INDEX
             value: "true"
           - name: OPENID_ADMIN_ROLE
@@ -177,29 +179,6 @@ spec:
         limits:
           memory: 1Gi
     meilisearch:
-      enabled: true
-      image:
-        repository: docker.io/getmeili/meilisearch
-        tag: v1.50.0
-      environment:
-        MEILI_ENV: production
-        MEILI_NO_ANALYTICS: true
-      auth:
-        existingMasterKeySecret: librechat-credentials-env
-      serviceAccount:
-        create: false
-        name: librechat
-      persistence:
-        enabled: true
-        storageClass: ceph-block
-        size: 5Gi
-        annotations:
-          helm.sh/resource-policy: keep
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          memory: 1Gi
+      enabled: false
     redis:
       enabled: false

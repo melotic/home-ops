@@ -44,7 +44,7 @@ spec:
               DISABLE_PASSWORD_AUTH: "true"
               HOME: /tmp
               INFERENCE_JOB_TIMEOUT_SEC: "600"
-              MEILI_ADDR: http://localhost:7700
+              MEILI_ADDR: http://meilisearch.database.svc.cluster.local:7700
               NEXTAUTH_URL: https://karakeep.melotic.dev
               OAUTH_AUTO_REDIRECT: "true"
               OAUTH_PROVIDER_NAME: authentik
@@ -101,30 +101,7 @@ spec:
                 memory: 256Mi
               limits:
                 memory: 1Gi
-          meilisearch:
-            image:
-              repository: docker.io/getmeili/meilisearch
-              tag: v1.50.0@sha256:9694a59df43ee3f54b3fda9c5de381a3ee9852678e3e31cadf37d6bddea7fc1b
-            env:
-              # Needed for the v1.41 -> v1.46 dumpless migration; remove after success only if operationally safe.
-              MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: "true"
-              HOME: /tmp
-              MEILI_ENV: production
-              MEILI_MASTER_KEY:
-                secretKeyRef:
-                  name: karakeep-secret
-                  key: MEILI_MASTER_KEY
-              MEILI_NO_ANALYTICS: "true"
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 25m
-                memory: 256Mi
-              limits:
-                memory: 1Gi
+
     defaultPodOptions:
       automountServiceAccountToken: false
       securityContext:
@@ -150,9 +127,8 @@ spec:
             namespace: network
             sectionName: https
     persistence:
-      # Single volsync-backed PVC shared by web (SQLite) and meilisearch (index)
-      # via isolated subPaths — mounting a generated PVC would collide with the
-      # volsync-created "karakeep" claim (app-template names it after the release).
+      # VolSync-backed authoritative Karakeep data. Search is rebuilt in the
+      # shared Meilisearch service from this SQLite state.
       data:
         existingClaim: karakeep
         advancedMounts:
@@ -160,9 +136,6 @@ spec:
             web:
               - path: /data
                 subPath: data
-            meilisearch:
-              - path: /meili_data
-                subPath: meili
       run:
         type: emptyDir
         advancedMounts:
@@ -182,10 +155,4 @@ spec:
         advancedMounts:
           karakeep:
             chrome:
-              - path: /tmp
-      meili-tmp:
-        type: emptyDir
-        advancedMounts:
-          karakeep:
-            meilisearch:
               - path: /tmp

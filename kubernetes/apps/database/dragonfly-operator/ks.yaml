@@ -1,0 +1,33 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app dragonfly-operator
+  namespace: &namespace database
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  interval: 1h
+  patches:
+    - target:
+        group: apps
+        version: v1
+        kind: Deployment
+        name: dragonfly-operator-controller-manager
+      patch: |
+        - op: replace
+          path: /spec/template/spec/containers/0/image
+          value: quay.io/brancz/kube-rbac-proxy:v0.16.0@sha256:2c8f8c357ff87b8bc5df4d967d5f52a23528c5e9c025f9aaa653a9ef4747585f
+        - op: replace
+          path: /spec/template/spec/containers/1/image
+          value: docker.dragonflydb.io/dragonflydb/operator:v1.6.1@sha256:b11411142935f92ed0ec30a5ddeb31680e09ab66beecb827cb0224f1c4238638
+  path: ./config/default
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: dragonfly-operator
+    namespace: database
+  targetNamespace: *namespace
+  wait: true

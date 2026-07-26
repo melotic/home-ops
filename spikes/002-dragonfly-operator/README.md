@@ -22,17 +22,15 @@ Given a single Dragonfly instance now backs several important services, when it 
 
 The official Dragonfly HA model keeps one stable service pointed at the current primary: [HA docs](https://www.dragonflydb.io/docs/managing-dragonfly/high-availability). PVC snapshots restore after rescheduling but do not replace replication: [snapshot docs](https://www.dragonflydb.io/docs/managing-dragonfly/operator/snapshot-pvc).
 
-## Do now
+## Migration preparation
 
 - Set an explicit snapshot schedule and static `dbfilename` so the current PVC stops accumulating timestamped files.
 - Replicate snapshots off-cluster and run a real restore drill with measured RPO/RTO.
 - Alert on memory pressure, eviction, snapshot age/failure, restarts, and connectivity.
 - Inventory which numbered databases hold queues, sessions, or shared state versus rebuildable caches.
-- Split durable/job-like users such as GitLab, Harbor, and Paperless from disposable caches. [Numbered databases](https://valkey.io/commands/select/) share memory, persistence, lifecycle, and administrative commands; they are naming, not isolation.
+- Preserve the current numbered-database allocation. Splitting instances is deferred because there is no measured contention or eviction pressure.
 
-This reduces blast radius without adding a controller or changing engines.
-
-## Operator target, if automatic failover is required
+## Operator target
 
 - Official Dragonfly Operator v1.6.1.
 - One `Dragonfly` CR in `database`, three replicas across distinct nodes.
@@ -56,6 +54,6 @@ The v1.6.1 release advertises `oci://ghcr.io/dragonflydb/dragonfly-operator/helm
 4. Restart all replicas and verify snapshot restore.
 5. Rehearse old-instance-to-new-instance transfer while clients are quiesced.
 
-## Verdict: PARTIAL
+## Decision: ACCEPTED
 
-Do not switch engines or add an operator yet. Fix durability and split the shared blast radius first. If automatic node-loss failover remains necessary, use the Dragonfly Operator, not a Redis or Valkey operator, after the rehearsal passes and the missing OCI chart distribution is resolved.
+Keep Dragonfly and adopt its official operator with three replicas. Preserve the existing service and logical database assignments, and gate cutover on snapshot restore and primary-failover rehearsals. Do not migrate to Redis or Valkey.

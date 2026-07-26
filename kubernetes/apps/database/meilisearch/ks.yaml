@@ -3,23 +3,23 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app librechat
-  namespace: &namespace default
+  name: &app meilisearch
+  namespace: &namespace database
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: authentik
-      namespace: default
-    - name: tailscale-policy
-      namespace: network
-    - name: meilisearch
-      namespace: database
-  path: ./kubernetes/apps/default/librechat/app
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: onepassword
+      namespace: external-secrets
+  interval: 1h
+  path: ./kubernetes/apps/database/meilisearch/app
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  wait: false
+  wait: true
