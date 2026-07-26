@@ -100,7 +100,6 @@ spec:
               group: apps
               version: v1
               kind: Deployment
-              name: dragonfly-operator-controller-manager
             patch: |-
               - op: replace
                 path: /spec/template/spec/containers/0/image
@@ -108,6 +107,23 @@ spec:
               - op: replace
                 path: /spec/template/spec/containers/1/image
                 value: docker.dragonflydb.io/dragonflydb/operator:v1.6.1@sha256:b11411142935f92ed0ec30a5ddeb31680e09ab66beecb827cb0224f1c4238638
+        - op: add
+          path: /spec/patches/-
+          value:
+            target:
+              kind: Namespace
+            patch: |-
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name: database
+                labels:
+                  pod-security.kubernetes.io/audit: restricted
+                  pod-security.kubernetes.io/audit-version: latest
+                  pod-security.kubernetes.io/enforce: baseline
+                  pod-security.kubernetes.io/enforce-version: latest
+                  pod-security.kubernetes.io/warn: restricted
+                  pod-security.kubernetes.io/warn-version: latest
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
