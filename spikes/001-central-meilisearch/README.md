@@ -21,17 +21,21 @@ Given Karakeep and LibreChat each run Meilisearch v1.50.0, when they use one ins
 - Upgrade cadence becomes shared, although both are already on the same release.
 - Karakeep currently backs its index up with the app PVC. Centralization must either add a Meilisearch dump/snapshot job or explicitly treat indexes as rebuildable caches.
 
+## Why the shared shape loses
+
+- Index-scoped API keys can prevent direct cross-index access, but they do not isolate CPU, memory, the serial task queue, upgrades, or backups.
+- Both applications call the credential `MEILI_MASTER_KEY` and upstream expects broad administrative behavior. Replacing that with scoped keys is technically possible, but it becomes our unsupported integration to maintain whenever either app adds an index or action.
+- Karakeep documents version-sensitive upgrades and reindex recovery. LibreChat has its own [reset procedure](https://www.librechat.ai/docs/configuration/meilisearch#reset-synchronization). A shared instance forces both applications onto one upgrade and rollback window.
+- [Dumps and snapshots](https://www.meilisearch.com/docs/learn/data_backup/snapshots_vs_dumps) cover the entire instance. Sharing removes per-application restore granularity even though both indexes can be rebuilt from their authoritative databases.
+- A Karakeep or LibreChat reindex consumes the same [serial task queue](https://www.meilisearch.com/docs/capabilities/indexing/tasks_and_batches/async_operations) and can delay the other application.
+
 ## Minimal production shape
 
-- One app-template Meilisearch workload in `database` at `meilisearch.database.svc.cluster.local:7700`.
-- One master key held only by an administrative bootstrap job.
-- Two application keys:
-  - Karakeep: `bookmarks`
-  - LibreChat: `convos`, `messages`
-- Each key gets only search, document, index, and settings actions needed by that app.
-- Keep a small Ceph PVC. Prefer tested rebuild procedures over treating the search index as primary data.
-- Disable LibreChat's bundled subchart and Karakeep's sidecar after each app passes a search/reindex check.
+- Leave Karakeep's sidecar and LibreChat's StatefulSet application-owned.
+- Treat both indexes as rebuildable projections. Back up Karakeep SQLite/assets and LibreChat's document database, not long-lived copies of every search index.
+- Right-size or remove redundant Meilisearch backup retention before adding shared infrastructure.
+- Reconsider centralization only after several more consumers make measured pod/storage savings larger than the shared failure and maintenance cost.
 
-## Verdict: VALIDATED
+## Verdict: REJECTED
 
-Centralize it. The index names are disjoint, both apps support a remote endpoint, and the data is reconstructable. The win is simpler upgrades and removal of the brittle LibreChat subchart, not large resource savings.
+Keep them separate. Sharing is technically possible, but one fewer small pod is not worth coupling two otherwise independent applications.

@@ -22,17 +22,27 @@ Given a single Dragonfly instance now backs several important services, when it 
 
 The official Dragonfly HA model keeps one stable service pointed at the current primary: [HA docs](https://www.dragonflydb.io/docs/managing-dragonfly/high-availability). PVC snapshots restore after rescheduling but do not replace replication: [snapshot docs](https://www.dragonflydb.io/docs/managing-dragonfly/operator/snapshot-pvc).
 
-## Proposed target
+## Do now
+
+- Set an explicit snapshot schedule and static `dbfilename` so the current PVC stops accumulating timestamped files.
+- Replicate snapshots off-cluster and run a real restore drill with measured RPO/RTO.
+- Alert on memory pressure, eviction, snapshot age/failure, restarts, and connectivity.
+- Inventory which numbered databases hold queues, sessions, or shared state versus rebuildable caches.
+- Split durable/job-like users such as GitLab, Harbor, and Paperless from disposable caches. [Numbered databases](https://valkey.io/commands/select/) share memory, persistence, lifecycle, and administrative commands; they are naming, not isolation.
+
+This reduces blast radius without adding a controller or changing engines.
+
+## Operator target, if automatic failover is required
 
 - Official Dragonfly Operator v1.6.1.
 - One `Dragonfly` CR in `database`, three replicas across distinct nodes.
 - `enableReplicationReadinessGate: true` and PDB `minAvailable: 2`.
 - Preserve `--dbnum 16`, current service name, and client database allocations.
 - Add authentication after all clients consume a shared ExternalSecret.
-- Master-only PVC snapshot with a static `dbfilename` and explicit schedule, preventing the current unbounded snapshot pile.
-- Prometheus ServiceMonitor and an alert for unavailable primary/replication lag.
+- Master-only PVC or S3-compatible snapshots with a static `dbfilename` and explicit schedule.
+- Prometheus ServiceMonitor and alerts for unavailable primary and replication lag.
 
-Resource cost at current sizing: requested memory rises from 64 MiB to 192 MiB and memory limits from 512 MiB to 1.5 GiB. That is cheap relative to the services protected.
+Resource cost at current sizing: requested memory rises from 64 MiB to 192 MiB and memory limits from 512 MiB to 1.5 GiB. Failover can still lose the newest acknowledged writes because replication is asynchronous.
 
 ## Blocker found
 
@@ -48,4 +58,4 @@ The v1.6.1 release advertises `oci://ghcr.io/dragonflydb/dragonfly-operator/helm
 
 ## Verdict: PARTIAL
 
-Use the Dragonfly Operator, not a Redis/Valkey operator, but do not cut over until the failover/state-transfer rehearsal passes and the missing OCI chart distribution is resolved.
+Do not switch engines or add an operator yet. Fix durability and split the shared blast radius first. If automatic node-loss failover remains necessary, use the Dragonfly Operator, not a Redis or Valkey operator, after the rehearsal passes and the missing OCI chart distribution is resolved.
