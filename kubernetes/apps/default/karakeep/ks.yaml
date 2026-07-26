@@ -12,6 +12,8 @@ spec:
   components:
     - ../../../../components/volsync
   dependsOn:
+    - name: meilisearch
+      namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync

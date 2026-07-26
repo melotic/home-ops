@@ -3,23 +3,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app librechat
-  namespace: &namespace default
+  name: &app dragonfly-operator
+  namespace: &namespace database
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: authentik
-      namespace: default
-    - name: tailscale-policy
-      namespace: network
-    - name: meilisearch
-      namespace: database
-  path: ./kubernetes/apps/default/librechat/app
+  interval: 1h
+  path: ./config/default
+  prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
-    namespace: flux-system
+    name: dragonfly-operator
+    namespace: database
   targetNamespace: *namespace
-  wait: false
+  wait: true
