@@ -36,30 +36,10 @@ The containers were destroyed after the test.
 - FerretDB v2 requires PostgreSQL with the DocumentDB extension. It cannot simply use the existing minimal PostgreSQL image. The supported CNPG shape uses a separate cluster image, preload libraries, and extension bootstrap: [FerretDB + CNPG guide](https://github.com/FerretDB/FerretDB/blob/v2.7.0/website/blog/2025-04-11-run-ferretdb-postgres-documentdb-extension-cnpg-kubernetes.md).
 - There is no official FerretDB Kubernetes operator. The clean stack is the existing CloudNativePG operator for the backend plus an app-template Deployment for the stateless FerretDB proxy.
 
-## Current migration risk
+## Rejected production shape
 
-The live LibreChat database has zero users, conversations, messages, files, presets, agents, and sessions. Only bootstrap roles/grants/categories exist. This is the cheapest possible migration window; rebuilding bootstrap data is safer than carrying the bundled MongoDB forward.
+FerretDB would require a separate CNPG cluster using the matching PostgreSQL DocumentDB image, preload libraries, bootstrap SQL, storage, backups, and a stateless proxy. The existing general-purpose PostgreSQL cluster cannot safely host those extensions. Running that extra cluster costs more than retaining LibreChat's small bundled MongoDB instance, so no migration or further validation work is planned.
 
-## Proposed target
+## Decision: REJECTED
 
-- A separate CNPG `Cluster` in `database` using the matching FerretDB PostgreSQL DocumentDB image.
-- Start with three instances if this is intended to improve availability, not merely change database brands.
-- Barman backups and monitoring through the existing CNPG stack.
-- A two-replica stateless FerretDB app-template workload and ClusterIP service.
-- LibreChat `mongodb.enabled: false` and `MONGO_URI` pointed at FerretDB.
-- Disable FerretDB telemetry explicitly.
-
-## Remaining gate
-
-The startup test did not exercise authenticated login, sessions, conversation CRUD, message search, prompt lookups, agent/ACL bulk updates, restart behavior, or restore. Before production:
-
-1. Restore a consistent `mongodump` into a disposable FerretDB stack with one collection at a time.
-2. Run LibreChat's FerretDB-specific suite serially.
-3. Exercise login, conversation/message CRUD and search, prompt lookup, agent/ACL updates, and session persistence.
-4. Compare collection counts and index lists against MongoDB.
-5. Restart LibreChat and FerretDB, then prove CNPG backup/restore.
-6. Reject the cutover on any `NotImplemented`, unrecovered deadlock, transaction-probe crash, aggregation error, or data mismatch.
-
-## Verdict: PARTIAL
-
-The replacement is technically viable and upstream-supported, but the startup smoke test is not enough for production. Run the full gate now while LibreChat has no user data; cut over only after it passes.
+Keep MongoDB. FerretDB compatibility is real, but v2 requires a separate PostgreSQL cluster with the DocumentDB extension. That adds a database cluster and proxy to remove one small MongoDB deployment, so it does not improve this homelab's operational shape.

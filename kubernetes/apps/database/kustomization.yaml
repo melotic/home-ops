@@ -8,5 +8,8 @@ components:
   - ../../components/common
   - ../../components/psa/baseline
 resources:
+  - ./dragonfly-operator/source.yaml
+  - ./dragonfly-operator/ks.yaml
   - ./dragonfly/ks.yaml
+  - ./meilisearch/ks.yaml
   - ./postgres/ks.yaml
