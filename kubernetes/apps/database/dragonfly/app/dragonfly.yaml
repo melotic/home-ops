@@ -15,7 +15,8 @@ spec:
     - --dbfilename=dump
   serviceAccountName: dragonfly-ha
   enableReplicationReadinessGate: true
-  networkPolicyEnabled: true
+  # Consumers run in default and gitlab; the operator policy only allows same-namespace Redis traffic.
+  networkPolicyEnabled: false
   serviceSpec:
     name: dragonfly
     type: ClusterIP
