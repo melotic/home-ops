@@ -14,6 +14,7 @@ configMapGenerator:
       - harbor.yaml=./blueprints/harbor.yaml
       - gitlab.yaml=./blueprints/gitlab.yaml
       - karakeep.yaml=./blueprints/karakeep.yaml
+      - librechat.yaml=./blueprints/librechat.yaml
       - miniflux.yaml=./blueprints/miniflux.yaml
       - open-webui.yaml=./blueprints/open-webui.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
