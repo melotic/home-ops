@@ -225,7 +225,8 @@ spec:
             [[runners.kubernetes.volumes.empty_dir]]
               name = "build-tmp"
               mount_path = "/builds"
-              medium = ""
+              medium = "Memory"
+              size_limit = "2Gi"
               mount_propagation = "None"
             [[runners.kubernetes.volumes.empty_dir]]
               name = "tmp"
