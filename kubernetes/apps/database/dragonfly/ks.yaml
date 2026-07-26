@@ -10,6 +10,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: dragonfly-operator
+      namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
   path: ./kubernetes/apps/database/dragonfly/app

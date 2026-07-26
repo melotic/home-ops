@@ -1,0 +1,65 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/dragonflydb.io/dragonfly_v1alpha1.json
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  name: dragonfly-ha
+spec:
+  replicas: 3
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.39.0@sha256:0fa01a2b929e704c7a9300d23e7f52002ebd39e90996fb8bb63826aed92fa06f
+  imagePullPolicy: IfNotPresent
+  args:
+    - --dbnum=16
+    - --maxmemory=512mb
+    - --proactor_threads=2
+    - --dbfilename=dump
+  serviceAccountName: dragonfly-ha
+  enableReplicationReadinessGate: true
+  networkPolicyEnabled: true
+  serviceSpec:
+    name: dragonfly-ha
+    type: ClusterIP
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 512Mi
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 999
+    runAsGroup: 999
+    fsGroup: 999
+    fsGroupChangePolicy: OnRootMismatch
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop: ["ALL"]
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app: dragonfly-ha
+          topologyKey: kubernetes.io/hostname
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app: dragonfly-ha
+  pdb:
+    minAvailable: 2
+  snapshot:
+    cron: "*/5 * * * *"
+    enableOnMasterOnly: true
+    persistentVolumeClaimSpec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-block
+      resources:
+        requests:
+          storage: 2Gi
