@@ -180,6 +180,7 @@ spec:
       enabled: true
       image:
         repository: docker.io/getmeili/meilisearch
+        # renovate: datasource=docker depName=docker.io/getmeili/meilisearch allowedVersions=/^v?1\.50\.0$/
         tag: v1.50.0
       environment:
         MEILI_ENV: production
