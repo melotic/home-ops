@@ -117,9 +117,10 @@ spec:
       config: |
         [[runners]]
           executor = "kubernetes"
-          # Allow four jobs while keeping intake aligned with the job limit.
-          limit = 4
-          request_concurrency = 4
+          # Six jobs fit with 3Gi scheduler requests across all three nodes.
+          # The 10Gi limit remains for coverage builds; only placement reserves less.
+          limit = 6
+          request_concurrency = 6
           cache_dir = "/cache"
           [runners.cache]
             Type = "s3"
@@ -169,9 +170,11 @@ spec:
             cleanup_resources_timeout = "10m"
             # Coverage builds exceed tmpfs, so /builds uses node-local disk.
             # The 20Gi scratch cap is well above the measured coverage build tree.
+            # Peak observed builds stayed below 1Gi; request 3Gi so six jobs schedule,
+            # while the 10Gi limit preserves coverage-build headroom.
             cpu_request = "500m"
             cpu_limit = "1500m"
-            memory_request = "6Gi"
+            memory_request = "3Gi"
             memory_limit = "10Gi"
             ephemeral_storage_request = "10Gi"
             ephemeral_storage_limit = "20Gi"
@@ -242,5 +245,5 @@ spec:
               mount_path = "/certs"
               read_only = true
 
-    concurrent: 4
+    concurrent: 6
     checkInterval: 3
