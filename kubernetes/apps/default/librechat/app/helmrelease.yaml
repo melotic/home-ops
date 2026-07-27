@@ -180,7 +180,7 @@ spec:
       enabled: true
       image:
         repository: docker.io/getmeili/meilisearch
-        tag: v1.50.0
+        tag: v1.51.0
       environment:
         MEILI_ENV: production
         MEILI_NO_ANALYTICS: true
