@@ -13,7 +13,7 @@ spec:
   values:
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v19.2.5@sha256:1bb011052bc6d347d3418adcbf7d88156860d45697bc6323594a11410084064b
+      tag: v20.2.2@sha256:6b4b5ae33acd3d736eb26d2a19238bce71a22f9cfb99cca887ba6312d0957644
       allowUnsupported: false
     cephClusterSpec:
       # Daemons already log to stdout (collected by victoria-logs); the file-based
