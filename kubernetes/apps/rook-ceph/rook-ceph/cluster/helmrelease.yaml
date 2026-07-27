@@ -41,9 +41,9 @@ spec:
         mgr:
           requests:
             cpu: 100m
-            memory: 512Mi
+            memory: 768Mi
           limits:
-            memory: 1Gi
+            memory: 1536Mi
         osd:
           requests:
             cpu: 250m
