@@ -26,6 +26,10 @@ spec:
           osd_pool_default_size: "3"
         mon:
           mon_data_avail_warn: "20"
+        osd:
+          bdev_async_discard: "true"
+          bdev_async_discard_threads: "1"
+          bdev_enable_discard: "true"
       # Override chart defaults that over-reserve small-cluster Ceph daemons.
       resources:
         mon:
