@@ -24,6 +24,8 @@ spec:
         global:
           osd_pool_default_min_size: "2"
           osd_pool_default_size: "3"
+        mgr:
+          log_max_recent: "100"
         mon:
           mon_data_avail_warn: "20"
         osd:
