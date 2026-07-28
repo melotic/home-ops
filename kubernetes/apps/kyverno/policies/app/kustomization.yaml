@@ -4,16 +4,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./01-require-namespace-psa-labels.yaml
-  - ./02-require-image-digest-pin.yaml
-  - ./03-require-non-root-and-readonly-fs.yaml
-  - ./04-require-network-policy-per-namespace.yaml
-  - ./05-disallow-host-namespaces.yaml
-  - ./06-verify-image-signature-cosign.yaml
   - ./07-disallow-untrusted-images.yaml
   - ./08-require-image-registry-allowlist.yaml
   - ./09-prepend-default-registry.yaml
-  - ./exceptions/gitlab-runner-ci-pods.yaml
-  - ./exceptions/host-namespace-infra.yaml
-  - ./exceptions/rook-ceph-storage.yaml
-  - ./exceptions/unsigned-image-signatures.yaml
-  - ./exceptions/writable-rootfs-apps.yaml

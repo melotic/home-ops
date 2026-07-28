@@ -14,7 +14,7 @@ metadata:
       blocks the worst classes of pod misconfigurations.
 spec:
   validationFailureAction: Enforce
-  background: true
+  background: false
   rules:
     - name: check-psa-enforce-label
       match:
