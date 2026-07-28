@@ -9,4 +9,3 @@ components:
 resources:
   - ./kyverno/ks.yaml
   - ./policies/ks.yaml
-  - ./policy-reporter/ks.yaml
