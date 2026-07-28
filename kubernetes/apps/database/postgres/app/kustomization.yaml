@@ -10,7 +10,6 @@ resources:
   - ./databases/firefly.yaml
   - ./databases/harbor.yaml
   - ./databases/gitlab.yaml
-  - ./databases/lidarr.yaml
   - ./databases/miniflux.yaml
   - ./databases/openwebui.yaml
   - ./databases/paperless.yaml
@@ -33,7 +32,6 @@ resources:
   - ./roles/firefly.yaml
   - ./roles/gitlab.yaml
   - ./roles/harbor.yaml
-  - ./roles/lidarr.yaml
   - ./roles/miniflux.yaml
   - ./roles/openwebui.yaml
   - ./roles/paperless.yaml
