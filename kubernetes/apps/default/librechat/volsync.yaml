@@ -1,0 +1,84 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: librechat-images
+  namespace: default
+spec:
+  interval: 1h
+  prune: true
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
+  path: ./kubernetes/components/volsync
+  postBuild:
+    substitute:
+      APP: librechat-images
+      VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_PUID: "1000"
+      VOLSYNC_PGID: "1000"
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: librechat-meilisearch
+  namespace: default
+spec:
+  interval: 1h
+  prune: true
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
+  path: ./kubernetes/components/volsync
+  postBuild:
+    substitute:
+      APP: librechat-meilisearch
+      VOLSYNC_CAPACITY: 5Gi
+      VOLSYNC_PUID: "1000"
+      VOLSYNC_PGID: "1000"
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: librechat-mongodb
+  namespace: default
+spec:
+  interval: 1h
+  prune: true
+  dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+    - name: volsync
+      namespace: volsync-system
+  path: ./kubernetes/components/volsync
+  postBuild:
+    substitute:
+      APP: librechat-mongodb
+      VOLSYNC_CAPACITY: 8Gi
+      VOLSYNC_PUID: "1001"
+      VOLSYNC_PGID: "1001"
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: default
+  wait: false
