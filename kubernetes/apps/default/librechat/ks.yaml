@@ -14,6 +14,12 @@ spec:
       namespace: default
     - name: tailscale-policy
       namespace: network
+    - name: librechat-images
+      namespace: default
+    - name: librechat-meilisearch
+      namespace: default
+    - name: librechat-mongodb
+      namespace: default
   path: ./kubernetes/apps/default/librechat/app
   sourceRef:
     kind: GitRepository

@@ -75,6 +75,12 @@ spec:
             value: none
           - name: LLAMA_SWAP_BASE_URL
             value: http://llama-swap.default.svc.cluster.local:8080/v1
+          - name: IMAGE_GEN_OAI_API_KEY
+            value: none
+          - name: IMAGE_GEN_OAI_BASEURL
+            value: http://llama-swap.default.svc.cluster.local:8080/v1
+          - name: IMAGE_GEN_OAI_MODEL
+            value: z-image
           - name: MONGO_URI
             valueFrom:
               secretKeyRef:
@@ -109,9 +115,16 @@ spec:
         cache: true
         interface:
           customWelcome: "Local models, private infrastructure."
+          autoSubmitFromUrl: false
           modelSelect: true
           parameters: true
+          contextUsage: true
           presets: true
+          mcpServers:
+            use: true
+            create: true
+            share: false
+            public: false
           prompts:
             use: true
             create: true
@@ -119,6 +132,17 @@ spec:
             public: false
           bookmarks: true
           multiConvo: true
+          skills:
+            use: true
+            create: true
+            share: false
+            public: false
+          temporaryChat: true
+          temporaryChatRetention: 24
+          runCode: false
+          defaultPinnedTools:
+            - artifacts
+            - mcp
           agents:
             use: true
             create: true
@@ -130,16 +154,32 @@ spec:
           socialLogins:
             - openid
         endpoints:
+          agents:
+            allowedProviders:
+              - Local
+            capabilities:
+              - deferred_tools
+              - artifacts
+              - subagents
+              - actions
+              - context
+              - skills
+              - tools
+              - chain
+            recursionLimit: 20
+            maxRecursionLimit: 30
+            titleTiming: final
           custom:
             - name: Local
               apiKey: "${LLAMA_SWAP_API_KEY}"
               baseURL: "${LLAMA_SWAP_BASE_URL}"
               models:
                 default:
-                  - task-qwen4b
+                  - qwen3.6
                 fetch: true
               titleConvo: true
-              titleModel: task-qwen4b
+              titleTiming: final
+              titleModel: current_model
               summarize: false
               modelDisplayLabel: Local
       imageVolume:
@@ -167,9 +207,7 @@ spec:
         existingSecret: librechat-credentials-env
       automountServiceAccountToken: false
       persistence:
-        storageClass: ceph-block
-        size: 8Gi
-        resourcePolicy: keep
+        existingClaim: librechat-mongodb
       resources:
         requests:
           cpu: 100m
@@ -192,10 +230,7 @@ spec:
         name: librechat
       persistence:
         enabled: true
-        storageClass: ceph-block
-        size: 5Gi
-        annotations:
-          helm.sh/resource-policy: keep
+        existingClaim: librechat-meilisearch
       resources:
         requests:
           cpu: 100m

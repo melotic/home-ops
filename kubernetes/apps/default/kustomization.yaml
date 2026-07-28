@@ -23,6 +23,7 @@ resources:
   - ./kopia-azure-sync/ks.yaml
   - ./kopia-verify/ks.yaml
   - ./librechat/ks.yaml
+  - ./librechat/volsync.yaml
   - ./lidarr/ks.yaml
   - ./miniflux/ks.yaml
   - ./multi-scrobbler/ks.yaml
