@@ -6,3 +6,14 @@ resources:
   - ./helmrelease.yaml
   - ./externalsecret.yaml
   - ./ocirepository.yaml
+patches:
+  - patch: |-
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: ${APP}
+        annotations:
+          kustomize.toolkit.fluxcd.io/prune: disabled
+    target:
+      kind: PersistentVolumeClaim
+      name: '\$\{APP\}'
