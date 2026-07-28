@@ -16,7 +16,7 @@ metadata:
       decision on observability-prompp. Adding to the denylist requires a PR.
 spec:
   validationFailureAction: Enforce
-  background: true
+  background: false
   rules:
     - name: check-image-denylist
       match:

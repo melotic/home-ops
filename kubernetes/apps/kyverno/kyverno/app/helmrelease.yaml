@@ -35,64 +35,29 @@ spec:
         capabilities:
           drop: ["ALL"]
     backgroundController:
-      replicas: 1
-      priorityClassName: system-cluster-critical
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
-      resources:
-        requests:
-          cpu: 100m
-          memory: 128Mi
-        limits:
-          memory: 384Mi
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-      containerSecurityContext:
-        allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: true
-        capabilities:
-          drop: ["ALL"]
+      enabled: false
     reportsController:
-      replicas: 1
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-      containerSecurityContext:
-        allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: true
-        capabilities:
-          drop: ["ALL"]
+      enabled: false
     cleanupController:
-      replicas: 1
-      dnsConfig:
-        options:
-          - name: ndots
-            value: "1"
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-      containerSecurityContext:
-        allowPrivilegeEscalation: false
-        readOnlyRootFilesystem: true
-        capabilities:
-          drop: ["ALL"]
+      enabled: false
     features:
+      admissionReports:
+        enabled: false
+      aggregateReports:
+        enabled: false
+      policyReports:
+        enabled: false
+      validatingAdmissionPolicyReports:
+        enabled: false
+      mutatingAdmissionPolicyReports:
+        enabled: false
+      reporting:
+        validate: false
+        mutate: false
+        mutateExisting: false
+        imageVerify: false
+        generate: false
+      backgroundScan:
+        enabled: false
       policyExceptions:
-        enabled: true
-        namespace: kyverno
+        enabled: false

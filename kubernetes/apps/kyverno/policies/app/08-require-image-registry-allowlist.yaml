@@ -15,7 +15,7 @@ metadata:
       regression is expected.
 spec:
   validationFailureAction: Enforce
-  background: true
+  background: false
   rules:
     - name: check-registry-allowlist
       match:
