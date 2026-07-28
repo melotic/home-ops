@@ -26,7 +26,7 @@ This repo is the GitOps source-of-truth for my Talos Kubernetes cluster running 
 ## 🧰 Apps
 
 Media & automation (namespace `default`):
-- Plex, Sonarr, Radarr, Lidarr, Tautulli
+- Plex, Sonarr, Radarr, Tautulli
 - Prowlarr, Sabnzbd, Recyclarr, Seerr
 - Home Assistant, Atuin, Echo demo
 - Postgres clients/workloads under `psql-apps`
