@@ -122,6 +122,9 @@ spec:
           limit = 6
           request_concurrency = 6
           cache_dir = "/cache"
+          environment = [
+            "FF_USE_ADVANCED_POD_SPEC_CONFIGURATION=true",
+          ]
           [runners.cache]
             Type = "s3"
             Path = "gitlab-runner"
@@ -187,6 +190,19 @@ spec:
             print_pod_warning_events = true
             service_account = "gitlab-runner"
             allow_privilege_escalation = false
+            [[runners.kubernetes.pod_spec]]
+              name = "spread-build-pods"
+              patch = '''
+                topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchExpressions:
+                    - key: manager.runner.gitlab.com/id-short
+                      operator: Exists
+              '''
+              patch_type = "strategic"
             [runners.kubernetes.pod_security_context]
               fs_group = 1000
             [runners.kubernetes.pod_security_context.seccomp_profile]
