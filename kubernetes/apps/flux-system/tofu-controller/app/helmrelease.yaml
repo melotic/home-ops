@@ -23,7 +23,7 @@ spec:
       install: false
     image:
       repository: ghcr.io/flux-iac/tofu-controller
-      tag: v0.16.4@sha256:7f95e82a29c6f0c49965a1e248f2c1713593053819175dd2624c474b05ef5263
+      tag: v0.16.5@sha256:1d6ee0e34ee56a22827541b1ef44e5a3d65ff21bdb870f79103c4c5d5e6d4cba
     runner:
       image:
         repository: ghcr.io/flux-iac/tf-runner
