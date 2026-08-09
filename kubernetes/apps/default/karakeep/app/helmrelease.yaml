@@ -108,6 +108,8 @@ spec:
               tag: v1.52.0@sha256:d36e713e8f89483af1ab0d72011bbd503f5ab100b68ccbfad51c39e3f0a0567d
             env:
               # Needed for the v1.41 -> v1.46 dumpless migration; remove after success only if operationally safe.
+              # v1.50→v1.52 dumpless upgrade; remove after first successful boot.
+              MEILI_UPGRADE_DB: "true"
               MEILI_EXPERIMENTAL_DUMPLESS_UPGRADE: "true"
               HOME: /tmp
               MEILI_ENV: production
