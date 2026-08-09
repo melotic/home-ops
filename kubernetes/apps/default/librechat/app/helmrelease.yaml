@@ -221,6 +221,8 @@ spec:
         # renovate: datasource=docker depName=docker.io/getmeili/meilisearch allowedVersions=/^v?1\.50\.0$/
         tag: v1.52.0
       environment:
+        # v1.50→v1.52 dumpless upgrade; remove after first successful boot.
+        MEILI_UPGRADE_DB: "true"
         MEILI_ENV: production
         MEILI_NO_ANALYTICS: true
       auth:
