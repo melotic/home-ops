@@ -20,8 +20,6 @@ resources:
   - ./karakeep/ks.yaml
   - ./kopia-azure-sync/ks.yaml
   - ./kopia-verify/ks.yaml
-  - ./librechat/ks.yaml
-  - ./librechat/volsync.yaml
   - ./miniflux/ks.yaml
   - ./nas-backup/ks.yaml
   - ./paperless-ngx/ks.yaml
