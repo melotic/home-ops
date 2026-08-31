@@ -252,3 +252,8 @@ spec:
           volumeBindingMode: Immediate
           parameters:
             region: us-east-1
+    security:
+      cephx:
+        daemon:
+          keyRotationPolicy: KeyGeneration
+          keyGeneration: 2
