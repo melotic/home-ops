@@ -11,10 +11,9 @@ spec:
   interval: 1h
   timeout: 30m
   values:
-    # renovate: datasource=docker depName=quay.io/ceph/ceph allowedVersions=/^v20\.2\.2$/
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v20.2.4@sha256:6bb1c8a42fbc0bf87938946990b65174466997bc11c31eb5a323225a779fd8f9
+      tag: v20.2.3-20260804@sha256:d195020de02512030118e772cef7859e92904e91eb4cb21acb503f8b94118137
       allowUnsupported: false
     cephClusterSpec:
       # Daemons already log to stdout (collected by victoria-logs); the file-based
@@ -25,14 +24,8 @@ spec:
         global:
           osd_pool_default_min_size: "2"
           osd_pool_default_size: "3"
-        mgr:
-          log_max_recent: "100"
         mon:
           mon_data_avail_warn: "20"
-        osd:
-          bdev_async_discard: "true"
-          bdev_async_discard_threads: "1"
-          bdev_enable_discard: "true"
       # Override chart defaults that over-reserve small-cluster Ceph daemons.
       resources:
         mon:
@@ -44,9 +37,9 @@ spec:
         mgr:
           requests:
             cpu: 100m
-            memory: 1Gi
+            memory: 512Mi
           limits:
-            memory: 2304Mi
+            memory: 1Gi
         osd:
           requests:
             cpu: 250m
@@ -72,6 +65,30 @@ spec:
       network:
         connections:
           requireMsgr2: true
+      # CVE-2025-30156: one-time cephx key rotations. Daemon keys are at
+      # generation 2 (aes256k); CSI keys rotated to gen 2 kept on `aes` because
+      # ceph-csi AES256K auth keys need kernel support we can't guarantee for
+      # live mounts (keepPriorKeyCountMax lets old mounts keep working).
+      # Mutes are temporary: unmute once every key is on AES256K, per
+      # rook.io/docs cephx-key-rotation.
+      security:
+        cephx:
+          daemon:
+            keyGeneration: 2
+            keyRotationPolicy: KeyGeneration
+          csi:
+            keyGeneration: 2
+            keyRotationPolicy: KeyGeneration
+            keepPriorKeyCountMax: 1
+            keyType: aes
+      healthCheck:
+        muteHealthWarning:
+          AUTH_INSECURE_CLIENT_KEY_TYPE:
+            policy: mute
+          AUTH_INSECURE_KEYS_ALLOWED:
+            policy: mute
+          AUTH_INSECURE_KEYS_CREATABLE:
+            policy: mute
       storage:
         useAllDevices: false
         useAllNodes: false
@@ -252,8 +269,3 @@ spec:
           volumeBindingMode: Immediate
           parameters:
             region: us-east-1
-    security:
-      cephx:
-        daemon:
-          keyRotationPolicy: KeyGeneration
-          keyGeneration: 2
