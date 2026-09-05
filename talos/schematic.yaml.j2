@@ -1,0 +1,10 @@
+---
+# Shared schematic for the AMD nodes (k8s-niobe, k8s-ghost).
+# Resolved to a content-addressed Image Factory schematic ID by `just talos schematic-id`.
+customization:
+  systemExtensions:
+    officialExtensions:
+      - siderolabs/amd-ucode
+      - siderolabs/amdgpu
+      - siderolabs/nfs-utils
+      - siderolabs/realtek-firmware

@@ -24,7 +24,7 @@ kubernetes/
   flux/
     cluster/      # Top-level FluxCD Kustomizations (cluster-meta, cluster-apps)
     meta/         # OCIRepositories and HelmRepositories used cluster-wide
-talos/            # Talos machine configs via talhelper (talconfig.yaml, talenv.yaml, patches/)
+talos/            # Talos machine configs (layered Jinja templates rendered with talosctl; secrets in 1Password)
 bootstrap/        # Pre-Flux Helmfile charts
 scripts/          # Helper scripts (e.g., bootstrap-apps.sh)
 .justfile         # Task automation (just command runner)
@@ -267,7 +267,7 @@ annotations:
 
 Tools are managed by **mise** (`.mise.toml`). Key tools:
 - `kubectl`, `flux`, `helm`, `kustomize`, `helmfile`
-- `talosctl`, `talhelper` (Talos config generation)
+- `talosctl`, `minijinja-cli` (Talos config rendering, `just talos ...`)
 - `sops`, `age` (secret encryption)
 - `just` (command runner), `gum` (interactive prompts)
 - `yq`, `jq`, `kubeconform`, `flux-local`
@@ -332,7 +332,7 @@ PR titles must follow [Conventional Commits](https://www.conventionalcommits.org
 Renovate is configured to automatically update:
 - Container image tags (including digest pinning)
 - Helm chart versions via OCIRepository tags
-- Talos/Kubernetes versions in `talenv.yaml`
+- Talos/Kubernetes versions in `talos/versions.yaml`
 - Mise tool versions in `.mise.toml`
 - GitHub Actions
 

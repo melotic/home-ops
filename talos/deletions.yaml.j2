@@ -1,0 +1,7 @@
+---
+# Documents deleted from every node's config. $patch: delete is only valid in
+# a patch layer, which is why this exists as its own file.
+# Cilium replaces Flannel.
+apiVersion: v1alpha1
+kind: KubeFlannelCNIConfig
+$patch: delete

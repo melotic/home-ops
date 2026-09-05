@@ -1,6 +1,0 @@
----
-apiVersion: v1alpha1
-kind: EthernetConfig
-name: ethSel0
-wakeOnLan:
-  - magic

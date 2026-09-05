@@ -80,7 +80,7 @@ Public routes use the `external` gateway; internal-only use the `internal` gatew
 - [kubernetes/components](kubernetes/components): shared namespaces, repos, sops.
 - [kubernetes/flux](kubernetes/flux): cluster bootstrap and metadata.
 - [bootstrap/helmfile.d](bootstrap/helmfile.d): pre-Flux bootstrapping charts.
-- [talos](talos): talconfig, talenv, patches, clusterconfig.
+- [talos](talos): layered machine config templates, Image Factory schematics, recipes.
 - [scripts](scripts): helper scripts like `bootstrap-apps.sh`.
 - [.justfile](.justfile): task automation (just command runner).
 
