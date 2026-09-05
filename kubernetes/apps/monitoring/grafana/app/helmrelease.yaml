@@ -20,7 +20,7 @@ spec:
     dashboard:
       enabled: true
     image:
-      tag: v5.22.2@sha256:d45fc24e8f43d83286d81625ee8d919d0fc88255a6500b63f68d7966a4f9e9af
+      tag: v5.25.0@sha256:bc572995823fcfc32d2e960a47324a87baae8e4c9f821b8564026243e73624f3
     serviceMonitor:
       enabled: true
     resources:
