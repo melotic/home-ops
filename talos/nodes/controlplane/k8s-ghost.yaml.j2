@@ -16,6 +16,12 @@ name: ethSel0
 addresses:
   - address: 10.60.85.12/16
 ---
+apiVersion: v1alpha1
+kind: EthernetConfig
+name: eno1
+wakeOnLan:
+  - magic
+---
 machine:
   logging:
     destinations:
