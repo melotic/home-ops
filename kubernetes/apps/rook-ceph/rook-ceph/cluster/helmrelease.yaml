@@ -72,12 +72,7 @@ spec:
       network:
         connections:
           requireMsgr2: true
-      # CVE-2025-30156: one-time cephx key rotations. Daemon keys are at
-      # generation 2 (aes256k); CSI keys rotated to gen 2 kept on `aes` because
-      # ceph-csi AES256K auth keys need kernel support we can't guarantee for
-      # live mounts (keepPriorKeyCountMax lets old mounts keep working).
-      # Mutes are temporary: unmute once every key is on AES256K, per
-      # rook.io/docs cephx-key-rotation.
+      # Mutes are temporary: unmute once all keys are on AES256K.
       security:
         cephx:
           daemon:
