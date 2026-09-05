@@ -1,0 +1,29 @@
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: 'off'
+hostname: k8s-niobe
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: ethSel0
+selector:
+  match: glob("00:24:27:88:e6:a8", mac(link.hardware_addr))
+---
+apiVersion: v1alpha1
+kind: LinkConfig
+name: ethSel0
+addresses:
+  - address: 10.60.85.10/16
+---
+apiVersion: v1alpha1
+kind: EthernetConfig
+name: enp4s0f3u2
+wakeOnLan:
+  - magic
+---
+machine:
+  logging:
+    destinations:
+      - endpoint: tcp://10.60.80.54:5141
+        format: json_lines

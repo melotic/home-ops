@@ -1,6 +1,7 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   extends: [
+    "github>home-operations/renovate-presets//apps/talosFactory.json5#8.1.0",
     "config:recommended",
     "docker:enableMajor",
     "helpers:pinGitHubActionDigests",
