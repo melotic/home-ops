@@ -11,7 +11,6 @@ spec:
   interval: 1h
   timeout: 30m
   values:
-    # renovate: datasource=docker depName=quay.io/ceph/ceph allowedVersions=/^v20\.2\.2$/
     cephImage:
       repository: quay.io/ceph/ceph
       tag: v20.2.4@sha256:6bb1c8a42fbc0bf87938946990b65174466997bc11c31eb5a323225a779fd8f9
@@ -69,6 +68,8 @@ spec:
         modules:
           - name: pg_autoscaler
             enabled: true
+          - name: rook
+            enabled: false
       network:
         connections:
           requireMsgr2: true
