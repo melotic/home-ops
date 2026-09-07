@@ -21,8 +21,6 @@ spec:
     substitute:
       APP: tautulli
       KOPIUR_CAPACITY: 5Gi
-      KOPIUR_PUID: "1000"
-      KOPIUR_PGID: "1000"
   sourceRef:
     kind: GitRepository
     name: flux-system
