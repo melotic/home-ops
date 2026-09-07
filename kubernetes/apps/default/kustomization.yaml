@@ -21,6 +21,7 @@ resources:
   - ./librechat/ks.yaml
   - ./miniflux/ks.yaml
   - ./nas-backup/ks.yaml
+  - ./open-webui/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./plex/ks.yaml
   - ./prowlarr/ks.yaml
