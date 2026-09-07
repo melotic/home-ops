@@ -15,13 +15,16 @@ spec:
     crds: CreateReplace
     cleanupOnFail: true
   values:
-    serviceAccount:
-      # operator needs an in-cluster kubeconfig (controller-runtime GetConfigOrDie)
-      automount: true
+    # NOTE: chart applies serviceAccount.automount only to the SA object, never
+    # the pod spec. The pod-level token mount comes from the SA's automount=true
+    # default (nil on the pod inherits). Setting pod-level automount:false would
+    # break controller-runtime's in-cluster kubeconfig (seen in #2212).
     podSecurityContext:
       runAsNonRoot: true
       seccompProfile:
         type: RuntimeDefault
+    # nil pod automount + SA automount=true -> token projected; do not set
+    # automountServiceAccountToken:false anywhere in this release.
     rbacProxy:
       image:
         tag: v0.20.2@sha256:ad0fa9f0adc928b557663297bd22c610533960d77acdec289ce8a636f0ea2114
