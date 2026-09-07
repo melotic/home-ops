@@ -96,11 +96,11 @@ reset force='false' *args:
 [doc('Download a Talos metal ISO from the Image Factory')]
 [script]
 download-image version node="":
-    schematic="$(just talos schematic-id {{ node }})"
+    export SCHEMATIC="$(just talos schematic-id {{ node }})"
     curl -fL --remove-on-error --retry 5 --retry-delay 5 --retry-all-errors --progress-bar \
-        -o "{{ source_directory() }}/talos-{{ version }}-${schematic:0:8}.iso" \
-        "https://factory.talos.dev/image/${schematic}/{{ version }}/metal-amd64.iso"
-    echo "Downloaded Talos {{ version }} schematic ${schematic}"
+        -o "{{ source_directory() }}/talos-{{ version }}-${SCHEMATIC:0:8}.iso" \
+        "https://factory.talos.dev/image/${SCHEMATIC}/{{ version }}/metal-amd64.iso"
+    echo "Downloaded Talos {{ version }} schematic ${SCHEMATIC}"
 
 [doc('Render Talos machine config for a node')]
 [script]
@@ -112,19 +112,14 @@ render-config node:
         role="workers"
     fi
     talosctl machineconfig patch \
-        <(just talos template "{{ source_directory() }}/cluster.yaml.j2" -D "schematic=${schematic}" $(just talos version-defines)) \
+        <(just talos template "{{ source_directory() }}/cluster.yaml.j2" -D "schematic=${schematic}") \
         -p @<(just talos template "{{ source_directory() }}/deletions.yaml.j2") \
-        -p @<(just talos template "{{ source_directory() }}/${role}.yaml.j2" $(just talos version-defines)) \
+        -p @<(just talos template "{{ source_directory() }}/${role}.yaml.j2") \
         -p @<(just talos template "{{ source_directory() }}/nodes/${role}/$name.yaml.j2")
 
 [private]
 template file *args:
     minijinja-cli --autoescape none --strict "{{ file }}" {{ args }} | op inject
-
-[private]
-[script]
-version-defines:
-    echo -D talos_version="$(yq -r '.talosVersion' "{{ source_directory() }}/versions.yaml")" -D kubernetes_version="$(yq -r '.kubernetesVersion' "{{ source_directory() }}/versions.yaml")"
 
 [private]
 [script]
