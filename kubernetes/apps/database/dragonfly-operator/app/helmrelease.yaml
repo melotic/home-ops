@@ -15,6 +15,10 @@ spec:
     crds: CreateReplace
     cleanupOnFail: true
   values:
+    # force pod recreation: the current pod was created while the SA had
+    # automount:false and kubelet does not inject tokens retroactively
+    deploymentAnnotations:
+      home-operations.com/restart: "2026-09-07"
     # NOTE: chart applies serviceAccount.automount only to the SA object, never
     # the pod spec. The pod-level token mount comes from the SA's automount=true
     # default (nil on the pod inherits). Setting pod-level automount:false would
