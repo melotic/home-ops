@@ -9,6 +9,9 @@ spec:
     kind: OCIRepository
     name: volsync
   interval: 1h
+  # Suspended by the Kopiur migration: the operator stays installed (CRDs,
+  # metrics) but stops reconciling. Unsuspend to roll back.
+  suspend: true
   values:
     fullnameOverride: volsync
     image: &image

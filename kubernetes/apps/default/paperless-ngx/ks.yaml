@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
     - ../../../../components/cnpg-database
   dependsOn:
     - name: dragonfly
@@ -19,8 +19,8 @@ spec:
       namespace: database
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
+    - name: kopiur-repository
+      namespace: kopiur-system
   path: ./kubernetes/apps/default/paperless-ngx/app
   postBuild:
     substitute:
@@ -29,7 +29,7 @@ spec:
       PG_DATABASE: paperless
       PG_HOST: postgres-cluster-rw.database.svc.cluster.local
       PG_USER: paperless
-      VOLSYNC_CAPACITY: 5Gi
+      KOPIUR_CAPACITY: 5Gi
   sourceRef:
     kind: GitRepository
     name: flux-system

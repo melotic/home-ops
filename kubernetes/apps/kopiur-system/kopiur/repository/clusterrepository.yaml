@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/clusterrepository_v1alpha1.json
+# Adopts the existing VolSync kopia repository on the NFS export in place:
+# no `create` block, so the same KOPIA_PASSWORD opens the same repository and
+# every existing snapshot keeps its history. The credential Secret is projected
+# into each app namespace by the operator (features.credentialProjection).
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: ClusterRepository
+metadata:
+  name: volsync
+spec:
+  allowedNamespaces:
+    all: true
+  backend:
+    filesystem:
+      path: /mnt/repository
+      volume:
+        nfs:
+          path: /var/nfs/shared/k8s/volsync
+          server: construct.melotic.dev
+  credentialProjection:
+    allowed: true
+  encryption:
+    passwordSecretRef:
+      name: volsync-repository
+      namespace: kopiur-system
+      key: KOPIA_PASSWORD
+  maintenance:
+    schedule:
+      quick:
+        cron: 0 */4 * * *
+      full:
+        cron: 0 5 * * *
+  moverDefaults:
+    cache:
+      capacity: 8Gi
+      storageClassName: ceph-block
+    podSecurityContext:
+      fsGroup: 988
+    securityContext:
+      runAsUser: 977
+      runAsGroup: 988
+  parameters:
+    epoch:
+      minDuration: 1h
+  scheduleDefaults:
+    timezone: America/Chicago

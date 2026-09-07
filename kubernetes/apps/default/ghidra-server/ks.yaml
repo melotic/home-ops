@@ -10,20 +10,20 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../components/volsync
+    - ../../../../components/kopiur/backup
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
+    - name: kopiur-repository
+      namespace: kopiur-system
     - name: authentik
       namespace: default
   path: ./kubernetes/apps/default/ghidra-server/app
   postBuild:
     substitute:
       APP: ghidra-server
-      VOLSYNC_CAPACITY: 20Gi
-      VOLSYNC_CACHE_CAPACITY: 20Gi
+      KOPIUR_CAPACITY: 20Gi
+      KOPIUR_CACHE_CAPACITY: 20Gi
       GHIDRA_SERVER_IP: 10.60.80.7
       AUTHENTIK_LDAP_HOST: ghidra-ldap.melotic.dev
       AUTHENTIK_LDAP_BASE_DN: OU=ghidra,DC=ldap,DC=melotic,DC=dev

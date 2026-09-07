@@ -45,6 +45,10 @@ spec:
       namespace: volsync-system
   interval: 1h
   path: ./kubernetes/apps/volsync-system/volsync/maintenance
+  # Retired by the Kopiur migration: repository maintenance is owned by the
+  # ClusterRepository spec. The KS prunes the KopiaMaintenance CR; dropping
+  # this resource is the final cleanup once kopiur is green.
+  suspend: true
   prune: true
   sourceRef:
     kind: GitRepository

@@ -1,0 +1,43 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/snapshotpolicy_v1alpha1.json
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotPolicy
+metadata:
+  name: ${APP}
+spec:
+  compression:
+    compressor: zstd-fastest
+  # VolSync fork identity continuation: <app>@<namespace>:/data
+  identity:
+    hostname: ${KOPIUR_NAMESPACE:=default}
+    username: ${APP}
+  mover:
+    cache:
+      capacity: ${KOPIUR_CACHE_CAPACITY:=8Gi}
+      storageClassName: ${KOPIUR_CACHE_STORAGECLASS:=ceph-block}
+    podSecurityContext:
+      fsGroup: ${KOPIUR_PGID:=988}
+    securityContext:
+      runAsGroup: ${KOPIUR_PGID:=988}
+      runAsUser: ${KOPIUR_PUID:=977}
+  repository:
+    kind: ClusterRepository
+    name: volsync
+  retention:
+    keepDaily: 7
+    keepHourly: 24
+    keepMonthly: 6
+    keepWeekly: 4
+  sources:
+    - pvc:
+        name: ${APP}
+      sourcePathOverride: /data
+  upload:
+    maxParallelFileReads: 2
+  verification:
+    quick:
+      fileParallelism: 2
+      schedule:
+        cron: 0 8 * * *
+    verifyFilesPercent: 5
+  volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=csi-ceph-blockpool}

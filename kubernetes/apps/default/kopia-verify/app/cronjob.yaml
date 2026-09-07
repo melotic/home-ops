@@ -2,10 +2,14 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
+  annotations:
+    # Suspended during the Kopiur migration (replaced by policy verification / RepositoryReplication).
+    kopia.melotic.dev/suspended-by: kopiur-migration
   name: kopia-verify
 spec:
   schedule: "0 8 * * *"
   concurrencyPolicy: Forbid
+  suspend: true
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   jobTemplate:
