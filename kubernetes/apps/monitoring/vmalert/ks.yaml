@@ -3,12 +3,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app vmalert
-  namespace: &namespace monitoring
+  name: vmalert
+  namespace: monitoring
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: victoria-logs
     - name: kube-prometheus-stack
@@ -17,5 +14,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: monitoring
   wait: false
