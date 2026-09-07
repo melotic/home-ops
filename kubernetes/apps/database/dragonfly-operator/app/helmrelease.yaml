@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dragonfly-operator
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: dragonfly-operator
+  install:
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+    cleanupOnFail: true
+  values:
+    serviceAccount:
+      automount: false
+    podSecurityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    rbacProxy:
+      image:
+        tag: v0.20.2@sha256:ad0fa9f0adc928b557663297bd22c610533960d77acdec289ce8a636f0ea2114
+    manager:
+      image:
+        tag: v1.6.1@sha256:b11411142935f92ed0ec30a5ddeb31680e09ab66beecb827cb0224f1c4238638
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 128Mi
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        readOnlyRootFilesystem: true

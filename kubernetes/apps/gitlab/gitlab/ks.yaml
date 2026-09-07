@@ -13,8 +13,6 @@ spec:
       namespace: rook-ceph
     - name: postgres
       namespace: database
-    - name: dragonfly
-      namespace: database
     - name: authentik
       namespace: default
   path: ./kubernetes/apps/gitlab/gitlab/app
