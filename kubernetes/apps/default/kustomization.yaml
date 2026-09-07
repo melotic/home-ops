@@ -18,6 +18,7 @@ resources:
   - ./jellyfin/ks.yaml
   - ./kai-rbac/ks.yaml
   - ./karakeep/ks.yaml
+  - ./librechat/ks.yaml
   - ./miniflux/ks.yaml
   - ./nas-backup/ks.yaml
   - ./paperless-ngx/ks.yaml
