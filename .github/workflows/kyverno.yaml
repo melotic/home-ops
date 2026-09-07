@@ -80,7 +80,7 @@ jobs:
           base: "" # build must render the FULL tree, not changed-only
 
       - name: Render manifests with flate
-        run: flate build all --path kubernetes/flux/cluster --skip-crds=false --skip-secrets=false > rendered.yaml
+        run: flate build all --path kubernetes/flux/cluster --skip-crds=false > rendered.yaml
 
       - name: Run kyverno apply
         run: |

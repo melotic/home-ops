@@ -80,7 +80,7 @@ jobs:
       - name: Render manifests with flate
         env:
           FLATE_BASE: "" # build must render the FULL tree, not changed-only
-        run: flate build all --path kubernetes/flux/cluster --skip-crds=false --skip-secrets=false > rendered.yaml
+        run: flate build all --path kubernetes/flux/cluster --skip-crds=false > rendered.yaml
 
       - name: Run kubeconform
         uses: docker://ghcr.io/yannh/kubeconform:v0.8.0
