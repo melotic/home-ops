@@ -100,6 +100,11 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+    strategy:
+      matrix:
+        resources: ["helmrelease", "kustomization"]
+      max-parallel: 4
+      fail-fast: false
     if: ${{ github.event_name == 'pull_request' && needs.pre-job.outputs.any_changed == 'true' }}
     steps:
       - name: Checkout
@@ -116,7 +121,7 @@ jobs:
 
       - name: Run flate diff
         run: >-
-          flate diff all
+          flate diff ${{ matrix.resources }}
           --path kubernetes/flux/cluster
           --output github
           > diff.txt
@@ -142,7 +147,7 @@ jobs:
         continue-on-error: true
         uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12
         with:
-          message-id: "${{ github.event.pull_request.number }}/kubernetes"
+          message-id: "${{ github.event.pull_request.number }}/kubernetes/${{ matrix.resources }}"
           message-failure: Diff was not successful
           message: |
             ```diff
