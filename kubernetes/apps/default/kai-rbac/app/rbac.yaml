@@ -105,6 +105,11 @@ rules:
   - apiGroups: [snapshot.storage.k8s.io]
     resources: [volumesnapshots]
     verbs: [get, list, watch]
+  - apiGroups: [tuppr.home-operations.com]
+    resources:
+      - kubernetesupgrades
+      - talosupgrades
+    verbs: [get, list, watch]
   - apiGroups: [wgpolicyk8s.io]
     resources:
       - clusterpolicyreports
