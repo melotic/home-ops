@@ -11,8 +11,6 @@ spec:
   dependsOn:
     - name: authentik
       namespace: default
-    - name: dragonfly
-      namespace: database
     - name: postgres
       namespace: database
     - name: tailscale-policy
