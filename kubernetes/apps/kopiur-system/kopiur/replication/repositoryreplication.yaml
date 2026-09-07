@@ -15,6 +15,7 @@ spec:
           name: azure-mirror-creds
       container: nas-backup
       prefix: k8s/volsync/
+      storageAccount: sthomeopsbackup
   schedule:
     cron: 30 8 * * *
     jitter: 1h
