@@ -38,7 +38,7 @@ spec:
         enabled: false
     image:
       repository: ghcr.io/open-webui/open-webui
-      tag: v0.10.2-slim@sha256:f03f7fcdaf5e3381b3d505c0e66f2bf4e82d1918082022b85dee7da1299b6efd
+      tag: v0.11.3-slim@sha256:bb3633af77b35d97783affc9cd8097d8a6dc89fedd5a410ce9a50d85556a870c
       pullPolicy: IfNotPresent
     replicaCount: 1
     workload:
