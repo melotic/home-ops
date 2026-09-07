@@ -74,6 +74,16 @@ rules:
       - helmrepositories
       - ocirepositories
     verbs: [get, list, watch]
+  - apiGroups: [kopiur.home-operations.com]
+    resources:
+      - clusterrepositories
+      - maintenances
+      - repositoryreplications
+      - restores
+      - snapshotpolicies
+      - snapshots
+      - snapshotschedules
+    verbs: [get, list, watch]
   - apiGroups: [metrics.k8s.io]
     resources:
       - nodes
@@ -91,6 +101,9 @@ rules:
     resources:
       - clusterephemeralreports
       - ephemeralreports
+    verbs: [get, list, watch]
+  - apiGroups: [snapshot.storage.k8s.io]
+    resources: [volumesnapshots]
     verbs: [get, list, watch]
   - apiGroups: [wgpolicyk8s.io]
     resources:
