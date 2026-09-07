@@ -44,13 +44,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup flate
-        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
         with:
-          base: "" # full-tree mode; the shallow checkout has no main ref
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          cache: false
+          install_args: github:home-operations/flate
 
       - name: Run flate test
+        env:
+          FLATE_BASE: "" # full-tree test, not changed-only
         run: flate test all --path kubernetes/flux/cluster
 
   kubeconform:
@@ -61,13 +67,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup flate
-        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
         with:
-          base: "" # full-tree mode; the shallow checkout has no main ref
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          cache: false
+          install_args: github:home-operations/flate
 
       - name: Render manifests with flate
+        env:
+          FLATE_BASE: "" # build must render the FULL tree, not changed-only
         run: flate build all --path kubernetes/flux/cluster --skip-crds=false --skip-secrets=false > rendered.yaml
 
       - name: Run kubeconform
@@ -94,27 +106,22 @@ jobs:
       pull-requests: write
     if: ${{ github.event_name == 'pull_request' && needs.pre-job.outputs.any_changed == 'true' }}
     steps:
-      - name: Checkout Pull Request Branch
+      - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          path: pull
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Checkout Default Branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          ref: "${{ github.event.repository.default_branch }}"
-          path: default
-
-      - name: Setup flate
-        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
-        with:
-          base: "" # --path-orig is passed explicitly
+          cache: false
+          install_args: github:home-operations/flate
 
       - name: Run flate diff
         run: >-
           flate diff all
-          --path pull/kubernetes/flux/cluster
-          --path-orig default/kubernetes/flux/cluster
+          --path kubernetes/flux/cluster
           --output github
           > diff.txt
 
