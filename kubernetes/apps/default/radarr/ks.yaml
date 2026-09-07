@@ -23,8 +23,6 @@ spec:
   postBuild:
     substitute:
       APP: radarr
-      KOPIUR_PUID: "1000"
-      KOPIUR_PGID: "1000"
       PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       KOPIUR_CAPACITY: 5Gi
   sourceRef:
