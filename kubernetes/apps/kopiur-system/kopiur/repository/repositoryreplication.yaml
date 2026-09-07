@@ -1,7 +1,5 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/repositoryreplication_v1alpha1.json
-# Blob-mirrors the ClusterRepository to Azure nightly (replaces the kopia-azure-sync CronJobs).
-# sync-to copies blobs verbatim: the mirror keeps the source repository's password.
 apiVersion: kopiur.home-operations.com/v1alpha1
 kind: RepositoryReplication
 metadata:

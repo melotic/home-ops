@@ -1,15 +1,12 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
-# VolSync/Kopia alerts retired by the Kopiur migration; kopiur ships its own
-# PrometheusRule (KopiurBackupStale, KopiurBackupConsecutiveFailures, ...).
-# nas-backup (rclone to the NAS, not kopia) keeps its alerts here.
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: volsync
+  name: nas-backup
 spec:
   groups:
-    - name: volsync.rules
+    - name: nas-backup.rules
       rules:
         - alert: BackupCronJobFailed
           expr: |-

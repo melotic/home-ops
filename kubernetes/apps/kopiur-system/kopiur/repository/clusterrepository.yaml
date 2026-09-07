@@ -1,9 +1,6 @@
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kopiur.home-operations.com/clusterrepository_v1alpha1.json
-# Adopts the existing VolSync kopia repository on the NFS export in place:
-# no `create` block, so the same KOPIA_PASSWORD opens the same repository and
-# every existing snapshot keeps its history. The credential Secret is projected
-# into each app namespace by the operator (features.credentialProjection).
+# Adopts the existing VolSync kopia repository; snapshot history is preserved.
 apiVersion: kopiur.home-operations.com/v1alpha1
 kind: ClusterRepository
 metadata:

@@ -11,9 +11,6 @@ spec:
   interval: 1h
   values:
     features:
-      # Project the ClusterRepository credential Secret into each app namespace
-      # so per-app policies can reference the shared repository without a
-      # per-namespace copy in Git.
       credentialProjection:
         enabled: true
     monitoring:
