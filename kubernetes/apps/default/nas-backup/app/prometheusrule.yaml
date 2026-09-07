@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nas-backup
+spec:
+  groups:
+    - name: nas-backup.rules
+      rules:
+        - alert: BackupCronJobFailed
+          expr: |-
+            kube_job_status_failed{namespace="default"} * on(namespace, job_name) group_left(owner_name) kube_job_owner{namespace="default", owner_kind="CronJob", owner_name=~"nas-backup"} > 0
+          annotations:
+            summary: >-
+              Backup CronJob {{ $labels.owner_name }} job {{ $labels.job_name }} failed
+          for: 10m
+          labels:
+            severity: critical
+
+        - alert: BackupCronJobFreshnessUnobservable
+          expr: |-
+            kube_cronjob_info{namespace="default", cronjob=~"nas-backup"} unless on(namespace, cronjob) kube_cronjob_status_last_successful_time{namespace="default", cronjob=~"nas-backup"}
+          annotations:
+            summary: >-
+              Backup CronJob {{ $labels.cronjob }} freshness cannot be observed because last successful time is absent
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: NasBackupCronJobMissing
+          expr: |-
+            absent(kube_cronjob_info{namespace="default", cronjob="nas-backup"})
+          annotations:
+            summary: >-
+              Backup CronJob nas-backup is missing from kube-state-metrics
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: NasBackupStaleWarning
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="nas-backup"} > 129600
+          annotations:
+            summary: >-
+              NAS backup has not completed successfully in more than 36 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: NasBackupStaleCritical
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="default", cronjob="nas-backup"} > 172800
+          annotations:
+            summary: >-
+              NAS backup has not completed successfully in more than 48 hours
+          for: 15m
+          labels:
+            severity: critical
