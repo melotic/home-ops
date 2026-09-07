@@ -7,6 +7,8 @@ metadata:
 spec:
   compression:
     compressor: zstd-fastest
+  credentialProjection:
+    enabled: true
   # VolSync fork identity continuation: <app>@<namespace>:/data
   identity:
     hostname: ${KOPIUR_NAMESPACE:=default}
