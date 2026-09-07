@@ -270,7 +270,7 @@ Tools are managed by **mise** (`.mise.toml`). Key tools:
 - `talosctl`, `minijinja-cli` (Talos config rendering, `just talos ...`)
 - `sops`, `age` (secret encryption)
 - `just` (command runner), `gum` (interactive prompts)
-- `yq`, `jq`, `kubeconform`, `flux-local`
+- `yq`, `jq`, `kubeconform`, `flate`
 
 Bootstrap:
 ```sh
@@ -317,11 +317,11 @@ flux reconcile kustomization flux-system --with-source
 
 ## CI / Pull Requests
 
-On pull requests touching `kubernetes/**`, the `flux-local` workflow runs:
+On pull requests touching `kubernetes/**`, the `Flate` workflow runs:
 - **test**: validates all Kustomizations and HelmReleases resolve correctly
 - **diff**: posts a rendered diff of HelmRelease/Kustomization changes as a PR comment
 
-Always ensure Kubernetes changes pass `mise exec -- flux-local test --enable-helm --all-namespaces --path kubernetes/flux/cluster -v --sources flux-system` before merging.
+Always ensure Kubernetes changes pass `mise exec -- flate test all --path kubernetes/flux/cluster` before merging.
 
 PR titles must follow [Conventional Commits](https://www.conventionalcommits.org/) with a meaningful component scope (e.g. `feat(envoy-gateway): …`) — the title becomes the squash-merge commit message.
 

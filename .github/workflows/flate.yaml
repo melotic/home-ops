@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: "Flux Local"
+name: "Flate"
 
 on:
   pull_request:
@@ -34,7 +34,7 @@ jobs:
           filters: |
             any_changed:
               - "kubernetes/**"
-              - ".github/workflows/flux-local.yaml"
+              - ".github/workflows/flate.yaml"
 
   test:
     name: Test
@@ -44,11 +44,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Run flux-local test
-        uses: docker://ghcr.io/allenporter/flux-local:v8.3.0
         with:
-          args: test --enable-helm --all-namespaces --path /github/workspace/kubernetes/flux/cluster -v --sources flux-system
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          cache: false
+          install_args: github:home-operations/flate
+
+      - name: Run flate test
+        run: flate test all --path kubernetes/flux/cluster
 
   kubeconform:
     name: Kubeconform
@@ -58,16 +65,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Render manifests with flux-local
-        uses: docker://ghcr.io/allenporter/flux-local:v8.3.0
         with:
-          args: >-
-            build all
-            --enable-helm
-            --skip-invalid-kustomization-paths
-            --output-file /github/workspace/rendered.yaml
-            /github/workspace/kubernetes/flux/cluster
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          cache: false
+          install_args: github:home-operations/flate
+
+      - name: Render manifests with flate
+        run: flate build all --path kubernetes/flux/cluster --skip-crds=false > rendered.yaml
 
       - name: Run kubeconform
         uses: docker://ghcr.io/yannh/kubeconform:v0.8.0
@@ -82,7 +91,7 @@ jobs:
             -schema-location https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
             -skip
             cilium.io/v2/CiliumBGPClusterConfig,postgresql.cnpg.io/v1/Cluster,operator.victoriametrics.com/v1beta1/VMAlertmanagerConfig,volsync.backube/v1alpha1/ReplicationSource,volsync.backube/v1alpha1/ReplicationDestination
-            /github/workspace/rendered.yaml
+            rendered.yaml
 
   diff:
     name: Diff
@@ -98,44 +107,38 @@ jobs:
       fail-fast: false
     if: ${{ github.event_name == 'pull_request' && needs.pre-job.outputs.any_changed == 'true' }}
     steps:
-      - name: Checkout Pull Request Branch
+      - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          path: pull
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Checkout Default Branch
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          ref: "${{ github.event.repository.default_branch }}"
-          path: default
+          cache: false
+          install_args: github:home-operations/flate
 
-      - name: Run flux-local diff
-        uses: docker://ghcr.io/allenporter/flux-local:v8.3.0
-        with:
-          args: >-
-            diff ${{ matrix.resources }}
-            --unified 6
-            --path /github/workspace/pull/kubernetes/flux/cluster
-            --path-orig /github/workspace/default/kubernetes/flux/cluster
-            --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
-            --limit-bytes 10000
-            --all-namespaces
-            --sources "flux-system"
-            --output-file diff.patch
+      - name: Run flate diff
+        run: >-
+          flate diff ${{ matrix.resources }}
+          --path kubernetes/flux/cluster
+          --output github
+          > diff.txt
 
       - name: Generate Diff
         id: diff
         run: |
-          cat diff.patch;
+          cat diff.txt;
           {
               echo 'diff<<EOF'
-              cat diff.patch
+              cat diff.txt
               echo EOF
           } >> "$GITHUB_OUTPUT";
           {
               echo "### Diff"
               echo '```diff'
-              cat diff.patch
+              cat diff.txt
               echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -151,7 +154,7 @@ jobs:
             ${{ steps.diff.outputs.diff }}
             ```
 
-  flux-local-status:
+  flate-status:
     name: Success
     needs: ["pre-job", "test", "kubeconform", "diff"]
     runs-on: ubuntu-latest
