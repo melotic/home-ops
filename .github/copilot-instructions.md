@@ -76,12 +76,9 @@ Always add a `# yaml-language-server: $schema=...` comment at the top of YAML fi
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app <app-name>
-  namespace: &namespace <namespace>
+  name: <app-name>
+  namespace: <namespace>
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   decryption:
     provider: sops
     secretRef:

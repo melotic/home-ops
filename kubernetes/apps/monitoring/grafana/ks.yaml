@@ -3,12 +3,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app grafana
-  namespace: &namespace monitoring
+  name: grafana
+  namespace: monitoring
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: prometheus-operator-crds
   path: ./kubernetes/apps/monitoring/grafana/app
@@ -16,7 +13,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: monitoring
   wait: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -24,11 +21,8 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: grafana-instance
-  namespace: &namespace monitoring
+  namespace: monitoring
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: grafana
   dependsOn:
     - name: grafana
     - name: kube-prometheus-stack
@@ -43,5 +37,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: monitoring
   wait: false

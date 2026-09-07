@@ -3,12 +3,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app silence-operator
-  namespace: &namespace monitoring
+  name: silence-operator
+  namespace: monitoring
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: kube-prometheus-stack
   path: ./kubernetes/apps/monitoring/silence-operator/app
@@ -16,5 +13,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: monitoring
   wait: false

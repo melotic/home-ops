@@ -6,9 +6,6 @@ metadata:
   name: librechat
   namespace: default
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: librechat
   dependsOn:
     - name: authentik
       namespace: default
