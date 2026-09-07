@@ -1,12 +1,10 @@
 ---
 machine:
   type: controlplane
-  # ca merges as a unit; crt must be repeated alongside key
   ca:
     crt: op://Zion/Talos/MACHINE_CA_CRT
     key: op://Zion/Talos/MACHINE_CA_KEY
 cluster:
-  # ca merges as a unit; crt must be repeated alongside key
   ca:
     crt: op://Zion/Talos/CLUSTER_CA_CRT
     key: op://Zion/Talos/CLUSTER_CA_KEY
@@ -25,14 +23,19 @@ cluster:
       listen-metrics-urls: http://0.0.0.0:2381
 ---
 apiVersion: v1alpha1
+kind: KubeNodeConfig
+labels:
+  node-role.kubernetes.io/control-plane: ""
+---
+apiVersion: v1alpha1
 kind: KubeAPIServerConfig
-image: registry.k8s.io/kube-apiserver:{{ kubernetes_version }}
+image: registry.k8s.io/kube-apiserver:v1.37.0
 certExtraSANs:
   - 127.0.0.1
   - 10.60.8.10
 extraArgs:
-  # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
   enable-aggregator-routing: "true"
+  feature-gates: HPAScaleToZero=true
 ---
 apiVersion: v1alpha1
 kind: KubeAuthorizerConfig
@@ -55,7 +58,6 @@ configuration:
       - path: /healthz
   jwt: []
 ---
-# The default PodSecurity admission plugin is removed; Kyverno handles policy.
 apiVersion: v1alpha1
 kind: KubeAdmissionControlConfig
 name: PodSecurity
@@ -66,13 +68,9 @@ kind: KubeAuditPolicyConfig
 configuration:
   apiVersion: audit.k8s.io/v1
   kind: Policy
-  # RequestReceived doubles volume for most short requests while adding little
-  # investigation value. Keep completion/watch records and security-sensitive
-  # resources below.
   omitStages:
     - RequestReceived
   rules:
-    # Drop high-volume health/discovery probes from kube components.
     - level: None
       nonResourceURLs:
         - /healthz*
@@ -80,14 +78,11 @@ configuration:
         - /readyz*
         - /version
         - /openapi*
-    # Leader-election leases are hot-loop background control-plane noise.
     - level: None
       verbs: [get, update, patch, watch]
       resources:
         - group: coordination.k8s.io
           resources: [leases]
-    # Kyverno cleanup checks its own permissions constantly; audit the
-    # resulting report changes, not the repetitive self-SARs.
     - level: None
       users:
         - system:serviceaccount:kyverno:kyverno-cleanup-controller
@@ -95,12 +90,10 @@ configuration:
       resources:
         - group: authorization.k8s.io
           resources: [selfsubjectaccessreviews]
-    # Keep secret access visible; reads are security-sensitive too.
     - level: Metadata
       resources:
         - group: ""
           resources: [secrets]
-    # Keep security-sensitive configuration changes at Metadata.
     - level: Metadata
       verbs: [create, update, patch, delete, deletecollection]
       resources:
@@ -116,37 +109,65 @@ configuration:
           resources: [securitypolicies]
         - group: external-secrets.io
           resources: [externalsecrets, secretstores, clusterexternalsecrets, clustersecretstores]
-    # Preserve an investigation trail for pod/exec/log/proxy access.
     - level: Metadata
       resources:
         - group: ""
           resources: [pods/exec, pods/attach, pods/portforward, pods/proxy, pods/log]
-    # Everything else stays visible at metadata level, but without the
-    # RequestReceived duplicate stage above.
     - level: Metadata
 ---
 apiVersion: v1alpha1
 kind: KubeControllerManagerConfig
-image: registry.k8s.io/kube-controller-manager:{{ kubernetes_version }}
+image: registry.k8s.io/kube-controller-manager:v1.37.0
 extraArgs:
   bind-address: 0.0.0.0
+  feature-gates: HPAScaleToZero=true
 ---
 apiVersion: v1alpha1
 kind: KubeCoreDNSConfig
 enabled: false
 ---
 apiVersion: v1alpha1
+kind: KubeEtcdEncryptionConfig
+config:
+  resources:
+    - providers:
+        - secretbox:
+            keys:
+              - name: key2
+                secret: op://Zion/Talos/CLUSTER_SECRETBOXENCRYPTIONSECRET
+        - identity: {}
+      resources:
+        - secrets
+---
+apiVersion: v1alpha1
 kind: KubeProxyConfig
 enabled: false
-image: registry.k8s.io/kube-proxy:{{ kubernetes_version }}
+image: registry.k8s.io/kube-proxy:v1.37.0
 ---
 apiVersion: v1alpha1
 kind: KubeSchedulerConfig
-image: registry.k8s.io/kube-scheduler:{{ kubernetes_version }}
+config:
+  profiles:
+    - schedulerName: default-scheduler
+      plugins:
+        score:
+          disabled:
+            - name: ImageLocality
+      pluginConfig:
+        - name: PodTopologySpread
+          args:
+            defaultingType: List
+            defaultConstraints:
+              - maxSkew: 1
+                topologyKey: kubernetes.io/hostname
+                whenUnsatisfiable: ScheduleAnyway
+image: registry.k8s.io/kube-scheduler:v1.37.0
 extraArgs:
   bind-address: 0.0.0.0
 ---
-# Scheduling on control planes: the legacy cluster.allowSchedulingOnControlPlanes
-# becomes implicit in v1.14 — the control-plane NoSchedule taint is only applied
-# when KubeNodeConfig.taints (or .machine.nodeTaints) configures it, and no taints
-# are set here on purpose.
+apiVersion: v1alpha1
+kind: KubeTalosAPIAccessConfig
+allowedRoles:
+  - os:admin
+allowedKubernetesNamespaces:
+  - system-upgrade

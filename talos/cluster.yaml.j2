@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://www.talos.dev/v1.14/schemas/config.schema.json
+# yaml-language-server: $schema=https://docs.siderolabs.com/talos/v1.14/schemas/config.schema.json
 version: v1alpha1
 debug: false
 persist: true
@@ -10,21 +10,6 @@ machine:
   certSANs:
     - 127.0.0.1
     - 10.60.8.10
-  kubelet:
-    image: ghcr.io/siderolabs/kubelet:{{ kubernetes_version }}
-    extraMounts:
-      - destination: /var/mnt/local-hostpath
-        type: bind
-        source: /var/mnt/local-hostpath
-        options:
-          - bind
-          - rshared
-          - rw
-    extraConfig:
-      imageGCHighThresholdPercent: 70
-      imageGCLowThresholdPercent: 60
-      serializeImagePulls: false
-    defaultRuntimeSeccompProfileEnabled: true
   features:
     diskQuotaSupport: true
   seccompProfiles:
@@ -36,7 +21,6 @@ machine:
           - SCMP_ARCH_X86
           - SCMP_ARCH_X32
         syscalls:
-          # --- containerd/moby runtime-default unconditional allow set ---
           - action: SCMP_ACT_ALLOW
             names:
               - accept
@@ -392,7 +376,6 @@ machine:
               - waitpid
               - write
               - writev
-          # --- rootless BuildKit additions ---
           - action: SCMP_ACT_ALLOW
             names:
               - clone
@@ -416,19 +399,16 @@ machine:
               - mount_setattr
 cluster:
   token: op://Zion/Talos/CLUSTER_TOKEN
-  id: op://Zion/Talos/CLUSTER_ID
-  secret: op://Zion/Talos/CLUSTER_SECRET
   controlPlane:
     endpoint: https://10.60.8.10:6443
   clusterName: kubernetes
-  secretboxEncryptionSecret: op://Zion/Talos/CLUSTER_SECRETBOXENCRYPTIONSECRET
   ca:
     crt: op://Zion/Talos/CLUSTER_CA_CRT
 ---
 apiVersion: v1alpha1
 kind: UnattendedInstallConfig
 installer:
-  image: factory.talos.dev/metal-installer-secureboot/{{ schematic }}:{{ talos_version }}
+  image: factory.talos.dev/metal-installer-secureboot/{{ schematic }}:v1.14.0
 provisioning:
   diskSelector:
     match: disk.transport == "nvme"
@@ -439,17 +419,19 @@ kind: ResolverConfig
 nameservers:
   - address: 10.60.0.1
 searchDomains:
+  domains: []
   disableDefault: true
 hostDNS:
   enabled: true
   forwardKubeDNSToHost: false
+  resolveMemberNames: true
 ---
 apiVersion: v1alpha1
 kind: TimeSyncConfig
 ntp:
+  useNTS: true
   servers:
-    - 162.159.200.1
-    - 162.159.200.123
+    - time.cloudflare.com
 ---
 apiVersion: v1alpha1
 kind: SysctlConfig
@@ -463,20 +445,19 @@ params:
   net.ipv4.neigh.default.gc_thresh3: "16384" # Prevent ARP cache overflows
   user.max_user_namespaces: "11255" # User Namespaces
   net.ipv4.conf.all.accept_source_route: "0" # CIS §5.2.1 — disable IP source routing
-  net.ipv4.conf.default.accept_source_route: "0" # CIS §5.2.1 — disable IP source routing
   net.ipv6.conf.all.accept_source_route: "0" # CIS §5.2.1 — disable IP source routing
+  net.ipv4.conf.default.accept_source_route: "0" # CIS §5.2.1 — disable IP source routing
   net.ipv6.conf.default.accept_source_route: "0" # CIS §5.2.1 — disable IP source routing
   net.ipv4.conf.all.accept_redirects: "0" # CIS §5.2.2 — disable ICMP redirects accept
-  net.ipv4.conf.default.accept_redirects: "0" # CIS §5.2.2 — disable ICMP redirects accept
   net.ipv6.conf.all.accept_redirects: "0" # CIS §5.2.2 — disable ICMP redirects accept
+  net.ipv4.conf.default.accept_redirects: "0" # CIS §5.2.2 — disable ICMP redirects accept
   net.ipv6.conf.default.accept_redirects: "0" # CIS §5.2.2 — disable ICMP redirects accept
   net.ipv4.conf.all.secure_redirects: "0" # CIS §5.2.3 — disable secure ICMP redirects accept
-  net.ipv4.conf.default.secure_redirects: "0" # CIS §5.2.3 — disable secure ICMP redirects accept
   net.ipv4.conf.all.log_martians: "1" # CIS §5.2.4 — log martian packets
+  net.ipv4.conf.default.secure_redirects: "0" # CIS §5.2.3 — disable secure ICMP redirects accept
   net.ipv4.conf.default.log_martians: "1" # CIS §5.2.4 — log martian packets
   net.ipv4.conf.all.send_redirects: "0" # CIS §5.1.1 — disable IP redirects send
   net.ipv4.conf.default.send_redirects: "0" # CIS §5.1.1 — disable IP redirects send
-  # CIS §5.2.8 (rp_filter) — DEFERRED (Cilium native routing + BPF masq + DSR creates legitimate asymmetric paths). See SECURITY.md.
 ---
 apiVersion: v1alpha1
 kind: WatchdogTimerConfig
@@ -485,7 +466,26 @@ timeout: 5m
 ---
 apiVersion: v1alpha1
 kind: FilesystemTrimConfig
-interval: 168h0m0s # one week
+interval: 168h0m0s
+---
+apiVersion: v1alpha1
+kind: FilesystemScrubConfig
+interval: 168h0m0s
+---
+apiVersion: v1alpha1
+kind: EtcFileConfig
+name: nfsmount.conf
+mode: 0o644
+contents: |
+  [NFSMount_Global_Options]
+  nfsvers=3
+  proto=tcp
+  nolock
+  hard=True
+  nconnect=8
+  noatime=True
+  rsize=1048576
+  wsize=1048576
 ---
 apiVersion: v1alpha1
 kind: LinkConfig
@@ -530,20 +530,31 @@ nodeIP:
     - 10.60.0.0/16
 ---
 apiVersion: v1alpha1
+kind: KubeletConfig
+image: ghcr.io/siderolabs/kubelet:v1.37.0
+config:
+  crashLoopBackOff:
+    maxContainerRestartPeriod: 60s
+  imageMaximumGCAge: 168h
+  maxParallelImagePulls: 3
+  serializeImagePulls: false
+  shutdownGracePeriod: 90s
+  shutdownGracePeriodCriticalPods: 60s
+defaultRuntimeSeccompProfileEnabled: true
+---
+apiVersion: v1alpha1
 kind: DiscoveryServiceConfig
 name: default
 endpoint: https://discovery.talos.dev/
 ---
 apiVersion: v1alpha1
-kind: KubePrismConfig
-port: 7445
+kind: DiscoveryIdentityConfig
+clusterID: op://Zion/Talos/CLUSTER_ID
+clusterSecret: op://Zion/Talos/CLUSTER_SECRET
 ---
 apiVersion: v1alpha1
-kind: KubeTalosAPIAccessConfig
-allowedRoles:
-  - os:admin
-allowedKubernetesNamespaces:
-  - system-upgrade
+kind: KubePrismConfig
+port: 7445
 ---
 apiVersion: v1alpha1
 kind: KubeNetworkConfig
