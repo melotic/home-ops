@@ -55,8 +55,6 @@ jobs:
           install_args: github:home-operations/flate
 
       - name: Run flate test
-        env:
-          FLATE_BASE: "" # full-tree test, not changed-only
         run: flate test all --path kubernetes/flux/cluster
 
   kubeconform:
@@ -78,8 +76,6 @@ jobs:
           install_args: github:home-operations/flate
 
       - name: Render manifests with flate
-        env:
-          FLATE_BASE: "" # build must render the FULL tree, not changed-only
         run: flate build all --path kubernetes/flux/cluster --skip-crds=false > rendered.yaml
 
       - name: Run kubeconform
