@@ -32,6 +32,11 @@ spec:
           bdev_async_discard: "true"
           bdev_async_discard_threads: "1"
           bdev_enable_discard: "true"
+      placement:
+        all:
+          tolerations:
+            - key: tuppr.home-operations.com/outdated
+              operator: Exists
       # Override chart defaults that over-reserve small-cluster Ceph daemons.
       resources:
         mon:
