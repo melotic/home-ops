@@ -1,10 +1,11 @@
 ---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/tailscale.com/connector_v1alpha1.json
 apiVersion: tailscale.com/v1alpha1
 kind: Connector
 metadata:
   name: &name ts-srv-zion
 spec:
-  replicas: 1
+  replicas: 2
   hostnamePrefix: *name
   # Keep this router on its own tag so the ACL autoApprovers and deny tests can
   # target it without also matching the tag:k8s proxy pods. The operator only
