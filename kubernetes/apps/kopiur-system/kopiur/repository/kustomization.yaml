@@ -5,5 +5,3 @@ kind: Kustomization
 resources:
   - ./clusterrepository.yaml
   - ./externalsecret.yaml
-  - ./externalsecret-azure.yaml
-  - ./repositoryreplication.yaml
