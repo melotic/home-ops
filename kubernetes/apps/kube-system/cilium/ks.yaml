@@ -3,12 +3,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cilium
-  namespace: &namespace kube-system
+  name: cilium
+  namespace: kube-system
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/kube-system/cilium/app
   postBuild:
     substituteFrom:
@@ -18,7 +15,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: kube-system
   wait: false
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -26,11 +23,8 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: cilium-dashboards
-  namespace: &namespace kube-system
+  namespace: kube-system
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: cilium
   dependsOn:
     - name: cilium
     - name: grafana
@@ -40,5 +34,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: kube-system
   wait: false

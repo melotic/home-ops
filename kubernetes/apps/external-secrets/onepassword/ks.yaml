@@ -3,12 +3,9 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app onepassword
-  namespace: &namespace external-secrets
+  name: onepassword
+  namespace: external-secrets
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets
   healthCheckExprs:
@@ -21,5 +18,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: external-secrets
   wait: true

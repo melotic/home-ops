@@ -3,18 +3,15 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app tailscale
-  namespace: &namespace network
+  name: tailscale
+  namespace: network
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   path: ./kubernetes/apps/network/tailscale/app
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: network
   wait: true
 ---
 # yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
@@ -22,11 +19,8 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: tailscale-config
-  namespace: &namespace network
+  namespace: network
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: tailscale
   dependsOn:
     - name: tailscale
   path: ./kubernetes/apps/network/tailscale/config
@@ -34,5 +28,5 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: network
   wait: false
