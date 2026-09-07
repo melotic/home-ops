@@ -282,9 +282,8 @@ spec:
         service:
           type: ClusterIP
         # HPAs are deleted outright via postRenderer (see above) — this homelab
-        # doesn't autoscale. min==max is a safety net: flux-local does NOT render
-        # postRenderers, so without it the CI diff would imply autoscaling, and if
-        # the delete ever no-ops the HPA stays pinned. Previously a broken HPA left
+        # doesn't autoscale. min==max is a safety net: if the delete ever
+        # no-ops the HPA stays pinned. Previously a broken HPA left
         # spec.replicas at 0, taking down the GitLab API (503 on
         # /api/v4/runners/verify).
         minReplicas: 1
