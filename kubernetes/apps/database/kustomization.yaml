@@ -8,5 +8,6 @@ components:
   - ../../components/common
   - ../../components/psa/baseline
 resources:
-  - ./dragonfly-operator/app
+  - ./dragonfly-operator/ks.yaml
+  - ./dragonfly/ks.yaml
   - ./postgres/ks.yaml
