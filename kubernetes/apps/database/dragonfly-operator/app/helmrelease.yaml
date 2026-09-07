@@ -16,7 +16,8 @@ spec:
     cleanupOnFail: true
   values:
     serviceAccount:
-      automount: false
+      # operator needs an in-cluster kubeconfig (controller-runtime GetConfigOrDie)
+      automount: true
     podSecurityContext:
       runAsNonRoot: true
       seccompProfile:
