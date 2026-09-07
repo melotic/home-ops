@@ -23,6 +23,8 @@ spec:
   postBuild:
     substitute:
       APP: harbor
+      KOPIUR_PUID: "10000"
+      KOPIUR_PGID: "10000"
       KOPIUR_CAPACITY: 30Gi
   sourceRef:
     kind: GitRepository

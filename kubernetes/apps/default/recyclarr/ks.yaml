@@ -21,8 +21,6 @@ spec:
     substitute:
       APP: recyclarr
       KOPIUR_CAPACITY: 1Gi
-      KOPIUR_PUID: "1000"
-      KOPIUR_PGID: "1000"
   sourceRef:
     kind: GitRepository
     name: flux-system

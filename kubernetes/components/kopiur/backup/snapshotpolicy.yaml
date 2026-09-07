@@ -18,10 +18,10 @@ spec:
       capacity: ${KOPIUR_CACHE_CAPACITY:=8Gi}
       storageClassName: ${KOPIUR_CACHE_STORAGECLASS:=ceph-block}
     podSecurityContext:
-      fsGroup: ${KOPIUR_PGID:=988}
+      fsGroup: ${KOPIUR_PGID:=1000}
     securityContext:
-      runAsGroup: ${KOPIUR_PGID:=988}
-      runAsUser: ${KOPIUR_PUID:=977}
+      runAsGroup: ${KOPIUR_PGID:=1000}
+      runAsUser: ${KOPIUR_PUID:=1000}
   repository:
     kind: ClusterRepository
     name: volsync

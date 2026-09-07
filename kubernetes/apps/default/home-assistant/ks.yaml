@@ -23,8 +23,6 @@ spec:
     substitute:
       APP: home-assistant
       KOPIUR_CAPACITY: 8Gi
-      KOPIUR_PUID: "1000"
-      KOPIUR_PGID: "1000"
   sourceRef:
     kind: GitRepository
     name: flux-system
