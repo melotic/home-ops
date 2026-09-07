@@ -65,21 +65,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
       - name: Install Kyverno CLI
         uses: kyverno/action-install-cli@fcee92fca5c883169ef9927acf543e0b5fc58289 # v0.2.0
         with:
           release: v1.17.2
 
-      - name: Render manifests with flux-local
-        uses: docker://ghcr.io/allenporter/flux-local:v8.3.0
+      - name: Setup flate
+        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
         with:
-          args: >-
-            build all
-            --enable-helm
-            --skip-invalid-kustomization-paths
-            --output-file /github/workspace/rendered.yaml
-            /github/workspace/kubernetes/flux/cluster
+          base: "" # build must render the FULL tree, not changed-only
+
+      - name: Render manifests with flate
+        run: flate build all --path kubernetes/flux/cluster --skip-crds=false > rendered.yaml
 
       - name: Run kyverno apply
         run: |
