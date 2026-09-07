@@ -22,6 +22,8 @@ spec:
   postBuild:
     substitute:
       APP: ghidra-server
+      KOPIUR_PUID: "1001"
+      KOPIUR_PGID: "1001"
       KOPIUR_CAPACITY: 20Gi
       KOPIUR_CACHE_CAPACITY: 20Gi
       GHIDRA_SERVER_IP: 10.60.80.7

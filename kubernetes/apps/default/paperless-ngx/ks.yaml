@@ -25,6 +25,8 @@ spec:
   postBuild:
     substitute:
       APP: paperless-ngx
+      KOPIUR_PUID: "1000"
+      KOPIUR_PGID: "1000"
       ONEPASSWORD_ITEM: paperless-postgres
       PG_DATABASE: paperless
       PG_HOST: postgres-cluster-rw.database.svc.cluster.local
