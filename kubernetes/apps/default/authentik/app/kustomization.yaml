@@ -16,6 +16,7 @@ configMapGenerator:
       - karakeep.yaml=./blueprints/karakeep.yaml
       - librechat.yaml=./blueprints/librechat.yaml
       - miniflux.yaml=./blueprints/miniflux.yaml
+      - open-webui.yaml=./blueprints/open-webui.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
       - victoria-logs.yaml=./blueprints/victoria-logs.yaml
       - alertmanager.yaml=./blueprints/alertmanager.yaml
