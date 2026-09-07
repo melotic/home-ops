@@ -47,6 +47,8 @@ jobs:
 
       - name: Setup flate
         uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
+        with:
+          base: "" # full-tree mode; the shallow checkout has no main ref
 
       - name: Run flate test
         run: flate test all --path kubernetes/flux/cluster
@@ -62,6 +64,8 @@ jobs:
 
       - name: Setup flate
         uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
+        with:
+          base: "" # full-tree mode; the shallow checkout has no main ref
 
       - name: Render manifests with flate
         run: flate build all --path kubernetes/flux/cluster --skip-crds=false --skip-secrets=false > rendered.yaml
@@ -103,6 +107,8 @@ jobs:
 
       - name: Setup flate
         uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
+        with:
+          base: "" # --path-orig is passed explicitly
 
       - name: Run flate diff
         run: >-
