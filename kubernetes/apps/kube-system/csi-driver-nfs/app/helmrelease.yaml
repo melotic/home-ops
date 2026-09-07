@@ -32,6 +32,7 @@ spec:
       mountOptions:
         - nfsvers=3
         - proto=tcp
+        - nolock
         - rsize=1048576
         - wsize=1048576
         - hard
