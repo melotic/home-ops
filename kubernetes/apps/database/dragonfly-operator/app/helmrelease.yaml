@@ -6,10 +6,6 @@ metadata:
   name: dragonfly-operator
 spec:
   interval: 1h
-  # force pod recreation: current pod was created while the SA had
-  # automount:false and kubelet does not inject tokens retroactively
-  deploymentAnnotations:
-    home-operations.com/restart: "2026-09-07"
   chartRef:
     kind: OCIRepository
     name: dragonfly-operator
