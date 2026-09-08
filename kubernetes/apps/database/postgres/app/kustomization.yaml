@@ -26,17 +26,32 @@ resources:
   - ./monitoring/pooler-podmonitor.yaml
   - ./pooler/pooler-rw.yaml
   - ./prometheusrule-backup.yaml
+  - ./roles/app.yaml
   - ./roles/atuin.yaml
+  - ./secrets/atuin.yaml
   - ./roles/authentik.yaml
+  - ./secrets/authentik.yaml
   - ./roles/crowdsec.yaml
+  - ./secrets/crowdsec.yaml
   - ./roles/firefly.yaml
+  - ./secrets/firefly.yaml
   - ./roles/gitlab.yaml
+  - ./secrets/gitlab.yaml
   - ./roles/harbor.yaml
+  - ./secrets/harbor.yaml
   - ./roles/miniflux.yaml
+  - ./secrets/miniflux.yaml
   - ./roles/openwebui.yaml
+  - ./secrets/openwebui.yaml
   - ./roles/paperless.yaml
+  - ./secrets/paperless.yaml
   - ./roles/prowlarr.yaml
+  - ./secrets/prowlarr.yaml
   - ./roles/radarr.yaml
+  - ./secrets/radarr.yaml
   - ./roles/renovate.yaml
+  - ./secrets/renovate.yaml
   - ./roles/seerr.yaml
+  - ./secrets/seerr.yaml
   - ./roles/sonarr.yaml
+  - ./secrets/sonarr.yaml
