@@ -1,29 +1,14 @@
 ---
-# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/external-secrets.io/externalsecret_v1.json
-apiVersion: external-secrets.io/v1
-kind: ExternalSecret
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
 metadata:
-  name: postgres-user-harbor
+  name: harbor
 spec:
-  refreshPolicy: Periodic
-  refreshInterval: 1h
-  secretStoreRef:
-    kind: ClusterSecretStore
-    name: onepassword
-  target:
+  name: harbor
+  ensure: present
+  login: true
+  passwordSecret:
     name: postgres-user-harbor
-    creationPolicy: Owner
-    template:
-      engineVersion: v2
-      mergePolicy: Replace
-      type: kubernetes.io/basic-auth
-      metadata:
-        labels:
-          cnpg.io/reload: "true"
-      data:
-        user: harbor
-        username: harbor
-        password: "{{ .password }}"
-  dataFrom:
-    - extract:
-        key: harbor-postgres
+  cluster:
+    name: postgres-cluster
