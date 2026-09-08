@@ -3,12 +3,9 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: DatabaseRole
 metadata:
-  name: seerr
+  name: app
 spec:
-  name: seerr
-  ensure: present
-  login: true
-  passwordSecret:
-    name: postgres-user-seerr
+  name: app
+  ensure: absent
   cluster:
     name: postgres-cluster
