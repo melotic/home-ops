@@ -108,6 +108,17 @@ entries:
         - !Find [authentik_providers_proxy.proxyprovider, [name, gatus]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-logs]]
 
+  # The VictoriaMetrics stack and its route were removed; blueprint deletion
+  # does not prune its previously applied objects.
+  - model: authentik_core.application
+    state: absent
+    identifiers:
+      slug: victoria-metrics
+  - model: authentik_providers_proxy.proxyprovider
+    state: absent
+    identifiers:
+      name: victoria-metrics
+
   - model: authentik_outposts.outpost
     identifiers:
       name: ghidra-server-ldap
