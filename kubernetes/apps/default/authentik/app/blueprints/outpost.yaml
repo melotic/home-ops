@@ -137,7 +137,7 @@ entries:
             - op: add
               path: /metadata/annotations
               value:
-                external-dns.alpha.kubernetes.io/hostname: ghidra-ldap.melotic.dev
+                external-dns.kubernetes.io/hostname: ghidra-ldap.melotic.dev
             - op: add
               path: /spec/loadBalancerSourceRanges
               value:
