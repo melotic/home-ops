@@ -104,3 +104,6 @@ spec:
               - path: /etc/crowdsec/config.yaml.local
                 subPath: config.yaml.local
                 readOnly: true
+              - path: /etc/crowdsec/profiles.yaml.local
+                subPath: profiles.yaml.local
+                readOnly: true

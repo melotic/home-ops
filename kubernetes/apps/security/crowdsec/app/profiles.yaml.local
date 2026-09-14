@@ -1,0 +1,10 @@
+# CrowdSec decision overlay: pins the ban TTL and remediation posture only.
+# Scenario/scope filters are applied bouncer-side, not here. CrowdSec merges
+# this file over the shipped profiles.yaml.
+name: default_ip_remediation
+filters:
+  - Alert.Remediation == true && Alert.GetScope() == "Ip"
+decisions:
+  - type: ban
+    duration: 4h
+on_success: break

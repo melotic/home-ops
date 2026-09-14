@@ -14,5 +14,6 @@ configMapGenerator:
   - name: crowdsec-config-local
     files:
       - config.yaml.local
+      - profiles.yaml.local # LAPI ban-TTL decision overlay
     options:
       disableNameSuffixHash: true

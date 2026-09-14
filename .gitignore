@@ -17,6 +17,8 @@ talosconfig
 .private/
 .planning/
 .task/
+.gsd/
+.bg-shell/
 .venv/
 .DS_Store
 Thumbs.db
