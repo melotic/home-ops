@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: open-webui
-      version: 16.5.0
+      version: 16.6.0
   install:
     remediation:
       retries: 3
