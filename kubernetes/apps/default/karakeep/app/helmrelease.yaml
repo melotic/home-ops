@@ -105,7 +105,7 @@ spec:
             image:
               repository: docker.io/getmeili/meilisearch
               # renovate: datasource=docker depName=docker.io/getmeili/meilisearch allowedVersions=/^v?1\.50\.0$/
-              tag: v1.53.2@sha256:c94e58ca09662dd6e65e8f1b0fd145767be3da7d5422a863a27b8d2b68e090c9
+              tag: v1.54.0@sha256:0bf32debcbfa8ba4e418679025f4935884972171513c92f0584689ff994a61df
             env:
               # Needed for the v1.41 -> v1.46 dumpless migration; remove after success only if operationally safe.
               # v1.50→v1.52 dumpless upgrade; remove after first successful boot.
