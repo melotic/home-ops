@@ -30,6 +30,7 @@ spec:
     plugins:
       allow_loading_unsigned_plugins: "natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel"
       plugin_admin_enabled: "false"
+      preinstall_auto_update: "false"
     security:
       angular_support_enabled: "true"
     server:
@@ -87,6 +88,9 @@ spec:
           volumes:
             - name: tmp
               emptyDir: {}
+            - name: grafana-data
+              persistentVolumeClaim:
+                claimName: grafana-pvc
   disableDefaultSecurityContext: All
   httpRoute:
     spec:
