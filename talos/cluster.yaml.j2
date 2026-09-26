@@ -535,6 +535,8 @@ image: ghcr.io/siderolabs/kubelet:v1.37.0
 config:
   crashLoopBackOff:
     maxContainerRestartPeriod: 60s
+  imageGCHighThresholdPercent: 70
+  imageGCLowThresholdPercent: 60
   imageMaximumGCAge: 168h
   maxParallelImagePulls: 3
   serializeImagePulls: false
