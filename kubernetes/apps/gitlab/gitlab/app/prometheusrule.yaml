@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gitlab
+spec:
+  groups:
+    - name: gitlab.rules
+      rules:
+        - alert: GitlabBackupCronJobFailed
+          expr: |-
+            kube_job_status_failed{namespace="gitlab"} * on(namespace, job_name) group_left(owner_name) kube_job_owner{namespace="gitlab", owner_kind="CronJob", owner_name=~"gitlab-toolbox-backup"} > 0
+          annotations:
+            summary: >-
+              GitLab backup CronJob {{ $labels.owner_name }} job {{ $labels.job_name }} failed
+          for: 10m
+          labels:
+            severity: critical
+
+        - alert: GitlabBackupCronJobFreshnessUnobservable
+          expr: |-
+            kube_cronjob_info{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"} unless on(namespace, cronjob) kube_cronjob_status_last_successful_time{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"}
+          annotations:
+            summary: >-
+              GitLab backup CronJob {{ $labels.cronjob }} freshness cannot be observed because last successful time is absent
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: GitlabBackupCronJobMissing
+          expr: |-
+            absent(kube_cronjob_info{namespace="gitlab", cronjob="gitlab-toolbox-backup"})
+          annotations:
+            summary: >-
+              GitLab backup CronJob gitlab-toolbox-backup is missing from kube-state-metrics
+          for: 15m
+          labels:
+            severity: critical
+
+        - alert: GitlabBackupStaleWarning
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"} > 129600
+          annotations:
+            summary: >-
+              GitLab backup has not completed successfully in more than 36 hours
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: GitlabBackupStaleCritical
+          expr: |-
+            time() - kube_cronjob_status_last_successful_time{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"} > 172800
+          annotations:
+            summary: >-
+              GitLab backup has not completed successfully in more than 48 hours
+          for: 15m
+          labels:
+            severity: critical
