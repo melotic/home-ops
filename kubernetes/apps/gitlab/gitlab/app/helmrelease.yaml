@@ -322,9 +322,9 @@ spec:
         resources:
           requests:
             cpu: 250m
-            memory: 1Gi
+            memory: 1500Mi
           limits:
-            memory: 2Gi
+            memory: 3Gi
       gitlab-exporter:
         enabled: true
         metrics:
