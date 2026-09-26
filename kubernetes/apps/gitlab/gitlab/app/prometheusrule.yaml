@@ -193,14 +193,6 @@ spec:
           annotations:
             summary: GitLab version mismatch (instance {{ $labels.instance }})
             description: "Multiple GitLab versions are running across the fleet.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-        - alert: GitlabRubyThreadsSaturated
-          expr: sum by (instance) (gitlab_ruby_threads_running_threads) > on(instance) gitlab_ruby_threads_max_expected_threads * 1.5
-          for: 10m
-          labels:
-            severity: warning
-          annotations:
-            summary: GitLab Ruby threads saturated (instance {{ $labels.instance }})
-            description: "GitLab running threads on {{ $labels.instance }} have exceeded the expected maximum ({{ $value }}).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
         - alert: GitlabSidekiqQueueNotDraining
           expr: sum by (name) (sidekiq_queue_size) > 0
           for: 30m
