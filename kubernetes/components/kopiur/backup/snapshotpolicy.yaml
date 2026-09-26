@@ -44,6 +44,11 @@ spec:
       fileParallelism: 2
       schedule:
         cron: 0 8 * * *
-    successExpr: "stats.errors == 0 && stats.files > 0"
+    # Either count is enough: a quick verify reads files/bytes from the snapshot
+    # manifest, where `fileCount` counts only files uploaded by that run, so a
+    # fully deduplicated snapshot reports 0 files while still holding data. A
+    # deep verify restores into scratch, so its byte count is 0 and only files
+    # is meaningful. Both stay 0 for a verify that actually covered nothing.
+    successExpr: "stats.errors == 0 && (stats.files > 0 || stats.bytes > 0)"
     verifyFilesPercent: 5
   volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=csi-ceph-blockpool}
