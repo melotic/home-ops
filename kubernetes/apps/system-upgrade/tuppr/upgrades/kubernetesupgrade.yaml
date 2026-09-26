@@ -14,6 +14,16 @@ spec:
         start: 0 0 * * 1-5
         timezone: America/Chicago
   healthChecks:
+    - apiVersion: kopiur.home-operations.com/v1alpha1
+      kind: Snapshot
+      expr: |-
+        status.phase != 'Running'
+      timeout: 15m
+    - apiVersion: kopiur.home-operations.com/v1alpha1
+      kind: Restore
+      expr: |-
+        !(status.phase in ['Resolving', 'Restoring'])
+      timeout: 15m
     - apiVersion: v1
       kind: Node
       expr: |-
