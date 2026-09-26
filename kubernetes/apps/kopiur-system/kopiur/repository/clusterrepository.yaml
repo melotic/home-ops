@@ -41,4 +41,5 @@ spec:
     epoch:
       minDuration: 1h
   scheduleDefaults:
+    jitter: 30m
     timezone: America/Chicago
