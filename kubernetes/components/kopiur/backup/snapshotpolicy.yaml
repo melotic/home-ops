@@ -37,9 +37,13 @@ spec:
   upload:
     maxParallelFileReads: 2
   verification:
+    deep:
+      schedule:
+        cron: 0 5 * * 0
     quick:
       fileParallelism: 2
       schedule:
         cron: 0 8 * * *
+    successExpr: "stats.errors == 0 && stats.files > 0"
     verifyFilesPercent: 5
   volumeSnapshotClassName: ${KOPIUR_SNAPSHOTCLASS:=csi-ceph-blockpool}
