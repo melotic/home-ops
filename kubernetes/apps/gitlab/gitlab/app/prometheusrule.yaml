@@ -81,162 +81,139 @@ spec:
               sidekiq container is the usual culprit and the first to OOM-kill.
     - name: gitlab.built-in-exporter.rules
       rules:
-      - alert: GitlabPumaWorkersNotRunning
-        expr: puma_running_workers < puma_workers
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Puma workers not running (instance {{ $labels.instance }})
-          description: "GitLab Puma on {{ $labels.instance }} has {{ $value }} running workers out of expected\
-            \ total.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabPumaHighQueuedConnections
-        expr: puma_queued_connections > 5
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Puma high queued connections (instance {{ $labels.instance }})
-          description: "GitLab Puma has {{ $value }} queued connections on {{ $labels.instance }}. Requests\
-            \ are waiting for an available worker thread.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabDatabaseConnectionPoolSaturation
-        expr: gitlab_database_connection_pool_busy / gitlab_database_connection_pool_size * 100 > 90 and gitlab_database_connection_pool_size
-          > 0
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab database connection pool saturation (instance {{ $labels.instance }})
-          description: "GitLab database connection pool on {{ $labels.instance }} ({{ $labels.class }}) is {{\
-            \ $value }}% busy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabDatabaseConnectionPoolDeadConnections
-        expr: gitlab_database_connection_pool_dead > 0
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab database connection pool dead connections (instance {{ $labels.instance }})
-          description: "GitLab database connection pool on {{ $labels.instance }} ({{ $labels.class }}) has\
-            \ {{ $value }} dead connections.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabDatabaseConnectionPoolWaiting
-        expr: gitlab_database_connection_pool_waiting > 0
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab database connection pool waiting (instance {{ $labels.instance }})
-          description: "GitLab on {{ $labels.instance }} has {{ $value }} threads waiting for a database connection.\n\
-            \  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabHighHttpRequestLatency
-        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 10
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab high HTTP request latency (instance {{ $labels.instance }})
-          description: "GitLab p95 HTTP request latency on {{ $labels.instance }} is above 10 seconds.\n  VALUE\
-            \ = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabSidekiqJobsFailing
-        expr: rate(sidekiq_jobs_failed_total[5m]) > 0.1
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Sidekiq jobs failing (instance {{ $labels.instance }})
-          description: "GitLab Sidekiq jobs are failing at a rate of {{ $value }} per second on {{ $labels.instance\
-            \ }}.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabSidekiqQueueTooLarge
-        expr: sum(sidekiq_running_jobs) >= sum(sidekiq_concurrency) * 0.9
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Sidekiq queue too large (instance {{ $labels.instance }})
-          description: "GitLab Sidekiq has {{ $value }} running jobs, approaching concurrency limit on {{ $labels.instance\
-            \ }}.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabSidekiqHighJobCompletionTime
-        expr: histogram_quantile(0.95, sum(rate(sidekiq_jobs_completion_seconds_bucket[5m])) by (le, worker))
-          > 300
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Sidekiq high job completion time (instance {{ $labels.instance }})
-          description: "GitLab Sidekiq job p95 completion time on {{ $labels.instance }} is above 5 minutes\
-            \ ({{ $value | humanizeDuration }}).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabSidekiqHighQueueLatency
-        expr: histogram_quantile(0.95, sum(rate(sidekiq_jobs_queue_duration_seconds_bucket[5m])) by (le)) >
-          60
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Sidekiq high queue latency (instance {{ $labels.instance }})
-          description: "GitLab Sidekiq jobs on {{ $labels.instance }} are waiting more than 60 seconds before\
-            \ being processed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabCiPipelineCreationSlow
-        expr: histogram_quantile(0.95, sum(rate(gitlab_ci_pipeline_creation_duration_seconds_bucket[5m])) by
-          (le)) > 30
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab CI pipeline creation slow (instance {{ $labels.instance }})
-          description: "GitLab CI pipeline creation p95 latency on {{ $labels.instance }} is above 30 seconds.\n\
-            \  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabCiPipelineFailuresIncreasing
-        expr: deriv(gitlab_ci_pipeline_failure_reasons[5m]) > 0.05
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab CI pipeline failures increasing (instance {{ $labels.instance }})
-          description: "GitLab CI pipeline failures are increasing on {{ $labels.instance }} ({{ $value }}/s).\n\
-            \  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabRackUncaughtErrors
-        expr: rate(rack_uncaught_errors_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab rack uncaught errors (instance {{ $labels.instance }})
-          description: "GitLab is experiencing uncaught errors in the Rack layer on {{ $labels.instance }} ({{\
-            \ $value }}/s).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabVersionMismatch
-        expr: count(count by (version) (gitlab_build_info)) > 1
-        for: 0m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab version mismatch (instance {{ $labels.instance }})
-          description: "Multiple GitLab versions are running across the fleet.\n  VALUE = {{ $value }}\n  LABELS\
-            \ = {{ $labels }}"
-      - alert: GitlabRubyThreadsSaturated
-        expr: sum by (instance) (gitlab_ruby_threads_running_threads) > on(instance) gitlab_ruby_threads_max_expected_threads
-          * 1.5
-        for: 10m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Ruby threads saturated (instance {{ $labels.instance }})
-          description: "GitLab running threads on {{ $labels.instance }} have exceeded the expected maximum\
-            \ ({{ $value }}).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabSidekiqQueueNotDraining
-        expr: sum by (name) (sidekiq_queue_size) > 0
-        for: 30m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab Sidekiq queue not draining (instance {{ $labels.instance }})
-          description: "GitLab Sidekiq queue {{ $labels.name }} has had a persistent backlog of {{ $value }}\
-            \ jobs for 30 minutes, suggesting a stuck or crashed worker class rather than transient load.\n\
-            \  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
-      - alert: GitlabCiRunnerAuthenticationFailures
-        expr: increase(gitlab_ci_runner_authentication_failure_total[5m]) > 5
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: GitLab CI runner authentication failures (instance {{ $labels.instance }})
-          description: "GitLab CI runners are experiencing authentication failures on {{ $labels.instance }}\
-            \ ({{ $value }} failures).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabPumaWorkersNotRunning
+          expr: puma_running_workers < puma_workers
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Puma workers not running (instance {{ $labels.instance }})
+            description: "GitLab Puma on {{ $labels.instance }} has {{ $value }} running workers out of expected total.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabPumaHighQueuedConnections
+          expr: puma_queued_connections > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Puma high queued connections (instance {{ $labels.instance }})
+            description: "GitLab Puma has {{ $value }} queued connections on {{ $labels.instance }}. Requests are waiting for an available worker thread.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabDatabaseConnectionPoolSaturation
+          expr: gitlab_database_connection_pool_busy / gitlab_database_connection_pool_size * 100 > 90 and gitlab_database_connection_pool_size > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab database connection pool saturation (instance {{ $labels.instance }})
+            description: "GitLab database connection pool on {{ $labels.instance }} ({{ $labels.class }}) is {{ $value }}% busy.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabDatabaseConnectionPoolDeadConnections
+          expr: gitlab_database_connection_pool_dead > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab database connection pool dead connections (instance {{ $labels.instance }})
+            description: "GitLab database connection pool on {{ $labels.instance }} ({{ $labels.class }}) has {{ $value }} dead connections.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabDatabaseConnectionPoolWaiting
+          expr: gitlab_database_connection_pool_waiting > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab database connection pool waiting (instance {{ $labels.instance }})
+            description: "GitLab on {{ $labels.instance }} has {{ $value }} threads waiting for a database connection.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabHighHttpRequestLatency
+          expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le)) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab high HTTP request latency (instance {{ $labels.instance }})
+            description: "GitLab p95 HTTP request latency on {{ $labels.instance }} is above 10 seconds.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabSidekiqJobsFailing
+          expr: rate(sidekiq_jobs_failed_total[5m]) > 0.1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Sidekiq jobs failing (instance {{ $labels.instance }})
+            description: "GitLab Sidekiq jobs are failing at a rate of {{ $value }} per second on {{ $labels.instance }}.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabSidekiqQueueTooLarge
+          expr: sum(sidekiq_running_jobs) >= sum(sidekiq_concurrency) * 0.9
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Sidekiq queue too large (instance {{ $labels.instance }})
+            description: "GitLab Sidekiq has {{ $value }} running jobs, approaching concurrency limit on {{ $labels.instance }}.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabSidekiqHighJobCompletionTime
+          expr: histogram_quantile(0.95, sum(rate(sidekiq_jobs_completion_seconds_bucket[5m])) by (le, worker)) > 300
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Sidekiq high job completion time (instance {{ $labels.instance }})
+            description: "GitLab Sidekiq job p95 completion time on {{ $labels.instance }} is above 5 minutes ({{ $value | humanizeDuration }}).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabSidekiqHighQueueLatency
+          expr: histogram_quantile(0.95, sum(rate(sidekiq_jobs_queue_duration_seconds_bucket[5m])) by (le)) > 60
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Sidekiq high queue latency (instance {{ $labels.instance }})
+            description: "GitLab Sidekiq jobs on {{ $labels.instance }} are waiting more than 60 seconds before being processed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabCiPipelineCreationSlow
+          expr: histogram_quantile(0.95, sum(rate(gitlab_ci_pipeline_creation_duration_seconds_bucket[5m])) by (le)) > 30
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab CI pipeline creation slow (instance {{ $labels.instance }})
+            description: "GitLab CI pipeline creation p95 latency on {{ $labels.instance }} is above 30 seconds.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabCiPipelineFailuresIncreasing
+          expr: deriv(gitlab_ci_pipeline_failure_reasons[5m]) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab CI pipeline failures increasing (instance {{ $labels.instance }})
+            description: "GitLab CI pipeline failures are increasing on {{ $labels.instance }} ({{ $value }}/s).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabRackUncaughtErrors
+          expr: rate(rack_uncaught_errors_total[5m]) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab rack uncaught errors (instance {{ $labels.instance }})
+            description: "GitLab is experiencing uncaught errors in the Rack layer on {{ $labels.instance }} ({{ $value }}/s).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabVersionMismatch
+          expr: count(count by (version) (gitlab_build_info)) > 1
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab version mismatch (instance {{ $labels.instance }})
+            description: "Multiple GitLab versions are running across the fleet.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabRubyThreadsSaturated
+          expr: sum by (instance) (gitlab_ruby_threads_running_threads) > on(instance) gitlab_ruby_threads_max_expected_threads * 1.5
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Ruby threads saturated (instance {{ $labels.instance }})
+            description: "GitLab running threads on {{ $labels.instance }} have exceeded the expected maximum ({{ $value }}).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabSidekiqQueueNotDraining
+          expr: sum by (name) (sidekiq_queue_size) > 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab Sidekiq queue not draining (instance {{ $labels.instance }})
+            description: "GitLab Sidekiq queue {{ $labels.name }} has had a persistent backlog of {{ $value }} jobs for 30 minutes, suggesting a stuck or crashed worker class rather than transient load.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+        - alert: GitlabCiRunnerAuthenticationFailures
+          expr: increase(gitlab_ci_runner_authentication_failure_total[5m]) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: GitLab CI runner authentication failures (instance {{ $labels.instance }})
+            description: "GitLab CI runners are experiencing authentication failures on {{ $labels.instance }} ({{ $value }} failures).\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
