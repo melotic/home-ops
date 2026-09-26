@@ -12,5 +12,7 @@ spec:
   values:
     replicaCount: 2
     monitoring:
+      prometheusRule:
+        enabled: true
       serviceMonitor:
         enabled: true
