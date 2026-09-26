@@ -347,10 +347,23 @@ spec:
             memory: 1Gi
       toolbox:
         backups:
+          cron:
+            enabled: true
+            schedule: 0 1 * * *
+            persistence:
+              enabled: true
+              size: 50Gi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
           objectStorage:
+            backend: azure
             config:
-              secret: gitlab-object-store-connection
-              key: s3cfg
+              secret: gitlab-azure-backup
+              key: config
         resources:
           requests:
             cpu: 100m
