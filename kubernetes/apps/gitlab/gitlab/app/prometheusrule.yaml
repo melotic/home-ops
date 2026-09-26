@@ -63,6 +63,22 @@ spec:
           for: 15m
           labels:
             severity: critical
+        - alert: GitlabHighMemoryUsage
+          expr: |-
+            container_memory_working_set_bytes{namespace="gitlab",container!="",container!="POD"}
+              / on(namespace,pod,container) group_left()
+            kube_pod_container_resource_limits{namespace="gitlab",resource="memory",unit="byte"}
+              > 0.9
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: >-
+              GitLab container {{ $labels.container }} is using more than 90% of its memory limit
+            description: >-
+              Container {{ $labels.container }} in {{ $labels.pod }} is at
+              {{ $value | humanizePercentage }} of its configured memory limit. GitLab's
+              sidekiq container is the usual culprit and the first to OOM-kill.
     - name: gitlab.built-in-exporter.rules
       rules:
       - alert: GitlabPumaWorkersNotRunning
