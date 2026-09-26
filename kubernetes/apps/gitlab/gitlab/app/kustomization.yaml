@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./rgw-secretstore.yaml
   - ./externalsecret.yaml
-  - ./externalsecret-azure-backup.yaml
   - ./helmrelease.yaml
   - ./objectbucketclaims.yaml
   - ./objectstoreuser.yaml
