@@ -360,9 +360,10 @@ spec:
               limits:
                 memory: 2Gi
           objectStorage:
+            backend: azure
             config:
-              secret: gitlab-object-store-connection
-              key: s3cfg
+              secret: gitlab-azure-backup
+              key: config
         resources:
           requests:
             cpu: 100m
