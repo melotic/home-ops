@@ -74,7 +74,7 @@ jobs:
           install_args: github:home-operations/flate
 
       - name: Render manifests with flate
-        run: flate build all --path kubernetes/flux/cluster --skip-crds=false > rendered.yaml
+        run: flate build all --path kubernetes/flux/cluster --skip-crds=false -a monitoring.coreos.com/v1 > rendered.yaml
 
       - name: Run kubeconform
         uses: docker://ghcr.io/yannh/kubeconform:v0.8.0
@@ -120,6 +120,7 @@ jobs:
         run: >-
           flate diff ${{ matrix.resources }}
           --path kubernetes/flux/cluster
+          -a monitoring.coreos.com/v1
           --output github
           > diff.txt
 
