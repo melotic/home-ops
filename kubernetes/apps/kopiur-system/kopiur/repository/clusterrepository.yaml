@@ -34,6 +34,9 @@ spec:
       storageClassName: ceph-block
     podSecurityContext:
       fsGroup: 988
+    scratch:
+      capacity: 50Gi
+      storageClassName: ceph-block
     securityContext:
       runAsUser: 977
       runAsGroup: 988
