@@ -347,6 +347,18 @@ spec:
             memory: 1Gi
       toolbox:
         backups:
+          cron:
+            enabled: true
+            schedule: 0 1 * * *
+            persistence:
+              enabled: true
+              size: 50Gi
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
           objectStorage:
             config:
               secret: gitlab-object-store-connection
