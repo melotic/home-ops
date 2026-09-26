@@ -19,8 +19,14 @@ spec:
             severity: critical
 
         - alert: GitlabBackupCronJobFreshnessUnobservable
+          # last_successful_time stays absent until the first run completes, so a new CronJob
+          # reads as unobservable. Gate on age past one schedule period (daily 01:00) first.
           expr: |-
-            kube_cronjob_info{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"} unless on(namespace, cronjob) kube_cronjob_status_last_successful_time{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"}
+            (kube_cronjob_info{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"}
+              unless on(namespace, cronjob)
+            kube_cronjob_status_last_successful_time{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"})
+              and on(namespace, cronjob)
+            (time() - kube_cronjob_created{namespace="gitlab", cronjob=~"gitlab-toolbox-backup"} > 90000)
           annotations:
             summary: >-
               GitLab backup CronJob {{ $labels.cronjob }} freshness cannot be observed because last successful time is absent
