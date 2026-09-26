@@ -15,6 +15,11 @@ spec:
         nfs:
           path: /var/nfs/shared/k8s/volsync
           server: construct.melotic.dev
+  concurrency:
+    # 16 SnapshotSchedules share this one NFS repository. Uncapped, every app
+    # that shares a cron fires at the same instant and every mover uploads at
+    # once. Restores bypass this pool, so a cap never delays a recovery.
+    maxConcurrentJobs: 2
   credentialProjection:
     allowed: true
   encryption:
@@ -41,4 +46,9 @@ spec:
     epoch:
       minDuration: 1h
   scheduleDefaults:
+    # Inherited by every consuming cron (SnapshotSchedule, maintenance quick/full,
+    # verification, replication) that sets no jitter of its own. Spreads the
+    # shared-cron stampede; deterministic per (scheduleUID, slot), so a restart
+    # never re-rolls a pinned slot.
+    jitter: 30m
     timezone: America/Chicago
