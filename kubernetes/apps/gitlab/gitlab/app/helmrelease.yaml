@@ -275,6 +275,9 @@ spec:
       install: false
     gitlab:
       webservice:
+        metrics:
+          serviceMonitor:
+            enabled: true
         gatewayRoute:
           sectionName: https
         ingress:
@@ -323,7 +326,10 @@ spec:
           limits:
             memory: 2Gi
       gitlab-exporter:
-        enabled: false
+        enabled: true
+        metrics:
+          serviceMonitor:
+            enabled: true
       gitaly:
         extraEnv:
           MALLOC_CONF: dirty_decay_ms:1000,muzzy_decay_ms:1000
