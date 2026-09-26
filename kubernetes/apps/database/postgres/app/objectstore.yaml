@@ -4,6 +4,9 @@ kind: ObjectStore
 metadata:
   name: azure-blob-store
 spec:
+  # Prunes obsolete base backups and WAL from the object store. WAL archiving
+  # has run since 2026-03-25 with nothing bounding it; this caps the window.
+  retentionPolicy: "30d"
   configuration:
     destinationPath: "https://sthomeopsbackup.blob.core.windows.net/cnpg-backup/"
     azureCredentials:
