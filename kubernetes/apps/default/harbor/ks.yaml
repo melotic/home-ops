@@ -23,6 +23,7 @@ spec:
       KOPIUR_PUID: "10000"
       KOPIUR_PGID: "10000"
       KOPIUR_CAPACITY: 30Gi
+      KOPIUR_CACHE_CAPACITY: 30Gi
   sourceRef:
     kind: GitRepository
     name: flux-system
