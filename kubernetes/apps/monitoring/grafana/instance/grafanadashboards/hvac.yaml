@@ -1,0 +1,1037 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/grafana.integreatly.org/grafanadashboard_v1beta1.json
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: hvac
+spec:
+  allowCrossNamespaceImport: true
+  folder: General
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  json: |-
+    {
+      "title": "HVAC · cost, comfort, efficiency",
+      "uid": "hvac-savings",
+      "tags": [
+        "home-assistant",
+        "hvac"
+      ],
+      "timezone": "America/Chicago",
+      "schemaVersion": 39,
+      "version": 1,
+      "editable": true,
+      "refresh": "5m",
+      "time": {
+        "from": "now-30d",
+        "to": "now"
+      },
+      "templating": {
+        "list": [
+          {
+            "name": "datasource",
+            "type": "datasource",
+            "query": "prometheus",
+            "label": "Prometheus",
+            "current": {
+              "text": "prometheus",
+              "value": "prometheus"
+            },
+            "hide": 2
+          }
+        ]
+      },
+      "annotations": {
+        "list": []
+      },
+      "panels": [
+        {
+          "id": 1,
+          "type": "row",
+          "title": "Money & balance (trailing windows)",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 24,
+            "h": 1
+          },
+          "panels": []
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "HVAC cost · 30d",
+          "description": "Estimated from runtime × nameplate kW × marginal rate. Mean daily cost over 30 days × 30.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 0,
+            "y": 1,
+            "w": 4,
+            "h": 4
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "sum(avg_over_time(hvac:cost_usd:24h[30d])) * 30",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "range": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "HVAC energy · 30d",
+          "description": "Estimated kWh. Reconcile monthly against your CPS bill (guide §5.5).",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 4,
+            "y": 1,
+            "w": 4,
+            "h": 4
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "kwatth",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "blue",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "sum(avg_over_time(hvac:kwh:24h[30d])) * 30",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "range": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Savings vs baseline · 30d",
+          "description": "Weather-normalized: what the fitted baseline predicts minus actual runtime, priced. Empty until hvac_mv.py fits a baseline.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 8,
+            "y": 1,
+            "w": 4,
+            "h": 4
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 0
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "sum(avg_over_time(hvac:savings_usd:24h[30d])) * 30",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "range": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "type": "stat",
+          "title": "Comfort · 24h",
+          "description": "Share of occupied minutes within ±1°F of setpoint. Guardrail: optimizations must not push this below ~90%.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 12,
+            "y": 1,
+            "w": 4,
+            "h": 4
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.85
+                  },
+                  {
+                    "color": "green",
+                    "value": 0.9
+                  }
+                ]
+              },
+              "decimals": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "avg(hvac:comfort_ratio:24h)",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "range": false
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "type": "stat",
+          "title": "Humid time · 24h",
+          "description": "Share of occupied minutes above 55% RH.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 16,
+            "y": 1,
+            "w": 4,
+            "h": 4
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percentunit",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0.1
+                  },
+                  {
+                    "color": "red",
+                    "value": 0.25
+                  }
+                ]
+              },
+              "decimals": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "max(hvac:humid_ratio:24h)",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "range": false
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "type": "stat",
+          "title": "Optimizations",
+          "description": "Switchback flag. ON = away setback + fan-min 0 active today.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 20,
+            "y": 1,
+            "w": 4,
+            "h": 4
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "text",
+                    "value": null
+                  }
+                ]
+              },
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "OFF (control)",
+                      "color": "orange"
+                    },
+                    "1": {
+                      "text": "ON",
+                      "color": "green"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "colorMode": "value",
+            "graphMode": "none",
+            "textMode": "value"
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:optimizations_on",
+              "legendFormat": "",
+              "refId": "A",
+              "instant": true,
+              "range": false
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "type": "row",
+          "title": "Efficiency (weather-normalized)",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 5,
+            "w": 24,
+            "h": 1
+          },
+          "panels": []
+        },
+        {
+          "id": 9,
+          "type": "timeseries",
+          "title": "Cooling hours per 100 cooling degree-hours",
+          "description": "Runtime per unit of outdoor heat. Falling = your changes work. A sustained rise at the same weather = filter/coil/refrigerant (HvacEfficiencyDrift).",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 0,
+            "y": 6,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "none",
+              "custom": {
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never"
+              },
+              "min": 0
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*30d norm"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "fill": "dash",
+                      "dash": [
+                        10,
+                        10
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:cooling_hours_per_100cdh:24h",
+              "legendFormat": "{{entity}}",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "avg_over_time(hvac:cooling_hours_per_100cdh:24h[30d])",
+              "legendFormat": "{{entity}} 30d norm",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "type": "timeseries",
+          "title": "Cooling runtime: actual vs expected (24h)",
+          "description": "Expected comes from the baseline model fitted on control days. The gap is avoided runtime.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 12,
+            "y": 6,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "h",
+              "custom": {
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never"
+              },
+              "min": 0
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*expected"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "fill": "dash",
+                      "dash": [
+                        10,
+                        10
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:cooling_hours:24h",
+              "legendFormat": "{{entity}} actual",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:expected_cooling_hours:24h",
+              "legendFormat": "{{entity}} expected",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "type": "timeseries",
+          "title": "Waste: fan-only and heating runtime (24h)",
+          "description": "Fan-only should sit near 0 after the fan-min fix. Heating while the other floor cools = HvacSystemsFighting.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 0,
+            "y": 14,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "h",
+              "custom": {
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never"
+              },
+              "min": 0
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:fan_only_hours:24h",
+              "legendFormat": "{{entity}} fan-only",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:heating_hours:24h",
+              "legendFormat": "{{entity}} heating",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "type": "timeseries",
+          "title": "Daily cost and savings (rolling 24h)",
+          "description": "Rolling 24h values sampled continuously; read the trend, not individual points.",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 12,
+            "y": 14,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "currencyUSD",
+              "custom": {
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never"
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "sum(hvac:cost_usd:24h)",
+              "legendFormat": "cost",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "sum(hvac:savings_usd:24h)",
+              "legendFormat": "savings vs baseline",
+              "refId": "B"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "type": "row",
+          "title": "Live",
+          "collapsed": false,
+          "gridPos": {
+            "x": 0,
+            "y": 22,
+            "w": 24,
+            "h": 1
+          },
+          "panels": []
+        },
+        {
+          "id": 14,
+          "type": "timeseries",
+          "title": "Temperatures (°F)",
+          "description": "",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 0,
+            "y": 23,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "fahrenheit",
+              "custom": {
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never"
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*setpoint"
+                },
+                "properties": [
+                  {
+                    "id": "custom.lineStyle",
+                    "value": {
+                      "fill": "dash",
+                      "dash": [
+                        10,
+                        10
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "max by (entity) (homeassistant_climate_current_temperature_celsius) * 9 / 5 + 32",
+              "legendFormat": "{{entity}} indoor",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "max by (entity) (homeassistant_climate_target_temperature_celsius) * 9 / 5 + 32",
+              "legendFormat": "{{entity}} setpoint",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:outdoor_temp_f",
+              "legendFormat": "outdoor",
+              "refId": "C"
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "type": "timeseries",
+          "title": "Indoor humidity (%RH)",
+          "description": "",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 12,
+            "y": 23,
+            "w": 12,
+            "h": 8
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "custom": {
+                "lineWidth": 2,
+                "fillOpacity": 0,
+                "spanNulls": true,
+                "showPoints": "never",
+                "thresholdsStyle": {
+                  "mode": "line"
+                }
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 55
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:indoor_humidity_pct",
+              "legendFormat": "{{entity}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "type": "state-timeline",
+          "title": "What the system is doing",
+          "datasource": "${datasource}",
+          "gridPos": {
+            "x": 0,
+            "y": 31,
+            "w": 24,
+            "h": 7
+          },
+          "description": "Cooling / heating / fan-only per floor, plus occupancy and the switchback flag. Look for runtime while away and fan-only blocks.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "transparent",
+                    "value": null
+                  },
+                  {
+                    "color": "blue",
+                    "value": 1
+                  }
+                ]
+              },
+              "mappings": [
+                {
+                  "type": "value",
+                  "options": {
+                    "0": {
+                      "text": "off"
+                    },
+                    "1": {
+                      "text": "on"
+                    }
+                  }
+                }
+              ]
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*heating"
+                },
+                "properties": [
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "transparent",
+                          "value": null
+                        },
+                        {
+                          "color": "orange",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": ".*fan-only"
+                },
+                "properties": [
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "transparent",
+                          "value": null
+                        },
+                        {
+                          "color": "purple",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "occupied|optimizations"
+                },
+                "properties": [
+                  {
+                    "id": "thresholds",
+                    "value": {
+                      "mode": "absolute",
+                      "steps": [
+                        {
+                          "color": "transparent",
+                          "value": null
+                        },
+                        {
+                          "color": "green",
+                          "value": 1
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "options": {
+            "showValue": "never",
+            "rowHeight": 0.8,
+            "mergeValues": true,
+            "legend": {
+              "showLegend": false
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:cooling_active",
+              "legendFormat": "{{entity}} cooling",
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:heating_active",
+              "legendFormat": "{{entity}} heating",
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:fan_only_active",
+              "legendFormat": "{{entity}} fan-only",
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:occupied",
+              "legendFormat": "occupied",
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "expr": "hvac:optimizations_on",
+              "legendFormat": "optimizations",
+              "refId": "E"
+            }
+          ]
+        }
+      ]
+    }

@@ -1,0 +1,84 @@
+---
+# promtool unit test for prometheusrule.yaml.
+#
+# CI extracts .spec into rules.yml first:
+#   yq ".spec" prometheusrule.yaml > rules.yml && promtool test rules prometheusrule.test.yaml
+#
+# Synthetic day: main floor cools 6h at 86°F outside (504 CDH), upstairs heats
+# the first hour.
+rule_files:
+  - rules.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: homeassistant_climate_action{action="cooling",entity="climate.main_floor",domain="climate"}
+        values: 1x359 0x1200
+      - series: homeassistant_climate_action{action="heating",entity="climate.main_floor",domain="climate"}
+        values: '0x1560'
+      - series: homeassistant_climate_action{action="fan",entity="climate.main_floor",domain="climate"}
+        values: '0x1560'
+      - series: homeassistant_climate_action{action="cooling",entity="climate.upstairs",domain="climate"}
+        values: '0x1560'
+      - series: homeassistant_climate_action{action="heating",entity="climate.upstairs",domain="climate"}
+        values: 1x60 0x1500
+      - series: homeassistant_climate_action{action="fan",entity="climate.upstairs",domain="climate"}
+        values: '0x1560'
+      - series: homeassistant_outdoor_temperature_celsius{entity="sensor.outdoor_temperature"}
+        values: 30x1560
+      - series: homeassistant_binary_sensor_state{entity="binary_sensor.house_occupied"}
+        values: 1x1560
+      - series: homeassistant_input_boolean_state{entity="input_boolean.hvac_optimizations"}
+        values: 1x1560
+      - series: homeassistant_climate_current_temperature_celsius{entity="climate.main_floor"}
+        values: 24x719 26x840
+      - series: homeassistant_climate_target_temperature_celsius{entity="climate.main_floor"}
+        values: 24x1560
+      - series: homeassistant_indoor_humidity_percent{entity="sensor.main_floor_humidity"}
+        values: 50x1560
+    alert_rule_test:
+      - eval_time: 30m
+        alertname: HvacSystemsFighting
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+            exp_annotations:
+              summary: One floor is heating while the other cools. Narrow the gap between the floors' setpoints or lock one to cool-only for the season.
+      - eval_time: 3h
+        alertname: HvacSystemsFighting
+        exp_alerts: []
+    promql_expr_test:
+      - expr: hvac:cooling_hours:24h
+        eval_time: 1d
+        exp_samples:
+          - labels: hvac:cooling_hours:24h{entity="climate.main_floor"}
+            value: 5.983333333333333
+          - labels: hvac:cooling_hours:24h{entity="climate.upstairs"}
+            value: 0
+      - expr: hvac:cdh:24h
+        eval_time: 1d
+        exp_samples:
+          - labels: hvac:cdh:24h
+            value: 504
+      - expr: hvac:kwh:24h
+        eval_time: 1d
+        exp_samples:
+          - labels: hvac:kwh:24h{entity="climate.main_floor"}
+            value: 17.95
+          - labels: hvac:kwh:24h{entity="climate.upstairs"}
+            value: 0.4
+      - expr: hvac:cost_usd:24h
+        eval_time: 1d
+        exp_samples:
+          - labels: hvac:cost_usd:24h{entity="climate.main_floor"}
+            value: 2.154
+          - labels: hvac:cost_usd:24h{entity="climate.upstairs"}
+            value: 0.048
+      - expr: round(hvac:comfort_ratio:24h, 0.01)
+        eval_time: 1d
+        exp_samples:
+          - labels: '{entity="climate.main_floor"}'
+            value: 0.5
+      - expr: hvac:savings_usd:24h
+        eval_time: 1d
+        exp_samples: []

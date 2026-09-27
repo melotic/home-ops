@@ -94,5 +94,18 @@ spec:
     persistence:
       config:
         existingClaim: home-assistant
+      config-file:
+        type: configMap
+        name: home-assistant-config
+        globalMounts:
+          - path: /config/configuration.yaml
+            subPath: configuration.yaml
+            readOnly: true
+      packages:
+        type: configMap
+        name: home-assistant-packages
+        globalMounts:
+          - path: /config/packages
+            readOnly: true
       tmp:
         type: emptyDir

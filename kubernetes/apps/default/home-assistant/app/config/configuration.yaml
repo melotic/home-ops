@@ -1,0 +1,48 @@
+---
+# Managed in git: kubernetes/apps/default/home-assistant/app/config/configuration.yaml
+# Anything that affects cost or safety belongs in config/packages/, which is reviewable.
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+homeassistant:
+  packages: !include_dir_named packages
+
+# UI-editable sandbox. Promote a proven automation into a package.
+automation ui: !include automations.yaml
+script ui: !include scripts.yaml
+scene ui: !include scenes.yaml
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 10.60.0.0/16
+    - 10.42.0.0/16
+
+logger:
+  default: info
+
+# Scraped by Prometheus via servicemonitor.yaml. Metric names land under the
+# `homeassistant_` prefix; see prometheusrule.yaml for the ones that are consumed.
+prometheus:
+  namespace: homeassistant
+  filter:
+    include_domains: [climate]
+    include_entities:
+      - sensor.outdoor_temperature
+      - binary_sensor.house_occupied
+      - input_boolean.hvac_optimizations
+    include_entity_globs:
+      - sensor.*_humidity
+  # `weather` entities are not exported at all, which is why the package
+  # republishes the outdoor temperature as sensor.outdoor_temperature.
+  component_config:
+    sensor.outdoor_temperature:
+      override_metric: outdoor_temperature_celsius
+  component_config_glob:
+    sensor.*_humidity:
+      override_metric: indoor_humidity_percent
