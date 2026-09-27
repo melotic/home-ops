@@ -102,7 +102,7 @@ jobs:
       - name: Setup Mise
         uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
         with:
-          install_args: "aqua:prometheus/prometheus@3.15.0" # match the cluster's Prometheus
+          install_args: "aqua:prometheus/prometheus" # version pinned in .mise.toml
 
       - name: Check recording and alerting rules
         working-directory: kubernetes/apps/default/home-assistant/app
