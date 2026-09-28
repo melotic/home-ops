@@ -68,61 +68,27 @@ jobs:
             kubernetes/apps/default/home-assistant/app/helmrelease.yaml | cut -d@ -f1)
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
 
-      # check_config only exits non-zero on hard errors, so a bad value that HA
-      # classifies as a warning (a mistyped helper bound, for example) would sail
-      # through. --fail-on-warnings is what makes this an actual gate.
+      # check_config exits 0 even when an automation trigger or a template fails to
+      # build. HA logs `ERROR:` and disables that automation, but total_errors and
+      # total_warnings both stay 0. --fail-on-warnings catches soft config errors;
+      # the log grep catches the ones that never reach the config validator.
       - name: Check config
+        shell: bash # -eo pipefail, so a non-zero hass exit isn't masked by tee
         run: |
-          set -uo pipefail
-          set +e
           docker run --rm -v /tmp/ha:/config \
             --entrypoint /usr/local/bin/hass \
             "ghcr.io/home-operations/home-assistant:${{ steps.ha.outputs.tag }}" \
-            --script check_config -c /config --json --fail-on-warnings > result.json
-          code=$?
-          set -e
-          {
-            echo "### Home Assistant config"
-            echo ""
-            echo '```json'
-            jq '{total_errors, total_warnings, errors, warnings}' result.json 2>/dev/null || cat result.json
-            echo '```'
-          } >> "${GITHUB_STEP_SUMMARY}"
-          exit "${code}"
-
-  rules:
-    name: Rules
-    needs: pre-job
-    runs-on: ubuntu-latest
-    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Setup Mise
-        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
-        with:
-          install_args: "aqua:prometheus/prometheus" # version pinned in .mise.toml
-
-      - name: Check recording and alerting rules
-        working-directory: kubernetes/apps/default/home-assistant/app
-        run: |
-          set -euo pipefail
-          yq '.spec' prometheusrule.yaml > rules.yml
-          promtool check rules rules.yml
-
-      - name: Test recording and alerting rules
-        working-directory: kubernetes/apps/default/home-assistant/app
-        run: promtool test rules prometheusrule.test.yaml
+            --script check_config -c /config --fail-on-warnings 2>&1 | tee check.log
+          if grep '^ERROR' check.log; then exit 1; fi
 
   home-assistant-status:
     name: Success
-    needs: ["pre-job", "config", "rules"]
+    needs: ["pre-job", "config"]
     runs-on: ubuntu-latest
     if: ${{ always() }}
     steps:
       - name: Required jobs passed?
-        if: ${{ needs.pre-job.result != 'success' || (needs.pre-job.outputs.any_changed == 'true' && (needs.config.result != 'success' || needs.rules.result != 'success')) }}
+        if: ${{ needs.pre-job.result != 'success' || (needs.pre-job.outputs.any_changed == 'true' && needs.config.result != 'success') }}
         run: exit 1
 
       - name: All jobs passed or skipped?

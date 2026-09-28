@@ -7,7 +7,6 @@ resources:
   - ./grafanadatasource.yaml
   - ./servicemonitor.yaml
   - ./grafanadashboards/external-dns.yaml
-  - ./grafanadashboards/hvac.yaml
   - ./grafanadashboards/kubernetes-api-server.yaml
   - ./grafanadashboards/kubernetes-coredns.yaml
   - ./grafanadashboards/kubernetes-global.yaml

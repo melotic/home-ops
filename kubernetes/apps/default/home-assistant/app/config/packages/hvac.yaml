@@ -1,0 +1,160 @@
+---
+# HVAC: the ecobees own the schedule, Smart Recovery, and overcool-to-dehumidify.
+# HA only adds what they can't do on their own:
+#   * GPS presence, because Ollie trips ecobee's motion-based Smart Away
+#   * pet failsafes while nobody is home
+#   * fan-min 0 and occupancy modes, enforced from git
+#   * a runtime-based filter reminder
+
+template:
+  - binary_sensor:
+      - name: House occupied
+        unique_id: house_occupied
+        state: "{{ is_state('person.justin', 'home') }}"
+        delay_off: "00:10:00" # absorbs GPS flaps
+  - sensor:
+      - name: Main floor blower running
+        unique_id: main_floor_blower_running
+        state: "{{ 1 if state_attr('climate.main_floor', 'hvac_action') in ['cooling', 'heating', 'fan'] else 0 }}"
+      - name: Upstairs blower running
+        unique_id: upstairs_blower_running
+        state: "{{ 1 if state_attr('climate.upstairs', 'hvac_action') in ['cooling', 'heating', 'fan'] else 0 }}"
+
+# Filter odometer: blower-hours since the last reset.
+sensor:
+  - platform: integration
+    name: Main floor blower hours
+    unique_id: main_floor_blower_hours
+    source: sensor.main_floor_blower_running
+    unit_time: h
+    method: left
+    round: 1
+  - platform: integration
+    name: Upstairs blower hours
+    unique_id: upstairs_blower_hours
+    source: sensor.upstairs_blower_running
+    unit_time: h
+    method: left
+    round: 1
+
+utility_meter:
+  main_floor_filter_hours:
+    source: sensor.main_floor_blower_hours
+  upstairs_filter_hours:
+    source: sensor.upstairs_blower_hours
+
+script:
+  hvac_baseline:
+    alias: HVAC – enforce baseline
+    sequence:
+      - action: number.set_value
+        target:
+          entity_id:
+            - number.main_floor_fan_minimum_on_time
+            - number.upstairs_fan_minimum_on_time
+        data:
+          value: 0
+      - action: ecobee.set_occupancy_modes
+        data:
+          entity_id: [climate.main_floor, climate.upstairs]
+          auto_away: false # the cat defeats motion-based away
+          follow_me: false
+  hvac_filter_changed:
+    alias: HVAC – filter changed
+    fields:
+      floor:
+        description: main_floor or upstairs
+        example: main_floor
+    sequence:
+      - action: utility_meter.reset
+        target:
+          entity_id: "sensor.{{ floor }}_filter_hours"
+
+automation:
+  - id: hvac_baseline_on_start
+    alias: HVAC – enforce baseline on start
+    triggers:
+      - trigger: homeassistant
+        event: start
+    actions:
+      - delay: "00:02:00" # let the ecobee integration load
+      - action: script.hvac_baseline
+
+  - id: hvac_away
+    alias: HVAC – away when house empty
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.house_occupied
+        to: "off"
+    actions:
+      - action: climate.set_preset_mode
+        target:
+          entity_id: [climate.main_floor, climate.upstairs]
+        data:
+          preset_mode: away_indefinitely
+
+  - id: hvac_resume
+    alias: HVAC – resume schedule when heading home
+    triggers:
+      - trigger: zone # zone.work is defined in the UI, not git
+        entity_id: person.justin
+        zone: zone.work
+        event: leave
+      - trigger: state
+        entity_id: binary_sensor.house_occupied
+        to: "on"
+    conditions:
+      - condition: template
+        value_template: >
+          {{ is_state_attr('climate.main_floor', 'preset_mode', 'away_indefinitely')
+             or is_state_attr('climate.upstairs', 'preset_mode', 'away_indefinitely') }}
+    actions:
+      - action: ecobee.resume_program
+        data:
+          entity_id: [climate.main_floor, climate.upstairs]
+          resume_all: true
+
+  - id: hvac_pet_failsafe
+    alias: HVAC – pet failsafe while away
+    triggers:
+      - trigger: numeric_state
+        entity_id: [climate.main_floor, climate.upstairs]
+        attribute: current_temperature
+        above: 84
+        for: "00:15:00"
+        id: hot
+      - trigger: numeric_state
+        entity_id: [climate.main_floor, climate.upstairs]
+        attribute: current_temperature
+        below: 60
+        for: "00:15:00"
+        id: cold
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.house_occupied
+        state: "off"
+    actions:
+      - action: climate.set_temperature
+        target:
+          entity_id: "{{ trigger.entity_id }}"
+        data:
+          hvac_mode: "{{ 'cool' if trigger.id == 'hot' else 'heat' }}"
+          temperature: "{{ 80 if trigger.id == 'hot' else 65 }}"
+      - action: notify.mobile_app_70656e6973
+        data:
+          message: >
+            {{ trigger.to_state.name }} is at {{ trigger.to_state.attributes.current_temperature }}°F
+            while away; forced {{ 'cool to 80' if trigger.id == 'hot' else 'heat to 65' }}°F.
+
+  - id: hvac_filter_due
+    alias: HVAC – filter due
+    triggers:
+      - trigger: numeric_state
+        entity_id: [sensor.main_floor_filter_hours, sensor.upstairs_filter_hours]
+        above: 500 # blower-hours; set to your filter's rating
+    actions:
+      - action: notify.mobile_app_70656e6973
+        data:
+          message: >-
+            {{ trigger.to_state.name }}: {{ trigger.to_state.state }} blower-hours. Change the filter,
+            then run script.hvac_filter_changed.
