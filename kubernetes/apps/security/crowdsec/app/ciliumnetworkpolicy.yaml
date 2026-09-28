@@ -9,6 +9,17 @@ spec:
     matchLabels:
       app.kubernetes.io/name: crowdsec
   ingress:
+    - fromEndpoints:
+        - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": network
+            "k8s:app.kubernetes.io/component": proxy
+            "k8s:app.kubernetes.io/managed-by": envoy-gateway
+            "k8s:app.kubernetes.io/name": envoy
+            "k8s:gateway.envoyproxy.io/owning-gateway-name": envoy-internal
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
     - fromCIDR:
         - 10.20.0.147/32
         - 10.20.0.119/32
