@@ -13,6 +13,15 @@ template:
         state: "{{ is_state('person.justin', 'home') }}"
         delay_off: "00:10:00" # absorbs GPS flaps
   - sensor:
+      # A weather entity keeps temperature in an attribute, which history exports
+      # and long-term statistics skip. Republish it as a real sensor.
+      - name: Outdoor temperature
+        unique_id: outdoor_temperature
+        device_class: temperature
+        state_class: measurement
+        unit_of_measurement: "°F"
+        availability: "{{ state_attr('weather.forecast_home', 'temperature') is number }}"
+        state: "{{ state_attr('weather.forecast_home', 'temperature') }}"
       - name: Main floor blower running
         unique_id: main_floor_blower_running
         state: "{{ 1 if state_attr('climate.main_floor', 'hvac_action') in ['cooling', 'heating', 'fan'] else 0 }}"
