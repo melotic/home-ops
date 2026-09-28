@@ -96,9 +96,9 @@ automation:
   - id: hvac_resume
     alias: HVAC – resume schedule when heading home
     triggers:
-      - trigger: zone # zone.work is defined in the UI, not git
+      - trigger: zone # zone.site is defined in the UI, not git
         entity_id: person.justin
-        zone: zone.work
+        zone: zone.site
         event: leave
       - trigger: state
         entity_id: binary_sensor.house_occupied
