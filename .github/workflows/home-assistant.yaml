@@ -1,0 +1,95 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Home Assistant"
+
+on:
+  pull_request:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  pre-job:
+    name: Pre-Job
+    runs-on: ubuntu-latest
+    outputs:
+      any_changed: ${{ steps.changed.outputs.any_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 20
+
+      - name: Get Changed Files
+        id: changed
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          base: ${{ github.event.repository.default_branch }}
+          filters: |
+            any_changed:
+              - "kubernetes/apps/default/home-assistant/**"
+              - ".github/workflows/home-assistant.yaml"
+
+  config:
+    name: Config
+    needs: pre-job
+    runs-on: ubuntu-latest
+    if: ${{ needs.pre-job.outputs.any_changed == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Mise
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+        with:
+          install_args: "aqua:mikefarah/yq"
+
+      - name: Stage config
+        run: |
+          set -euo pipefail
+          app=kubernetes/apps/default/home-assistant/app
+          mkdir -p /tmp/ha
+          cp -r "${app}/config/." /tmp/ha/
+          # automations/scripts/scenes.yaml are UI scratch space that lives on the
+          # PVC, not in git. HA will not start without them.
+          touch /tmp/ha/automations.yaml /tmp/ha/scripts.yaml /tmp/ha/scenes.yaml
+
+      - name: Resolve image tag
+        id: ha
+        run: |
+          set -euo pipefail
+          tag=$(yq '.spec.values.controllers.home-assistant.containers.app.image.tag' \
+            kubernetes/apps/default/home-assistant/app/helmrelease.yaml | cut -d@ -f1)
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+
+      # check_config exits 0 even when an automation trigger or a template fails to
+      # build. HA logs `ERROR:` and disables that automation, but total_errors and
+      # total_warnings both stay 0. --fail-on-warnings catches soft config errors;
+      # the log grep catches the ones that never reach the config validator.
+      - name: Check config
+        shell: bash # -eo pipefail, so a non-zero hass exit isn't masked by tee
+        run: |
+          docker run --rm -v /tmp/ha:/config \
+            --entrypoint /usr/local/bin/hass \
+            "ghcr.io/home-operations/home-assistant:${{ steps.ha.outputs.tag }}" \
+            --script check_config -c /config --fail-on-warnings 2>&1 | tee check.log
+          if grep '^ERROR' check.log; then exit 1; fi
+
+  home-assistant-status:
+    name: Success
+    needs: ["pre-job", "config"]
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Required jobs passed?
+        if: ${{ needs.pre-job.result != 'success' || (needs.pre-job.outputs.any_changed == 'true' && needs.config.result != 'success') }}
+        run: exit 1
+
+      - name: All jobs passed or skipped?
+        run: echo "${{ toJSON(needs.*.result) }}"

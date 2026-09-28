@@ -1,0 +1,12 @@
+---
+# Propagate the hashed ConfigMap names into the HelmRelease so every config
+# edit changes the release and rolls the pod. Without this the mounts keep
+# pointing at the old hash and edits silently do nothing.
+nameReference:
+  - kind: ConfigMap
+    version: v1
+    fieldSpecs:
+      - path: spec/values/persistence/config-file/name
+        kind: HelmRelease
+      - path: spec/values/persistence/packages/name
+        kind: HelmRelease

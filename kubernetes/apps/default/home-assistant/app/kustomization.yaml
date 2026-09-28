@@ -6,3 +6,12 @@ resources:
   - ./externalsecret.yaml
   - ./helmrelease.yaml
   - ./ocirepository.yaml
+configMapGenerator:
+  - name: home-assistant-config
+    files:
+      - config/configuration.yaml
+  - name: home-assistant-packages
+    files:
+      - config/packages/hvac.yaml
+configurations:
+  - kustomizeconfig.yaml
