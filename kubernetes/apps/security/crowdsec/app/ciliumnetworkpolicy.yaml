@@ -20,13 +20,6 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    - fromCIDR:
-        - 10.20.0.147/32
-        - 10.20.0.119/32
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": database
