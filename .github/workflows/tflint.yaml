@@ -50,14 +50,13 @@ jobs:
         with:
           install_args: "aqua:terraform-linters/tflint"
 
-      - name: Run tflint (cloudflare-access)
-        run: tflint --chdir=kubernetes/apps/network/cloudflare-access/app/terraform --recursive
-
-      - name: Run tflint (tailscale-dns)
-        run: tflint --chdir=kubernetes/apps/network/tailscale-dns/app/terraform --recursive
-
-      - name: Run tflint (tailscale-policy)
-        run: tflint --chdir=kubernetes/apps/network/tailscale-policy/app/terraform --recursive
+      - name: Run tflint on all Terraform roots
+        run: |
+          for d in $(find kubernetes -name '*.tf' -printf '%h\n' | sort -u); do
+            echo "::group::tflint $d"
+            tflint --chdir="$d" --recursive
+            echo "::endgroup::"
+          done
 
   tflint-status:
     name: Success
