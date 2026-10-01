@@ -25,5 +25,20 @@ spec:
       limits:
         memory: 512Mi
     web:
+      config:
+        authentication:
+          type: Anonymous
+          anonymous:
+            username: flux
+            groups:
+              - flux-admin
+      httpRoute:
+        enabled: true
+        hostnames:
+          - flux-operator.melotic.dev
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
       networkPolicy:
         create: false
