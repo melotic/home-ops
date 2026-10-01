@@ -15,6 +15,7 @@ configMapGenerator:
       - gitlab.yaml=./blueprints/gitlab.yaml
       - karakeep.yaml=./blueprints/karakeep.yaml
       - miniflux.yaml=./blueprints/miniflux.yaml
+      - flux-operator.yaml=./blueprints/flux-operator.yaml
       - open-webui.yaml=./blueprints/open-webui.yaml
       - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
       - slskd.yaml=./blueprints/slskd.yaml

@@ -26,12 +26,13 @@ spec:
         memory: 512Mi
     web:
       config:
+        baseURL: https://flux-operator.melotic.dev
         authentication:
-          type: Anonymous
-          anonymous:
-            username: flux
-            groups:
-              - flux-admin
+          type: OAuth2
+          oauth2:
+            provider: OIDC
+            issuerURL: https://sso.melotic.dev/application/o/flux-operator/
+            autoLogin: true
       httpRoute:
         enabled: true
         hostnames:
@@ -42,3 +43,12 @@ spec:
             sectionName: https
       networkPolicy:
         create: false
+  valuesFrom:
+    - kind: Secret
+      name: flux-operator-oidc
+      valuesKey: client-id
+      targetPath: web.config.authentication.oauth2.clientID
+    - kind: Secret
+      name: flux-operator-oidc
+      valuesKey: client-secret
+      targetPath: web.config.authentication.oauth2.clientSecret
