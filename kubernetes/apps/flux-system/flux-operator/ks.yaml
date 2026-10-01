@@ -12,6 +12,10 @@ spec:
       name: *app
       namespace: *namespace
   path: ./kubernetes/apps/flux-system/flux-operator/app
+  postBuild:
+    substitute:
+      AUTH_POLICY_NAME: flux-operator-auth
+      AUTH_HTTPROUTE: flux-operator
   sourceRef:
     kind: GitRepository
     name: flux-system
