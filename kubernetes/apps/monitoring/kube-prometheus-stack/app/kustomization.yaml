@@ -16,5 +16,8 @@ configMapGenerator:
   - name: backup-confidence-dashboard
     files:
       - backup-confidence.json=./resources/backup-confidence.json
+  - name: flux-metrics-configmap
+    files:
+      - flux-metrics.yaml=./resources/flux-metrics.yaml
 generatorOptions:
   disableNameSuffixHash: true
