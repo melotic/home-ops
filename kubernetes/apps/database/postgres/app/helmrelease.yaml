@@ -25,6 +25,28 @@ spec:
   install:
     remediation:
       retries: -1
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Cluster
+              name: postgres-cluster
+            patch: |
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: postgres-cluster
+              spec:
+                postgresql:
+                  extensions:
+                    - name: pgvector
+                    - name: vchord
+                      image:
+                        reference: ghcr.io/tensorchord/vchord-scratch:pg18-v1.1.1
+                      dynamic_library_path:
+                        - /usr/lib/postgresql/18/lib/
+                      extension_control_path:
+                        - /usr/share/postgresql/18/
   values:
     type: postgresql
     mode: recovery
@@ -58,6 +80,8 @@ spec:
         size: 16Gi
         storageClass: openebs-hostpath
       postgresql:
+        shared_preload_libraries:
+          - vchord
         synchronous:
           method: any
           number: 1
