@@ -26,6 +26,7 @@ spec:
       query_wait_timeout: "30"
       log_connections: "0"
       log_disconnections: "0"
+      max_prepared_statements: "100"
   template:
     metadata:
       labels:
