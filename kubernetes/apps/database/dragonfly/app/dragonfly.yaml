@@ -13,6 +13,9 @@ spec:
     - --maxmemory=512mb
     - --proactor_threads=2
     - --dbfilename=dump
+    # BullMQ (immich) generates key names inside Lua scripts; Dragonfly's default
+    # key-declaration check rejects them ("script tried accessing undeclared key").
+    - --default_lua_flags=allow-undeclared-keys
   serviceAccountName: dragonfly-ha
   enableReplicationReadinessGate: true
   serviceSpec:
