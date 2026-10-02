@@ -14,6 +14,7 @@ configMapGenerator:
       - harbor.yaml=./blueprints/harbor.yaml
       - gitlab.yaml=./blueprints/gitlab.yaml
       - karakeep.yaml=./blueprints/karakeep.yaml
+      - immich.yaml=./blueprints/immich.yaml
       - miniflux.yaml=./blueprints/miniflux.yaml
       - flux-operator.yaml=./blueprints/flux-operator.yaml
       - open-webui.yaml=./blueprints/open-webui.yaml

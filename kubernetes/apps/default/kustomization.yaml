@@ -15,6 +15,7 @@ resources:
   - ./ghidra-server/ks.yaml
   - ./harbor/ks.yaml
   - ./home-assistant/ks.yaml
+  - ./immich/ks.yaml
   - ./jellyfin/ks.yaml
   - ./kai-rbac/ks.yaml
   - ./karakeep/ks.yaml
