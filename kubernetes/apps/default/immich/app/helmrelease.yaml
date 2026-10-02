@@ -19,8 +19,6 @@ spec:
   values:
     controllers:
       server:
-        # ponytail: pin replica + Recreate; the /data library is a single NFS
-        # mount, do not let two servers write it or a stray scale drift to 0.
         replicas: 1
         strategy: Recreate
         annotations:
@@ -64,16 +62,12 @@ spec:
                   periodSeconds: 10
             securityContext:
               allowPrivilegeEscalation: false
-              # immich-server (node/tini) writes outside /data at boot; keep the
-              # rootfs writable. Non-root + dropped caps are still enforced.
               readOnlyRootFilesystem: false
               capabilities: {drop: ["ALL"]}
             resources:
               requests:
                 cpu: 100m
                 memory: 1Gi
-                # squat.ai/video grants the container cgroup access to
-                # /dev/dri/renderD128; the hostPath alone gives EPERM.
                 squat.ai/video: 1
               limits:
                 memory: 4Gi
@@ -125,8 +119,6 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
-        # 988 owns the NAS media share; supplemental group lets both the NFS
-        # library and the ceph ml-cache PVC stay writable as uid 1000.
         fsGroup: 988
         fsGroupChangePolicy: OnRootMismatch
         seccompProfile:
@@ -158,8 +150,6 @@ spec:
               - identifier: server
                 port: *port
     persistence:
-      # Photo library lives on the NAS media share (same export as
-      # jellyfin/plex/sonarr), root-subpath media/photos.
       library:
         type: nfs
         server: construct.melotic.dev
@@ -169,7 +159,6 @@ spec:
             app:
               - path: /data
                 subPath: media/photos
-      # renderD128 is mode 0666, so uid 1000 can do Intel QSV/VAAPI decode.
       dri:
         type: hostPath
         hostPath: /dev/dri
