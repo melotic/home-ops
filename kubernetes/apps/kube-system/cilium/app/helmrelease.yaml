@@ -20,6 +20,7 @@ spec:
     bpf:
       datapathMode: netkit
       masquerade: true
+      vlanBypass: [25, 30]
     bpfClockProbe: true
     bgpControlPlane:
       enabled: true
