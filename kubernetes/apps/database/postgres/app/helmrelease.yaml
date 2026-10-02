@@ -58,6 +58,8 @@ spec:
         size: 16Gi
         storageClass: openebs-hostpath
       postgresql:
+        parameters:
+          jit: off
         synchronous:
           method: any
           number: 1
