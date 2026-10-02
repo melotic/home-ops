@@ -29,7 +29,7 @@ spec:
     type: postgresql
     mode: recovery
     version:
-      postgresql: "18"
+      postgresql: "17"
     backups:
       enabled: false
     cluster:
@@ -68,7 +68,7 @@ spec:
           isWALArchiver: true
           parameters:
             barmanObjectName: azure-blob-store
-            serverName: postgres-cluster-pg18
+            #serverName: postgres-cluster-pg18
     recovery:
       method: plugin
       clusterName: postgres-cluster
