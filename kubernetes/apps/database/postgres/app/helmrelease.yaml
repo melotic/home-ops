@@ -25,39 +25,6 @@ spec:
   install:
     remediation:
       retries: -1
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: Cluster
-              name: postgres-cluster
-            patch: |
-              apiVersion: postgresql.cnpg.io/v1
-              kind: Cluster
-              metadata:
-                name: postgres-cluster
-              spec:
-                plugins:
-                  - name: barman-cloud.cloudnative-pg.io
-                    isWALArchiver: true
-                    parameters:
-                      barmanObjectName: azure-blob-store
-          - target:
-              kind: Cluster
-              name: postgres-cluster
-            patch: |
-              - op: test
-                path: /spec/externalClusters/0/name
-                value: objectStoreRecoveryCluster
-              - op: replace
-                path: /spec/externalClusters
-                value:
-                  - name: objectStoreRecoveryCluster
-                    plugin:
-                      name: barman-cloud.cloudnative-pg.io
-                      parameters:
-                        barmanObjectName: azure-blob-store
-                        serverName: postgres-cluster
   values:
     type: postgresql
     mode: recovery
@@ -90,13 +57,29 @@ spec:
       storage:
         size: 16Gi
         storageClass: openebs-hostpath
+      postgresql:
+        synchronous:
+          method: any
+          number: 1
+          dataDurability: preferred
+      plugins:
+        - name: barman-cloud.cloudnative-pg.io
+          enabled: true
+          isWALArchiver: true
+          parameters:
+            barmanObjectName: azure-blob-store
+            #serverName: postgres-cluster-pg18
     recovery:
-      method: object_store
+      method: plugin
       clusterName: postgres-cluster
       database: ""
       owner: ""
       provider: azure
-      destinationPath: https://sthomeopsbackup.blob.core.windows.net/cnpg-backup/
       secret:
         create: false
-        name: cnpg-backup-azure-creds
+      objectStore:
+        create: false
+      pluginConfiguration:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: azure-blob-store
