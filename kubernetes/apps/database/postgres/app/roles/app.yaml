@@ -1,0 +1,15 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/postgresql.cnpg.io/databaserole_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: app
+spec:
+  # Placeholder for the recovery-bootstrap default owner. CNPG's instance
+  # manager sets this role's password from postgres-cluster-app; without the
+  # role, primary reconciliation fails. NOLOGIN keeps it retired.
+  name: app
+  ensure: present
+  login: false
+  cluster:
+    name: postgres-cluster
