@@ -72,8 +72,12 @@ spec:
               requests:
                 cpu: 100m
                 memory: 1Gi
+                # squat.ai/video grants the container cgroup access to
+                # /dev/dri/renderD128; the hostPath alone gives EPERM.
+                squat.ai/video: 1
               limits:
                 memory: 4Gi
+                squat.ai/video: 1
       machine-learning:
         replicas: 1
         strategy: Recreate
