@@ -26,6 +26,7 @@ resources:
   - ./monitoring/pooler-podmonitor.yaml
   - ./pooler/pooler-rw.yaml
   - ./prometheusrule-backup.yaml
+  - ./roles/app.yaml
   - ./roles/atuin.yaml
   - ./secrets/atuin.yaml
   - ./roles/authentik.yaml
