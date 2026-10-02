@@ -39,6 +39,16 @@ entries:
       designation: authentication
       authentication: none
 
+  - model: authentik_flows.flow
+    id: passkey-flow
+    identifiers:
+      slug: melotic-passkey-flow
+    attrs:
+      name: Passkey sign in
+      title: Sign in with a passkey
+      designation: authentication
+      authentication: none
+
   # --- Stages ---
 
   # Password verification
@@ -66,7 +76,7 @@ entries:
 
   # MFA validation — enforced, not optional
   # not_configured_action: configure forces MFA setup on first login
-  # Keep above identification: !KeyOf only resolves entries applied earlier, and identification points here via webauthn_stage.
+  # Keep this before identification; !KeyOf does not resolve forward references.
   - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
     id: mfa
     identifiers:
@@ -81,6 +91,16 @@ entries:
         - !Find [authentik_stages_authenticator_totp.authenticatortotpstage, [name, default-authenticator-totp-setup]]
         - !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]
         - !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-authenticator-static-setup]]
+
+  - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+    id: passkey-validation
+    identifiers:
+      name: melotic-passkey-validation
+    attrs:
+      not_configured_action: deny
+      device_classes:
+        - webauthn
+      webauthn_user_verification: preferred
 
   # Identification: single-page login with inline password + Turnstile
   # password_stage and captcha_stage are inline — they must NOT also be bound to the flow
@@ -119,7 +139,6 @@ entries:
       stage: !KeyOf mfa
       order: 30
     attrs:
-      # Without this the skip policy runs at plan time, before the passkey login sets auth_method, and never fires.
       re_evaluate_policies: true
 
   - model: authentik_flows.flowstagebinding
@@ -128,9 +147,20 @@ entries:
       stage: !KeyOf login
       order: 100
 
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf passkey-flow
+      stage: !KeyOf passkey-validation
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf passkey-flow
+      stage: !KeyOf login
+      order: 100
+
   # --- Policies ---
 
-  # Mirrors Authentik's stock default-authentication-flow skip.
   - model: authentik_policies_expression.expressionpolicy
     id: mfa-skip-passwordless
     identifiers:
@@ -140,7 +170,6 @@ entries:
         flow_plan = request.context.get("flow_plan")
         if not flow_plan:
             return True
-        # auth_webauthn_pwl is Authentik's marker for a passwordless passkey login; returning False drops this stage.
         return not (flow_plan.context.get("auth_method") == "auth_webauthn_pwl")
 
   - model: authentik_policies.policybinding
@@ -149,7 +178,6 @@ entries:
       target: !KeyOf mfa-binding
       policy: !KeyOf mfa-skip-passwordless
     attrs:
-      # Fail safe: a policy error counts as passing, which keeps MFA rather than skipping it.
       failure_result: true
 
   # GeoIP: restrict logins to allowed countries + impossible travel detection
@@ -218,4 +246,10 @@ entries:
     identifiers:
       order: 0
       target: !KeyOf flow
+      policy: !KeyOf geoip-wrapper
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf passkey-flow
       policy: !KeyOf geoip-wrapper

@@ -35,7 +35,7 @@ entries:
       branding_favicon: "zion.svg"
       branding_default_flow_background: "background.svg"
 
-      flow_authentication: !Find [authentik_flows.flow, [slug, melotic-authentication-flow]]
+      flow_authentication: !Find [authentik_flows.flow, [slug, melotic-passkey-flow]]
       flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
       flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
       attributes:
