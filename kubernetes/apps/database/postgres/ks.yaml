@@ -47,7 +47,7 @@ spec:
   dependsOn:
     - name: cnpg
       namespace: cnpg-system
-  path: ./image-catalogs
+  path: ./image-catalogs-extensions
   sourceRef:
     kind: GitRepository
     name: cnpg-artifacts
