@@ -15,6 +15,13 @@ spec:
     crds: CreateReplace
     cleanupOnFail: true
   values:
+    grafanaDashboard:
+      enabled: true
+      folder: General
+      grafanaOperator:
+        enabled: true
+        matchLabels:
+          dashboards: grafana
     # force pod recreation: the current pod was created while the SA had
     # automount:false and kubelet does not inject tokens retroactively.
     # podAnnotations lands on the pod template (deploymentAnnotations only
