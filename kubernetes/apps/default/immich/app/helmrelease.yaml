@@ -30,7 +30,7 @@ spec:
               tag: v3.2.4@sha256:d317916b28090c33eb36b308464ea391f8b7df1d850fcfea227a39ec879718c2
             env:
               TZ: America/Chicago
-              DB_HOSTNAME: postgres-cluster-rw.database.svc.cluster.local
+              DB_HOSTNAME: postgres-cluster-pooler-rw.database.svc.cluster.local
               DB_DATABASE_NAME: immich
               DB_USERNAME: immich
               DB_PASSWORD:

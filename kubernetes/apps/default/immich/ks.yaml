@@ -19,6 +19,7 @@ spec:
       APP: immich
       PG_DATABASE: immich
       PG_USER: immich
+      PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
   sourceRef:
     kind: GitRepository
     name: flux-system

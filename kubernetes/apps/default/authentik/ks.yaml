@@ -20,6 +20,7 @@ spec:
   postBuild:
     substitute:
       APP: authentik
+      PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       KOPIUR_CAPACITY: 5Gi
       KOPIUR_STORAGECLASS: ceph-filesystem
       KOPIUR_ACCESSMODES: ReadWriteMany

@@ -151,7 +151,7 @@ spec:
         configureCertmanager: false
         httpToHttpsRedirect: false
       psql:
-        host: postgres-cluster-rw.database.svc.cluster.local
+        host: postgres-cluster-pooler-rw.database.svc.cluster.local
         port: 5432
         database: gitlab
         username: gitlab
