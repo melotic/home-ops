@@ -23,6 +23,10 @@ spec:
               TZ: America/Chicago
               HASS_HTTP_TRUSTED_PROXY_1: 10.60.0.0/16
               HASS_HTTP_TRUSTED_PROXY_2: 10.42.0.0/16
+              RECORDER_DB_URL:
+                secretKeyRef:
+                  name: home-assistant-postgres
+                  key: uri
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
