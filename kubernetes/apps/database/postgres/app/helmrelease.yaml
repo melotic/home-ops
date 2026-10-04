@@ -95,7 +95,7 @@ spec:
             serverName: postgres-cluster-pg18
     recovery:
       method: plugin
-      clusterName: postgres-cluster
+      clusterName: postgres-cluster-pg18
       database: ""
       owner: ""
       provider: azure
