@@ -7,8 +7,11 @@ metadata:
   namespace: default
 spec:
   components:
+    - ../../../../components/cnpg-database
     - ../../../../components/kopiur/backup
   dependsOn:
+    - name: postgres
+      namespace: database
     - name: multus-networks
       namespace: kube-system
     - name: rook-ceph-cluster
@@ -19,6 +22,8 @@ spec:
   postBuild:
     substitute:
       APP: home-assistant
+      PG_DATABASE: home-assistant
+      PG_USER: home-assistant
       KOPIUR_CAPACITY: 8Gi
   sourceRef:
     kind: GitRepository
