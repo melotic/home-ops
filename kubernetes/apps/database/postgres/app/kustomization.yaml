@@ -10,6 +10,7 @@ resources:
   - ./databases/firefly.yaml
   - ./databases/harbor.yaml
   - ./databases/gitlab.yaml
+  - ./databases/home-assistant.yaml
   - ./databases/immich.yaml
   - ./databases/miniflux.yaml
   - ./databases/openwebui.yaml
@@ -40,6 +41,8 @@ resources:
   - ./secrets/gitlab.yaml
   - ./roles/harbor.yaml
   - ./secrets/harbor.yaml
+  - ./roles/home-assistant.yaml
+  - ./secrets/home-assistant.yaml
   - ./roles/immich.yaml
   - ./secrets/immich.yaml
   - ./roles/miniflux.yaml

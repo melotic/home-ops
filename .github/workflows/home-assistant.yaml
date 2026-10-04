@@ -76,6 +76,7 @@ jobs:
         shell: bash # -eo pipefail, so a non-zero hass exit isn't masked by tee
         run: |
           docker run --rm -v /tmp/ha:/config \
+            -e RECORDER_DB_URL=postgresql://recorder:recorder@localhost:5432/recorder \
             --entrypoint /usr/local/bin/hass \
             "ghcr.io/home-operations/home-assistant:${{ steps.ha.outputs.tag }}" \
             --script check_config -c /config --fail-on-warnings 2>&1 | tee check.log
