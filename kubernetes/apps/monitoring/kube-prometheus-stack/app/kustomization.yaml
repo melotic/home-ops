@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./alertmanagerconfig.yaml
   - ./externalsecret-webhook.yaml
-  - ./externalsecret.yaml
   - ./grafanadashboard-backup-confidence.yaml
   - ./grafanadashboard.yaml
   - ./helmrelease.yaml
