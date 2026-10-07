@@ -14,6 +14,27 @@ spec:
       mosquitto:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          passwd:
+            image:
+              repository: docker.io/library/eclipse-mosquitto
+              tag: 2.1.2-alpine@sha256:38c0da4f2ef84284d47b3b3eeea1cb3bdeabe81ee10caf0cd5c5ff61ee3ea408
+            command:
+              - sh
+              - -c
+              - mosquitto_passwd -b -c /mosquitto/data/passwd "$MQTT_USER" "$MQTT_PASSWORD"
+            env:
+              MQTT_USER:
+                secretKeyRef:
+                  name: mosquitto-secret
+                  key: MQTT_USER
+              MQTT_PASSWORD:
+                secretKeyRef:
+                  name: mosquitto-secret
+                  key: MQTT_PASSWORD
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: {drop: ["ALL"]}
         containers:
           app:
             image:
@@ -35,6 +56,8 @@ spec:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
     service:
       app:
         ports:
@@ -48,3 +71,7 @@ spec:
           - path: /mosquitto/config/mosquitto.conf
             subPath: mosquitto.conf
             readOnly: true
+      data:
+        type: emptyDir
+        globalMounts:
+          - path: /mosquitto/data

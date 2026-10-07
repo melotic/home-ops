@@ -11,6 +11,8 @@ spec:
   dependsOn:
     - name: mosquitto
       namespace: default
+    - name: external-secrets
+      namespace: external-secrets
     - name: kopiur-repository
       namespace: kopiur-system
   path: ./kubernetes/apps/default/zigbee2mqtt/app
