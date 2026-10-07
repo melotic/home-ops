@@ -13,8 +13,6 @@ spec:
       namespace: default
     - name: external-secrets
       namespace: external-secrets
-    - name: multus-networks
-      namespace: kube-system
     - name: kopiur-repository
       namespace: kopiur-system
   path: ./kubernetes/apps/default/zigbee2mqtt/app
