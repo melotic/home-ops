@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: zigbee2mqtt-config
 data:
-  configuration.yaml: |
+  configuration.yaml: |-
     mqtt:
       server: mqtt://mosquitto.default.svc.cluster.local:1883
       base_topic: zigbee2mqtt

@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: mosquitto-config
 data:
-  mosquitto.conf: |
+  mosquitto.conf: |-
     listener 1883
     allow_anonymous false
     password_file /mosquitto/data/passwd
