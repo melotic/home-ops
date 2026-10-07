@@ -20,6 +20,7 @@ resources:
   - ./kai-rbac/ks.yaml
   - ./karakeep/ks.yaml
   - ./miniflux/ks.yaml
+  - ./mosquitto/ks.yaml
   - ./nas-backup/ks.yaml
   - ./open-webui/ks.yaml
   - ./paperless-ngx/ks.yaml
@@ -33,3 +34,4 @@ resources:
   - ./smtp-relay/ks.yaml
   - ./sonarr/ks.yaml
   - ./tautulli/ks.yaml
+  - ./zigbee2mqtt/ks.yaml
