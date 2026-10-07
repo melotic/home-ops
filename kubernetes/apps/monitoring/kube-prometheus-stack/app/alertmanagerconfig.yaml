@@ -12,6 +12,14 @@ spec:
     groupInterval: 10m
     repeatInterval: 12h
     routes:
+      - receiver: grafana-irm-heartbeat
+        matchers:
+          - name: alertname
+            value: Watchdog
+            matchType: =
+        groupWait: 0s
+        groupInterval: 1m
+        repeatInterval: 50s
       - receiver: grafana-irm
         matchers:
           - name: severity
@@ -65,6 +73,12 @@ spec:
           matchType: =
   receivers:
     - name: blackhole
+    - name: grafana-irm-heartbeat
+      webhookConfigs:
+        - sendResolved: false
+          urlSecret:
+            name: alertmanager-webhook-secret
+            key: GRAFANA_IRM_HEARTBEAT
     - name: grafana-irm
       webhookConfigs:
         - sendResolved: true
