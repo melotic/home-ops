@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-config
+data:
+  configuration.yaml: |-
+    mqtt:
+      server: mqtt://mosquitto.default.svc.cluster.local:1883
+      base_topic: zigbee2mqtt
+    serial:
+      port: tcp://10.30.0.229:7638
+      baudrate: 115200
+      adapter: zstack
+      disable_led: false
+    advanced:
+      transmit_power: 20
+    homeassistant:
+      enabled: true
+    frontend:
+      enabled: true
+      port: 8080
+    permit_join: false
