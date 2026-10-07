@@ -18,7 +18,7 @@ spec:
             value: Watchdog
             matchType: =
         groupWait: 0s
-        groupInterval: 1m
+        groupInterval: 30s
         repeatInterval: 50s
       - receiver: grafana-irm
         matchers:
