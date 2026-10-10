@@ -17,7 +17,16 @@ spec:
       migration:
         enabled: true
     admissionController:
-      replicas: 1
+      replicas: 2
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - admission-controller
       priorityClassName: system-cluster-critical
       dnsConfig:
         options:
