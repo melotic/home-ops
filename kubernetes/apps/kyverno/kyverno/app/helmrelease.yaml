@@ -27,6 +27,10 @@ spec:
                   operator: In
                   values:
                     - admission-controller
+      updateStrategy:
+        rollingUpdate:
+          maxSurge: 0
+          maxUnavailable: 1
       priorityClassName: system-cluster-critical
       dnsConfig:
         options:
