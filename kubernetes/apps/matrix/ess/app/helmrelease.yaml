@@ -1,0 +1,51 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ess
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: ess
+  interval: 1h
+  install:
+    remediation:
+      retries: -1
+  values:
+    serverName: matrix.melotic.dev
+    ingress:
+      tlsEnabled: false
+    elementAdmin:
+      enabled: false
+    matrixRTC:
+      enabled: false
+    hookshot:
+      enabled: false
+    postgres:
+      enabled: false
+    synapse:
+      ingress:
+        host: matrix.melotic.dev
+      postgres:
+        host: postgres-cluster-rw.database.svc.cluster.local
+        port: 5432
+        user: synapse
+        database: synapse
+        password:
+          secret: ess-synapse-postgres
+          secretKey: password
+    matrixAuthenticationService:
+      ingress:
+        host: account.melotic.dev
+      postgres:
+        host: postgres-cluster-rw.database.svc.cluster.local
+        port: 5432
+        user: mas
+        database: mas
+        password:
+          secret: ess-mas-postgres
+          secretKey: password
+    elementWeb:
+      ingress:
+        host: chat.melotic.dev

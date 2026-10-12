@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/v1/configmap_v1.json
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: matrix-alertmanager-receiver
+data:
+  config.yaml: |-
+    http:
+      port: 8080
+      alerts-path-prefix: /alerts
+      metrics-enabled: true
+    matrix:
+      homeserver-url: https://matrix.melotic.dev
+      user-id: "@alertmanager:matrix.melotic.dev"
+      access-token: ${MATRIX_ACCESS_TOKEN}
+      room-mapping:
+        alerts: "!REPLACE_WITH_ROOM_ID:matrix.melotic.dev"
+    templating:
+      firing-template: |
+        <strong>{{ .Alert.Status | ToUpper }}</strong> {{ .Alert.Labels.alertname }} ({{ .Alert.Labels.severity }})
+        {{ .Alert.Annotations.summary }}
+        {{ if .Alert.Annotations.description }}{{ .Alert.Annotations.description }}{{ end }}
+      resolved-template: |
+        <strong>RESOLVED</strong> {{ .Alert.Labels.alertname }}
+        {{ .Alert.Annotations.summary }}
