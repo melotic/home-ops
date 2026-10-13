@@ -96,7 +96,7 @@ spec:
       RAG_EMBEDDING_CONCURRENT_REQUESTS: "1"
       RAG_EMBEDDING_CONTENT_PREFIX: "title: none | text: "
       RAG_EMBEDDING_ENGINE: openai
-      RAG_EMBEDDING_MODEL: embeddinggemma
+      RAG_EMBEDDING_MODEL: embeddinggemma-2
       RAG_EMBEDDING_QUERY_PREFIX: "task: search result | query: "
       RAG_EXTERNAL_RERANKER_API_KEY: none
       RAG_EXTERNAL_RERANKER_TIMEOUT: "60"
