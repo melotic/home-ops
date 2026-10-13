@@ -7,6 +7,10 @@ metadata:
 spec:
   name: synapse
   owner: synapse
+  encoding: UTF8
+  localeCollate: C
+  localeCType: C
+  template: template0
   cluster:
     name: postgres-cluster
   schemas:

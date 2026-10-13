@@ -47,12 +47,6 @@ spec:
             value: security
             matchType: =
         continue: true
-      - receiver: matrix
-        matchers:
-          - name: severity
-            value: critical|warning|error
-            matchType: =~
-        continue: true
       - receiver: webhook
         matchers:
           - name: severity
@@ -91,10 +85,6 @@ spec:
           urlSecret:
             name: alertmanager-webhook-secret
             key: GRAFANA_IRM_ENDPOINT
-    - name: matrix
-      webhookConfigs:
-        - sendResolved: true
-          url: http://matrix-alertmanager-receiver.matrix.svc.cluster.local:8080/alerts/alerts
     - name: webhook
       webhookConfigs:
         - sendResolved: true

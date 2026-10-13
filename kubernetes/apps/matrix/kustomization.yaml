@@ -8,5 +8,4 @@ components:
   - ../../components/common
   - ../../components/psa/baseline
 resources:
-  - ./alertmanager-receiver/ks.yaml
   - ./ess/ks.yaml
