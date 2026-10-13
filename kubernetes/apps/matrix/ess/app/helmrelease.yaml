@@ -36,6 +36,10 @@ spec:
           secret: ess-synapse-postgres
           secretKey: password
     matrixAuthenticationService:
+      additional:
+        authentik.yaml:
+          configSecret: ess-mas-authentik
+          configSecretKey: authentik.yaml
       ingress:
         host: account.melotic.dev
       postgres:
