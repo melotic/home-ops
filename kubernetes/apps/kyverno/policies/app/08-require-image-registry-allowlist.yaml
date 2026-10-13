@@ -31,12 +31,13 @@ spec:
           Container image must come from an allowlisted registry
           (ghcr.io, quay.io, mirror.gcr.io, docker.io, index.docker.io,
           lscr.io, docker.dragonflydb.io, harbor.melotic.dev, registry.k8s.io,
-          registry.gitlab.com, code.forgejo.org, cr.fluentbit.io, gsoci.azurecr.io).
+          registry.gitlab.com, code.forgejo.org, cr.fluentbit.io, gsoci.azurecr.io,
+          oci.element.io).
         pattern:
           spec:
             =(ephemeralContainers):
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/*"
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/* | oci.element.io/*"
             =(initContainers):
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/*"
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/* | oci.element.io/*"
             containers:
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/*"
+              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/* | oci.element.io/*"

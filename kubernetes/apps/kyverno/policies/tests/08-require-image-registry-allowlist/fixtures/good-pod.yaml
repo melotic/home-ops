@@ -20,3 +20,6 @@ spec:
     - name: silence-operator
       image: gsoci.azurecr.io/giantswarm/silence-operator:0.20.1
       command: ["sh", "-c", "sleep 3600"]
+    - name: element
+      image: oci.element.io/element-web:v1.12.30
+      command: ["sh", "-c", "sleep 3600"]
