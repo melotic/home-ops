@@ -27,6 +27,12 @@ spec:
     synapse:
       ingress:
         host: matrix.melotic.dev
+      additional:
+        ratelimits.yaml:
+          config: |
+            rc_message:
+              per_second: 10
+              burst_count: 100
       postgres:
         host: postgres-cluster-rw.database.svc.cluster.local
         port: 5432
