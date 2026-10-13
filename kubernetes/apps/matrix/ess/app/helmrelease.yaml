@@ -37,9 +37,9 @@ spec:
           secretKey: password
     matrixAuthenticationService:
       additional:
-        authentik.yaml:
-          configSecret: ess-mas-authentik
-          configSecretKey: authentik.yaml
+        sso.yaml:
+          configSecret: ess-mas-sso
+          configSecretKey: sso.yaml
       ingress:
         host: account.melotic.dev
       postgres:
