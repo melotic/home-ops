@@ -22,7 +22,7 @@ spec:
             command:
               - sh
               - -c
-              - mosquitto_passwd -b -c /mosquitto/data/passwd "$MQTT_USER" "$MQTT_PASSWORD"
+              - rm -f /mosquitto/data/passwd && mosquitto_passwd -b -c /mosquitto/data/passwd "$MQTT_USER" "$MQTT_PASSWORD"
             env:
               MQTT_USER:
                 secretKeyRef:
