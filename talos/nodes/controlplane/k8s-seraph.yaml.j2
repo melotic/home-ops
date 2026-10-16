@@ -1,0 +1,39 @@
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+auto: 'off'
+hostname: k8s-seraph
+---
+apiVersion: v1alpha1
+kind: LinkAliasConfig
+name: ethSel0
+selector:
+  match: glob("18:c0:4d:03:b8:0b", mac(link.hardware_addr))
+---
+apiVersion: v1alpha1
+kind: LinkConfig
+name: ethSel0
+addresses:
+  - address: 10.60.85.13/16
+---
+apiVersion: v1alpha1
+kind: EthernetConfig
+name: enp6s0
+wakeOnLan:
+  - magic
+---
+machine:
+  logging:
+    destinations:
+      - endpoint: tcp://10.60.80.54:5144
+        format: json_lines
+---
+# Both NVMe disks match the shared `disk.transport == "nvme"` selector, and the
+# 1 TB system disk carries a foreign OS, so pin the install target by serial and
+# let the installer wipe it.
+apiVersion: v1alpha1
+kind: UnattendedInstallConfig
+provisioning:
+  diskSelector:
+    match: disk.serial == "2331E8679400"
+  wipe: true
