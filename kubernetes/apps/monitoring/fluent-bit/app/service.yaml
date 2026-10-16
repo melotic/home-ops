@@ -28,3 +28,7 @@ spec:
       port: 5143
       targetPort: 5143
       protocol: TCP
+    - name: talos-seraph
+      port: 5144
+      targetPort: 5144
+      protocol: TCP
