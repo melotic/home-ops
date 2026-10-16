@@ -43,6 +43,10 @@ spec:
         port: 5143
         containerPort: 5143
         protocol: TCP
+      - name: talos-seraph
+        port: 5144
+        containerPort: 5144
+        protocol: TCP
     podSecurityContext:
       runAsNonRoot: true
       runAsUser: 1000
@@ -101,6 +105,12 @@ spec:
             Listen            0.0.0.0
             Port              5143
             Format            json
+        [INPUT]
+            Name              tcp
+            Tag               talos.seraph
+            Listen            0.0.0.0
+            Port              5144
+            Format            json
       filters: |
         [FILTER]
             Name          record_modifier
@@ -114,6 +124,10 @@ spec:
             Name          record_modifier
             Match         talos.ghost
             Record        node k8s-ghost
+        [FILTER]
+            Name          record_modifier
+            Match         talos.seraph
+            Record        node k8s-seraph
       customParsers: |-
         [PARSER]
             Name                 syslog-rfc3164-unifi
