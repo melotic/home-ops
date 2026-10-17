@@ -107,7 +107,7 @@ spec:
           - name: k8s-trinity
             devices:
               - name: /dev/disk/by-partlabel/r-rook-osd
-          - name: k8s-ghost
+          - name: k8s-seraph
             devices:
               - name: /dev/disk/by-partlabel/r-rook-osd
     monitoring:
