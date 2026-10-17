@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: cloudflare-tunnel
-  install:
-    remediation:
-      retries: -1
   values:
     controllers:
       cloudflare-tunnel:

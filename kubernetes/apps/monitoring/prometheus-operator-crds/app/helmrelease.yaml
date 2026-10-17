@@ -9,10 +9,3 @@ spec:
     kind: OCIRepository
     name: prometheus-operator-crds
   interval: 1h
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3

@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: spegel
-  install:
-    remediation:
-      retries: -1
   values:
     spegel:
       containerdSock: /run/containerd/containerd.sock

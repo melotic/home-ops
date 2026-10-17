@@ -13,13 +13,6 @@ spec:
         kind: HelmRepository
         name: open-webui
       version: 17.0.0
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     fullnameOverride: open-webui
     copyAppData:

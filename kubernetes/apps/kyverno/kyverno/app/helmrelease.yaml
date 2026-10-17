@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: kyverno
-  install:
-    remediation:
-      retries: -1
   values:
     crds:
       migration:

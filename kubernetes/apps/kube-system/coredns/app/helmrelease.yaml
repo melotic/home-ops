@@ -9,12 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: coredns
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    remediation:
-      strategy: rollback
   values:
     fullnameOverride: coredns
     image:

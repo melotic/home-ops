@@ -9,13 +9,6 @@ spec:
     kind: OCIRepository
     name: immich
   interval: 1h
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: -1
   values:
     controllers:
       server:
