@@ -17,10 +17,48 @@ data:
       room-mapping:
         alerts: "!RHHUWwusVI_1vJ-EumHb1IjhkjMGG7giYNXkxCXD860"
     templating:
+      # Rich HTML alert cards:
+      # - status + severity rendered as a color-coded emoji badge
+      # - description with summary fallback
+      # - links to runbook, Alertmanager, the alert source, and a pre-filled Silence
+      #
+      # SilenceURL is computed by matrix-alertmanager-receiver from Alertmanager's
+      # externalUrl (https://alertmanager.melotic.dev).
       firing-template: |
-        <strong>{{ .Alert.Status | ToUpper }}</strong> {{ .Alert.Labels.alertname }} ({{ .Alert.Labels.severity }})
-        {{ .Alert.Annotations.summary }}
-        {{ if .Alert.Annotations.description }}{{ .Alert.Annotations.description }}{{ end }}
+        {{ $color := "#495057" }}
+        {{ if eq .Alert.Labels.severity "critical" }}
+        {{ $color = "#e03131" }}
+        {{ else if eq .Alert.Labels.severity "warning" }}
+        {{ $color = "#f08c00" }}
+        {{ else if eq .Alert.Labels.severity "error" }}
+        {{ $color = "#d9480f" }}
+        {{ end }}
+        {{ $icon := "🔔" }}
+        {{ if eq .Alert.Labels.severity "critical" }}
+        {{ $icon = "🚨" }}
+        {{ else if eq .Alert.Labels.severity "warning" }}
+        {{ $icon = "⚠️" }}
+        {{ else if eq .Alert.Labels.severity "error" }}
+        {{ $icon = "❗" }}
+        {{ end }}
+        <p>
+          <strong><font color="{{ $color }}">{{ $icon }} {{ .Alert.Status | ToUpper }}</font> {{ .Alert.Labels.alertname }}</strong>
+          {{ if .Alert.Labels.namespace }}<small> · {{ .Alert.Labels.namespace }}</small>{{ end }}
+          {{ if .Alert.Annotations.description }}<br/>{{ .Alert.Annotations.description }}
+          {{ else if .Alert.Annotations.summary }}<br/>{{ .Alert.Annotations.summary }}
+          {{ end }}
+          <br/><small>›
+          {{ if .Alert.Annotations.runbook_url }}<a href="{{ .Alert.Annotations.runbook_url }}">Runbook</a> · {{ end }}
+          <a href="{{ .ExternalURL }}">Alertmanager</a>
+          {{ if .GeneratorURL }} · <a href="{{ .GeneratorURL }}">Source</a>{{ end }}
+          · <a href="{{ .SilenceURL }}">Silence this alert</a></small>
+        </p>
       resolved-template: |
-        <strong>RESOLVED</strong> {{ .Alert.Labels.alertname }}
-        {{ .Alert.Annotations.summary }}
+        <p>
+          <strong><font color="#2f9e44">✅ {{ .Alert.Status | ToUpper }}</font> {{ .Alert.Labels.alertname }}</strong>
+          {{ if .Alert.Labels.namespace }}<small> · {{ .Alert.Labels.namespace }}</small>{{ end }}
+          {{ if .Alert.Annotations.description }}<br/>{{ .Alert.Annotations.description }}
+          {{ else if .Alert.Annotations.summary }}<br/>{{ .Alert.Annotations.summary }}
+          {{ end }}
+          <br/><small>› <a href="{{ .ExternalURL }}">Alertmanager</a></small>
+        </p>
