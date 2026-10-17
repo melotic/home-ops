@@ -25,14 +25,6 @@ spec:
         kind: HelmRepository
         name: gitlab
         namespace: gitlab
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-      remediateLastFailure: true
   postRenderers:
     - kustomize:
         patches:

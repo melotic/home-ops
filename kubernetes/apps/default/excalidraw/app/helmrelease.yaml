@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: excalidraw
-  install:
-    remediation:
-      retries: -1
   values:
     controllers:
       excalidraw:

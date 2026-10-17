@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: echo
-  install:
-    remediation:
-      retries: -1
   dependsOn:
     - name: cloudflare-tunnel
       namespace: network

@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: envoy-gateway
-  install:
-    remediation:
-      retries: -1
   values:
     global:
       imageRegistry: mirror.gcr.io

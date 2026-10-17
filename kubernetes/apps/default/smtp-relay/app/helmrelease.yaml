@@ -9,9 +9,6 @@ spec:
     kind: OCIRepository
     name: smtp-relay
   interval: 1h
-  install:
-    remediation:
-      retries: -1
   values:
     controllers:
       smtp-relay:
