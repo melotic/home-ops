@@ -9,12 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: tofu-controller
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    remediation:
-      strategy: rollback
   values:
     # Required so a Terraform CR in an app namespace (network) can reference the
     # shared GitRepository in flux-system.

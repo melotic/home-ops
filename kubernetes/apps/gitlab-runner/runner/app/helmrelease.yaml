@@ -14,9 +14,6 @@ spec:
         kind: HelmRepository
         name: gitlab-runner
         namespace: gitlab-runner
-  install:
-    remediation:
-      retries: -1
   values:
     gitlabUrl: https://gitlab.melotic.dev/
     # The chart's singular `secret:` value does NOT mount the named Secret

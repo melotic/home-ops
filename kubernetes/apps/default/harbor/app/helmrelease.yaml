@@ -21,13 +21,6 @@ spec:
         kind: HelmRepository
         name: harbor
       version: 1.19.4
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
   values:
     updateStrategy:
       type: Recreate

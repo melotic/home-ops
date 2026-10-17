@@ -9,12 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: flux-operator
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    remediation:
-      strategy: rollback
   values:
     serviceMonitor:
       create: true

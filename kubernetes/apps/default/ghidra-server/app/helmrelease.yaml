@@ -9,9 +9,6 @@ spec:
     kind: OCIRepository
     name: ghidra-server
   interval: 1h
-  install:
-    remediation:
-      retries: -1
   dependsOn:
     - name: authentik
       namespace: default

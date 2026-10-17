@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: metrics-server
-  install:
-    remediation:
-      retries: -1
   values:
     args:
       - --kubelet-insecure-tls

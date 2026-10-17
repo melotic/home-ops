@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: reloader
-  install:
-    remediation:
-      retries: -1
   values:
     fullnameOverride: reloader
     reloader:

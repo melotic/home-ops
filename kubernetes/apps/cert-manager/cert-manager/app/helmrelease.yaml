@@ -9,9 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: cert-manager
-  install:
-    remediation:
-      retries: -1
   values:
     crds:
       enabled: true

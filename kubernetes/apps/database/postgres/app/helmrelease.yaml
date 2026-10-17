@@ -22,9 +22,6 @@ spec:
         kind: HelmRepository
         name: postgres
       version: 0.9.0
-  install:
-    remediation:
-      retries: -1
   postRenderers:
     - kustomize:
         patches:

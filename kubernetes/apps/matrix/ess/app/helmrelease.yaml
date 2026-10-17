@@ -9,9 +9,6 @@ spec:
     kind: OCIRepository
     name: ess
   interval: 1h
-  install:
-    remediation:
-      retries: -1
   values:
     serverName: matrix.melotic.dev
     ingress:

@@ -13,9 +13,6 @@ spec:
         kind: HelmRepository
       version: 1.104.1
   interval: 1h
-  install:
-    remediation:
-      retries: -1
   values:
     operatorConfig:
       hostname: homelab-operator
