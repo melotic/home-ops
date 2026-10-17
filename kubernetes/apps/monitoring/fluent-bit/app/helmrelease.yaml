@@ -39,10 +39,6 @@ spec:
         port: 5142
         containerPort: 5142
         protocol: TCP
-      - name: talos-ghost
-        port: 5143
-        containerPort: 5143
-        protocol: TCP
       - name: talos-seraph
         port: 5144
         containerPort: 5144
@@ -101,12 +97,6 @@ spec:
             Format            json
         [INPUT]
             Name              tcp
-            Tag               talos.ghost
-            Listen            0.0.0.0
-            Port              5143
-            Format            json
-        [INPUT]
-            Name              tcp
             Tag               talos.seraph
             Listen            0.0.0.0
             Port              5144
@@ -120,10 +110,6 @@ spec:
             Name          record_modifier
             Match         talos.trinity
             Record        node k8s-trinity
-        [FILTER]
-            Name          record_modifier
-            Match         talos.ghost
-            Record        node k8s-ghost
         [FILTER]
             Name          record_modifier
             Match         talos.seraph
