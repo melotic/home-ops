@@ -141,3 +141,33 @@ schematic-id node="":
 [script]
 machine-image node:
     just talos render-config {{ node }} | yq -r -e 'select(.kind == "UnattendedInstallConfig") | .installer.image'
+
+[doc('Regenerate the Talos client config (talosconfig) from the machine CA in 1Password')]
+[script]
+talosconfig endpoint='10.60.85.10':
+    command -v talosctl >/dev/null
+    command -v op >/dev/null
+    : "${TALOSCONFIG:?TALOSCONFIG is not set}"
+    workdir="$(mktemp -d)"
+    trap 'rm -rf "${workdir}"' EXIT
+    op read 'op://Zion/Talos/MACHINE_CA_CRT' | base64 -d > "${workdir}/talos-ca.crt"
+    op read 'op://Zion/Talos/MACHINE_CA_KEY' | base64 -d > "${workdir}/talos-ca.key"
+    chmod 0600 "${workdir}/talos-ca.key"
+    (
+        cd "${workdir}"
+        talosctl gen key --name talos-admin
+        talosctl gen csr --key talos-admin.key --ip 127.0.0.1 --roles os:admin
+        talosctl gen crt --ca talos-ca --csr talos-admin.csr --name talos-admin --hours 8760
+    )
+    mkdir -p "$(dirname "${TALOSCONFIG}")"
+    rm -f "${TALOSCONFIG}"
+    talosctl config add kubernetes --talosconfig "${TALOSCONFIG}" \
+        --ca "${workdir}/talos-ca.crt" \
+        --crt "${workdir}/talos-admin.crt" \
+        --key "${workdir}/talos-admin.key"
+    talosctl config context kubernetes --talosconfig "${TALOSCONFIG}"
+    talosctl config endpoint "{{ endpoint }}" --talosconfig "${TALOSCONFIG}"
+    talosctl config node "{{ endpoint }}" --talosconfig "${TALOSCONFIG}"
+    chmod 0600 "${TALOSCONFIG}"
+    talosctl --talosconfig "${TALOSCONFIG}" version --nodes "{{ endpoint }}" >/dev/null
+    echo "wrote ${TALOSCONFIG}: context kubernetes, endpoint {{ endpoint }}, role os:admin"
