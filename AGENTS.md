@@ -44,7 +44,7 @@ No unit-test suite exists; CI is flate + yamlfmt + tflint + kubeconform (`.githu
 ## Network layout
 
 - Nodes 10.60.0.0/16 (API VIP `10.60.8.10:6443`), pods 10.42.0.0/16 + fd00:42::/48, services 10.43.0.0/16 + fd00:43::/112.
-- Nodes: k8s-niobe (.10), k8s-trinity (.11), k8s-ghost (.12), all control-plane.
+- Nodes: k8s-niobe (.10), k8s-trinity (.11), k8s-seraph (.13), all control-plane.
 
 ## Common operations
 
