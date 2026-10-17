@@ -16,7 +16,7 @@ metadata:
   name: gitlab
 spec:
   interval: 1h
-  timeout: 15m
+  timeout: 30m
   chart:
     spec:
       chart: gitlab
@@ -53,6 +53,7 @@ spec:
                 name: gitlab-webservice-default
               spec:
                 replicas: 1
+                progressDeadlineSeconds: 1800
                 template:
                   spec:
                     containers:
