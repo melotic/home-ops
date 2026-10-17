@@ -99,8 +99,6 @@ spec:
             policy: mute
           AUTH_INSECURE_KEYS_ALLOWED:
             policy: mute
-          AUTH_INSECURE_KEYS_CREATABLE:
-            policy: mute
       storage:
         useAllDevices: false
         useAllNodes: false
