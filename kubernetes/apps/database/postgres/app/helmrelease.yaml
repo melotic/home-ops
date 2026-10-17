@@ -63,7 +63,7 @@ spec:
       imageCatalogRef:
         kind: ClusterImageCatalog
         name: postgresql-minimal-trixie
-      instances: 2
+      instances: 3
       monitoring:
         enabled: true
         podMonitor:

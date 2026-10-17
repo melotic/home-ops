@@ -75,7 +75,7 @@ spec:
                 matchExpressions:
                   - key: kubernetes.io/hostname
                     operator: In
-                    values: [k8s-niobe, k8s-ghost, k8s-seraph]
+                    values: [k8s-niobe, k8s-seraph]
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000
