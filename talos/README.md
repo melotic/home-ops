@@ -49,7 +49,7 @@ and gets back a content-addressed ID, which is templated into the `UnattendedIns
 image and used by `download-image` and `upgrade-node`.
 
 Resolution is per node: `nodes/controlplane/<node>.schematic.yaml.j2` wins when present, otherwise the
-shared `schematic.yaml.j2` applies. The shared schematic is used by `k8s-niobe` and `k8s-ghost`; `k8s-trinity`
+shared `schematic.yaml.j2` applies. The shared schematic is used by `k8s-niobe` and `k8s-seraph`; `k8s-trinity`
 has an Intel-specific override.
 
 ## Common tasks
