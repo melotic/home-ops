@@ -147,27 +147,32 @@ machine-image node:
 talosconfig endpoint='10.60.85.10':
     command -v talosctl >/dev/null
     command -v op >/dev/null
+    command -v yq >/dev/null
     : "${TALOSCONFIG:?TALOSCONFIG is not set}"
+    ips="$(yq -r 'select(.kind == "LinkConfig") | .addresses[]?.address' "{{ source_directory() }}"/nodes/*/*.yaml.j2 | cut -d/ -f1 | grep -v '^---$' | sort -u)"
+    test -n "${ips}"
     workdir="$(mktemp -d)"
     trap 'rm -rf "${workdir}"' EXIT
-    op read 'op://Zion/Talos/MACHINE_CA_CRT' | base64 -d > "${workdir}/talos-ca.crt"
-    op read 'op://Zion/Talos/MACHINE_CA_KEY' | base64 -d > "${workdir}/talos-ca.key"
-    chmod 0600 "${workdir}/talos-ca.key"
     (
         cd "${workdir}"
+        op read 'op://Zion/Talos/MACHINE_CA_CRT' | base64 -d > ca.crt
+        op read 'op://Zion/Talos/MACHINE_CA_KEY' | base64 -d > ca.key
         talosctl gen key --name talos-admin
         talosctl gen csr --key talos-admin.key --ip 127.0.0.1 --roles os:admin
-        talosctl gen crt --ca talos-ca --csr talos-admin.csr --name talos-admin --hours 8760
+        talosctl gen crt --ca ca --csr talos-admin.csr --name talos-admin --hours 8760
     )
+    ca="$(op read 'op://Zion/Talos/MACHINE_CA_CRT')"
+    crt="$(base64 -w0 < "${workdir}/talos-admin.crt")"
+    key="$(base64 -w0 < "${workdir}/talos-admin.key")"
     mkdir -p "$(dirname "${TALOSCONFIG}")"
-    rm -f "${TALOSCONFIG}"
-    talosctl config add kubernetes --talosconfig "${TALOSCONFIG}" \
-        --ca "${workdir}/talos-ca.crt" \
-        --crt "${workdir}/talos-admin.crt" \
-        --key "${workdir}/talos-admin.key"
-    talosctl config context kubernetes --talosconfig "${TALOSCONFIG}"
-    talosctl config endpoint "{{ endpoint }}" --talosconfig "${TALOSCONFIG}"
-    talosctl config node "{{ endpoint }}" --talosconfig "${TALOSCONFIG}"
+    IPS="${ips}" CA="${ca}" CRT="${crt}" KEY="${key}" yq -n '
+        .context = "kubernetes"
+        | .contexts.kubernetes.endpoints = (strenv(IPS) | split("\n") | map(select(. != "")))
+        | .contexts.kubernetes.nodes = (strenv(IPS) | split("\n") | map(select(. != "")))
+        | .contexts.kubernetes.ca = strenv(CA)
+        | .contexts.kubernetes.crt = strenv(CRT)
+        | .contexts.kubernetes.key = strenv(KEY)
+    ' > "${TALOSCONFIG}"
     chmod 0600 "${TALOSCONFIG}"
     talosctl --talosconfig "${TALOSCONFIG}" version --nodes "{{ endpoint }}" >/dev/null
-    echo "wrote ${TALOSCONFIG}: context kubernetes, endpoint {{ endpoint }}, role os:admin"
+    echo "wrote ${TALOSCONFIG}: context kubernetes, nodes $(yq -r '.contexts.kubernetes.nodes | join(", ")' "${TALOSCONFIG}")"
