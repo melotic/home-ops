@@ -27,6 +27,10 @@ spec:
         mgr:
           log_max_recent: "100"
         mon:
+          # AUTH_INSECURE_KEYS_CREATABLE only clears when this is set explicitly.
+          # Existing aes CSI keys may still authenticate (kernel 7.0+ is required
+          # before CSI can move to aes256k).
+          mon_auth_allow_insecure_key: "false"
           mon_data_avail_warn: "20"
         osd:
           bdev_async_discard: "true"
