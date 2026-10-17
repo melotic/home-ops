@@ -48,7 +48,7 @@ upgrade-node node *args:
     read -r name ip < <(just talos node-resolve {{ node }})
     talosctl --nodes "$ip" get machineconfig >/dev/null
     talosctl config info >/dev/null
-    talosctl -n "$ip" upgrade -i "$(just talos machine-image "$name")" -m powercycle --timeout=10m {{ args }}
+    talosctl -n "$ip" upgrade -i "$(just talos machine-image "$name")" -m powercycle --drain=false --timeout=10m {{ args }}
 
 [confirm('Upgrade Kubernetes to ' + version + ' [y|N]?')]
 [doc('Upgrade Kubernetes version on the cluster')]
