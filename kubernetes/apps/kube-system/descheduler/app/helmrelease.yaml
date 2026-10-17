@@ -56,7 +56,7 @@ spec:
                   source: KubernetesMetrics
                 thresholds:
                   cpu: 20
-                  memory: 20
+                  memory: 30
                 targetThresholds:
                   cpu: 60
                   memory: 60
