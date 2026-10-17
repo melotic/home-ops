@@ -9,8 +9,13 @@ spec:
     - name: nas-backup.rules
       rules:
         - alert: BackupCronJobFailed
+          # kube_job_status_failed counts pods that entered the Failed phase and
+          # is retained by kube-state-metrics even after the Job succeeds, so
+          # exclude Jobs that have completed successfully.
           expr: |-
             kube_job_status_failed{namespace="default"} * on(namespace, job_name) group_left(owner_name) kube_job_owner{namespace="default", owner_kind="CronJob", owner_name=~"nas-backup"} > 0
+              unless on(namespace, job_name)
+            kube_job_status_succeeded{namespace="default"} > 0
           annotations:
             summary: >-
               Backup CronJob {{ $labels.owner_name }} job {{ $labels.job_name }} failed
