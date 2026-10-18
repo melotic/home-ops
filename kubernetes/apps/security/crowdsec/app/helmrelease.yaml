@@ -8,6 +8,10 @@ spec:
   interval: 1h
   upgrade:
     cleanupOnFail: false
+    remediation:
+      remediateLastFailure: false
+  rollback:
+    cleanupOnFail: false
   chart:
     spec:
       chart: crowdsec
