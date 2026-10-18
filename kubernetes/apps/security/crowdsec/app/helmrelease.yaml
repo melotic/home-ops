@@ -125,6 +125,13 @@ spec:
         privileged: false
     agent:
       enabled: true
+      wait_for_lapi:
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          allowPrivilegeEscalation: false
+          privileged: false
       tolerations:
         - operator: Exists # all 3 control-plane nodes
       hostVarLog: true # readOnly host /var/log mount for kube-audit file-tail
