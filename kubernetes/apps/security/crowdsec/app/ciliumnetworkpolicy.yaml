@@ -32,6 +32,16 @@ spec:
         - ports:
             - port: "6060"
               protocol: TCP
+    # agent DaemonSet pods (chart podLabels match the endpointSelector) must
+    # reach the LAPI over the in-cluster service port
+    - fromEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: security
+            app.kubernetes.io/name: crowdsec
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:
@@ -57,4 +67,13 @@ spec:
       toPorts:
         - ports:
             - port: "5432"
+              protocol: TCP
+    # agents (matched by the endpointSelector) register/poll the LAPI itself
+    - toEndpoints:
+        - matchLabels:
+            io.kubernetes.pod.namespace: security
+            app.kubernetes.io/name: crowdsec
+      toPorts:
+        - ports:
+            - port: "8080"
               protocol: TCP

@@ -1,102 +1,199 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+# yaml-language-server: $schema=https://kube-schemas.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: crowdsec
 spec:
-  chartRef:
-    kind: OCIRepository
-    name: crowdsec
   interval: 1h
+  timeout: 30m
+  chart:
+    spec:
+      chart: crowdsec
+      version: "0.24.2"
+      sourceRef:
+        kind: HelmRepository
+        name: crowdsec
+        namespace: security
   values:
-    controllers:
-      crowdsec:
-        strategy: Recreate
-        annotations:
-          reloader.stakater.com/auto: "true"
-        containers:
-          app:
-            image:
-              repository: docker.io/crowdsecurity/crowdsec
-              tag: v1.8.1@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a
-            env:
-              DISABLE_AGENT: "true"
-              DISABLE_ONLINE_API: "true"
-              CROWDSEC_BYPASS_DB_VOLUME_CHECK: "true"
-              CUSTOM_HOSTNAME: crowdsec-lapi
-              POSTGRES_PASSWORD:
-                valueFrom:
-                  secretKeyRef:
-                    name: crowdsec-postgres
-                    key: password
-            envFrom:
-              - secretRef:
-                  name: crowdsec
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /health
-                    port: 8080
-                  initialDelaySeconds: 10
-                  periodSeconds: 15
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: {drop: ["ALL"]}
-            resources:
-              requests:
-                cpu: 25m
-                memory: 128Mi
-              limits:
-                memory: 256Mi
-    defaultPodOptions:
-      automountServiceAccountToken: false
+    # Talos runs containerd; the chart's acquis labels.type must read
+    # containerd so the hub cri-logs s00-raw filter matches every line.
+    container_runtime: containerd
+    image:
+      repository: docker.io/crowdsecurity/crowdsec
+      tag: v1.8.1@sha256:0f2523fa61ef507f15d953045cface490cc880670c62f2755ced17524107f71a
+    # CiliumNetworkPolicy endpointSelector + ServiceMonitor label continuity
+    podLabels:
+      app.kubernetes.io/name: crowdsec
+    config:
+      parsers:
+        s01-parse:
+          client-ip.yaml: |
+            # Prefer the Cloudflare-injected edge client IP over the node-local
+            # downstream_remote_address the hub envoy parser derives. Runs after
+            # the hub s01 envoy parser (only it has unmarshaled the JSON); when
+            # the key is absent nothing here matches and the hub fallback wins.
+            filter: evt.Unmarshaled.envoy != nil && evt.Unmarshaled.envoy["cf_connecting_ip"] != nil && evt.Unmarshaled.envoy["cf_connecting_ip"] != ""
+            statics:
+              - meta: source_ip
+                expression: evt.Unmarshaled.envoy["cf_connecting_ip"]
+            onsuccess: break
+      # LAPI ban-TTL decision overlay (was profiles.yaml.local)
+      profiles.yaml: |
+        # CrowdSec decision overlay: pins the ban TTL and remediation posture only.
+        # Scenario/scope filters are applied bouncer-side, not here. CrowdSec merges
+        # this file over the shipped profiles.yaml.
+        name: default_ip_remediation
+        filters:
+          - Alert.Remediation == true && Alert.GetScope() == "Ip"
+        decisions:
+          - type: ban
+            duration: 4h
+        on_success: break
+      # LAPI main config overlay (was config.yaml.local); ${...} vars are
+      # expanded in-container from env the chart injects.
+      config.yaml.local: |
+        db_config:
+          type: pgx
+          host: postgres-cluster-pooler-rw.database.svc.cluster.local
+          port: 5432
+          user: crowdsec
+          password: ${POSTGRES_PASSWORD}
+          db_name: crowdsec
+          sslmode: require
+          flush:
+            agents_autodelete:
+              login_password: 72h
+        api:
+          server:
+            auto_registration:
+              enabled: true
+              token: ${REGISTRATION_TOKEN}
+              allowed_ranges:
+                - 127.0.0.1/32
+                - 10.42.0.0/16
+                - 10.20.0.147/32
+                - 10.20.0.119/32
+    lapi:
+      enabled: true
+      replicas: 1
+      strategy:
+        type: Recreate
+      deployAnnotations:
+        reloader.stakater.com/auto: "true"
+      env:
+        # CAPI community blocklist stays off (Phase 36 gate)
+        - name: DISABLE_ONLINE_API
+          value: "true"
+        # Stable machine row identity across the cutover
+        - name: CUSTOM_HOSTNAME
+          value: crowdsec-lapi
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: crowdsec-postgres
+              key: password
+      # BOUNCER_KEY_fedora_nft is consumed by the chart LAPI start script
+      envFrom:
+        - secretRef:
+            name: crowdsec
+      resources:
+        requests:
+          cpu: 25m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+          cpu: null # strip chart 500m default; repo convention keeps CPU unlimited
+      persistentVolume:
+        data:
+          enabled: true
+        config:
+          enabled: true
+      service:
+        labels:
+          app.kubernetes.io/name: crowdsec
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: false # standalone monitoring.yaml stays the scrape surface
       securityContext:
+        allowPrivilegeEscalation: false
+        privileged: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      podSecurityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
-    service:
-      app:
-        ports:
-          lapi:
-            port: 8080
-          metrics:
-            port: 6060
-    persistence:
-      etc-crowdsec:
-        type: emptyDir
-        globalMounts:
-          - path: /etc/crowdsec
-      data:
-        type: emptyDir
-        globalMounts:
-          - path: /var/lib/crowdsec/data
-      varlog:
-        type: emptyDir
-        globalMounts:
-          - path: /var/log
-      tmp:
-        type: emptyDir
-        globalMounts:
-          - path: /tmp
-      config-local:
-        type: configMap
-        name: crowdsec-config-local
-        advancedMounts:
-          crowdsec:
-            app:
-              - path: /etc/crowdsec/config.yaml.local
-                subPath: config.yaml.local
-                readOnly: true
-              - path: /etc/crowdsec/profiles.yaml.local
-                subPath: profiles.yaml.local
-                readOnly: true
+      extraVolumes:
+        - name: tmp
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: tmp
+          mountPath: /tmp
+    agent:
+      enabled: true
+      # TLS-terminated at the envoy-internal edge (chart mTLS stays off)
+      lapiURL: https://crowdsec.melotic.dev
+      tolerations:
+        - operator: Exists # all 3 control-plane nodes
+      hostVarLog: true # readOnly host /var/log mount for kube-audit file-tail
+      env:
+        - name: COLLECTIONS
+          value: crowdsecurity/linux yanis-kouidri/envoy firix/authentik crowdsecurity/k8s-audit crowdsecurity/http-extended-context
+        - name: UNREGISTER_ON_EXIT
+          value: "true" # machine-churn hygiene for per-pod registrations
+      acquisition:
+        - namespace: network
+          podName: envoy-*
+          program: envoy
+        - namespace: default
+          podName: authentik-*
+          program: authentik
+      additionalAcquisition:
+        # program (not type) label is load-bearing for the k8s-audit parser
+        - source: file
+          filenames:
+            - /var/log/audit/kube/kube-apiserver.log
+          force_inotify: true
+          labels:
+            program: k8s-audit
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+          cpu: null # strip chart 500m default; repo convention keeps CPU unlimited
+      securityContext:
+        allowPrivilegeEscalation: false
+        privileged: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+      podSecurityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+      extraVolumes:
+        - name: tmp
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: tmp
+          mountPath: /tmp
+      metrics:
+        enabled: true
+    # ExternalSecret crowdsec (ESO/1Password) supplies both keys; chart's
+    # auto-generated crowdsec-lapi-secrets path stays unused
+    secrets:
+      externalSecret:
+        name: crowdsec
+        csLapiSecretKey: csLapiSecret
+        registrationTokenKey: registrationToken

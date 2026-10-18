@@ -5,6 +5,6 @@ kind: Kustomization
 namespace: security
 components:
   - ../../components/common
-  - ../../components/psa/baseline
+  - ../../components/psa/privileged
 resources:
   - ./crowdsec/ks.yaml
