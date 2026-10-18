@@ -1,0 +1,13 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/cilium/cilium/main/pkg/k8s/apis/cilium.io/client/crds/v2/ciliumnodeconfigs.yaml
+apiVersion: cilium.io/v2
+kind: CiliumNodeConfig
+metadata:
+  name: datapath-pin
+  namespace: kube-system
+spec:
+  nodeSelector:
+    matchLabels:
+      cilium.io/datapath: netkit
+  defaults:
+    datapath-mode: netkit
