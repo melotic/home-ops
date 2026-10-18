@@ -53,13 +53,7 @@ spec:
               protocol: ANY
           rules:
             dns:
-              - matchPattern: "*.svc.cluster.local"
-              - matchPattern: "*.cluster.local"
-              - matchPattern: "*.security"
-              - matchPattern: "*.svc"
-              - matchPattern: "*.crowdsec.net"
-              - matchPattern: "*.in-addr.arpa"
-              - matchPattern: "*.ip6.arpa"
+              - matchPattern: "*"
     - toCIDR:
         - 10.43.193.18/32
       toPorts:
@@ -83,8 +77,8 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    - toFQDNs:
-        - matchPattern: "*.crowdsec.net"
+    - toEntities:
+        - world
       toPorts:
         - ports:
             - port: "443"
