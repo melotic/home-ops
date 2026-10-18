@@ -176,7 +176,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
       extraInitContainers:
         - name: credentials-readable
-          image: docker.io/library/busybox:1.28
+          image: docker.io/library/busybox:1.38@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
           command: ["sh", "-c", "chmod 0640 /tmp_config/local_api_credentials.yaml"]
           securityContext:
             runAsUser: 0
