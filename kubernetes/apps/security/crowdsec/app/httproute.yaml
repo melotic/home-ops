@@ -12,7 +12,7 @@ spec:
     - crowdsec.melotic.dev
   rules:
     - backendRefs:
-        - name: crowdsec
+        - name: crowdsec-service
           port: 8080
       matches:
         - path:
