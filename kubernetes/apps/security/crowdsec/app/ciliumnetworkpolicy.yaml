@@ -22,21 +22,20 @@ spec:
               protocol: TCP
     - fromEndpoints:
         - matchLabels:
-            "k8s:io.kubernetes.pod.namespace": database
-            "k8s:cnpg.io/poolerName": postgres-cluster-pooler-rw
+            "k8s:io.kubernetes.pod.namespace": security
+            "k8s:app.kubernetes.io/name": crowdsec
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: monitoring
-            app.kubernetes.io/name: prometheus
+            "k8s:io.kubernetes.pod.namespace": monitoring
+            "k8s:app.kubernetes.io/name": prometheus
       toPorts:
         - ports:
             - port: "6060"
               protocol: TCP
-    # LAPI <-> agent: replies land on ephemeral ports, so no toPorts here
-    - fromEndpoints:
-        - matchLabels:
-            io.kubernetes.pod.namespace: security
-            app.kubernetes.io/name: crowdsec
   egress:
     - toEndpoints:
         - matchLabels:
@@ -49,12 +48,6 @@ spec:
           rules:
             dns:
               - matchPattern: "*"
-    - toCIDR:
-        - 10.43.193.18/32
-      toPorts:
-        - ports:
-            - port: "5432"
-              protocol: TCP
     - toEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": database
@@ -63,23 +56,19 @@ spec:
         - ports:
             - port: "5432"
               protocol: TCP
-    # agents (matched by the endpointSelector) register/poll the LAPI itself
     - toEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: security
-            app.kubernetes.io/name: crowdsec
+            "k8s:io.kubernetes.pod.namespace": security
+            "k8s:app.kubernetes.io/name": crowdsec
       toPorts:
         - ports:
             - port: "8080"
               protocol: TCP
-    - toCIDR:
-        - 10.43.175.164/32
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
-    - toEntities:
-        - world
+    - toFQDNs:
+        - matchName: api.crowdsec.net
+        - matchName: blocklists.api.crowdsec.net
+        - matchName: cdn-hub.crowdsec.net
+        - matchName: hub-data.crowdsec.net
       toPorts:
         - ports:
             - port: "443"
