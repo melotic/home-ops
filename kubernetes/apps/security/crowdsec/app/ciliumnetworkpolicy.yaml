@@ -77,6 +77,12 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    - toCIDR:
+        - 10.43.175.164/32
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
     - toEntities:
         - world
       toPorts:
