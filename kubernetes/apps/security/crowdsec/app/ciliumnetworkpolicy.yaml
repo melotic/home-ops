@@ -24,10 +24,10 @@ spec:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": security
             "k8s:app.kubernetes.io/name": crowdsec
-    - fromEndpoints:
-        - matchLabels:
-            "k8s:io.kubernetes.pod.namespace": database
-            "k8s:cnpg.io/poolerName": postgres-cluster-pooler-rw
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": monitoring
