@@ -53,7 +53,10 @@ spec:
               protocol: ANY
           rules:
             dns:
-              - matchPattern: "*"
+              - matchPattern: "*.svc.cluster.local"
+              - matchPattern: "*.crowdsec.net"
+              - matchPattern: "*.in-addr.arpa"
+              - matchPattern: "*.ip6.arpa"
     - toCIDR:
         - 10.43.193.18/32
       toPorts:
