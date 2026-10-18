@@ -6,6 +6,7 @@ metadata:
   name: crowdsec
 spec:
   interval: 1h
+  timeout: 5m
   chart:
     spec:
       chart: crowdsec
