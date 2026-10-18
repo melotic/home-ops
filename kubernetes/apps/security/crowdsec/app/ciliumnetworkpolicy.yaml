@@ -9,12 +9,6 @@ spec:
     matchLabels:
       app.kubernetes.io/name: crowdsec
   ingress:
-    - fromCIDR:
-        - 10.43.175.164/32
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": network
@@ -38,16 +32,11 @@ spec:
         - ports:
             - port: "6060"
               protocol: TCP
-    # agent DaemonSet pods (chart podLabels match the endpointSelector) must
-    # reach the LAPI over the in-cluster service port
+    # LAPI <-> agent: replies land on ephemeral ports, so no toPorts here
     - fromEndpoints:
         - matchLabels:
             io.kubernetes.pod.namespace: security
             app.kubernetes.io/name: crowdsec
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
   egress:
     - toEndpoints:
         - matchLabels:
