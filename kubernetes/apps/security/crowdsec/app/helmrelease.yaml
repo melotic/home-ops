@@ -82,10 +82,9 @@ spec:
       deployAnnotations:
         reloader.stakater.com/auto: "true"
       env:
-        # CAPI community blocklist stays off (Phase 36 gate)
         - name: DISABLE_ONLINE_API
           value: "true"
-        # Stable machine row identity across the cutover
+        # Stable hostname so machine rows in the CrowdSec DB survive pod restarts
         - name: CUSTOM_HOSTNAME
           value: crowdsec-lapi
         - name: POSTGRES_PASSWORD
