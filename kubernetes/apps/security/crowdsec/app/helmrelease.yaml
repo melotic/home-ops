@@ -125,8 +125,6 @@ spec:
         privileged: false
     agent:
       enabled: true
-      # TLS-terminated at the envoy-internal edge (chart mTLS stays off)
-      lapiURL: https://crowdsec.melotic.dev
       tolerations:
         - operator: Exists # all 3 control-plane nodes
       hostVarLog: true # readOnly host /var/log mount for kube-audit file-tail
