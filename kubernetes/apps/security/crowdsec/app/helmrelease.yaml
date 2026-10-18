@@ -114,25 +114,15 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: false # standalone monitoring.yaml stays the scrape surface
+      # LAPI runs on chart defaults (root, writable rootfs): the image
+      # bootstraps 0600 root-owned staged credentials + /etc symlink, which
+      # upstream does not support non-root (helm-charts#350). Rootless agents.
+      podSecurityContext:
+        seccompProfile:
+          type: RuntimeDefault
       securityContext:
         allowPrivilegeEscalation: false
         privileged: false
-        readOnlyRootFilesystem: true
-        capabilities:
-          drop:
-            - ALL
-      podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-      extraVolumes:
-        - name: tmp
-          emptyDir: {}
-      extraVolumeMounts:
-        - name: tmp
-          mountPath: /tmp
     agent:
       enabled: true
       # TLS-terminated at the envoy-internal edge (chart mTLS stays off)
