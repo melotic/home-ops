@@ -24,10 +24,6 @@ spec:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": security
             "k8s:app.kubernetes.io/name": crowdsec
-      toPorts:
-        - ports:
-            - port: "8080"
-              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": monitoring
@@ -69,6 +65,7 @@ spec:
         - matchName: blocklists.api.crowdsec.net
         - matchName: cdn-hub.crowdsec.net
         - matchName: hub-data.crowdsec.net
+        - matchName: version.crowdsec.net
       toPorts:
         - ports:
             - port: "443"
