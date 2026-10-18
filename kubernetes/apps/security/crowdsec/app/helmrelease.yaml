@@ -51,14 +51,16 @@ spec:
             duration: 4h
         on_success: break
       # LAPI main config overlay (was config.yaml.local); ${...} vars are
-      # expanded in-container from env the chart injects.
+      # expanded in-container from env the chart injects. $$-escaped so Flux's
+      # strict postBuild envsubst passes a literal ${VAR} through to CrowdSec
+      # (repo idiom, ghidra-server precedent).
       config.yaml.local: |
         db_config:
           type: pgx
           host: postgres-cluster-pooler-rw.database.svc.cluster.local
           port: 5432
           user: crowdsec
-          password: ${POSTGRES_PASSWORD}
+          password: $${POSTGRES_PASSWORD}
           db_name: crowdsec
           sslmode: require
           flush:
@@ -68,7 +70,7 @@ spec:
           server:
             auto_registration:
               enabled: true
-              token: ${REGISTRATION_TOKEN}
+              token: $${REGISTRATION_TOKEN}
               allowed_ranges:
                 - 127.0.0.1/32
                 - 10.42.0.0/16
