@@ -180,6 +180,9 @@ spec:
           mountPath: /tmp
       metrics:
         enabled: true
+      service:
+        labels:
+          app.kubernetes.io/name: crowdsec
     # ExternalSecret crowdsec (ESO/1Password) supplies both keys; chart's
     # auto-generated crowdsec-lapi-secrets path stays unused
     secrets:
