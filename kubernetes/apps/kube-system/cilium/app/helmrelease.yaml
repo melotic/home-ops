@@ -98,11 +98,7 @@ spec:
           - SYS_RESOURCE
     socketLB:
       enabled: true
-      # false works around cilium/cilium#47913: netkit + endpointRoutes + hostNamespaceOnly=true
-      # drops same-node ClusterIP replies as new flows (reproduced on 1.18.6).
-      # Tailscale LB Services, tailscale.com/expose, and Connectors advertising the service CIDR
-      # require true; move bpf.datapathMode to veth before adding any of those.
-      hostNamespaceOnly: false
+      hostNamespaceOnly: true
     updateStrategy:
       rollingUpdate:
         maxUnavailable: 1
