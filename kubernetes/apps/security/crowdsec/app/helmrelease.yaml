@@ -86,9 +86,6 @@ spec:
       env:
         - name: DISABLE_ONLINE_API
           value: "true"
-        # Stable hostname so machine rows in the CrowdSec DB survive pod restarts
-        - name: CUSTOM_HOSTNAME
-          value: crowdsec-lapi
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:

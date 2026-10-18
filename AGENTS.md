@@ -61,6 +61,12 @@ flux get ks -A && flux get hr -A
 
 Node args accept name or IP; `just talos node-resolve` maps between them. Destructive talos recipes prompt for confirmation.
 
+## Agent hygiene
+
+- **No planning-internal vocabulary in anything the repo stores or displays:** commit subjects/PR titles/PR bodies must not contain GSD planning IDs or jargon (`THREAT-07`, `D-04`, `Phase 34`/`plan 34-02`, `Pitfall N`, `must_haves`, `prohibitions`, `.planning/` paths). Traceability lives in `.planning/` only — which is not committed here.
+- **No self-narrating comments in YAML/manifests.** A comment may only state a non-obvious permanent fact for a maintainer with zero planning context, in ≤2 lines. Never document "why I made this change" inside a file — deviations and rationale belong in the PR/SUMMARY, not in code.
+- Operator-facing change/deviation reports follow the same style: fact → blocking constraint → consequence. No discovery narration.
+
 ## Renovate / CI notes
 
 - Renovate (`.renovaterc.json5`) bumps images (digest-pinned), chart tags in OCIRepositories, Talos/k8s versions, mise tools, and actions; commits are semantic (`feat:`, `fix:`, `chore:`, `ci:`).
