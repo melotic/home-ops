@@ -178,9 +178,17 @@ spec:
       extraVolumes:
         - name: tmp
           emptyDir: {}
+        - name: crowdsec-data
+          emptyDir: {}
+        - name: staging-crowdsec
+          emptyDir: {}
       extraVolumeMounts:
         - name: tmp
           mountPath: /tmp
+        - name: crowdsec-data
+          mountPath: /etc/crowdsec_data
+        - name: staging-crowdsec
+          mountPath: /staging/etc/crowdsec
       metrics:
         enabled: true
     # ExternalSecret crowdsec (ESO/1Password) supplies both keys; chart's
