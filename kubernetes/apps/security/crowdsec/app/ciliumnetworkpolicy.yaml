@@ -77,3 +77,9 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
+    - toFQDNs:
+        - matchPattern: "*.crowdsec.net"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
