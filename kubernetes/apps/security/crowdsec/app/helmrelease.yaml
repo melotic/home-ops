@@ -177,7 +177,7 @@ spec:
       extraInitContainers:
         - name: credentials-readable
           image: docker.io/library/busybox:1.38@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
-          command: ["sh", "-c", "chmod 0640 /tmp_config/local_api_credentials.yaml"]
+          command: ["sh", "-c", "chown 1000:1000 /tmp_config/local_api_credentials.yaml && chmod 0600 /tmp_config/local_api_credentials.yaml"]
           securityContext:
             runAsUser: 0
             runAsGroup: 0
