@@ -54,6 +54,9 @@ spec:
           rules:
             dns:
               - matchPattern: "*.svc.cluster.local"
+              - matchPattern: "*.cluster.local"
+              - matchPattern: "*.security"
+              - matchPattern: "*.svc"
               - matchPattern: "*.crowdsec.net"
               - matchPattern: "*.in-addr.arpa"
               - matchPattern: "*.ip6.arpa"
