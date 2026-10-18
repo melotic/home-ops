@@ -169,34 +169,15 @@ spec:
           drop:
             - ALL
       podSecurityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
-      extraInitContainers:
-        - name: credentials-readable
-          image: docker.io/library/busybox:1.38@sha256:fd7dc98638c8e305f4dc34e979f1c0fdfdcaeb0fbf8fcff77ae834b6da3d7e6e
-          command: ["sh", "-c", "chown 1000:1000 /tmp_config/local_api_credentials.yaml && chmod 0600 /tmp_config/local_api_credentials.yaml"]
-          securityContext:
-            runAsUser: 0
-            runAsGroup: 0
-            runAsNonRoot: false
-            allowPrivilegeEscalation: false
-            privileged: false
-          volumeMounts:
-            - name: crowdsec-config
-              mountPath: /tmp_config
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
       extraVolumes:
         - name: tmp
-          emptyDir: {}
-        - name: staging-crowdsec
           emptyDir: {}
       extraVolumeMounts:
         - name: tmp
           mountPath: /tmp
-        - name: staging-crowdsec
-          mountPath: /staging/etc/crowdsec
       metrics:
         enabled: true
     # ExternalSecret crowdsec (ESO/1Password) supplies both keys; chart's
