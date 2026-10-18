@@ -112,4 +112,30 @@ spec:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
         name: kyverno
+    - # CrowdSec-specific: the agent DaemonSet needs the LAPI; a failed upgrade
+      # must not remediate the release and delete the LAPI Deployment
+      patch: |-
+        - op: add
+          path: /spec/patches/-
+          value:
+            patch: |-
+              apiVersion: helm.toolkit.fluxcd.io/v2
+              kind: HelmRelease
+              metadata:
+                name: _
+              spec:
+                upgrade:
+                  cleanupOnFail: false
+                  remediation:
+                    remediateLastFailure: false
+                rollback:
+                  cleanupOnFail: false
+            target:
+              group: helm.toolkit.fluxcd.io
+              kind: HelmRelease
+              name: crowdsec
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
+        name: crowdsec
   wait: false
