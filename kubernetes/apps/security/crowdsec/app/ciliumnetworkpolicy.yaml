@@ -64,8 +64,12 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    - toEntities:
-        - world
+    - toFQDNs:
+        - matchName: api.crowdsec.net
+        - matchName: blocklists.api.crowdsec.net
+        - matchName: cdn-hub.crowdsec.net
+        - matchName: hub-data.crowdsec.net
+        - matchName: version.crowdsec.net
       toPorts:
         - ports:
             - port: "443"
