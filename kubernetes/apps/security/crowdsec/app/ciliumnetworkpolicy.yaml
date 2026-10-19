@@ -20,20 +20,14 @@ spec:
         - ports:
             - port: "8080"
               protocol: TCP
-    # WORKAROUND cilium/cilium#47913 (netkit + endpointRoutes + socketLB.hostNamespaceOnly):
-    # same-node ClusterIP replies are reverse-NATed before CT lookup and denied as new ingress.
-    # Remove once Zion's datapath is veth (Path B).
     - fromEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": security
             "k8s:app.kubernetes.io/name": crowdsec
-    # WORKAROUND cilium/cilium#47913 (netkit + endpointRoutes + socketLB.hostNamespaceOnly):
-    # same-node ClusterIP replies are reverse-NATed before CT lookup and denied as new ingress.
-    # Remove once Zion's datapath is veth (Path B).
-    - fromEndpoints:
-        - matchLabels:
-            "k8s:io.kubernetes.pod.namespace": database
-            "k8s:cnpg.io/poolerName": postgres-cluster-pooler-rw
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
     - fromEndpoints:
         - matchLabels:
             "k8s:io.kubernetes.pod.namespace": monitoring
