@@ -7,6 +7,8 @@ resources:
   - ./helmrepository.yaml
   - ./helmrelease.yaml
   - ./ciliumnetworkpolicy.yaml
+  - ./envoy-bouncer.yaml
+  - ./referencegrant.yaml
   - ./monitoring.yaml
   - ./grafanadashboard.yaml
   - ./httproute.yaml

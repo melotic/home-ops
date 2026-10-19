@@ -1,0 +1,85 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/apps/deployment_v1.json
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crowdsec-envoy-bouncer
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: crowdsec-envoy-bouncer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: crowdsec-envoy-bouncer
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: bouncer
+          image: ghcr.io/kdwils/envoy-proxy-bouncer:v0.6.0
+          ports:
+            - name: grpc
+              containerPort: 8080
+              protocol: TCP
+            - name: http
+              containerPort: 8081
+              protocol: TCP
+          env:
+            - name: ENVOY_BOUNCER_SERVER_GRPCPORT
+              value: "8080"
+            - name: ENVOY_BOUNCER_SERVER_HTTPPORT
+              value: "8081"
+            - name: ENVOY_BOUNCER_SERVER_LOGLEVEL
+              value: info
+            - name: ENVOY_BOUNCER_BOUNCER_ENABLED
+              value: "true"
+            - name: ENVOY_BOUNCER_BOUNCER_LAPIURL
+              value: http://crowdsec-service.security.svc.cluster.local:8080
+            - name: ENVOY_BOUNCER_BOUNCER_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec
+                  key: BOUNCER_KEY_envoy
+            - name: ENVOY_BOUNCER_WAF_ENABLED
+              value: "true"
+            - name: ENVOY_BOUNCER_WAF_APPSECURL
+              value: http://crowdsec-appsec-service.security.svc.cluster.local:7422
+            - name: ENVOY_BOUNCER_WAF_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: crowdsec
+                  key: BOUNCER_KEY_envoy
+          resources:
+            requests:
+              cpu: 25m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdsec-envoy-bouncer
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: crowdsec-envoy-bouncer
+  ports:
+    - name: grpc
+      port: 8080
+      targetPort: grpc
+      protocol: TCP
+    - name: http
+      port: 8081
+      targetPort: http
+      protocol: TCP
