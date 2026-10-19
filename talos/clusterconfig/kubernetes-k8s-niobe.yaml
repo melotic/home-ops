@@ -35,7 +35,7 @@ machine:
     disableSearchDomain: true
   install:
     disk: /dev/nvme0n1
-    image: factory.talos.dev/metal-installer-secureboot/db6a852d1634a3d29b8fd4359cd4a0c52bdaea797bdcb3d6e949724ea7d30451:v1.13.7
+    image: factory.talos.dev/metal-installer-secureboot/db6a852d1634a3d29b8fd4359cd4a0c52bdaea797bdcb3d6e949724ea7d30451:v1.14.4
     wipe: false
     grubUseUKICmdline: true
   files:
