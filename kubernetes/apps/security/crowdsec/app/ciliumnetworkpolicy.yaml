@@ -30,6 +30,16 @@ spec:
               protocol: TCP
     - fromEndpoints:
         - matchLabels:
+            "k8s:io.kubernetes.pod.namespace": security
+            "k8s:app.kubernetes.io/name": crowdsec-envoy-bouncer
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+            - port: "7422"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
             "k8s:io.kubernetes.pod.namespace": monitoring
             "k8s:app.kubernetes.io/name": prometheus
       toPorts:
