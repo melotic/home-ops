@@ -68,6 +68,11 @@ spec:
               login_password: 72h
         api:
           server:
+            # The chart's config.yaml omits online_client, which is why CAPI
+            # reported "no configuration for Central API". Community blocklist
+            # pull needs it; the key is registered once into the PVC.
+            online_client:
+              credentials_path: /etc/crowdsec/online_api_credentials.yaml
             auto_registration:
               enabled: true
               token: $${REGISTRATION_TOKEN}
