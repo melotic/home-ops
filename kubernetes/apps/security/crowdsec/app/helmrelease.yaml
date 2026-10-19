@@ -189,6 +189,29 @@ spec:
       service:
         labels:
           app.kubernetes.io/name: crowdsec
+    # AppSec runs the WAF rules that the Envoy bouncer calls in-process, so the
+    # request body/headers are inspected before the upstream sees them.
+    appsec:
+      enabled: true
+      replicas: 1
+      acquisitions:
+        - source: appsec
+          listen_addr: 0.0.0.0:7422
+          path: /
+          appsec_configs:
+            - crowdsecurity/appsec-default
+          labels:
+            type: appsec
+      env:
+        - name: COLLECTIONS
+          value: crowdsecurity/appsec-virtual-patching crowdsecurity/appsec-generic-rules
+      resources:
+        # virtual-patching rules are memory hungry; 256Mi OOMs under load
+        requests:
+          cpu: 100m
+          memory: 512Mi
+        limits:
+          memory: 1Gi
     # ExternalSecret crowdsec (ESO/1Password) supplies both keys; chart's
     # auto-generated crowdsec-lapi-secrets path stays unused
     secrets:
