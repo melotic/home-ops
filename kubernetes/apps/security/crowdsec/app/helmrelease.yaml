@@ -84,8 +84,9 @@ spec:
       deployAnnotations:
         reloader.stakater.com/auto: "true"
       env:
-        - name: DISABLE_ONLINE_API
-          value: "true"
+        # CAPI stays enabled: it pulls the community blocklist and the console
+        # link if one is enrolled. Registration is done once in-cluster
+        # (cscli capi register) and the key lives on the config PVC.
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
