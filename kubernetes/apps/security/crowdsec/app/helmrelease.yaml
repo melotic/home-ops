@@ -68,6 +68,11 @@ spec:
               login_password: 72h
         api:
           server:
+            # The chart's config.yaml omits online_client, which is why CAPI
+            # reported "no configuration for Central API". Community blocklist
+            # pull needs it; the key is registered once into the PVC.
+            online_client:
+              credentials_path: /etc/crowdsec/online_api_credentials.yaml
             auto_registration:
               enabled: true
               token: $${REGISTRATION_TOKEN}
@@ -84,8 +89,9 @@ spec:
       deployAnnotations:
         reloader.stakater.com/auto: "true"
       env:
-        - name: DISABLE_ONLINE_API
-          value: "true"
+        # CAPI stays enabled: it pulls the community blocklist and the console
+        # link if one is enrolled. Registration is done once in-cluster
+        # (cscli capi register) and the key lives on the config PVC.
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
