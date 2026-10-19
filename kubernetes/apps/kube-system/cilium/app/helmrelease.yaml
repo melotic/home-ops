@@ -6,10 +6,6 @@ metadata:
   name: cilium
 spec:
   interval: 1h
-  install:
-    disableWait: true
-  upgrade:
-    disableWait: true
   chartRef:
     kind: OCIRepository
     name: cilium
@@ -19,6 +15,8 @@ spec:
       enabled: true
       bbr: true
     bpf:
+      # veth: netkit + endpointRoutes + hostNamespaceOnly (required by the Tailscale
+      # Connector to reach LB VIPs) hits cilium/cilium#47913.
       datapathMode: veth
       masquerade: true
       vlanBypass: [25, 30]
@@ -104,6 +102,5 @@ spec:
       enabled: true
       hostNamespaceOnly: true
     updateStrategy:
-      type: OnDelete
       rollingUpdate:
         maxUnavailable: 1
