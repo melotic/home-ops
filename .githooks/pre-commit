@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+# Blocks secrets at commit time. Install with: just hooks
+set -eu
+
+cd "$(git rev-parse --show-toplevel)"
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+  printf 'pre-commit: gitleaks not installed (run: mise install)\n' >&2
+  exit 1
+fi
+
+# Generated cluster secrets never belong in git, regardless of content.
+blocked=$(git diff --cached --name-only --diff-filter=ACMR |
+  grep -E '^(talos/clusterconfig/|talos/talosconfig$|kubeconfig$|age\.key$)' || true)
+if [ -n "$blocked" ]; then
+  printf 'pre-commit: refusing to commit generated credentials:\n%s\n' "$blocked" >&2
+  exit 1
+fi
+
+exec gitleaks git --staged --no-banner --redact --config .gitleaks.toml
