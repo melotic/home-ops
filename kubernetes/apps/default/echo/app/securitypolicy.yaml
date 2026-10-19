@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.envoyproxy.io/securitypolicy_v1alpha1.json
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: echo-crowdsec
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: echo
+  extAuth:
+    # failOpen: an ext-auth outage must not take the site down. CrowdSec being
+    # unreachable degrades to "no WAF", not "no service".
+    failOpen: true
+    grpc:
+      backendRef:
+        name: crowdsec-envoy-bouncer
+        namespace: security
+        port: 8080
