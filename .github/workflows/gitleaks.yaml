@@ -1,0 +1,47 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: "Secret Scan"
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Secret Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Mise
+        uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5.2.0
+        with:
+          install_args: "aqua:gitleaks/gitleaks"
+
+      - name: Scan history
+        run: gitleaks git --no-banner --redact --config .gitleaks.toml
+
+  scan-status:
+    name: Success
+    needs: ["scan"]
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: All jobs passed?
+        if: ${{ needs.scan.result != 'success' }}
+        run: exit 1
+
+      - name: All jobs passed or skipped?
+        run: echo "${{ toJSON(needs.*.result) }}"

@@ -5,6 +5,12 @@ set shell := ['bash', '-euo', 'pipefail', '-c']
 [group: 'Bootstrap']
 mod bootstrap
 
+# Install the tracked git hooks (secret scanning)
+[group: 'Bootstrap']
+hooks:
+    git config core.hooksPath .githooks
+    @echo "git hooks installed"
+
 # Kube Recipes
 [group: 'Kube']
 mod kube "kubernetes"

@@ -1,0 +1,35 @@
+# Secret scanning. Used by .githooks/pre-commit and .github/workflows/gitleaks.yaml.
+# Defaults cover tokens, private keys and high-entropy strings; the rules below
+# cover Talos machine configs, whose CA keys are base64-encoded PEM and therefore
+# invisible to the default private-key rule.
+[extend]
+useDefault = true
+
+[[rules]]
+id = "talos-secretbox-key"
+description = "Talos secretbox encryption secret"
+regex = '''(?i)secretboxEncryptionSecret\s*:\s*[A-Za-z0-9+/=]{16,}'''
+
+[[rules]]
+id = "talos-join-token"
+description = "Talos bootstrap/join token"
+regex = '''(?i)\btoken\s*:\s*[a-z0-9]{6}\.[a-z0-9]{16}\b'''
+
+[[rules]]
+id = "base64-pem-private-key"
+description = "Base64-encoded PEM (Talos CA, etcd CA, service account keys)"
+regex = '''LS0tLS1CRUdJTi[A-Za-z0-9+/=]{20,}'''
+
+[allowlist]
+description = "Templates and references that never contain a live secret"
+paths = [
+  '''talos/.*\.j2''',
+  '''\.gitleaks\.toml''',
+  '''\.github/workflows/gitleaks\.yaml''',
+]
+regexes = [
+  # ExternalSecret templates: the matched secret is the literal {{ .foo }}
+  '''^\{\{\s*\.[a-z_]+\s*\}\}$''',
+  # 1Password item IDs used as remoteRef.key are identifiers, not credentials
+  '''^[a-z0-9]{26}$''',
+]
