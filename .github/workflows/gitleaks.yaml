@@ -30,8 +30,11 @@ jobs:
         with:
           install_args: "aqua:gitleaks/gitleaks"
 
-      - name: Scan history
-        run: gitleaks git --no-banner --redact --config .gitleaks.toml
+      # Working-tree scan: catches whatever the PR would land, including a
+      # commit made with --no-verify. Full-history scan runs in the hook and
+      # on demand: gitleaks git --no-banner --redact --config .gitleaks.toml
+      - name: Scan working tree
+        run: gitleaks dir . --no-banner --redact --config .gitleaks.toml
 
   scan-status:
     name: Success
