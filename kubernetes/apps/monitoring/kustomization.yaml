@@ -10,6 +10,7 @@ components:
 resources:
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
+  - ./grafana-irm/ks.yaml
   - ./grafana/ks.yaml
   - ./kromgo/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
