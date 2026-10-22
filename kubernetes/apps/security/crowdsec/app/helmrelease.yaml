@@ -15,6 +15,53 @@ spec:
         kind: HelmRepository
         name: crowdsec
         namespace: security
+  # Chart 0.24.2 registers the machine unconditionally in the init container,
+  # so a container restart after a node reboot loops forever on 403
+  # "user already exist". Drop once upstream skips registration when the
+  # credentials file is already populated.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: crowdsec-agent
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: crowdsec-agent
+              spec:
+                template:
+                  spec:
+                    initContainers:
+                      - name: wait-for-lapi-and-register
+                        command:
+                          - sh
+                          - -c
+                          - >-
+                            until nc "$LAPI_HOST" "$LAPI_PORT" -z; do echo waiting for lapi to start; sleep 5; done;
+                            if [ -s /tmp_config/local_api_credentials.yaml ]; then echo already registered; exit 0; fi;
+                            ln -s /staging/etc/crowdsec /etc/crowdsec && cscli lapi register --machine "$USERNAME" -u "$LAPI_URL" --token "$REGISTRATION_TOKEN" && cp /etc/crowdsec/local_api_credentials.yaml /tmp_config/local_api_credentials.yaml
+          - target:
+              kind: Deployment
+              name: crowdsec-appsec
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: crowdsec-appsec
+              spec:
+                template:
+                  spec:
+                    initContainers:
+                      - name: wait-for-lapi-and-register
+                        command:
+                          - sh
+                          - -c
+                          - >-
+                            until nc "$LAPI_HOST" "$LAPI_PORT" -z; do echo waiting for lapi to start; sleep 5; done;
+                            if [ -s /tmp_config/local_api_credentials.yaml ]; then echo already registered; exit 0; fi;
+                            ln -s /staging/etc/crowdsec /etc/crowdsec && cscli lapi register --machine "$USERNAME" -u "$LAPI_URL" --token "$REGISTRATION_TOKEN" && cp /etc/crowdsec/local_api_credentials.yaml /tmp_config/local_api_credentials.yaml
   values:
     # Talos runs containerd; the chart's acquis labels.type must read
     # containerd so the hub cri-logs s00-raw filter matches every line.
