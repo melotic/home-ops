@@ -12,4 +12,6 @@ patches:
       kind: Namespace
       name: not-used
 resources:
+  - ./csi-addons/source.yaml
+  - ./csi-addons/ks.yaml
   - ./rook-ceph/ks.yaml
