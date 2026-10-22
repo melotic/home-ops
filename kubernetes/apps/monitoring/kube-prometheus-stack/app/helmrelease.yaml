@@ -41,19 +41,15 @@ spec:
         alertmanagerConfiguration:
           name: alertmanager
         externalUrl: https://alertmanager.melotic.dev
+        replicas: 3
+        podAntiAffinity: hard
         resources:
           requests:
             cpu: 25m
             memory: 128Mi
           limits:
             memory: 128Mi
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: ceph-block
-              resources:
-                requests:
-                  storage: 1Gi
+        storage: {}
     prometheus:
       route:
         main:
