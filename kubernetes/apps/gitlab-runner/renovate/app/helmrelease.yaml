@@ -19,7 +19,7 @@ spec:
           renovate:
             image:
               repository: ghcr.io/mend/renovate-ce
-              tag: 15.7.0-full@sha256:f9f29f5b0f312b0ff26d250e602864d8bae021bd2abad26a27e7a839343928ed
+              tag: 15.8.0-full@sha256:b9afcd198f8be436daeecbdb579cbc09bc4e12cc0be72e945fa3950a0a54489d
             env:
               LOG_LEVEL: debug
               RENOVATE_ONBOARDING_CONFIG: '{"$schema":"https://docs.renovatebot.com/renovate-schema.json","extends":["config:best-practices"]}'
