@@ -33,7 +33,7 @@ spec:
                 - flux-system
                 - default
                 - cilium-secrets # Cilium-managed, no user pods
-                - csi-addons-system # labels come from a Flux patch over an external source
+                - csi-addons-system # vendor-owned manifests, no labels to patch
       validate:
         message: "Namespace must set label pod-security.kubernetes.io/enforce (restricted | baseline | privileged)"
         pattern:
