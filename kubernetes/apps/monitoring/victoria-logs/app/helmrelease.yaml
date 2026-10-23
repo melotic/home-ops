@@ -17,7 +17,7 @@ spec:
       persistentVolume:
         enabled: true
         storageClassName: ceph-block
-        size: 20Gi
+        size: 40Gi
       retentionPeriod: 30d
       extraArgs:
         defaultMsgValue: structured log record
