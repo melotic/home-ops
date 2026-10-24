@@ -39,7 +39,7 @@ spec:
 
         - alert: KustomizationReconciliationFailure
           expr: gotk_resource_info{customresource_kind="Kustomization", ready!="True"} == 1
-          for: 5m
+          for: 15m
           annotations:
             summary: >-
               Kustomization {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready
