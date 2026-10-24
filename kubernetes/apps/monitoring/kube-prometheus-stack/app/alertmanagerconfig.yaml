@@ -58,6 +58,9 @@ spec:
           - name: severity
             value: critical|warning|error
             matchType: =~
+        groupBy: ["severity"]
+        groupWait: 2m
+        groupInterval: 15m
   inhibitRules:
     - equal: ["namespace", "alertname"]
       sourceMatch:
@@ -97,7 +100,7 @@ spec:
           url: http://matrix-alertmanager-receiver.matrix.svc.cluster.local:8080/alerts/alerts
     - name: webhook
       webhookConfigs:
-        - sendResolved: true
+        - sendResolved: false
           urlSecret:
             name: alertmanager-webhook-secret
             key: WEBHOOK_URL
