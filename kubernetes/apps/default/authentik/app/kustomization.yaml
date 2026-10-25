@@ -10,24 +10,14 @@ resources:
 configMapGenerator:
   - name: authentik-blueprints
     files:
-      - grafana.yaml=./blueprints/grafana.yaml
-      - harbor.yaml=./blueprints/harbor.yaml
-      - gitlab.yaml=./blueprints/gitlab.yaml
-      - karakeep.yaml=./blueprints/karakeep.yaml
-      - immich.yaml=./blueprints/immich.yaml
-      - matrix.yaml=./blueprints/matrix.yaml
-      - miniflux.yaml=./blueprints/miniflux.yaml
-      - flux-operator.yaml=./blueprints/flux-operator.yaml
-      - open-webui.yaml=./blueprints/open-webui.yaml
-      - paperless-ngx.yaml=./blueprints/paperless-ngx.yaml
-      - slskd.yaml=./blueprints/slskd.yaml
-      - ghidra-server.yaml=./blueprints/ghidra-server.yaml
-      - outpost.yaml=./blueprints/outpost.yaml
-      - flow-login.yaml=./blueprints/flow-login.yaml
-      - brand.yaml=./blueprints/brand.yaml
-      - reputation.yaml=./blueprints/reputation.yaml
-      - cloudflare-access.yaml=./blueprints/cloudflare-access.yaml
-      - groups.yaml=./blueprints/groups.yaml
+      - ./blueprints/brand.yaml
+      - ./blueprints/cloudflare-access.yaml
+      - ./blueprints/flow-login.yaml
+      - ./blueprints/ghidra-server.yaml
+      - ./blueprints/groups.yaml
+      - ./blueprints/oauth2.yaml
+      - ./blueprints/outpost.yaml
+      - ./blueprints/reputation.yaml
 generatorOptions:
   disableNameSuffixHash: true
   annotations:

@@ -50,17 +50,40 @@ spec:
         allowPrivilegeEscalation: false
         readOnlyRootFilesystem: true
         capabilities: {drop: ["ALL"]}
-    prometheus:
-      rules:
-        enabled: true
-    server:
+    global:
       priorityClassName: cluster-critical
-      securityContext: &podSecurityContext
+      podAnnotations:
+        reloader.stakater.com/auto: "true"
+      securityContext:
         runAsNonRoot: true
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+      envFrom:
+        - secretRef:
+            name: authentik-secret
+      volumeMounts:
+        - mountPath: /postgres-creds
+          name: postgres-creds
+          readOnly: true
+        - mountPath: /data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      volumes:
+        - name: postgres-creds
+          secret:
+            secretName: authentik-postgres
+        - name: data
+          persistentVolumeClaim:
+            claimName: authentik
+        - name: tmp
+          emptyDir: {}
+    prometheus:
+      rules:
+        enabled: true
+    server:
       containerSecurityContext: *containerSecurityContext
       resources:
         requests:
@@ -68,15 +91,10 @@ spec:
           memory: 768Mi
         limits:
           memory: 1Gi
-      envFrom:
-        - secretRef:
-            name: authentik-secret
       metrics:
         enabled: true
         serviceMonitor:
           enabled: true
-      podAnnotations:
-        reloader.stakater.com/auto: "true"
       route:
         main:
           enabled: true
@@ -86,26 +104,7 @@ spec:
             - name: envoy-external
               namespace: network
               sectionName: https
-      volumeMounts: &volumeMounts
-        - mountPath: /postgres-creds
-          name: postgres-creds
-          readOnly: true
-        - mountPath: /data
-          name: data
-        - mountPath: /tmp
-          name: tmp
-      volumes: &volumes
-        - name: postgres-creds
-          secret:
-            secretName: authentik-postgres
-        - name: data
-          persistentVolumeClaim:
-            claimName: authentik
-        - name: tmp
-          emptyDir: {}
     worker:
-      priorityClassName: cluster-critical
-      securityContext: *podSecurityContext
       containerSecurityContext: *containerSecurityContext
       resources:
         requests:
@@ -113,10 +112,3 @@ spec:
           memory: 512Mi
         limits:
           memory: 768Mi
-      envFrom:
-        - secretRef:
-            name: authentik-secret
-      podAnnotations:
-        reloader.stakater.com/auto: "true"
-      volumeMounts: *volumeMounts
-      volumes: *volumes

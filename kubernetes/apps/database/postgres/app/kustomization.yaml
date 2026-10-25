@@ -3,25 +3,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./databases/app.yaml
-  - ./databases/atuin.yaml
-  - ./databases/authentik.yaml
-  - ./databases/crowdsec.yaml
-  - ./databases/firefly.yaml
-  - ./databases/harbor.yaml
-  - ./databases/gitlab.yaml
-  - ./databases/home-assistant.yaml
-  - ./databases/immich.yaml
-  - ./databases/mas.yaml
-  - ./databases/miniflux.yaml
-  - ./databases/openwebui.yaml
-  - ./databases/paperless.yaml
-  - ./databases/prowlarr.yaml
-  - ./databases/radarr.yaml
-  - ./databases/renovate.yaml
-  - ./databases/seerr.yaml
-  - ./databases/sonarr.yaml
-  - ./databases/synapse.yaml
+  - ./bootstrap-app.yaml
   - ./externalsecret-backup.yaml
   - ./helmrelease.yaml
   - ./objectstore.yaml
@@ -30,40 +12,4 @@ resources:
   - ./monitoring/pooler-podmonitor.yaml
   - ./pooler/pooler-rw.yaml
   - ./prometheusrule-backup.yaml
-  - ./roles/app.yaml
-  - ./roles/atuin.yaml
-  - ./secrets/atuin.yaml
-  - ./roles/authentik.yaml
-  - ./secrets/authentik.yaml
-  - ./roles/crowdsec.yaml
-  - ./secrets/crowdsec.yaml
-  - ./roles/firefly.yaml
-  - ./secrets/firefly.yaml
-  - ./roles/gitlab.yaml
-  - ./secrets/gitlab.yaml
-  - ./roles/harbor.yaml
-  - ./secrets/harbor.yaml
-  - ./roles/home-assistant.yaml
-  - ./secrets/home-assistant.yaml
-  - ./roles/immich.yaml
-  - ./secrets/immich.yaml
-  - ./roles/mas.yaml
-  - ./secrets/mas.yaml
-  - ./roles/miniflux.yaml
-  - ./secrets/miniflux.yaml
-  - ./roles/openwebui.yaml
-  - ./secrets/openwebui.yaml
-  - ./roles/paperless.yaml
-  - ./secrets/paperless.yaml
-  - ./roles/prowlarr.yaml
-  - ./secrets/prowlarr.yaml
-  - ./roles/radarr.yaml
-  - ./secrets/radarr.yaml
-  - ./roles/renovate.yaml
-  - ./secrets/renovate.yaml
-  - ./roles/seerr.yaml
-  - ./secrets/seerr.yaml
-  - ./roles/sonarr.yaml
-  - ./secrets/sonarr.yaml
-  - ./roles/synapse.yaml
-  - ./secrets/synapse.yaml
+  - ./tenants.yaml
