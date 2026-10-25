@@ -1,0 +1,109 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/fluxcd.controlplane.io/resourceset_v1.json
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: postgres-tenants
+spec:
+  # Per input: role + database + password secret (1Password item `<name>-postgres` unless `item` is set).
+  # `spec` replaces the default Database extras (public schema owned by the tenant).
+  inputs:
+    - name: atuin
+    - name: authentik
+    - name: crowdsec
+    - name: firefly
+    - name: gitlab
+      spec:
+        schemas:
+          - {name: public, owner: gitlab}
+          - {name: gitlab_partitions_dynamic, owner: gitlab}
+          - {name: gitlab_partitions_static, owner: gitlab}
+        extensions:
+          - {name: pg_trgm}
+          - {name: btree_gist}
+    - name: harbor
+    - name: home-assistant
+      spec: {}
+    - name: immich
+      spec:
+        extensions:
+          - {name: vector}
+          - {name: vchord}
+          - {name: cube}
+          - {name: earthdistance}
+    - name: mas
+    - name: miniflux
+    - name: openwebui
+      item: open-webui-postgres
+    - name: paperless
+    - name: prowlarr
+    - name: radarr
+    - name: renovate
+      item: andtkeb6y2rfszjfubuwmclz4i
+    - name: seerr
+    - name: sonarr
+    - name: synapse
+      spec:
+        encoding: UTF8
+        localeCollate: C
+        localeCType: C
+        template: template0
+        schemas:
+          - {name: public, owner: synapse}
+  resourcesTemplate: |-
+    ---
+    apiVersion: postgresql.cnpg.io/v1
+    kind: DatabaseRole
+    metadata:
+      name: << inputs.name >>
+      namespace: database
+    spec:
+      name: << inputs.name >>
+      login: true
+      passwordSecret:
+        name: postgres-user-<< inputs.name >>
+      cluster:
+        name: postgres-cluster
+    ---
+    apiVersion: postgresql.cnpg.io/v1
+    kind: Database
+    metadata:
+      name: << inputs.name >>
+      namespace: database
+    spec:
+      name: << inputs.name >>
+      owner: << inputs.name >>
+      cluster:
+        name: postgres-cluster
+      <<- if not (hasKey inputs "spec") >>
+      schemas:
+        - {name: public, owner: << inputs.name >>}
+      <<- else if inputs.spec >>
+      <<- toYaml inputs.spec | nindent 2 >>
+      <<- end >>
+    ---
+    apiVersion: external-secrets.io/v1
+    kind: ExternalSecret
+    metadata:
+      name: postgres-user-<< inputs.name >>
+      namespace: database
+    spec:
+      refreshPolicy: Periodic
+      refreshInterval: 1h
+      secretStoreRef:
+        kind: ClusterSecretStore
+        name: onepassword
+      target:
+        name: postgres-user-<< inputs.name >>
+        template:
+          type: kubernetes.io/basic-auth
+          metadata:
+            labels:
+              cnpg.io/reload: "true"
+          data:
+            user: << inputs.name >>
+            username: << inputs.name >>
+            password: "{{ .password }}"
+      dataFrom:
+        - extract:
+            key: << get inputs "item" | default (printf "%s-postgres" inputs.name) >>

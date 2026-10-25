@@ -36,7 +36,9 @@ No unit-test suite exists; CI is flate + yamlfmt + tflint + kubeconform (`.githu
 - **Domain is hardcoded** `melotic.dev`; `cluster-secrets` postBuild substitution only provides `${IPV6_PREFIX}`.
 - **Security context mandatory**: `allowPrivilegeEscalation: false`, `readOnlyRootFilesystem: true`, `capabilities: {drop: ["ALL"]}`, pod `runAsNonRoot`/uid 1000; add `tmp` emptyDir when rootfs is read-only.
 - **Storage**: default `ceph-block` (RBD); CephFS via `ceph-filesystem`; CNPG/Postgres uses `openebs-hostpath` (do not move to Ceph). NFS at `construct.melotic.dev:/var/nfs/shared/data` → `/data`.
-- **Postgres**: CNPG cluster `postgres-cluster` in `database` ns; app creds via secret `postgres-user-<app>`. Dragonfly (Redis) at `dragonfly.database:6379`, DBs 0–15 only.
+- **Postgres**: CNPG cluster `postgres-cluster` in `database` ns. New DB = one input in
+  `database/postgres/app/tenants.yaml` (ResourceSet → DatabaseRole/Database/`postgres-user-<app>`) plus the
+  `components/cnpg-database` component in the app's `ks.yaml`. Dragonfly (Redis) at `dragonfly.database:6379`, DBs 0–15 only.
 - **Config reloads**: annotate controllers with `reloader.stakater.com/auto: "true"` (ReLoader).
 - **Secrets**: `*.sops.yaml` under `kubernetes/` and `talos/` are age-encrypted (`encrypted_regex: "^(data|stringData)$"` — everything else stays plaintext). Never commit decrypted secrets; verify with `sops -d` before pushing. Runtime secrets come from ExternalSecret → 1Password (`ClusterSecretStore: onepassword`).
 - **SOPS/age key**: repo root `age.key`, decrypt-only; never commit it.
