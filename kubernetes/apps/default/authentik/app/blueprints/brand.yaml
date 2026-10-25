@@ -43,434 +43,102 @@ entries:
           theme:
             base: dark
       branding_custom_css: |-
-        /* melotic brand — "Matrix" terminal redesign for sso.melotic.dev (zion)
-         *
-         * The login is reframed as a phosphor-green terminal window sitting in
-         * front of falling "digital rain", with command-prompt inputs, a
-         * glitching title and a blinking cursor.
-         *
-         * Palette:
-         *   bg:        #000000  (void)
-         *   panel:     #05140a  (terminal body)
-         *   border:    #00c853  (live green frame)
-         *   text:      #b6ffc8  (phosphor)
-         *   muted:     #4f9d63  (dim green)
-         *   accent:    #00ff41  (matrix green)
-         */
-
-        /* authentik scopes its dark palette to html[data-theme="dark"] (higher
-         * specificity than :root); matching that selector + :host (which wins
-         * inside each adopted shadow root) lets these tokens govern the theme
-         * without per-element !important overrides */
-        :root, :host, html[data-theme="dark"] {
+        /* melotic: matrix-green accent on authentik's dark theme; terminal styling on the login card only */
+        :root, :host, :host([theme="dark"]), html[data-theme="dark"] {
           color-scheme: dark;
+          --zion-green: #00ff41;
+          --zion-green-hover: #6dff98;
+          --zion-text: #cdf7d8;
+          --zion-muted: #79b58b;
+          --zion-line: #14492a;
+          --zion-panel: #050f09;
+          --zion-mono: ui-monospace, "JetBrains Mono", "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
 
-          --ak-font-mono:
-            ui-monospace, "SFMono-Regular", "JetBrains Mono", "Cascadia Code", Menlo, Consolas, monospace;
-
-          --pf-global--BackgroundColor--100: #000000;
-          --pf-global--BackgroundColor--200: #000000;
-          --pf-global--BackgroundColor--dark-100: #000000;
-          --pf-global--BackgroundColor--dark-200: #000000;
-          --pf-global--Color--100: #b6ffc8;
-          --pf-global--Color--200: #4f9d63;
-          --pf-global--primary-color--100: #00ff41;
-          --pf-global--primary-color--200: #00c853;
-          --pf-global--link--Color: #00ff41;
-          --pf-global--link--Color--hover: #7dff9f;
-          --pf-global--link--Color--visited: #00ff41;
-          --pf-global--BorderColor--100: #0d3b1e;
-          --pf-global--FontFamily--text: var(--ak-font-mono);
-          --pf-global--FontFamily--heading: var(--ak-font-mono);
-          --ak-flow-background: none;
-
-          /* semantic surface tokens — the console "panel" tint */
-          --ak-surface-panel: rgba(2,17,10,0.85);
-
-          /* drive PatternFly component surfaces from the tokens instead of
-           * overriding each element with !important */
-          --pf-c-page__main-nav--BackgroundColor: var(--ak-surface-panel);
-          --pf-c-page__sidebar--BackgroundColor: var(--ak-surface-panel);
-          --ak-c-page-navbar__brand---BackgroundColor: var(--ak-surface-panel);
-        }
-
-        /* ---- Animations ------------------------------------------------- */
-        @keyframes ak-rain {
-          0%   { background-position-y: 0, 0, 0; }
-          100% { background-position-y: 1200px, 900px, 1500px; }
-        }
-        @keyframes ak-scan {
-          0%   { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
-        }
-        @keyframes ak-cursor { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-        @keyframes ak-flicker {
-          0%, 19%, 21%, 100% { opacity: 1; }
-          20% { opacity: 0.72; }
-        }
-        @keyframes ak-glitch {
-          0%, 92%, 100% { transform: translate(0, 0); text-shadow: 0 0 12px rgba(0,255,65,0.55); }
-          93% { transform: translate(-2px, 1px); text-shadow: 2px 0 #00ff41, -2px 0 #00c8ff; }
-          96% { transform: translate(2px, -1px);  text-shadow: -2px 0 #00ff41, 2px 0 #00c8ff; }
-        }
-        @keyframes ak-bootfade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-
-        /* ---- Background: digital rain ----------------------------------- */
-        .pf-c-background-image {
-          --pf-c-background-image--BackgroundImage: none !important;
-          --pf-c-background-image--BackgroundImage--sm: none !important;
-          --pf-c-background-image--BackgroundImage--lg: none !important;
-          --pf-c-background-image--BackgroundImage-2x: none !important;
-          --pf-c-background-image--Filter: none !important;
-          background-color: #000000 !important;
-          background-image:
-            repeating-linear-gradient(0deg, rgba(0,255,65,0.55) 0, rgba(0,255,65,0) 14px, transparent 28px),
-            repeating-linear-gradient(0deg, rgba(0,255,65,0.30) 0, rgba(0,255,65,0) 10px, transparent 22px),
-            repeating-linear-gradient(0deg, rgba(0,200,83,0.18) 0, rgba(0,200,83,0) 18px, transparent 40px) !important;
-          background-size: 3px 100%, 3px 100%, 3px 100% !important;
-          background-position-x: 6%, 23%, 41% !important;
-          animation: ak-rain 6s linear infinite;
-          opacity: 1;
-        }
-        /* second rain field on the right half + global vignette */
-        .pf-c-background-image::after {
-          content: "" !important;
-          position: absolute; inset: 0;
-          pointer-events: none;
-          background-image:
-            repeating-linear-gradient(0deg, rgba(0,255,65,0.40) 0, rgba(0,255,65,0) 12px, transparent 26px),
-            repeating-linear-gradient(0deg, rgba(0,255,65,0.22) 0, rgba(0,255,65,0) 16px, transparent 34px),
-            radial-gradient(circle at 50% 38%, transparent 30%, rgba(0,0,0,0.85) 100%);
-          background-size: 3px 100%, 3px 100%, 100% 100%;
-          background-position-x: 63%, 84%, 0;
-          animation: ak-rain 8s linear infinite reverse;
-        }
-        /* sweeping scanline over everything */
-        .pf-c-background-image::before {
-          content: "" !important;
-          display: block !important;
-          position: absolute; inset: 0;
-          pointer-events: none;
-          background: linear-gradient(180deg, transparent, rgba(0,255,65,0.10) 50%, transparent);
-          height: 33%;
-          animation: ak-scan 7s linear infinite;
+          --ak-accent: var(--zion-green);
+          --pf-global--primary-color--100: var(--zion-green);
+          --pf-global--primary-color--200: var(--zion-green-hover);
+          --pf-global--active-color--100: var(--zion-green);
+          --pf-global--active-color--400: var(--zion-green);
+          --pf-global--link--Color: var(--zion-green);
+          --pf-global--link--Color--hover: var(--zion-green-hover);
+          --pf-global--link--Color--visited: var(--zion-green);
+          --pf-global--link--Color--light: var(--zion-green);
+          --pf-global--link--Color--light--hover: var(--zion-green-hover);
+          --pf-global--link--Color--dark: var(--zion-green);
+          --pf-global--link--Color--dark--hover: var(--zion-green-hover);
+          --pf-global--primary-color--light-100: var(--zion-green);
+          --pf-global--primary-color--dark-100: var(--zion-green);
+          --pf-global--Color--100: var(--zion-text);
+          --pf-global--Color--200: var(--zion-muted);
+          --pf-global--BorderColor--100: var(--zion-line);
+          --pf-global--BackgroundColor--100: var(--zion-panel);
+          --pf-global--BackgroundColor--200: #000;
+          --pf-global--BackgroundColor--150: var(--zion-panel);
+          --pf-global--BackgroundColor--light-100: var(--zion-panel);
+          --pf-global--BackgroundColor--300: #0a1a10;
+          --pf-global--BackgroundColor--400: #0e2416;
+          --pf-global--BackgroundColor--dark-100: var(--zion-panel);
+          --pf-global--BackgroundColor--dark-200: #000;
+          --pf-c-page__sidebar--BackgroundColor: var(--zion-panel);
+          --pf-c-page__header--BackgroundColor: var(--zion-panel);
+          --ak-dark-background: #000;
+          --ak-dark-background-light: var(--zion-panel);
+          --ak-dark-background-lighter: #0a1a10;
         }
 
-        /* ---- Terminal window -------------------------------------------- */
+        /* doubled class outranks authentik's component defaults, which load after this sheet */
+        .pf-c-button.pf-c-button,
+        .pf-c-dropdown.pf-c-dropdown {
+          --pf-c-dropdown__toggle--m-primary--Color: #001a08;
+          --pf-c-dropdown__toggle--m-primary--hover--Color: #001a08;
+          --pf-c-button--m-primary--Color: #001a08;
+          --pf-c-button--m-primary--hover--Color: #001a08;
+          --pf-c-button--m-primary--active--Color: #001a08;
+          --pf-c-button--m-primary--BackgroundColor: var(--zion-green);
+          --pf-c-button--m-primary--hover--BackgroundColor: var(--zion-green-hover);
+          --pf-c-button--m-primary--active--BackgroundColor: var(--zion-green-hover);
+          --pf-c-button--m-secondary--Color: var(--zion-green);
+          --pf-c-button--m-secondary--after--BorderColor: var(--zion-green);
+          --pf-c-button--m-secondary--hover--Color: var(--zion-green-hover);
+          --pf-c-button--m-secondary--hover--after--BorderColor: var(--zion-green-hover);
+        }
+
+        .pf-c-form-control:focus,
+        .pf-c-form-control:focus-visible {
+          outline: none;
+          border-color: var(--zion-green);
+          box-shadow: 0 0 0 1px var(--zion-green), 0 0 12px rgba(0, 255, 65, 0.25);
+        }
+
+        /* ---- login card --------------------------------------------------- */
+        ak-locale-select { display: none; }
+
         .pf-c-login__main {
-          position: relative;
-          background: linear-gradient(180deg, rgba(5,20,10,0.96), rgba(0,8,4,0.97)) !important;
-          border: 1px solid #00c853;
+          --pf-global--FontFamily--text: var(--zion-mono);
+          --pf-global--FontFamily--heading: var(--zion-mono);
+          font-family: var(--zion-mono);
+          background: rgba(3, 12, 7, 0.94);
+          border: 1px solid var(--zion-line);
           border-radius: 8px;
           overflow: hidden;
-          padding-top: 2.1rem;
-          box-shadow:
-            0 0 0 1px rgba(0,255,65,0.25),
-            0 0 34px rgba(0,255,65,0.30),
-            inset 0 0 60px rgba(0,255,65,0.06),
-            0 24px 60px rgba(0,0,0,0.85);
-          animation: ak-bootfade 0.5s ease both, ak-flicker 5.5s linear 0.5s infinite;
+          padding-top: 2rem;
+          box-shadow: 0 0 32px rgba(0, 255, 65, 0.12), 0 24px 64px rgba(0, 0, 0, 0.8);
         }
-        /* title bar with window dots + path */
         .pf-c-login__main::before {
-          content: "zion@matrix: ~/auth -- login";
+          content: "zion@matrix:~/auth$";
           position: absolute;
-          top: 0; left: 0; right: 0;
-          height: 2.1rem;
+          inset: 0 0 auto;
+          height: 2rem;
           display: flex;
           align-items: center;
-          padding-left: 4.6rem;
-          font-family: var(--ak-font-mono);
-          font-size: 0.78rem;
-          letter-spacing: 0.04em;
-          color: #6effa0;
-          background: #02180c;
-          border-bottom: 1px solid #00c853;
-          box-shadow: inset 0 -1px 0 rgba(0,255,65,0.25);
+          padding-inline: 1rem;
+          font-size: 0.75rem;
+          color: var(--zion-muted);
+          background: #020a05;
+          border-bottom: 1px solid var(--zion-line);
         }
-        /* three window dots */
-        .pf-c-login__main::after {
-          content: "";
-          position: absolute;
-          top: 0.78rem; left: 1rem;
-          width: 0.55rem; height: 0.55rem;
-          border-radius: 50%;
-          background: #00ff41;
-          box-shadow:
-            0 0 6px #00ff41,
-            1.1rem 0 0 #00c853, 1.1rem 0 6px rgba(0,200,83,0.6),
-            2.2rem 0 0 #0d3b1e;
-        }
-
-        .pf-c-login__main-header { padding: 1.6rem 2.4rem 0 !important; }
-        .pf-c-login__main-body   { padding: 1.4rem 2.4rem 1.8rem !important; }
-        .pf-c-login__main-footer { padding: 0 2.4rem 1.8rem !important; }
-
-        /* ---- Logo + title ----------------------------------------------- */
-        /* phosphor glow on every brand logo (login + console header) */
-        .pf-c-brand { filter: drop-shadow(0 0 10px rgba(0,255,65,0.55)); }
-        /* login screen: large, centered logo */
-        .pf-c-login .pf-c-brand {
-          width: 230px;
-          height: auto;
-          max-width: 80%;
-          margin: 0.25rem auto 0.5rem;
-          display: block;
-        }
-        /* user-interface header: left-aligned, header-sized logo */
-        .pf-c-page__header-brand .pf-c-brand {
-          width: auto;
-          max-height: 38px;
-          margin: 0;
-        }
-
-        .pf-c-login__main-header .pf-c-title {
-          font-family: var(--ak-font-mono) !important;
-          color: #d7ffe2 !important;
-          letter-spacing: 0.06em;
-          animation: ak-glitch 4s steps(1) infinite;
-        }
-        /* prepend a shell prompt + append a blinking block cursor */
-        .pf-c-login__main-header .pf-c-title::before { content: "> "; color: #00ff41; }
-        .pf-c-login__main-header .pf-c-title::after {
-          content: "_";
-          margin-left: 0.15em;
-          color: #00ff41;
-          animation: ak-cursor 1.05s steps(1) infinite;
-        }
-
-        /* ---- Form: command-prompt fields -------------------------------- */
-        /* Uniform vertical rhythm so every field group is spaced identically
-         * (Authentik renders the inline password field in a separate group
-         * from the identification field, which otherwise drift apart). */
-        .pf-c-form__group,
-        ak-form-element-horizontal {
-          display: block;
-          margin: 0 0 1.25rem 0 !important;
-          padding: 0 !important;
-        }
-        .pf-c-form__group:last-of-type,
-        ak-form-element-horizontal:last-of-type {
-          margin-bottom: 0 !important;
-        }
-
-        .pf-c-form__group-label,
-        .pf-c-form__label {
-          display: block;
-          margin: 0 0 0.4rem 0 !important;
-          padding: 0 !important;
-        }
-
-        .pf-c-form__label-text,
-        .pf-c-form__label {
-          font-family: var(--ak-font-mono);
-          color: #6effa0;
-          text-transform: lowercase;
-          letter-spacing: 0.03em;
-        }
-        /* prompt glyph before every field label */
-        .pf-c-form__group-label .pf-c-form__label-text::before,
-        .pf-c-form__label .pf-c-form__label-text::before {
-          content: "> ";
-          color: #00ff41;
-        }
-
-        .pf-c-form-control {
-          --pf-c-form-control--BackgroundColor: #010c06;
-          --pf-c-form-control--BorderTopColor: #0d3b1e;
-          --pf-c-form-control--BorderRightColor: #0d3b1e;
-          --pf-c-form-control--BorderLeftColor: #0d3b1e;
-          --pf-c-form-control--BorderBottomColor: #00c853;
-          --pf-c-form-control--Color: #b6ffc8;
-          --pf-c-form-control--placeholder--Color: #2f6b41;
-          font-family: var(--ak-font-mono);
-          border: 1px solid #0d3b1e;
-          border-radius: 4px;
-          caret-color: #00ff41;
-          transition: box-shadow 0.15s ease, border-color 0.15s ease;
-        }
-        .pf-c-form-control:focus {
-          --pf-c-form-control--focus--BorderBottomColor: #00ff41;
-          border-color: #00ff41;
-          box-shadow: 0 0 0 1px rgba(0,255,65,0.30), 0 0 16px rgba(0,255,65,0.30);
-        }
-
-        /* App-library search field — constrain oversized default size */
-        input[part="search-input"],
-        #application-search-input {
-          font-size: 0.95rem;
-          line-height: 1.4;
-        }
-        /* search renders as an underline, so drop the boxy focus ring and
-         * keep a single glowing underline instead of a doubled rectangle */
-        input[part="search-input"]:focus,
-        #application-search-input:focus {
-          box-shadow: none;
-          border-color: transparent;
-          border-bottom-color: #00ff41;
-        }
-
-        /* ---- Execute button --------------------------------------------- */
-        .pf-c-login__main-body .pf-c-button.pf-m-primary,
-        .pf-c-button.pf-m-primary {
-          --pf-c-button--m-primary--BackgroundColor: transparent;
-          --pf-c-button--m-primary--hover--BackgroundColor: #00ff41;
-          --pf-c-button--m-primary--active--BackgroundColor: #00c853;
-          --pf-c-button--m-primary--Color: #00ff41;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.55em;
-          font-family: var(--ak-font-mono);
-          font-weight: 700;
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          border: 1px solid #00ff41;
-          border-radius: 4px;
-          background: transparent;
-          box-shadow: 0 0 14px rgba(0,255,65,0.25), inset 0 0 14px rgba(0,255,65,0.08);
-          transition: color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-        }
-        /* brackets flank the label as flex items; reset PatternFly's absolute
-         * ::after border-overlay base so "]" isn't pinned top-left */
-        .pf-c-button.pf-m-primary::before,
-        .pf-c-button.pf-m-primary::after {
-          position: static;
-          inset: auto;
-          border: 0;
-          width: auto;
-          height: auto;
-          margin: 0;
-          padding: 0;
-          line-height: 1;
-          font-weight: 700;
-          color: #00ff41;
-        }
-        .pf-c-button.pf-m-primary::before { content: "["; }
-        .pf-c-button.pf-m-primary::after  { content: "]"; }
-        .pf-c-button.pf-m-primary:hover::before,
-        .pf-c-button.pf-m-primary:hover::after { color: #02140a; }
-        .pf-c-button.pf-m-primary:hover {
-          color: #02140a !important;
-          --pf-c-button--m-primary--Color: #02140a;
-          box-shadow: 0 0 26px rgba(0,255,65,0.65);
-        }
-
-        /* secondary buttons (e.g. "Admin interface") — drive PatternFly's own
-         * ::after border-overlay vars instead of forcing a real border */
-        .pf-c-button.pf-m-secondary {
-          --pf-c-button--m-secondary--Color: #00ff41;
-          --pf-c-button--m-secondary--after--BorderColor: #00c853;
-          --pf-c-button--m-secondary--hover--Color: #02140a;
-          --pf-c-button--m-secondary--hover--BackgroundColor: #00ff41;
-          --pf-c-button--m-secondary--hover--after--BorderColor: #00ff41;
-          font-family: var(--ak-font-mono);
-        }
-
-        /* ---- Misc ------------------------------------------------------- */
-        a { color: #00ff41; }
-        a:hover { color: #7dff9f; text-shadow: 0 0 8px rgba(0,255,65,0.45); }
-
-        .pf-c-login__header,
-        .pf-c-login__footer { color: #4f9d63; font-family: var(--ak-font-mono); }
-
-        /* ---- Admin + user console (cards, tables) ----------------------- */
-        .pf-c-card {
-          background: linear-gradient(180deg, rgba(5,20,10,0.85), rgba(0,8,4,0.92)) !important;
-          border: 1px solid #0d3b1e;
-          border-radius: 6px;
-          color: #b6ffc8;
-        }
-        .pf-c-card__title,
-        .pf-c-card__title i { color: #6effa0 !important; }
-
-        .pf-c-table {
-          --pf-c-table--BackgroundColor: transparent;
-          --pf-c-table--BorderColor: #0d3b1e;
-          --pf-c-table--cell--Color: #b6ffc8;
-          color: #b6ffc8;
-          font-family: var(--ak-font-mono);
-          background: transparent;
-        }
-        .pf-c-table thead th,
-        .pf-c-table__text,
-        .pf-c-table__button { color: #6effa0 !important; font-family: var(--ak-font-mono); }
-        .pf-c-table tbody tr { border-bottom: 1px solid rgba(13, 59, 30, 0.55); }
-        .pf-c-table tbody tr:hover,
-        .pf-c-table tbody tr:focus-within { background: rgba(0, 255, 65, 0.06) !important; }
-        .pf-c-table__button:hover .pf-c-table__text { color: #00ff41 !important; }
-
-        /* ---- Console background (admin + user shell) ------------------- */
-        .pf-c-page,
-        .pf-c-page__main-section {
-          background-color: #020a05 !important;
-          background-image:
-            radial-gradient(1700px 1200px at 50% -8%, rgba(0,255,65,0.17), rgba(0,255,65,0.04) 52%, transparent 92%),
-            radial-gradient(1200px 760px at 100% 118%, rgba(0,200,83,0.08), transparent 82%) !important;
-          background-attachment: fixed !important;
-        }
-        .pf-c-page__sidebar { background: var(--ak-surface-panel) !important; }
-        /* admin top navbar inherits --pf-c-page__main-nav--BackgroundColor
-         * from :root; only the text colors need element targeting */
-        .main-content .page-title,
-        .main-content .page-description { color: #b6ffc8; }
-        .pf-c-toolbar { background: transparent !important; color: #b6ffc8; }
-
-        /* pagination bars — surface comes from the :root var; tint the text */
-        .pf-c-pagination,
-        .pf-c-pagination.pf-m-bottom {
-          color: #8fdfa3;
-          font-family: var(--ak-font-mono);
-        }
-        .pf-c-pagination__total-items,
-        .pf-c-pagination .pf-c-options-menu__toggle-text { color: #8fdfa3; }
-        .pf-c-pagination .pf-c-button:not(:disabled):not(.pf-m-disabled) { color: #8fdfa3 !important; }
-        /* authentik sets the bottom bar's surface via :host([theme="dark"])
-         * .pf-c-pagination (variables.css) — match that selector so the
-         * transparent value wins on source order instead of !important */
-        :host([theme="dark"]) .pf-c-pagination {
-          --pf-c-pagination--m-bottom--BackgroundColor: transparent;
-        }
-
-        /* progress / usage bars — canonical PatternFly vars + a green glow */
-        .pf-c-progress {
-          --pf-c-progress__bar--BackgroundColor: rgba(0,255,65,0.12);
-          --pf-c-progress__indicator--BackgroundColor: #00ff41;
-        }
-        .pf-c-progress__indicator { box-shadow: 0 0 8px rgba(0,255,65,0.45); }
-
-        /* ---- Sidebar navigation (admin + user shell) ------------------- */
-        /* PatternFly declares its nav link vars on .pf-c-nav, so set them there
-         * — no per-state !important rules needed */
-        .pf-c-nav {
-          --pf-c-nav__link--Color: #8fdfa3;
-          --pf-c-nav__link--hover--Color: #b6ffc8;
-          --pf-c-nav__link--hover--BackgroundColor: rgba(0,255,65,0.06);
-          --pf-c-nav__link--focus--BackgroundColor: rgba(0,255,65,0.06);
-          --pf-c-nav__link--m-current--Color: #00ff41;
-          --pf-c-nav__link--m-current--BackgroundColor: rgba(0,255,65,0.10);
-          --pf-c-nav__link--m-current--after--BorderColor: #00ff41;
-        }
-        .pf-c-nav__link { font-family: var(--ak-font-mono); }
-        .pf-c-nav__section-title,
-        .pf-c-nav__subnav .pf-c-nav__link { color: #4f9d63; }
-        /* "Enterprise only" pill reads shared gray tokens; tint it locally */
-        .pf-c-nav__enterprise-notice {
-          color: #6effa0;
-          background-color: rgba(0,255,65,0.12);
-        }
-        /* sidebar scroll-shadow mask: match the green panel + green glow,
-         * otherwise it paints a black fade band over the tinted sidebar */
-        .ak-m-scroll-shadows {
-          --ak-m-scroll-shadows--BackgroundColor: #02110a;
-          --ak-m-scroll-shadows--ShadowColor: rgba(0,255,65,0.55);
-        }
-
-        /* admin/user shell brand logo — match the login logo's phosphor glow */
-        aside.brand .logo img,
-        .brand .logo img {
-          filter: drop-shadow(0 0 10px rgba(0,255,65,0.55));
-        }
-
-        /* Hide locale selector — single-user homelab */
-        .pf-c-select.pf-m-align-right { display: none !important; }
+        .pf-c-login__main-header .pf-c-title { font-family: var(--zion-mono); }
+        .pf-c-login__main-header .pf-c-title::before { content: "> "; color: var(--zion-green); }
+        .pf-c-login__main-header.pf-c-brand { display: flex; justify-content: center; }
+        .pf-c-login__main-header .branding-logo { max-width: 240px; max-height: 96px; }
+        .pf-c-login__footer { color: var(--zion-muted); }
