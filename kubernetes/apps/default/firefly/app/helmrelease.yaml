@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: docker.io/fireflyiii/core
-              tag: version-6.6.6@sha256:ae69fdd95cdef9038cd7a460a5aec731f14813973e4f096511d5a4ea9ff0e972
+              tag: version-6.7.9@sha256:4409f9f0f87378ba95d40811352f4f49338d276bb638c1e6d18a5579f332fbe8
             env:
               TZ: America/Chicago
               APP_ENV: production
@@ -121,7 +121,7 @@ spec:
           app:
             image:
               repository: docker.io/fireflyiii/data-importer
-              tag: version-2.3.3@sha256:376b52a3abc92ea459b9b77c7be594e5abf9c845e80eccbbe6bda0af67859c31
+              tag: version-2.3.5@sha256:59f2f26ddf6eb55e84ce0d571259c9aabd6ddfcc23dd4d3825ab01ad79e34930
             env:
               TZ: America/Chicago
               APP_URL: "https://firefly-import.melotic.dev"
