@@ -7,8 +7,8 @@ metadata:
   namespace: default
 spec:
   dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
+    - name: csi-driver-nfs
+      namespace: kube-system
   path: ./kubernetes/apps/default/zot/app
   sourceRef:
     kind: GitRepository
