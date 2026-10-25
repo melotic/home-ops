@@ -23,3 +23,7 @@ talosconfig
 .DS_Store
 Thumbs.db
 talos/clusterconfig/
+
+# Stale rotation backups
+*.bak
+*pre-rotation*
