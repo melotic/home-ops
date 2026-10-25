@@ -103,6 +103,13 @@
       pinDigests: false,
     },
     {
+      // Firefly tags are `version-6.7.9`, which docker versioning treats as unversioned.
+      description: "Firefly images use a version- tag prefix",
+      matchDatasources: ["docker"],
+      matchPackageNames: ["docker.io/fireflyiii/**"],
+      versioning: "regex:^version-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)$",
+    },
+    {
       // Bulk pin rollout must be reviewed + pass CI; routine re-pins still automerge.
       description: "Require manual review for digest pin rollout",
       matchUpdateTypes: ["pin", "pinDigest"],
