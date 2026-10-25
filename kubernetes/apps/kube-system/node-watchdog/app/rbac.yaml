@@ -3,6 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: node-watchdog
+  namespace: kube-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -29,6 +30,11 @@ rules:
     verbs: ["get", "list"]
   - apiGroups: ["apiextensions.k8s.io"]
     resources: ["customresourcedefinitions"]
+    verbs: ["get", "list"]
+  # read-only: tuppr names the node it is upgrading, which is how a planned
+  # reboot is told apart from a dead node
+  - apiGroups: ["tuppr.home-operations.com"]
+    resources: ["talosupgrades", "kubernetesupgrades"]
     verbs: ["get", "list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
