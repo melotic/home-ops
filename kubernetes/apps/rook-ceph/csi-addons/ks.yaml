@@ -6,9 +6,7 @@ metadata:
   name: csi-addons
   namespace: rook-ceph
 spec:
-  interval: 1h
   path: ./deploy/controller
-  prune: true
   sourceRef:
     kind: GitRepository
     name: csi-addons

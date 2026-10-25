@@ -6,9 +6,7 @@ metadata:
   name: node-watchdog
   namespace: kube-system
 spec:
-  interval: 1h
   path: ./kubernetes/apps/kube-system/node-watchdog/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

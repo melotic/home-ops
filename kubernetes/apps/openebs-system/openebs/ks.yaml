@@ -11,9 +11,7 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: *namespace
-  interval: 1h
   path: ./kubernetes/apps/openebs-system/openebs/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
