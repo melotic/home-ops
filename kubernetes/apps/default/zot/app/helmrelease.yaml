@@ -1,0 +1,237 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: zot
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: zot
+  values:
+    image:
+      repository: ghcr.io/project-zot/zot
+      tag: v2.1.22
+    service:
+      type: ClusterIP
+      port: 5000
+    mountConfig: true
+    externalSecrets:
+      - secretName: zot-secret
+        mountPath: /secret
+    persistence: true
+    pvc:
+      create: true
+      accessModes:
+        - ReadWriteOnce
+      storage: 100Gi
+      storageClassName: ceph-block
+    strategy:
+      type: Recreate
+    httproute:
+      enabled: false
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        interval: 30s
+        basicAuth: null
+    configFiles:
+      config.json: |-
+        {
+          "storage": {
+            "rootDirectory": "/var/lib/registry",
+            "dedupe": true,
+            "gc": true,
+            "gcDelay": "1h",
+            "gcInterval": "24h",
+            "gcTimeWindow": "08:00-12:00",
+            "retention": {
+              "dryRun": true,
+              "delay": "24h",
+              "policies": [
+                {
+                  "repositories": [
+                    "docker.io/**",
+                    "ghcr.io/**",
+                    "registry.k8s.io/**",
+                    "quay.io/**",
+                    "gcr.io/**"
+                  ],
+                  "deleteReferrers": false,
+                  "deleteUntagged": true,
+                  "keepUntagged": {
+                    "pulledWithin": "2160h"
+                  },
+                  "keepTags": [
+                    {
+                      "patterns": [
+                        ".*"
+                      ],
+                      "pulledWithin": "2160h"
+                    }
+                  ]
+                },
+                {
+                  "keepTags": [
+                    {
+                      "patterns": [
+                        ".*"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "http": {
+            "address": "0.0.0.0",
+            "port": "5000",
+            "externalUrl": "https://zot.melotic.dev",
+            "compat": [
+              "docker2s2"
+            ],
+            "auth": {
+              "htpasswd": {
+                "path": "/secret/htpasswd"
+              },
+              "failDelay": 5
+            },
+            "accessControl": {
+              "metrics": {
+                "anonymousPolicy": [
+                  "read"
+                ]
+              },
+              "repositories": {
+                "**": {
+                  "anonymousPolicy": [
+                    "read"
+                  ],
+                  "defaultPolicy": [
+                    "read"
+                  ]
+                }
+              },
+              "adminPolicy": {
+                "users": [
+                  "admin"
+                ],
+                "actions": [
+                  "read",
+                  "create",
+                  "update",
+                  "delete"
+                ]
+              }
+            }
+          },
+          "log": {
+            "level": "info"
+          },
+          "extensions": {
+            "search": {
+              "enable": true
+            },
+            "ui": {
+              "enable": true
+            },
+            "metrics": {
+              "enable": true,
+              "prometheus": {
+                "path": "/metrics"
+              }
+            },
+            "sync": {
+              "enable": true,
+              "registries": [
+                {
+                  "urls": [
+                    "https://index.docker.io"
+                  ],
+                  "onDemand": true,
+                  "tlsVerify": true,
+                  "manifestCheckInterval": "5m",
+                  "maxRetries": 2,
+                  "retryDelay": "10s",
+                  "syncTimeout": "30m",
+                  "content": [
+                    {
+                      "prefix": "**",
+                      "destination": "/docker.io"
+                    }
+                  ]
+                },
+                {
+                  "urls": [
+                    "https://ghcr.io"
+                  ],
+                  "onDemand": true,
+                  "tlsVerify": true,
+                  "manifestCheckInterval": "5m",
+                  "maxRetries": 2,
+                  "retryDelay": "10s",
+                  "syncTimeout": "30m",
+                  "content": [
+                    {
+                      "prefix": "**",
+                      "destination": "/ghcr.io"
+                    }
+                  ]
+                },
+                {
+                  "urls": [
+                    "https://registry.k8s.io"
+                  ],
+                  "onDemand": true,
+                  "tlsVerify": true,
+                  "manifestCheckInterval": "5m",
+                  "maxRetries": 2,
+                  "retryDelay": "10s",
+                  "syncTimeout": "30m",
+                  "content": [
+                    {
+                      "prefix": "**",
+                      "destination": "/registry.k8s.io"
+                    }
+                  ]
+                },
+                {
+                  "urls": [
+                    "https://quay.io"
+                  ],
+                  "onDemand": true,
+                  "tlsVerify": true,
+                  "manifestCheckInterval": "5m",
+                  "maxRetries": 2,
+                  "retryDelay": "10s",
+                  "syncTimeout": "30m",
+                  "content": [
+                    {
+                      "prefix": "**",
+                      "destination": "/quay.io"
+                    }
+                  ]
+                },
+                {
+                  "urls": [
+                    "https://gcr.io"
+                  ],
+                  "onDemand": true,
+                  "tlsVerify": true,
+                  "manifestCheckInterval": "5m",
+                  "maxRetries": 2,
+                  "retryDelay": "10s",
+                  "syncTimeout": "30m",
+                  "content": [
+                    {
+                      "prefix": "**",
+                      "destination": "/gcr.io"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }

@@ -1,0 +1,22 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: zot
+spec:
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+      sectionName: https
+  hostnames:
+    - zot.melotic.dev
+  rules:
+    - backendRefs:
+        - name: zot
+          port: 5000
+      matches:
+        - path:
+            type: PathPrefix
+            value: /
+      timeouts:
+        request: 10m
