@@ -105,14 +105,14 @@ download-image version node="":
 [doc('Render Talos machine config for a node')]
 [script]
 render-config node:
-    read -r name _ < <(just talos node-resolve {{ node }})
+    read -r name ip < <(just talos node-resolve {{ node }})
     schematic="$(just talos schematic-id "$name")"
     role="controlplane"
     if [[ -f "{{ source_directory() }}/nodes/workers/$name.yaml.j2" ]]; then
         role="workers"
     fi
     talosctl machineconfig patch \
-        <(just talos template "{{ source_directory() }}/cluster.yaml.j2" -D "schematic=${schematic}") \
+        <(just talos template "{{ source_directory() }}/cluster.yaml.j2" -D "schematic=${schematic}" -D "node_ip=${ip}") \
         -p @<(just talos template "{{ source_directory() }}/deletions.yaml.j2") \
         -p @<(just talos template "{{ source_directory() }}/${role}.yaml.j2") \
         -p @<(just talos template "{{ source_directory() }}/nodes/${role}/$name.yaml.j2")
