@@ -32,8 +32,9 @@ strategically merge into earlier ones: documents with the same `kind`/`name` are
 documents are appended. Kubernetes settings use Talos resource documents, including `KubeletConfig`,
 `KubeNetworkConfig`, and `KubePrismConfig`.
 
-NFS mounts use NFSv3 because the NAS does not support NFSv4. The NFS CSI storage class includes
-`nolock` because Talos does not run `rpc.statd`.
+NFS mounts use NFSv3 because the NAS does not support NFSv4. The `nfs-utils` extension provides
+`rpcbind` and `rpc.statd`; `nfsmount.conf` sets `lock=False` globally, and storage classes that
+need locking set `lock` explicitly.
 
 Two conventions keep the layers honest:
 
@@ -78,4 +79,4 @@ just talos render-config <node> \
 
 The `local-hostpath` `UserVolumeConfig` backs OpenEBS's `openebs-hostpath` storage class at
 `/var/mnt/local-hostpath`; the volume must remain in the rendered configuration. NFS CSI uses
-NFSv3 with `nolock` because the NAS does not support NFSv4 and Talos does not run `rpc.statd`.
+NFSv3 because the NAS does not support NFSv4; `nfsmount.conf` defaults to `lock=False`.

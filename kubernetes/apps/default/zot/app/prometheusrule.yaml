@@ -1,0 +1,28 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: zot
+spec:
+  groups:
+    - name: zot.rules
+      rules:
+        - alert: ZotUnavailable
+          expr: |-
+            absent(up{job="zot"} == 1)
+          annotations:
+            summary: >-
+              zot scrape target is down, so nodes are falling back to Spegel or upstream
+          for: 15m
+          labels:
+            severity: warning
+
+        - alert: ZotRestarting
+          expr: |-
+            increase(kube_pod_container_status_restarts_total{namespace="default", container="zot"}[1h]) > 2
+          annotations:
+            summary: >-
+              zot container {{ $labels.pod }} restarted more than twice in the last hour
+          for: 5m
+          labels:
+            severity: warning

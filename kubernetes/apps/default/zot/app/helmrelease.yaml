@@ -26,7 +26,7 @@ spec:
       accessModes:
         - ReadWriteOnce
       storage: 100Gi
-      storageClassName: ceph-block
+      storageClassName: nfs-construct
     strategy:
       type: Recreate
     httproute:
