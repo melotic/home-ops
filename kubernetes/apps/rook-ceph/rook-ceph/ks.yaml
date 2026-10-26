@@ -11,9 +11,7 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: *namespace
-  interval: 1h
   path: ./kubernetes/apps/rook-ceph/rook-ceph/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -38,9 +36,7 @@ spec:
       kind: HelmRelease
       name: ceph-csi-drivers
       namespace: *namespace
-  interval: 1h
   path: ./kubernetes/apps/rook-ceph/rook-ceph/csi
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -63,13 +59,11 @@ spec:
       kind: HelmRelease
       name: rook-ceph-cluster
       namespace: *namespace
-  interval: 1h
   path: ./kubernetes/apps/rook-ceph/rook-ceph/cluster
   postBuild:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

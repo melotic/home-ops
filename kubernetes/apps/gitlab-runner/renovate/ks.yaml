@@ -21,10 +21,8 @@ spec:
       PG_DATABASE: renovate
       PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       PG_USER: renovate
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: gitlab-runner
-  wait: false

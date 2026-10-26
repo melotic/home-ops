@@ -16,9 +16,7 @@ spec:
       kind: HelmRelease
       name: *app
       namespace: kopiur-system
-  interval: 1h
   path: ./kubernetes/apps/kopiur-system/kopiur/app
-  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system

@@ -38,4 +38,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: monitoring
-  wait: false

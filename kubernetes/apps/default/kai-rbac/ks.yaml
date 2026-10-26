@@ -6,13 +6,9 @@ metadata:
   name: kai-rbac
 spec:
   targetNamespace: default
-  interval: 1h
   path: ./kubernetes/apps/default/kai-rbac/app
-  prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  timeout: 5m
   wait: true

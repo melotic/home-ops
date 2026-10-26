@@ -23,7 +23,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: database
-  wait: false
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/source.toolkit.fluxcd.io/gitrepository_v1.json
 apiVersion: source.toolkit.fluxcd.io/v1
@@ -52,4 +51,3 @@ spec:
     kind: GitRepository
     name: cnpg-artifacts
   targetNamespace: database
-  wait: false
