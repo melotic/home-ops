@@ -65,7 +65,7 @@ spec:
             severity: critical
         - alert: GitlabHighMemoryUsage
           expr: |-
-            container_memory_working_set_bytes{namespace="gitlab",container!="",container!="POD"}
+            container_memory_rss{namespace="gitlab",container!="",container!="POD"}
               / on(namespace,pod,container) group_left()
             kube_pod_container_resource_limits{namespace="gitlab",resource="memory",unit="byte"}
               > 0.8
