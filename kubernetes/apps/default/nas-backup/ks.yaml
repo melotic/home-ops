@@ -6,9 +6,6 @@ metadata:
   name: nas-backup
   namespace: default
 spec:
-  dependsOn:
-    - name: onepassword
-      namespace: external-secrets
   path: ./kubernetes/apps/default/nas-backup/app
   postBuild:
     substitute:

@@ -26,8 +26,6 @@ metadata:
 spec:
   dependsOn:
     - name: cilium
-    - name: grafana
-      namespace: monitoring
   path: ./kubernetes/apps/kube-system/cilium/dashboards
   sourceRef:
     kind: GitRepository

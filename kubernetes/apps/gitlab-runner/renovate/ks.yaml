@@ -8,9 +8,6 @@ metadata:
 spec:
   components:
     - ../../../../components/cnpg-database
-  dependsOn:
-    - name: onepassword
-      namespace: external-secrets
   path: ./kubernetes/apps/gitlab-runner/renovate/app
   postBuild:
     substitute:

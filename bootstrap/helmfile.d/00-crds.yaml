@@ -3,33 +3,44 @@
 
 # This helmfile is for extracting and installing Custom Resource Definitions (CRDs) from Helm charts.
 # It is not intended to be used with helmfile apply or helmfile sync.
+#
+# Chart and version come from each app's OCIRepository, so bootstrap cannot drift from what Flux
+# reconciles.
 
 helmDefaults:
   args:
     - --include-crds
     - --no-hooks
-  postRenderer: bash
-  postRendererArgs:
-    - -c
-    - yq eval-all --exit-status 'select(.kind == "CustomResourceDefinition")'
+
+bases:
+  - default.yaml
+defaultInherit: default
 
 releases:
+  - name: cert-manager
+    namespace: cert-manager
+
   - name: cloudflare-dns
     namespace: network
-    chart: oci://ghcr.io/home-operations/charts-mirror/external-dns
-    version: 1.23.0
+    values: ['./templates/values.yaml.gotmpl']
 
   - name: external-secrets
     namespace: external-secrets
-    chart: oci://ghcr.io/external-secrets/charts/external-secrets
-    version: 2.14.0
 
   - name: onepassword
     namespace: external-secrets
-    chart: oci://ghcr.io/1password/connect
-    version: 2.4.3
 
-  - name: victoria-metrics-k8s-stack
+  - name: envoy-gateway
+    namespace: network
+
+  - name: grafana
     namespace: monitoring
-    chart: oci://ghcr.io/victoriametrics/helm-charts/victoria-metrics-k8s-stack
-    version: 0.97.0
+
+  - name: kube-prometheus-stack
+    namespace: monitoring
+
+  - name: kopiur
+    namespace: kopiur-system
+
+  - name: snapshot-controller
+    namespace: kube-system
