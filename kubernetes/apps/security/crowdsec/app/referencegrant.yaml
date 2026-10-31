@@ -8,6 +8,15 @@ spec:
     - group: gateway.envoyproxy.io
       kind: SecurityPolicy
       namespace: default
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: flux-system
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: gitlab-runner
+    - group: gateway.envoyproxy.io
+      kind: SecurityPolicy
+      namespace: monitoring
   to:
     - group: ""
       kind: Service

@@ -7,11 +7,14 @@ metadata:
   namespace: default
 spec:
   components:
+    - ../../../../components/crowdsec
     - ../../../../components/kopiur/backup
     - ../../../../components/cnpg-database
   path: ./kubernetes/apps/default/seerr/app
   postBuild:
     substitute:
+      CROWDSEC_POLICY_NAME: seerr-crowdsec
+      CROWDSEC_HTTPROUTE: seerr
       APP: seerr
       KOPIUR_CAPACITY: 5Gi
   sourceRef:

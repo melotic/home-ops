@@ -7,10 +7,13 @@ metadata:
   namespace: &namespace default
 spec:
   components:
+    - ../../../../components/crowdsec
     - ../../../../components/kopiur/backup
   path: ./kubernetes/apps/default/karakeep/app
   postBuild:
     substitute:
+      CROWDSEC_POLICY_NAME: karakeep-crowdsec
+      CROWDSEC_HTTPROUTE: karakeep
       APP: *app
       KOPIUR_CAPACITY: 5Gi
   sourceRef:

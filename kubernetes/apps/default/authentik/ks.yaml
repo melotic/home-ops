@@ -7,11 +7,14 @@ metadata:
   namespace: default
 spec:
   components:
+    - ../../../../components/crowdsec
     - ../../../../components/kopiur/backup
     - ../../../../components/cnpg-database
   path: ./kubernetes/apps/default/authentik/app
   postBuild:
     substitute:
+      CROWDSEC_POLICY_NAME: authentik-server-crowdsec
+      CROWDSEC_HTTPROUTE: authentik-server
       APP: authentik
       PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
       KOPIUR_CAPACITY: 5Gi

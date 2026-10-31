@@ -7,10 +7,13 @@ metadata:
   namespace: gitlab-runner
 spec:
   components:
+    - ../../../../components/crowdsec
     - ../../../../components/cnpg-database
   path: ./kubernetes/apps/gitlab-runner/renovate/app
   postBuild:
     substitute:
+      CROWDSEC_POLICY_NAME: renovate-crowdsec
+      CROWDSEC_HTTPROUTE: renovate
       APP: renovate
       ONEPASSWORD_ITEM: andtkeb6y2rfszjfubuwmclz4i
       PG_DATABASE: renovate
