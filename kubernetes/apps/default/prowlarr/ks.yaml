@@ -9,13 +9,6 @@ spec:
   components:
     - ../../../../components/kopiur/backup
     - ../../../../components/cnpg-database
-  dependsOn:
-    - name: postgres
-      namespace: database
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: kopiur-repository
-      namespace: kopiur-system
   path: ./kubernetes/apps/default/prowlarr/app
   postBuild:
     substitute:

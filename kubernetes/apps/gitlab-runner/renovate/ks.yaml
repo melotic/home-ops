@@ -9,8 +9,6 @@ spec:
   components:
     - ../../../../components/cnpg-database
   dependsOn:
-    - name: postgres
-      namespace: database
     - name: onepassword
       namespace: external-secrets
   path: ./kubernetes/apps/gitlab-runner/renovate/app

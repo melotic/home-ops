@@ -26,8 +26,6 @@ spec:
   dependsOn:
     - name: grafana
     - name: kube-prometheus-stack
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   path: ./kubernetes/apps/monitoring/grafana/instance
   postBuild:
     substituteFrom:

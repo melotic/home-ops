@@ -9,8 +9,6 @@ spec:
   components:
     - ../../../../components/cnpg-database
   dependsOn:
-    - name: postgres
-      namespace: database
     - name: external-secrets
       namespace: external-secrets
   path: ./kubernetes/apps/default/miniflux/app

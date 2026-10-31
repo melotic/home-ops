@@ -8,8 +8,6 @@ metadata:
 spec:
   dependsOn:
     - name: prometheus-operator-crds
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   path: ./kubernetes/apps/monitoring/kube-prometheus-stack/app
   postBuild:
     substituteFrom:

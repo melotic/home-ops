@@ -7,8 +7,6 @@ metadata:
   namespace: kopiur-system
 spec:
   dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
     - name: snapshot-controller
       namespace: kube-system
   healthChecks:
