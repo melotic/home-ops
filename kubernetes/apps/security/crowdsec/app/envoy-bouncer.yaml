@@ -35,6 +35,12 @@ spec:
               value: "8081"
             - name: ENVOY_BOUNCER_SERVER_LOGLEVEL
               value: info
+            - name: ENVOY_BOUNCER_TRUSTEDIPHEADER
+              value: x-envoy-external-address
+            - name: ENVOY_BOUNCER_TRUSTEDPROXIES
+              value: 10.42.0.0/16,10.60.0.0/16
+            - name: ENVOY_BOUNCER_EXEMPTIPS
+              value: 10.42.0.0/16,10.60.0.0/16
             - name: ENVOY_BOUNCER_BOUNCER_ENABLED
               value: "true"
             - name: ENVOY_BOUNCER_BOUNCER_LAPIURL
