@@ -11,8 +11,6 @@ spec:
   dependsOn:
     - name: authentik
       namespace: default
-    - name: postgres
-      namespace: database
     - name: tailscale-policy
       namespace: network
   path: ./kubernetes/apps/default/open-webui/app

@@ -6,9 +6,6 @@ metadata:
   name: gatus
   namespace: monitoring
 spec:
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   path: ./kubernetes/apps/monitoring/gatus/app
   postBuild:
     substitute:

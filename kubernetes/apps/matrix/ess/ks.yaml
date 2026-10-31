@@ -6,9 +6,6 @@ metadata:
   name: ess
   namespace: matrix
 spec:
-  dependsOn:
-    - name: postgres
-      namespace: database
   path: ./kubernetes/apps/matrix/ess/app
   sourceRef:
     kind: GitRepository

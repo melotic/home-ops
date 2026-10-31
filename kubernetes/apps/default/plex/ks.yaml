@@ -8,11 +8,6 @@ metadata:
 spec:
   components:
     - ../../../../components/kopiur/backup
-  dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: kopiur-repository
-      namespace: kopiur-system
   path: ./kubernetes/apps/default/plex/app
   postBuild:
     substitute:

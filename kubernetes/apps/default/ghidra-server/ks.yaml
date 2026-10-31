@@ -9,10 +9,6 @@ spec:
   components:
     - ../../../../components/kopiur/backup
   dependsOn:
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
-    - name: kopiur-repository
-      namespace: kopiur-system
     - name: authentik
       namespace: default
   path: ./kubernetes/apps/default/ghidra-server/app
