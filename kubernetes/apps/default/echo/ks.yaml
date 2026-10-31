@@ -6,7 +6,13 @@ metadata:
   name: echo
   namespace: default
 spec:
+  components:
+    - ../../../../components/crowdsec
   path: ./kubernetes/apps/default/echo/app
+  postBuild:
+    substitute:
+      CROWDSEC_POLICY_NAME: echo-crowdsec
+      CROWDSEC_HTTPROUTE: echo
   sourceRef:
     kind: GitRepository
     name: flux-system
