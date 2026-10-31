@@ -6,9 +6,6 @@ metadata:
   name: buildkitd
   namespace: gitlab
 spec:
-  dependsOn:
-    - name: cert-manager
-      namespace: cert-manager
   path: ./kubernetes/apps/gitlab/buildkitd/app
   postBuild:
     substituteFrom:

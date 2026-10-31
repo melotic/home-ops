@@ -94,7 +94,8 @@ function apply_crds() {
         log fatal "File does not exist" "file=${helmfile_file}"
     fi
 
-    if ! crds=$(helmfile --file "${helmfile_file}" template --quiet) || [[ -z "${crds}" ]]; then
+    if ! crds=$(helmfile --file "${helmfile_file}" template --quiet \
+        | yq eval-all 'select(. != null and .kind == "CustomResourceDefinition")' -) || [[ -z "${crds}" ]]; then
         log fatal "Failed to render CRDs from Helmfile" "file=${helmfile_file}"
     fi
 

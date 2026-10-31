@@ -8,9 +8,6 @@ metadata:
 spec:
   components:
     - ../../../../components/cnpg-database
-  dependsOn:
-    - name: external-secrets
-      namespace: external-secrets
   path: ./kubernetes/apps/default/miniflux/app
   postBuild:
     substitute:

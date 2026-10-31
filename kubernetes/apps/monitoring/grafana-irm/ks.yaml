@@ -6,9 +6,6 @@ metadata:
   name: grafana-irm
   namespace: monitoring
 spec:
-  dependsOn:
-    - name: onepassword
-      namespace: external-secrets
   path: ./kubernetes/apps/monitoring/grafana-irm/app
   sourceRef:
     kind: GitRepository
