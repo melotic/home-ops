@@ -6,7 +6,13 @@ metadata:
   name: kromgo
   namespace: monitoring
 spec:
+  components:
+    - ../../../../components/crowdsec
   path: ./kubernetes/apps/monitoring/kromgo/app
+  postBuild:
+    substitute:
+      CROWDSEC_POLICY_NAME: kromgo-crowdsec
+      CROWDSEC_HTTPROUTE: kromgo
   sourceRef:
     kind: GitRepository
     name: flux-system

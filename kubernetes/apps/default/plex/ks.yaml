@@ -7,10 +7,13 @@ metadata:
   namespace: default
 spec:
   components:
+    - ../../../../components/crowdsec
     - ../../../../components/kopiur/backup
   path: ./kubernetes/apps/default/plex/app
   postBuild:
     substitute:
+      CROWDSEC_POLICY_NAME: plex-crowdsec
+      CROWDSEC_HTTPROUTE: plex
       APP: plex
       KOPIUR_CAPACITY: 50Gi
       KOPIUR_CACHE_CAPACITY: 50Gi

@@ -6,10 +6,16 @@ metadata:
   name: flux-instance
   namespace: flux-system
 spec:
+  components:
+    - ../../../../components/crowdsec
   dependsOn:
     - name: flux-operator
       namespace: flux-system
   path: ./kubernetes/apps/flux-system/flux-instance/app
+  postBuild:
+    substitute:
+      CROWDSEC_POLICY_NAME: github-webhook-crowdsec
+      CROWDSEC_HTTPROUTE: github-webhook
   sourceRef:
     kind: GitRepository
     name: flux-system

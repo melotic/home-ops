@@ -7,10 +7,13 @@ metadata:
   namespace: &namespace default
 spec:
   components:
+    - ../../../../components/crowdsec
     - ../../../../components/cnpg-database
   path: ./kubernetes/apps/default/miniflux/app
   postBuild:
     substitute:
+      CROWDSEC_POLICY_NAME: miniflux-crowdsec
+      CROWDSEC_HTTPROUTE: miniflux
       APP: *app
       PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
   sourceRef:

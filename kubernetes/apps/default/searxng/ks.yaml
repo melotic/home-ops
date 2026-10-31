@@ -6,7 +6,13 @@ metadata:
   name: searxng
   namespace: default
 spec:
+  components:
+    - ../../../../components/crowdsec
   path: ./kubernetes/apps/default/searxng/app
+  postBuild:
+    substitute:
+      CROWDSEC_POLICY_NAME: searxng-crowdsec
+      CROWDSEC_HTTPROUTE: searxng
   sourceRef:
     kind: GitRepository
     name: flux-system
