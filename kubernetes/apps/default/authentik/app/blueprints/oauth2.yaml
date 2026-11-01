@@ -227,3 +227,29 @@ entries:
       meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/paperless-ngx.svg
       meta_description: Document management system
       meta_publisher: Paperless-ngx
+
+  # Removed apps: deleting a blueprint entry does not delete the object in authentik.
+  - model: authentik_core.application
+    state: absent
+    identifiers: {slug: librechat}
+  - model: authentik_providers_oauth2.oauth2provider
+    state: absent
+    identifiers: {name: librechat}
+  - model: authentik_core.application
+    state: absent
+    identifiers: {slug: linkwarden}
+  - model: authentik_providers_oauth2.oauth2provider
+    state: absent
+    identifiers: {name: linkwarden}
+  - model: authentik_core.application
+    state: absent
+    identifiers: {slug: forejo}
+  - model: authentik_providers_oauth2.oauth2provider
+    state: absent
+    identifiers: {name: forejo}
+  - model: authentik_core.application
+    state: absent
+    identifiers: {slug: policy-reporter}
+  - model: authentik_providers_oauth2.oauth2provider
+    state: absent
+    identifiers: {name: policy-reporter}
