@@ -82,16 +82,39 @@ entries:
         - !Find [authentik_stages_authenticator_webauthn.authenticatorwebauthnstage, [name, default-authenticator-webauthn-setup]]
         - !Find [authentik_stages_authenticator_static.authenticatorstaticstage, [name, default-authenticator-static-setup]]
 
-  # Identification with inline Turnstile; captcha_stage is inline and must NOT also be bound to the flow.
-  # No inline password field: on iOS Safari it makes autofill offer a saved password over the passkey.
+  # Passkey-only sign-in, linked from the identification page as "Use a security key".
+  # Starts a modal WebAuthn prompt, which iOS shows reliably; conditional autofill there is not.
+  - model: authentik_flows.flow
+    id: passkey-flow
+    identifiers:
+      slug: melotic-passkey-flow
+    attrs:
+      name: Sign in with a passkey
+      title: Sign in to zion
+      designation: authentication
+      authentication: none
+
+  - model: authentik_stages_authenticator_validate.authenticatorvalidatestage
+    id: passkey
+    identifiers:
+      name: melotic-passkey-validation
+    attrs:
+      not_configured_action: deny
+      device_classes:
+        - webauthn
+      webauthn_user_verification: required
+
+  # Identification: single-page login with inline password + Turnstile
+  # password_stage and captcha_stage are inline — they must NOT also be bound to the flow
   - model: authentik_stages_identification.identificationstage
     id: identification
     identifiers:
       name: melotic-identification
     attrs:
-      password_stage: null
+      password_stage: !KeyOf password
       captcha_stage: !KeyOf captcha
       webauthn_stage: !KeyOf mfa
+      passwordless_flow: !KeyOf passkey-flow
       user_fields:
         - email
         - username
@@ -113,13 +136,11 @@ entries:
       order: 10
 
   - model: authentik_flows.flowstagebinding
-    id: password-binding
+    state: absent
     identifiers:
       target: !KeyOf flow
       stage: !KeyOf password
       order: 20
-    attrs:
-      re_evaluate_policies: true
 
   - model: authentik_flows.flowstagebinding
     id: mfa-binding
@@ -137,29 +158,27 @@ entries:
       stage: !KeyOf login
       order: 100
 
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf passkey-flow
+      stage: !KeyOf passkey
+      order: 10
+
+  - model: authentik_flows.flowstagebinding
+    identifiers:
+      target: !KeyOf passkey-flow
+      stage: !KeyOf login
+      order: 100
+
   # --- Policies ---
 
-  # Mirrors Authentik's stock default-authentication-flow skips.
+  # Deleting the policy also deletes its binding.
   - model: authentik_policies_expression.expressionpolicy
-    id: password-skip-authenticated
+    state: absent
     identifiers:
       name: melotic-password-skip-authenticated
-    attrs:
-      expression: |
-        flow_plan = request.context.get("flow_plan")
-        if not flow_plan:
-            return True
-        # A passkey login attaches a backend to pending_user; returning False drops this stage.
-        return not hasattr(flow_plan.context.get("pending_user"), "backend")
 
-  - model: authentik_policies.policybinding
-    identifiers:
-      order: 10
-      target: !KeyOf password-binding
-      policy: !KeyOf password-skip-authenticated
-    attrs:
-      failure_result: true
-
+  # Mirrors Authentik's stock default-authentication-flow skip.
   - model: authentik_policies_expression.expressionpolicy
     id: mfa-skip-passwordless
     identifiers:
@@ -247,4 +266,10 @@ entries:
     identifiers:
       order: 0
       target: !KeyOf flow
+      policy: !KeyOf geoip-wrapper
+
+  - model: authentik_policies.policybinding
+    identifiers:
+      order: 0
+      target: !KeyOf passkey-flow
       policy: !KeyOf geoip-wrapper

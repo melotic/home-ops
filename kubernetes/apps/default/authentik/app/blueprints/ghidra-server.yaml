@@ -106,6 +106,7 @@ entries:
       group: Development
       meta_description: Ghidra Server LDAP access
       meta_publisher: Ghidra
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/ghidra.svg
 
   - model: authentik_policies.policybinding
     identifiers:
