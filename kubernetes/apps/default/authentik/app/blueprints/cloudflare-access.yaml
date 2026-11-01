@@ -63,3 +63,4 @@ entries:
       slug: cloudflare-access
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, cloudflare-access]]
       policy_engine_mode: any
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/cloudflare-zero-trust.svg

@@ -152,7 +152,7 @@ entries:
       name: Karakeep
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, karakeep]]
       group: Productivity
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/karakeep.svg
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/karakeep-light.svg
       meta_description: Bookmark manager
       meta_publisher: Karakeep
 
@@ -187,7 +187,7 @@ entries:
       name: Miniflux
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, miniflux]]
       group: Productivity
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/miniflux.svg
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/miniflux-light.svg
       meta_description: Feed reader
       meta_publisher: Miniflux
 
@@ -224,6 +224,6 @@ entries:
       name: Paperless-ngx
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, paperless-ngx]]
       group: Productivity
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/paperless-ngx.svg
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/paperless-ngx-light.svg
       meta_description: Document management system
       meta_publisher: Paperless-ngx

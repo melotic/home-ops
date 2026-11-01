@@ -58,7 +58,7 @@ entries:
       name: VictoriaLogs
       provider: !Find [authentik_providers_proxy.proxyprovider, [name, victoria-logs]]
       group: Monitoring
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/victoriametrics.svg
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/victorialogs.svg
       meta_description: Log management and storage
 
   # Authentik replaces, rather than appends, this provider set. Keep every
