@@ -11,7 +11,7 @@ spec:
       sourceRef:
         name: tailscale
         kind: HelmRepository
-      version: 1.104.2
+      version: 1.104.4
   interval: 1h
   values:
     operatorConfig:
