@@ -30,6 +30,14 @@
   },
   packageRules: [
     {
+      // Chart 1.104.4 pins k8s-operator v1.104.4, which upstream never published to ghcr.
+      // Drop this rule once a released chart points at a published operator image.
+      description: "Hold tailscale-operator at 1.104.2 until the operator image is published",
+      matchDatasources: ["helm"],
+      matchPackageNames: ["tailscale-operator"],
+      allowedVersions: "<1.104.3",
+    },
+    {
       description: "Override Helmfile Dependency Name",
       matchDatasources: ["docker"],
       matchManagers: ["helmfile"],
