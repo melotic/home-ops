@@ -18,7 +18,7 @@ spec:
           passwd:
             image:
               repository: docker.io/library/eclipse-mosquitto
-              tag: 2.1.2-alpine@sha256:467ee25e5b6aaaa5562e1f64c60f723274ebb2dbad62cbb89f981d051eb7c6b7
+              tag: 2.1.2-alpine@sha256:75d6662dee52c947dc9dd9c29f1d8d7ffef78ddaf38001caa09755681e8bbc98
             command:
               - sh
               - -c
@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: docker.io/library/eclipse-mosquitto
-              tag: 2.1.2-alpine@sha256:467ee25e5b6aaaa5562e1f64c60f723274ebb2dbad62cbb89f981d051eb7c6b7
+              tag: 2.1.2-alpine@sha256:75d6662dee52c947dc9dd9c29f1d8d7ffef78ddaf38001caa09755681e8bbc98
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
