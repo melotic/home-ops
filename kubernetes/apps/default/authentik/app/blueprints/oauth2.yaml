@@ -157,23 +157,6 @@ entries:
       meta_publisher: Karakeep
 
   - model: authentik_providers_oauth2.oauth2provider
-    identifiers: {name: matrix}
-    attrs:
-      !!merge <<: *provider
-      client_id: !Env MATRIX_CLIENT_ID
-      client_secret: !Env MATRIX_CLIENT_SECRET
-      redirect_uris: [{url: "https://account.melotic.dev/upstream/callback/01M4SAQHF1HGJXRDAJ7EY3ZFAD", matching_mode: strict}]
-  - model: authentik_core.application
-    identifiers: {slug: matrix}
-    attrs:
-      !!merge <<: *app
-      name: Matrix
-      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, matrix]]
-      group: Productivity
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/element.svg
-      meta_description: Matrix chat homeserver
-
-  - model: authentik_providers_oauth2.oauth2provider
     identifiers: {name: miniflux}
     attrs:
       !!merge <<: *provider
