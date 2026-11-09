@@ -30,6 +30,13 @@
   },
   packageRules: [
     {
+      // 0.7.0 cannot resolve tag-pinned GitRepository sources; flate diff exits 1 on csi-addons.
+      description: "Hold flate below 0.7.0 until external GitRepository sources render",
+      matchDatasources: ["github-releases"],
+      matchPackageNames: ["/flate$/"],
+      allowedVersions: "<0.7.0",
+    },
+    {
       // Chart 1.104.4 pins k8s-operator v1.104.4, which upstream never published to ghcr.
       // Drop this rule once a released chart points at a published operator image.
       description: "Hold tailscale-operator at 1.104.2 until the operator image is published",
