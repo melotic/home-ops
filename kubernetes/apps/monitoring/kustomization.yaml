@@ -8,6 +8,7 @@ components:
   - ../../components/common
   - ../../components/psa/privileged
 resources:
+  - ./blackbox-exporter/ks.yaml
   - ./fluent-bit/ks.yaml
   - ./gatus/ks.yaml
   - ./grafana-irm/ks.yaml
