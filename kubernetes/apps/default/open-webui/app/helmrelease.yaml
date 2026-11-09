@@ -82,6 +82,7 @@ spec:
       HOME: /tmp
       OAUTH_AUTO_REDIRECT: "true"
       OPENID_REDIRECT_URI: https://open-webui.melotic.dev/oauth/oidc/login/callback
+      OPENAI_API_CONFIGS: '{"0":{"provider":"llama.cpp"}}'
       CHUNK_MIN_SIZE_TARGET: "500"
       CHUNK_OVERLAP: "150"
       CHUNK_SIZE: "1500"
