@@ -31,7 +31,6 @@ spec:
           - {name: vchord}
           - {name: cube}
           - {name: earthdistance}
-    - name: mas
     - name: miniflux
     - name: openwebui
       item: open-webui-postgres
@@ -42,14 +41,6 @@ spec:
       item: andtkeb6y2rfszjfubuwmclz4i
     - name: seerr
     - name: sonarr
-    - name: synapse
-      spec:
-        encoding: UTF8
-        localeCollate: C
-        localeCType: C
-        template: template0
-        schemas:
-          - {name: public, owner: synapse}
   resourcesTemplate: |-
     ---
     apiVersion: postgresql.cnpg.io/v1
