@@ -9,7 +9,25 @@ data:
   settings.yaml: |
     title: Zion
     description: Homelab dashboard
+    theme: dark
+    color: slate
+    headerStyle: boxed
+    iconStyle: theme
     statusStyle: dot
+    fullWidth: true
+    maxGroupColumns: 8
+    useEqualHeights: true
+    disableCollapse: true
+    hideVersion: true
+    layout:
+      - Media: {}
+      - Tools: {}
+      - Smart Home: {}
+      - AI: {}
+      - Finance: {}
+      - Monitoring: {}
+      - Infrastructure: {}
+      - Dashboards: {}
   kubernetes.yaml: |
     mode: cluster
     gateway: true
