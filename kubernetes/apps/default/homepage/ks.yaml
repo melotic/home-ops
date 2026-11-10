@@ -1,0 +1,23 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/kustomization-kustomize-v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app homepage
+  namespace: &namespace default
+spec:
+  components:
+    - ../../../../components/crowdsec
+  path: ./kubernetes/apps/default/homepage/app
+  postBuild:
+    substitute:
+      APP: *app
+      CROWDSEC_POLICY_NAME: homepage-crowdsec
+      CROWDSEC_HTTPROUTE: homepage
+      AUTH_POLICY_NAME: homepage-auth
+      AUTH_HTTPROUTE: homepage
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace

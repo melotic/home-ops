@@ -96,6 +96,12 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 401"]
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Plex"
+          gethomepage.dev/description: "Media server"
+          gethomepage.dev/group: "Media"
+          gethomepage.dev/icon: "plex.png"
+          gethomepage.dev/href: "https://plex.melotic.dev"
         hostnames:
           - "plex.melotic.dev"
         parentRefs:

@@ -89,6 +89,13 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Miniflux"
+          gethomepage.dev/description: "RSS reader"
+          gethomepage.dev/group: "Tools"
+          gethomepage.dev/icon: "miniflux.png"
+          gethomepage.dev/href: "https://reader.melotic.dev"
         hostnames:
           - reader.melotic.dev
         parentRefs:

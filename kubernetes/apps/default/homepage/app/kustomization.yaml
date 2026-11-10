@@ -1,0 +1,12 @@
+---
+# yaml-language-server: $schema=https://json.schemastore.org/kustomization
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./configmap.yaml
+  - ./deployment.yaml
+  - ./httproute.yaml
+  - ./rbac.yaml
+  - ./service.yaml
+components:
+  - ../../../../components/authentik-proxy

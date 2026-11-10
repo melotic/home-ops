@@ -31,6 +31,13 @@ spec:
       route:
         main:
           enabled: true
+          annotations:
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: "Alertmanager"
+            gethomepage.dev/description: "Alert routing"
+            gethomepage.dev/group: "Monitoring"
+            gethomepage.dev/icon: "alertmanager.png"
+            gethomepage.dev/href: "https://alertmanager.melotic.dev"
           hostnames:
             - alertmanager.melotic.dev
           parentRefs:
@@ -54,6 +61,13 @@ spec:
       route:
         main:
           enabled: true
+          annotations:
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: "Prometheus"
+            gethomepage.dev/description: "Metrics"
+            gethomepage.dev/group: "Monitoring"
+            gethomepage.dev/icon: "prometheus.png"
+            gethomepage.dev/href: "https://prometheus.melotic.dev"
           hostnames:
             - prometheus.melotic.dev
           parentRefs:

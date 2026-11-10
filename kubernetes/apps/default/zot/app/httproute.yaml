@@ -2,6 +2,13 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: "Zot"
+    gethomepage.dev/description: "OCI registry"
+    gethomepage.dev/group: "Infrastructure"
+    gethomepage.dev/icon: "zot.png"
+    gethomepage.dev/href: "https://zot.melotic.dev"
   name: zot
 spec:
   parentRefs:

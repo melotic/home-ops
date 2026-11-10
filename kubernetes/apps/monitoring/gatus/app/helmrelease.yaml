@@ -93,6 +93,12 @@ spec:
       app:
         annotations:
           gatus.home-operations.com/enabled: "false"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Gatus"
+          gethomepage.dev/description: "Uptime monitoring"
+          gethomepage.dev/group: "Monitoring"
+          gethomepage.dev/icon: "gatus.png"
+          gethomepage.dev/href: "https://status.melotic.dev"
         hostnames:
           - "status.melotic.dev"
         parentRefs:
