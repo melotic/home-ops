@@ -7,10 +7,6 @@ metadata:
   namespace: monitoring
 spec:
   path: ./kubernetes/apps/monitoring/gatus/app
-  postBuild:
-    substitute:
-      AUTH_POLICY_NAME: gatus-auth
-      AUTH_HTTPROUTE: gatus
   sourceRef:
     kind: GitRepository
     name: flux-system
