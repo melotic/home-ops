@@ -140,13 +140,6 @@ entries:
       order: 10
 
   - model: authentik_flows.flowstagebinding
-    state: absent
-    identifiers:
-      target: !KeyOf flow
-      stage: !KeyOf password
-      order: 20
-
-  - model: authentik_flows.flowstagebinding
     id: mfa-binding
     identifiers:
       target: !KeyOf flow
