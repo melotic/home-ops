@@ -24,6 +24,8 @@ spec:
     fullnameOverride: sure
     cnpg:
       enabled: false
+      cluster:
+        enabled: false
     redisOperator:
       enabled: false
     redisSimple:
