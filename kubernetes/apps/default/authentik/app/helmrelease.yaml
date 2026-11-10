@@ -98,6 +98,13 @@ spec:
       route:
         main:
           enabled: true
+          annotations:
+            gethomepage.dev/enabled: "true"
+            gethomepage.dev/name: "Authentik"
+            gethomepage.dev/description: "Identity provider"
+            gethomepage.dev/group: "Infrastructure"
+            gethomepage.dev/icon: "authentik.png"
+            gethomepage.dev/href: "https://sso.melotic.dev"
           hostnames:
             - sso.melotic.dev
           parentRefs:

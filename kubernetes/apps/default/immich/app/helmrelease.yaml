@@ -132,6 +132,12 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Immich"
+          gethomepage.dev/description: "Photo library"
+          gethomepage.dev/group: "Media"
+          gethomepage.dev/icon: "immich.png"
+          gethomepage.dev/href: "https://immich.melotic.dev"
         hostnames:
           - "immich.melotic.dev"
         parentRefs:

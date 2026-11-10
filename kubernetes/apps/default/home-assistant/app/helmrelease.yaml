@@ -88,6 +88,13 @@ spec:
             port: 8123
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Home Assistant"
+          gethomepage.dev/description: "Home automation"
+          gethomepage.dev/group: "Smart Home"
+          gethomepage.dev/icon: "home-assistant.png"
+          gethomepage.dev/href: "https://hass.melotic.dev"
         hostnames:
           - "{{ .Release.Name }}.melotic.dev"
           - hass.melotic.dev

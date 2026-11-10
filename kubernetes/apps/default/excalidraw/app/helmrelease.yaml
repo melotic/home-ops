@@ -58,6 +58,12 @@ spec:
         annotations:
           gatus.home-operations.com/endpoint: |-
             conditions: ["[STATUS] == 200"]
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Excalidraw"
+          gethomepage.dev/description: "Whiteboard"
+          gethomepage.dev/group: "Tools"
+          gethomepage.dev/icon: "excalidraw.png"
+          gethomepage.dev/href: "https://excalidraw.melotic.dev"
         hostnames: ["{{ .Release.Name }}.melotic.dev"]
         parentRefs:
           - name: envoy-internal

@@ -1,0 +1,28 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: homepage
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Dashboard
+    gethomepage.dev/description: Cluster dashboard
+    gethomepage.dev/group: Dashboards
+    gethomepage.dev/icon: homepage.png
+    gethomepage.dev/href: https://dash.melotic.dev
+spec:
+  parentRefs:
+    - name: envoy-external
+      namespace: network
+      sectionName: https
+  hostnames:
+    - dash.melotic.dev
+  rules:
+    - backendRefs:
+        - name: homepage
+          port: 3000
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

@@ -44,6 +44,13 @@ spec:
       automountServiceAccountToken: false
     route:
       enabled: true
+      annotations:
+        gethomepage.dev/enabled: "true"
+        gethomepage.dev/name: "Open WebUI"
+        gethomepage.dev/description: "LLM chat"
+        gethomepage.dev/group: "AI"
+        gethomepage.dev/icon: "open-webui.png"
+        gethomepage.dev/href: "https://open-webui.melotic.dev"
       hostnames:
         - open-webui.melotic.dev
       parentRefs:

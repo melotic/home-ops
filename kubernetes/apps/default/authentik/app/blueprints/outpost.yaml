@@ -54,6 +54,18 @@ entries:
       group: Monitoring
       meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/victorialogs.svg
       meta_description: Log management and storage
+  - model: authentik_providers_proxy.proxyprovider
+    identifiers: {name: homepage}
+    attrs: {!!merge <<: *provider, external_host: "https://dash.melotic.dev"}
+  - model: authentik_core.application
+    identifiers: {slug: homepage}
+    attrs:
+      !!merge <<: *app
+      name: Homepage
+      provider: !Find [authentik_providers_proxy.proxyprovider, [name, homepage]]
+      group: Dashboards
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/homepage.svg
+      meta_description: Cluster dashboard
 
   # Authentik replaces, rather than appends, this provider set. Keep every
   # embedded-proxy provider here so application blueprints cannot silently
@@ -70,6 +82,7 @@ entries:
         - !Find [authentik_providers_proxy.proxyprovider, [name, firefly]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, gatus]]
         - !Find [authentik_providers_proxy.proxyprovider, [name, victoria-logs]]
+        - !Find [authentik_providers_proxy.proxyprovider, [name, homepage]]
 
   - model: authentik_outposts.outpost
     identifiers:

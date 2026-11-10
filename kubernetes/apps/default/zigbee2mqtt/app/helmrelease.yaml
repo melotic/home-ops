@@ -79,6 +79,13 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Zigbee2MQTT"
+          gethomepage.dev/description: "Zigbee bridge"
+          gethomepage.dev/group: "Smart Home"
+          gethomepage.dev/icon: "zigbee2mqtt.png"
+          gethomepage.dev/href: "https://zigbee2mqtt.melotic.dev"
         hostnames:
           - zigbee2mqtt.melotic.dev
         parentRefs:

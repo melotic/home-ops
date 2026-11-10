@@ -81,6 +81,13 @@ spec:
             port: *port
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: "Prowlarr"
+          gethomepage.dev/description: "Indexer manager"
+          gethomepage.dev/group: "Media"
+          gethomepage.dev/icon: "prowlarr.png"
+          gethomepage.dev/href: "https://prowlarr.melotic.dev"
         hostnames:
           - "prowlarr.melotic.dev"
         parentRefs:
