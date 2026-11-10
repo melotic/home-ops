@@ -126,6 +126,10 @@ entries:
     id: login
     identifiers:
       name: melotic-login
+    attrs:
+      session_duration: "days=30"
+      geoip_binding: bind_continent_country_city
+      network_binding: bind_asn
 
   # --- Stage Bindings ---
 
