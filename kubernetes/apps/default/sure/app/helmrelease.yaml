@@ -53,7 +53,7 @@ spec:
         AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED: "false"
         AUTH_JIT_MODE: create_and_link
         ALLOWED_OIDC_DOMAINS: melotic.xyz
-        OPENAI_URI_BASE: http://10.20.0.119:8080/v1
+        OPENAI_URI_BASE: http://llama-swap.default.svc.cluster.local:8080/v1
         OPENAI_MODEL: qwen3.8-27b
         OPENAI_SUPPORTS_RESPONSES_ENDPOINT: "false"
         OPENAI_SUPPORTS_PDF_PROCESSING: "false"
