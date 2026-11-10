@@ -67,18 +67,29 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /app/config
-            - name: logs
-              mountPath: /app/config/logs
+            - name: config-files
+              mountPath: /app/config/settings.yaml
+              subPath: settings.yaml
+            - name: config-files
+              mountPath: /app/config/kubernetes.yaml
+              subPath: kubernetes.yaml
+            - name: config-files
+              mountPath: /app/config/services.yaml
+              subPath: services.yaml
+            - name: config-files
+              mountPath: /app/config/widgets.yaml
+              subPath: widgets.yaml
             - name: cache
               mountPath: /app/.next/cache
             - name: tmp
               mountPath: /tmp
       volumes:
+        # Homepage writes default configs and logs into /app/config on startup.
         - name: config
+          emptyDir: {}
+        - name: config-files
           configMap:
             name: homepage
-        - name: logs
-          emptyDir: {}
         - name: cache
           emptyDir: {}
         - name: tmp
