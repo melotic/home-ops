@@ -225,7 +225,7 @@ entries:
       name: Sure
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, sure]]
       group: Productivity
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/sure.svg
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/sure-finance.svg
       meta_description: Personal finance and net worth tracking
       meta_publisher: Sure
 
