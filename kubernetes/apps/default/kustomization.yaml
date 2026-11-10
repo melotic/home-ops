@@ -32,6 +32,7 @@ resources:
   - ./seerr/ks.yaml
   - ./smtp-relay/ks.yaml
   - ./sonarr/ks.yaml
+  - ./sure/ks.yaml
   - ./tautulli/ks.yaml
   - ./zigbee2mqtt/ks.yaml
   - ./zot/ks.yaml

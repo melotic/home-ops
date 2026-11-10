@@ -211,6 +211,24 @@ entries:
       meta_description: Document management system
       meta_publisher: Paperless-ngx
 
+  - model: authentik_providers_oauth2.oauth2provider
+    identifiers: {name: sure}
+    attrs:
+      !!merge <<: *provider
+      client_id: !Env SURE_CLIENT_ID
+      client_secret: !Env SURE_CLIENT_SECRET
+      redirect_uris: [{url: "https://sure.melotic.dev/auth/openid_connect/callback", matching_mode: strict}]
+  - model: authentik_core.application
+    identifiers: {slug: sure}
+    attrs:
+      !!merge <<: *app
+      name: Sure
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, sure]]
+      group: Productivity
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/sure.svg
+      meta_description: Personal finance and net worth tracking
+      meta_publisher: Sure
+
   # Removed apps: deleting a blueprint entry does not delete the object in authentik.
   - model: authentik_core.application
     state: absent
