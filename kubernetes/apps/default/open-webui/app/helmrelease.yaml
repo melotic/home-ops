@@ -73,6 +73,7 @@ spec:
             name: open-webui-postgres
             key: uri
       VECTOR_DB: pgvector
+      PGVECTOR_INITIALIZE_MAX_VECTOR_LENGTH: "768"
       DEFAULT_USER_ROLE: pending
       ENABLE_LOGIN_FORM: "false"
       ENABLE_OAUTH_PERSISTENT_CONFIG: "false"
