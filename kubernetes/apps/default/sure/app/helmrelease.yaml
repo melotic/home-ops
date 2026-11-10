@@ -49,6 +49,10 @@ spec:
         APP_DOMAIN: sure.melotic.dev
         PLAID_ENV: production
         PLAID_INCLUDE_PENDING: "1"
+        AUTH_LOCAL_LOGIN_ENABLED: "false"
+        AUTH_LOCAL_ADMIN_OVERRIDE_ENABLED: "true"
+        AUTH_JIT_MODE: create_and_link
+        ALLOWED_OIDC_DOMAINS: melotic.xyz
         OIDC_ISSUER: https://sso.melotic.dev/application/o/sure/
         OIDC_REDIRECT_URI: https://sure.melotic.dev/auth/openid_connect/callback
       extraEnvVars:
