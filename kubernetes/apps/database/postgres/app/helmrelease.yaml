@@ -77,6 +77,8 @@ spec:
         size: 16Gi
         storageClass: openebs-hostpath
       postgresql:
+        parameters:
+          maintenance_work_mem: 128MB
         shared_preload_libraries:
           - vchord
         synchronous:
