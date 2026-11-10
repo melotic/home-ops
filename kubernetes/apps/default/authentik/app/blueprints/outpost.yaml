@@ -26,16 +26,10 @@ entries:
       meta_description: Alert routing and management
   - model: authentik_providers_proxy.proxyprovider
     identifiers: {name: firefly}
-    attrs: {!!merge <<: *provider, external_host: "https://firefly.melotic.dev"}
+    state: absent
   - model: authentik_core.application
     identifiers: {slug: firefly}
-    attrs:
-      !!merge <<: *app
-      name: Firefly III
-      provider: !Find [authentik_providers_proxy.proxyprovider, [name, firefly]]
-      group: Productivity
-      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/firefly-iii.svg
-      meta_description: Personal finance manager
+    state: absent
   - model: authentik_providers_proxy.proxyprovider
     identifiers: {name: gatus}
     attrs: {!!merge <<: *provider, external_host: "https://status.melotic.dev"}
