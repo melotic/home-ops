@@ -41,6 +41,7 @@ spec:
       item: andtkeb6y2rfszjfubuwmclz4i
     - name: seerr
     - name: sonarr
+    - name: sure
   resourcesTemplate: |-
     ---
     apiVersion: postgresql.cnpg.io/v1
