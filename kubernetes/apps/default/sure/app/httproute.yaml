@@ -7,7 +7,7 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "Sure"
     gethomepage.dev/description: "Personal finance"
-    gethomepage.dev/group: "Finance"
+    gethomepage.dev/group: "Apps"
     gethomepage.dev/icon: "sure.png"
     gethomepage.dev/href: "https://sure.melotic.dev"
   name: sure

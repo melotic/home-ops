@@ -73,7 +73,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Atuin"
           gethomepage.dev/description: "Shell history sync"
-          gethomepage.dev/group: "Tools"
+          gethomepage.dev/group: "Apps"
           gethomepage.dev/icon: "atuin.png"
           gethomepage.dev/href: "https://atuin.melotic.dev"
         hostnames:

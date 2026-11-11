@@ -93,7 +93,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Miniflux"
           gethomepage.dev/description: "RSS reader"
-          gethomepage.dev/group: "Tools"
+          gethomepage.dev/group: "Apps"
           gethomepage.dev/icon: "miniflux.png"
           gethomepage.dev/href: "https://reader.melotic.dev"
         hostnames:
