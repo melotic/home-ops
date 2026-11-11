@@ -1,7 +1,6 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: require-image-registry-allowlist
   annotations:
@@ -14,30 +13,41 @@ metadata:
       are implicitly denied — Renovate normalizes to docker.io/... so no real workload
       regression is expected.
 spec:
-  validationFailureAction: Enforce
-  background: false
-  rules:
-    - name: check-registry-allowlist
-      match:
-        any:
-          - resources:
-              kinds: [Pod]
-      exclude:
-        any:
-          - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
-      validate:
-        message: >-
-          Container image must come from an allowlisted registry
-          (ghcr.io, quay.io, mirror.gcr.io, docker.io, index.docker.io,
-          lscr.io, docker.dragonflydb.io, harbor.melotic.dev, zot.melotic.dev, registry.k8s.io,
-          registry.gitlab.com, code.forgejo.org, cr.fluentbit.io, gsoci.azurecr.io,
-          oci.element.io).
-        pattern:
-          spec:
-            =(ephemeralContainers):
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | zot.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/* | oci.element.io/*"
-            =(initContainers):
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | zot.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/* | oci.element.io/*"
-            containers:
-              - image: "ghcr.io/* | quay.io/* | mirror.gcr.io/* | docker.io/* | index.docker.io/* | lscr.io/* | docker.dragonflydb.io/* | harbor.melotic.dev/* | zot.melotic.dev/* | registry.k8s.io/* | registry.gitlab.com/* | code.forgejo.org/* | cr.fluentbit.io/* | gsoci.azurecr.io/* | oci.element.io/*"
+  validationActions: [Deny]
+  evaluation:
+    background:
+      enabled: false
+  autogen:
+    podControllers:
+      controllers: [deployments, statefulsets, daemonsets, jobs, cronjobs, replicasets]
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  matchConditions:
+    - name: exclude-system-namespaces
+      expression: >-
+        !(request.namespace in ["kube-system", "kube-public", "kube-node-lease", "kyverno", "flux-system"])
+  variables:
+    - name: allowlist
+      expression: >-
+        ["ghcr.io", "quay.io", "mirror.gcr.io", "docker.io", "index.docker.io", "lscr.io",
+         "docker.dragonflydb.io", "harbor.melotic.dev", "zot.melotic.dev", "registry.k8s.io",
+         "registry.gitlab.com", "code.forgejo.org", "cr.fluentbit.io", "gsoci.azurecr.io",
+         "oci.element.io"]
+    - name: containers
+      expression: >-
+        object.spec.containers
+        + (has(object.spec.initContainers) ? object.spec.initContainers : [])
+        + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+  validations:
+    - expression: >-
+        variables.containers.all(c, variables.allowlist.exists(r, c.image.startsWith(r + '/')))
+      message: >-
+        Container image must come from an allowlisted registry
+        (ghcr.io, quay.io, mirror.gcr.io, docker.io, index.docker.io,
+        lscr.io, docker.dragonflydb.io, harbor.melotic.dev, zot.melotic.dev, registry.k8s.io,
+        registry.gitlab.com, code.forgejo.org, cr.fluentbit.io, gsoci.azurecr.io,
+        oci.element.io).

@@ -1,9 +1,8 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
 # Spike 002 REJECT of prompp is final (CONTEXT D-02). Adding to or removing from the
 # denylist requires a tracked PR — process IS the gate per D-09.
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: disallow-untrusted-images
   annotations:
@@ -15,41 +14,34 @@ metadata:
       Initial denylist entries (prompp, vmstorage-prompp) reflect Spike 002's REJECT
       decision on observability-prompp. Adding to the denylist requires a PR.
 spec:
-  validationFailureAction: Enforce
-  background: false
-  rules:
-    - name: check-image-denylist
-      match:
-        any:
-          - resources:
-              kinds: [Pod]
-      exclude:
-        any:
-          - resources:
-              namespaces: [kube-system, kube-public, kube-node-lease, kyverno, flux-system]
-      validate:
-        message: >-
-          Image name matches denylist (currently: prompp, vmstorage-prompp).
-          Changes to the denylist require a PR.
-        foreach:
-          - list: "request.object.spec.containers"
-            deny:
-              conditions:
-                any:
-                  - key: "{{ element.image | regex_match('(^|/)(prompp|vmstorage-prompp)(:|@|$)', @) }}"
-                    operator: Equals
-                    value: true
-          - list: "request.object.spec.initContainers || `[]`"
-            deny:
-              conditions:
-                any:
-                  - key: "{{ element.image | regex_match('(^|/)(prompp|vmstorage-prompp)(:|@|$)', @) }}"
-                    operator: Equals
-                    value: true
-          - list: "request.object.spec.ephemeralContainers || `[]`"
-            deny:
-              conditions:
-                any:
-                  - key: "{{ element.image | regex_match('(^|/)(prompp|vmstorage-prompp)(:|@|$)', @) }}"
-                    operator: Equals
-                    value: true
+  validationActions: [Deny]
+  evaluation:
+    background:
+      enabled: false
+  autogen:
+    podControllers:
+      controllers: [deployments, statefulsets, daemonsets, jobs, cronjobs, replicasets]
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  matchConditions:
+    - name: exclude-system-namespaces
+      expression: >-
+        !(request.namespace in ["kube-system", "kube-public", "kube-node-lease", "kyverno", "flux-system"])
+  variables:
+    - name: denylist
+      expression: "'(^|/)(prompp|vmstorage-prompp)(:|@|$)'"
+    - name: containers
+      expression: >-
+        object.spec.containers
+        + (has(object.spec.initContainers) ? object.spec.initContainers : [])
+        + (has(object.spec.ephemeralContainers) ? object.spec.ephemeralContainers : [])
+  validations:
+    - expression: >-
+        variables.containers.all(c, !c.image.matches(variables.denylist))
+      message: >-
+        Image name matches denylist (currently: prompp, vmstorage-prompp).
+        Changes to the denylist require a PR.

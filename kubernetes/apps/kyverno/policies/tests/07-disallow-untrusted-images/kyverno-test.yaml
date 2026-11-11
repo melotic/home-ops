@@ -9,19 +9,21 @@ resources:
   - fixtures/good-pod.yaml
   - fixtures/bad-pod.yaml
   - fixtures/helper-pod.yaml
+  - fixtures/bad-deployment.yaml
 results:
   - policy: disallow-untrusted-images
-    rule: check-image-denylist
     resources: [good-pod]
     kind: Pod
     result: pass
   - policy: disallow-untrusted-images
-    rule: check-image-denylist
     resources: [bad-pod]
     kind: Pod
     result: fail
   - policy: disallow-untrusted-images
-    rule: check-image-denylist
     resources: [helper-pod]
     kind: Pod
     result: pass
+  - policy: disallow-untrusted-images
+    resources: [bad-deployment]
+    kind: Deployment
+    result: fail

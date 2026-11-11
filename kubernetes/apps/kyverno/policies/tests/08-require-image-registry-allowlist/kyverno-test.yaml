@@ -9,19 +9,21 @@ resources:
   - fixtures/good-pod.yaml
   - fixtures/bad-bare-pod.yaml
   - fixtures/bad-registry-pod.yaml
+  - fixtures/bad-registry-deployment.yaml
 results:
   - policy: require-image-registry-allowlist
-    rule: check-registry-allowlist
     resources: [good-pod]
     kind: Pod
     result: pass
   - policy: require-image-registry-allowlist
-    rule: check-registry-allowlist
     resources: [bad-bare-pod]
     kind: Pod
     result: fail
   - policy: require-image-registry-allowlist
-    rule: check-registry-allowlist
     resources: [bad-registry-pod]
     kind: Pod
+    result: fail
+  - policy: require-image-registry-allowlist
+    resources: [bad-registry-deployment]
+    kind: Deployment
     result: fail
