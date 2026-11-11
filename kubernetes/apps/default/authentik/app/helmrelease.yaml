@@ -102,7 +102,7 @@ spec:
             gethomepage.dev/enabled: "true"
             gethomepage.dev/name: "Authentik"
             gethomepage.dev/description: "Identity provider"
-            gethomepage.dev/group: "Infrastructure"
+            gethomepage.dev/group: "Platform"
             gethomepage.dev/icon: "authentik.png"
             gethomepage.dev/href: "https://sso.melotic.dev"
           hostnames:

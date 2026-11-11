@@ -21,13 +21,8 @@ data:
     hideVersion: true
     layout:
       - Media: {}
-      - Tools: {}
-      - Smart Home: {}
-      - AI: {}
-      - Finance: {}
-      - Monitoring: {}
-      - Infrastructure: {}
-      - Dashboards: {}
+      - Apps: {}
+      - Platform: {}
   kubernetes.yaml: |
     mode: cluster
     gateway: true

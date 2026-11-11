@@ -155,7 +155,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Paperless-ngx"
           gethomepage.dev/description: "Document archive"
-          gethomepage.dev/group: "Tools"
+          gethomepage.dev/group: "Apps"
           gethomepage.dev/icon: "paperless-ngx.png"
           gethomepage.dev/href: "https://paperless.melotic.dev"
         hostnames:

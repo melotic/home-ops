@@ -65,7 +65,7 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "SearXNG"
           gethomepage.dev/description: "Meta search"
-          gethomepage.dev/group: "Tools"
+          gethomepage.dev/group: "Apps"
           gethomepage.dev/icon: "searxng.png"
           gethomepage.dev/href: "https://searxng.melotic.dev"
         hostnames: ["{{ .Release.Name }}.melotic.dev"]
