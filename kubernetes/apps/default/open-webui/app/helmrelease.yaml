@@ -115,6 +115,11 @@ spec:
       ENABLE_IMAGE_GENERATION: "true"
       ENABLE_RAG_HYBRID_SEARCH: "true"
       ENABLE_WEB_SEARCH: "true"
+      EXA_API_KEY:
+        valueFrom:
+          secretKeyRef:
+            name: open-webui-secret
+            key: EXA_API_KEY
       IMAGE_GENERATION_ENGINE: openai
       IMAGE_GENERATION_MODEL: z-image
       IMAGES_OPENAI_API_BASE_URL: http://llama-swap.default.svc.cluster.local:8080/v1
