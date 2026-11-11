@@ -9,20 +9,29 @@ data:
   settings.yaml: |
     title: Zion
     description: Homelab dashboard
+    favicon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/main/png/homepage.png
     theme: dark
     color: slate
-    headerStyle: boxed
-    iconStyle: theme
+    headerStyle: clean
     statusStyle: dot
-    fullWidth: true
-    maxGroupColumns: 8
-    useEqualHeights: true
-    disableCollapse: true
     hideVersion: true
+    quicklaunch:
+      searchDescriptions: true
+      hideInternetSearch: true
+      showSearchSuggestions: true
     layout:
-      - Media: {}
-      - Apps: {}
-      - Platform: {}
+      Media:
+        style: row
+        columns: 2
+        icon: mdi-play-circle
+      Apps:
+        style: row
+        columns: 2
+        icon: mdi-application
+      Platform:
+        style: row
+        columns: 2
+        icon: mdi-server-network
   kubernetes.yaml: |
     mode: cluster
     gateway: true
@@ -30,6 +39,10 @@ data:
   services.yaml: |
     []
   widgets.yaml: |-
+    - search:
+        provider: duckduckgo
+        focus: false
+        target: _blank
     - kubernetes:
         cluster:
           show: true
@@ -42,6 +55,9 @@ data:
           cpu: true
           memory: true
           showLabel: true
-    - search:
-        provider: duckduckgo
-        target: _blank
+    - datetime:
+        text_size: l
+        format:
+          dateStyle: long
+          timeStyle: short
+          hourCycle: h23
