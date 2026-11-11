@@ -34,14 +34,16 @@ metadata:
   namespace: internal
 spec:
   interval: 1h
-  path: ./apps
+  path: ./
+  postBuild:
+    substitute:
+      PG_HOST: postgres-cluster-pooler-rw.database.svc.cluster.local
   prune: true
   retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: internal
     namespace: internal
-  targetNamespace: internal
   timeout: 5m
 ---
 # yaml-language-server: $schema=https://k8s-schemas.home-operations.com/external-secrets.io/externalsecret_v1.json
