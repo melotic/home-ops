@@ -34,6 +34,7 @@ spec:
           annotations:
             gethomepage.dev/enabled: "true"
             gethomepage.dev/name: "Alertmanager"
+            gethomepage.dev/pod-selector: "app.kubernetes.io/name=alertmanager"
             gethomepage.dev/description: "Alert routing"
             gethomepage.dev/group: "Platform"
             gethomepage.dev/icon: "alertmanager.png"
@@ -64,6 +65,7 @@ spec:
           annotations:
             gethomepage.dev/enabled: "true"
             gethomepage.dev/name: "Prometheus"
+            gethomepage.dev/pod-selector: "app.kubernetes.io/name=prometheus"
             gethomepage.dev/description: "Metrics"
             gethomepage.dev/group: "Platform"
             gethomepage.dev/icon: "prometheus.png"
