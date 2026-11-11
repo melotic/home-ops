@@ -101,6 +101,7 @@ spec:
           annotations:
             gethomepage.dev/enabled: "true"
             gethomepage.dev/name: "Authentik"
+            gethomepage.dev/pod-selector: "app.kubernetes.io/name=authentik,app.kubernetes.io/component=server"
             gethomepage.dev/description: "Identity provider"
             gethomepage.dev/group: "Platform"
             gethomepage.dev/icon: "authentik.png"
