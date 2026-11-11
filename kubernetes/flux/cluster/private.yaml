@@ -1,0 +1,67 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/v1/namespace.json
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: internal
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+  labels:
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/enforce-version: latest
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/audit-version: latest
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/gitrepository-source-v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: internal
+  namespace: internal
+spec:
+  interval: 1h
+  url: ssh://git@gitlab.melotic.dev/home-ops/cluster-apps-internal.git
+  ref:
+    branch: main
+  secretRef:
+    name: internal-git
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-internal
+  namespace: internal
+spec:
+  interval: 1h
+  path: ./apps
+  prune: true
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: internal
+    namespace: internal
+  targetNamespace: internal
+  timeout: 5m
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/external-secrets.io/externalsecret_v1.json
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: internal-git
+  namespace: internal
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    name: internal-git
+  data:
+    - secretKey: identity
+      remoteRef:
+        key: internal-git
+        property: identity
+    - secretKey: known_hosts
+      remoteRef:
+        key: internal-git
+        property: known_hosts
