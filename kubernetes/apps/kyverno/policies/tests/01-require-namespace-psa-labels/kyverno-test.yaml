@@ -11,17 +11,14 @@ resources:
   - fixtures/invalid-namespace.yaml
 results:
   - policy: require-namespace-psa-labels
-    rule: check-psa-enforce-label
     resources: [example-good]
     kind: Namespace
     result: pass
   - policy: require-namespace-psa-labels
-    rule: check-psa-enforce-label
     resources: [example-bad]
     kind: Namespace
     result: fail
   - policy: require-namespace-psa-labels
-    rule: check-psa-enforce-label
     resources: [example-invalid]
     kind: Namespace
     result: fail

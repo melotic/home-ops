@@ -1,7 +1,6 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/kyverno/kyverno/main/.schemas/v1/clusterpolicy.json
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
 metadata:
   name: require-namespace-psa-labels
   annotations:
@@ -13,30 +12,27 @@ metadata:
       defense-in-depth alongside Kyverno itself; if Kyverno is ever removed, PSA still
       blocks the worst classes of pod misconfigurations.
 spec:
-  validationFailureAction: Enforce
-  background: false
-  rules:
-    - name: check-psa-enforce-label
-      match:
-        any:
-          - resources:
-              kinds: [Namespace]
-              names: ["*"]
-      exclude:
-        any:
-          - resources:
-              names:
-                - kube-system
-                - kube-public
-                - kube-node-lease
-                - kyverno
-                - flux-system
-                - default
-                - cilium-secrets # Cilium-managed, no user pods
-                - csi-addons-system # vendor-owned manifests, no labels to patch
-      validate:
-        message: "Namespace must set label pod-security.kubernetes.io/enforce (restricted | baseline | privileged)"
-        pattern:
-          metadata:
-            labels:
-              pod-security.kubernetes.io/enforce: "restricted | baseline | privileged"
+  validationActions: [Deny]
+  evaluation:
+    background:
+      enabled: false
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [namespaces]
+  matchConditions:
+    - name: exclude-system-namespaces
+      expression: >-
+        !(object.metadata.name in [
+          "kube-system", "kube-public", "kube-node-lease", "kyverno", "flux-system",
+          "default", "cilium-secrets", "csi-addons-system"
+        ])
+  validations:
+    - expression: >-
+        has(object.metadata.labels) &&
+        'pod-security.kubernetes.io/enforce' in object.metadata.labels &&
+        object.metadata.labels['pod-security.kubernetes.io/enforce'] in
+        ['restricted', 'baseline', 'privileged']
+      message: "Namespace must set label pod-security.kubernetes.io/enforce (restricted | baseline | privileged)"

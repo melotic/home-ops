@@ -1,0 +1,19 @@
+---
+# Bad fixture — autogen must cover pod controllers, not just bare Pods
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bad-deployment
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: bad-deployment
+  template:
+    metadata:
+      labels:
+        app: bad-deployment
+    spec:
+      containers:
+        - name: app
+          image: prompp/prompp:latest

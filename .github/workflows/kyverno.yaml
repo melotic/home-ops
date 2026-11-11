@@ -52,7 +52,7 @@ jobs:
       - name: Install Kyverno CLI
         uses: kyverno/action-install-cli@fcee92fca5c883169ef9927acf543e0b5fc58289 # v0.2.0
         with:
-          release: v1.17.2
+          release: v1.19.2
 
       - name: Run kyverno test
         run: kyverno test kubernetes/apps/kyverno/policies/tests/
@@ -72,7 +72,7 @@ jobs:
       - name: Install Kyverno CLI
         uses: kyverno/action-install-cli@fcee92fca5c883169ef9927acf543e0b5fc58289 # v0.2.0
         with:
-          release: v1.17.2
+          release: v1.19.2
 
       - name: Setup flate
         uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
