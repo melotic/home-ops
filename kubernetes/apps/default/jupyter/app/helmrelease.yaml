@@ -15,8 +15,8 @@ spec:
         containers:
           app:
             image:
-              repository: quay.io/jupyter/minimal-notebook
-              tag: 2026-11-10@sha256:29076b0b96c954a16b813cc5c4230f248711ef1d7528cb1208b82397e86a8b52
+              repository: quay.io/jupyter/scipy-notebook
+              tag: 2026-11-10@sha256:457ec366e08750746a80537c46111911f9658fe1c665703edb4839197dd9383c
             env:
               PYTHONDONTWRITEBYTECODE: "1"
               TZ: America/Chicago
@@ -44,7 +44,7 @@ spec:
                 cpu: 100m
                 memory: 512Mi
               limits:
-                memory: 2Gi
+                memory: 4Gi
     defaultPodOptions:
       automountServiceAccountToken: false
       securityContext:
