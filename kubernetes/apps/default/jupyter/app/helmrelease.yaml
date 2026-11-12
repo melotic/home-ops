@@ -1,0 +1,69 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: jupyter
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: jupyter
+  interval: 1h
+  values:
+    controllers:
+      jupyter:
+        containers:
+          app:
+            image:
+              repository: quay.io/jupyter/minimal-notebook
+              tag: 2026-11-10@sha256:29076b0b96c954a16b813cc5c4230f248711ef1d7528cb1208b82397e86a8b52
+            env:
+              PYTHONDONTWRITEBYTECODE: "1"
+              TZ: America/Chicago
+            envFrom:
+              - secretRef:
+                  name: jupyter-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 8888
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    persistence:
+      home:
+        type: emptyDir
+        globalMounts:
+          - path: /home/jovyan
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
