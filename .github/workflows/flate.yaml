@@ -54,7 +54,7 @@ jobs:
           install_args: github:home-operations/flate
 
       - name: Run flate test
-        run: flate test all --path kubernetes/flux/cluster --allow-missing-secrets
+        run: flate test all --path kubernetes/flux/cluster --allow-missing-kinds Secret,ConfigMap
 
   kubeconform:
     name: Kubeconform
@@ -74,7 +74,7 @@ jobs:
           install_args: github:home-operations/flate
 
       - name: Render manifests with flate
-        run: flate build all --path kubernetes/flux/cluster -a monitoring.coreos.com/v1 --allow-missing-secrets > rendered.yaml
+        run: flate build all --path kubernetes/flux/cluster -a monitoring.coreos.com/v1 --allow-missing-kinds Secret,ConfigMap > rendered.yaml
 
       - name: Run kubeconform
         uses: docker://ghcr.io/yannh/kubeconform:v0.8.0
@@ -121,7 +121,7 @@ jobs:
           flate diff ${{ matrix.resources }}
           --path kubernetes/flux/cluster
           -a monitoring.coreos.com/v1
-          --allow-missing-secrets
+          --allow-missing-kinds Secret,ConfigMap
           --output github
           > diff.txt
 
