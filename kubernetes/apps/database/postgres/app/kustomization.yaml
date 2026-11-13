@@ -5,7 +5,6 @@ kind: Kustomization
 resources:
   - ./bootstrap-app.yaml
   - ./externalsecret-backup.yaml
-  - ./gitlab-database-settings.yaml
   - ./helmrelease.yaml
   - ./objectstore.yaml
   - ./scheduledbackup.yaml
