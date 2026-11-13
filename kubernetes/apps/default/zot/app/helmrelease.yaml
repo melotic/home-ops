@@ -93,8 +93,18 @@ spec:
               "docker2s2"
             ],
             "auth": {
-              "htpasswd": {
-                "path": "/secret/htpasswd"
+              "openid": {
+                "providers": {
+                  "oidc": {
+                    "credentialsFile": "/secret/oidc.json",
+                    "issuer": "https://sso.melotic.dev/application/o/zot/",
+                    "discoveryurl": "https://sso.melotic.dev/application/o/zot/.well-known/openid-configuration",
+                    "scopes": ["openid", "email", "profile"],
+                    "claimMapping": {
+                      "username": "preferred_username"
+                    }
+                  }
+                }
               },
               "failDelay": 5
             },
@@ -116,7 +126,7 @@ spec:
               },
               "adminPolicy": {
                 "users": [
-                  "admin"
+                  "melotic"
                 ],
                 "actions": [
                   "read",
