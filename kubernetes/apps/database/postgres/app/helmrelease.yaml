@@ -79,7 +79,7 @@ spec:
       postgresql:
         parameters:
           maintenance_work_mem: 128MB
-          autovacuum_vacuum_cost_limit: 800
+          autovacuum_vacuum_cost_limit: "800"
         shared_preload_libraries:
           - vchord
         synchronous:
