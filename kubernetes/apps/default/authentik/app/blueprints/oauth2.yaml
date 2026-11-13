@@ -243,7 +243,7 @@ entries:
       name: Zot
       provider: !Find [authentik_providers_oauth2.oauth2provider, [name, zot]]
       group: Platform
-      meta_icon: https://github.com/project-zot.png
+      meta_icon: https://cdn.jsdelivr.net/gh/selfhst/icons@main/svg/zot-registry.svg
       meta_description: OCI container registry
       meta_publisher: Zot
 
