@@ -7,11 +7,14 @@ metadata:
 spec:
   # Per input: role + database + password secret (1Password item `<name>-postgres` unless `item` is set).
   # `spec` replaces the default Database extras (public schema owned by the tenant).
+  # `inRoles` grants cluster role membership (e.g. pg_monitor) to the tenant role.
   inputs:
     - name: atuin
     - name: authentik
     - name: crowdsec
     - name: gitlab
+      inRoles:
+        - pg_monitor
       spec:
         schemas:
           - {name: public, owner: gitlab}
@@ -50,6 +53,9 @@ spec:
     spec:
       name: << inputs.name >>
       login: true
+      <<- if hasKey inputs "inRoles" >>
+      inRoles: << toJson inputs.inRoles >>
+      <<- end >>
       passwordSecret:
         name: postgres-user-<< inputs.name >>
       cluster:
