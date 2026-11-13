@@ -229,6 +229,24 @@ entries:
       meta_description: Personal finance and net worth tracking
       meta_publisher: Sure
 
+  - model: authentik_providers_oauth2.oauth2provider
+    identifiers: {name: zot}
+    attrs:
+      !!merge <<: *provider
+      client_id: !Env ZOT_CLIENT_ID
+      client_secret: !Env ZOT_CLIENT_SECRET
+      redirect_uris: [{url: "https://zot.melotic.dev/zot/auth/callback/oidc", matching_mode: strict}]
+  - model: authentik_core.application
+    identifiers: {slug: zot}
+    attrs:
+      !!merge <<: *app
+      name: Zot
+      provider: !Find [authentik_providers_oauth2.oauth2provider, [name, zot]]
+      group: Platform
+      meta_icon: https://github.com/project-zot.png
+      meta_description: OCI container registry
+      meta_publisher: Zot
+
   # Removed apps: deleting a blueprint entry does not delete the object in authentik.
   - model: authentik_core.application
     state: absent

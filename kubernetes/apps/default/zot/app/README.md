@@ -16,3 +16,12 @@ NLM locks stay on the NAS until the client that held them reboots and `rpc.statd
 notification. A node that dies for good never sends one, so clear that client's NLM locks on
 `construct` (`sm-notify`/`rpc.statd` on the NAS, or reboot the NAS's lock state) and then restart
 `zot-0`.
+
+## Authenticating to zot
+
+Browser login is Authentik OIDC only; there are no local accounts. `adminPolicy` grants
+read/create/update/delete to the `melotic` Authentik user (mapped from `preferred_username`).
+Pulls stay anonymous, so the Talos mirror chain and image pull secrets need nothing.
+
+Docker and Podman cannot complete a browser login. Create an API key in the zot UI after signing in
+with Authentik, then use it as the password: `docker login -u apikey zot.melotic.dev`.
