@@ -118,7 +118,7 @@ spec:
       RAG_OPENAI_API_KEY: none
       RAG_RERANKING_ENGINE: external
       RAG_RERANKING_MODEL: bge-rerank
-      TASK_MODEL_EXTERNAL: task-qwen4b
+      TASK_MODEL_EXTERNAL: nemotron-bolt-e4b
       WEB_SEARCH_ENGINE: exa
       WEB_SEARCH_RESULT_COUNT: "3"
       ENABLE_IMAGE_GENERATION: "true"
