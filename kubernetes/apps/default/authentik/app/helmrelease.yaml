@@ -27,7 +27,6 @@ spec:
     blueprints:
       configMaps:
         - authentik-blueprints
-        - authentik-blueprints-private
     geoip:
       enabled: true
       # MaxMind GeoLite2 databases update weekly; 24h avoids hitting daily download limits
