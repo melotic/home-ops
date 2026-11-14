@@ -64,7 +64,7 @@ spec:
                 cpu: 30m
                 memory: 256Mi
               limits:
-                memory: 512Mi
+                memory: 1Gi
     defaultPodOptions:
       priorityClassName: app-high
       automountServiceAccountToken: false
