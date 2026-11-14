@@ -119,6 +119,7 @@ spec:
       RAG_RERANKING_ENGINE: external
       RAG_RERANKING_MODEL: bge-rerank
       TASK_MODEL_EXTERNAL: nemotron-bolt-e4b
+      TASK_MODEL_PARAMS: '{"response_format":{"type":"json_schema","json_schema":{"name":"owui_task","strict":true,"schema":{"anyOf":[{"type":"object","properties":{"title":{"type":"string"}},"required":["title"],"additionalProperties":false},{"type":"object","properties":{"prompt":{"type":"string"}},"required":["prompt"],"additionalProperties":false},{"type":"array","items":{"type":"string"}}]}}}}'
       WEB_SEARCH_ENGINE: exa
       WEB_SEARCH_RESULT_COUNT: "3"
       ENABLE_IMAGE_GENERATION: "true"
