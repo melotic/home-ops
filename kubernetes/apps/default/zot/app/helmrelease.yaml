@@ -106,6 +106,7 @@ spec:
                   }
                 }
               },
+              "apikey": true,
               "failDelay": 5
             },
             "accessControl": {
