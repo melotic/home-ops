@@ -23,6 +23,7 @@ spec:
                   secretKeyRef:
                     name: open-terminal-secret
                     key: OPEN_TERMINAL_API_KEY
+              OPEN_TERMINAL_EXECUTE_TIMEOUT: "120"
               TZ: America/Chicago
             probes:
               liveness: &probes
