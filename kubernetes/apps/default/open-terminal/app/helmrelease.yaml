@@ -3,34 +3,36 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: jupyter
+  name: open-terminal
 spec:
   chartRef:
     kind: OCIRepository
-    name: jupyter
+    name: open-terminal
   interval: 1h
   values:
     controllers:
-      jupyter:
+      open-terminal:
         containers:
           app:
             image:
-              repository: quay.io/jupyter/scipy-notebook
-              tag: 2026-11-10@sha256:457ec366e08750746a80537c46111911f9658fe1c665703edb4839197dd9383c
+              repository: ghcr.io/open-webui/open-terminal
+              tag: openshift@sha256:d9dd5ffddb2aa2c1d134f760ef3116496c41da23ba81f83c2106299db82a32cd
             env:
-              PYTHONDONTWRITEBYTECODE: "1"
+              OPEN_TERMINAL_API_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: open-terminal-secret
+                    key: OPEN_TERMINAL_API_KEY
               TZ: America/Chicago
-            envFrom:
-              - secretRef:
-                  name: jupyter-secret
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
-                  tcpSocket:
-                    port: &port 8888
-                  initialDelaySeconds: 15
+                  httpGet:
+                    path: /health
+                    port: &port 8000
+                  initialDelaySeconds: 10
                   periodSeconds: 30
                   timeoutSeconds: 5
                   failureThreshold: 3
@@ -41,18 +43,18 @@ spec:
               capabilities: {drop: ["ALL"]}
             resources:
               requests:
-                cpu: 100m
-                memory: 512Mi
+                cpu: 50m
+                memory: 128Mi
               limits:
-                memory: 4Gi
+                memory: 2Gi
     defaultPodOptions:
       automountServiceAccountToken: false
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+        runAsUser: 1001
+        runAsGroup: 0
+        seccompProfile:
+          type: RuntimeDefault
     service:
       app:
         ports:
@@ -62,7 +64,7 @@ spec:
       home:
         type: emptyDir
         globalMounts:
-          - path: /home/jovyan
+          - path: /home/user
       tmp:
         type: emptyDir
         globalMounts:

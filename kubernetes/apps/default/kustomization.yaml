@@ -15,12 +15,12 @@ resources:
   - ./home-assistant/ks.yaml
   - ./homepage/ks.yaml
   - ./immich/ks.yaml
-  - ./jupyter/ks.yaml
   - ./kai-rbac/ks.yaml
   - ./karakeep/ks.yaml
   - ./miniflux/ks.yaml
   - ./mosquitto/ks.yaml
   - ./nas-backup/ks.yaml
+  - ./open-terminal/ks.yaml
   - ./open-webui/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./plex/ks.yaml
