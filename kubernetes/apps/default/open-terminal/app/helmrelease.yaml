@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/open-webui/open-terminal
-              tag: openshift@sha256:ee09aabe250d4ca123645aee85c4841dbdc7763fdf607bc7dc9fba41b73f7f53
+              tag: openshift@sha256:d9228fdb40fdc80b81cd2050dc64c719bef7886ab666f15f65b98ee8b076aef2
             env:
               OPEN_TERMINAL_API_KEY:
                 valueFrom:
