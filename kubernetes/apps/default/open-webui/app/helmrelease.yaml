@@ -72,7 +72,8 @@ spec:
         providerName: authentik
         scopes: openid email profile
     extraEnvVars:
-      AIOHTTP_CLIENT_TIMEOUT: "600"
+      AIOHTTP_CLIENT_TIMEOUT: "3600"
+      AIOHTTP_CLIENT_STREAM_IDLE_TIMEOUT: "600"
       AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST: "30"
       DATABASE_URL:
         valueFrom:
