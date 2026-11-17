@@ -93,6 +93,9 @@ spec:
                   httpGet:
                     path: /
                     port: *port
+                    httpHeaders:
+                      - name: Host
+                        value: localhost
                   initialDelaySeconds: 60
                   periodSeconds: 10
                   timeoutSeconds: 3
