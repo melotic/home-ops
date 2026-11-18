@@ -13,5 +13,6 @@ configMapGenerator:
   - name: home-assistant-packages
     files:
       - config/packages/hvac.yaml
+      - config/packages/vacuum.yaml
 configurations:
   - kustomizeconfig.yaml

@@ -1,0 +1,28 @@
+---
+# Roborock runs while nobody is up: overnight, or once Justin has been gone 5 minutes.
+# sensor.q5_max_last_clean_begin is the once-a-day guard, so a morning departure after the
+# overnight clean does not trigger a second run.
+automation:
+  - id: vacuum_daily
+    alias: Vacuum – daily
+    triggers:
+      - trigger: time
+        at: "02:30:00"
+      - trigger: state
+        entity_id: person.justin
+        from: home
+        to: not_home
+        for: "00:05:00"
+    conditions:
+      - condition: state
+        entity_id: vacuum.q5_max
+        state: docked
+      - condition: template
+        value_template: >-
+          {{ as_timestamp(states('sensor.q5_max_last_clean_begin'), 0) | float
+             < as_timestamp(today_at('00:00')) | float }}
+    actions:
+      - action: vacuum.start
+        target:
+          entity_id: vacuum.q5_max
+    mode: single
