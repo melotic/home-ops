@@ -45,6 +45,7 @@ spec:
                   key: password
               PAPERLESS_REDIS: redis://dragonfly.database.svc.cluster.local:6379/0
               PAPERLESS_URL: "https://paperless.melotic.dev"
+              PAPERLESS_ALLOWED_HOSTS: paperless-ngx.default.svc.cluster.local
               PAPERLESS_PORT: &port 8000
               USERMAP_UID: "1000"
               USERMAP_GID: "1000"
