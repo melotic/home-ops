@@ -1,0 +1,90 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: paperless-mcp
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: paperless-mcp
+  dependsOn:
+    - name: cloudflare-tunnel
+      namespace: network
+  values:
+    controllers:
+      paperless-mcp:
+        strategy: RollingUpdate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/baruchiro/paperless-mcp
+              tag: 2.3.0@sha256:9f27bf5f2fef05f4912e618b0d5fc0e39854328f1b3e40a172aa5c7fe5a9732a
+            env:
+              TZ: America/Chicago
+              PAPERLESS_URL: http://paperless-ngx.default.svc.cluster.local:8000
+              PAPERLESS_PUBLIC_URL: https://paperless.melotic.dev
+              # Points file_path uploads at an always-empty directory, which disables reading files from the pod filesystem.
+              PAPERLESS_MCP_UPLOAD_PATHS: /uploads
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 3000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+    service:
+      app:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        annotations:
+          gatus.home-operations.com/enabled: "false"
+        hostnames: ["{{ .Release.Name }}.melotic.dev"]
+        parentRefs:
+          - name: envoy-external
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+            matches:
+              - path:
+                  type: Exact
+                  value: /mcp
+    persistence:
+      tmp:
+        type: emptyDir
+      uploads:
+        type: emptyDir
+        sizeLimit: 1Mi
+        globalMounts:
+          - path: /uploads
+            readOnly: true
