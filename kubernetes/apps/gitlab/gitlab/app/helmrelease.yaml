@@ -20,7 +20,7 @@ spec:
   chart:
     spec:
       chart: gitlab
-      version: 10.5.7
+      version: 10.6.0
       sourceRef:
         kind: HelmRepository
         name: gitlab
@@ -305,7 +305,9 @@ spec:
             mountPath: /var/run/secrets/gitlab-setup/setup.sh
             subPath: setup.sh
             readOnly: true
-        workerProcesses: 0
+        # Puma 8 (GitLab 19.6) boots the app twice when single mode is combined
+        # with preload_app!, which raises "Can't reinstall subscriptions".
+        workerProcesses: 1
       sidekiq:
         concurrency: 5
         extraEnv:
