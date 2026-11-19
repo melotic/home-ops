@@ -1,0 +1,106 @@
+---
+views:
+  - title: Media
+    path: media
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Living room
+            icon: mdi:sofa
+          - type: tile
+            entity: media_player.living_room_tv
+            name: TV
+            features:
+              - type: media-player-playback
+              - type: media-player-volume-buttons
+                show_mute_button: true
+            grid_options:
+              columns: 12
+          - type: media-control
+            entity: media_player.living_room_tv_3
+            name: TV (Cast)
+            grid_options:
+              columns: full
+          - type: tile
+            entity: media_player.q_series_soundbar
+            name: Soundbar
+            features:
+              - type: media-player-volume-slider
+                show_mute_button: true
+              - type: media-player-source
+                style: dropdown
+              - type: media-player-sound-mode
+                style: dropdown
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Spotify
+            icon: mdi:spotify
+          - type: media-control
+            entity: media_player.spotify_justin_perez
+            name: Spotify
+            grid_options:
+              columns: full
+          - type: heading
+            heading: Plex
+            icon: mdi:plex
+          - type: tile
+            entity: sensor.zion_tx
+            name: Streams on Zion (TX)
+            icon: mdi:plex
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Xbox
+            icon: mdi:microsoft-xbox
+            badges:
+              - type: entity
+                entity: binary_sensor.melotic7224
+                show_state: true
+          - type: tile
+            entity: media_player.xbox
+            name: Xbox
+            features:
+              - type: media-player-playback
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: binary_sensor.melotic7224_in_game
+            name: In game
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.melotic7224_last_online
+            name: Last online
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.melotic7224_gamerscore
+            name: Gamerscore
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.xbox_free_space_internal_storage
+            name: Free storage
+            grid_options:
+              columns: 6
+      - type: grid
+        column_span: 3
+        cards:
+          - type: heading
+            heading: Coming up
+            icon: mdi:calendar-star
+          - type: calendar
+            initial_view: listWeek
+            entities:
+              - calendar.radarr
+              - calendar.sonarr
+            grid_options:
+              columns: full

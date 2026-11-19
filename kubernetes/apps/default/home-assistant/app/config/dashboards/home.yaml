@@ -1,0 +1,200 @@
+---
+views:
+  - title: Home
+    path: home
+    type: sections
+    max_columns: 4
+    badges:
+      - type: entity
+        entity: person.justin
+        show_name: true
+        show_entity_picture: true
+      - type: entity
+        entity: person.riley
+        show_name: true
+        show_entity_picture: true
+      - type: entity
+        entity: binary_sensor.house_occupied
+        name: Occupied
+        show_name: true
+      - type: entity
+        entity: sensor.outdoor_temperature
+        name: Outside
+        show_name: true
+        color: light-blue
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Climate
+            icon: mdi:thermostat
+            tap_action:
+              action: navigate
+              navigation_path: /home-climate/climate
+          - type: tile
+            entity: climate.main_floor
+            name: Main Floor
+            features:
+              - type: target-temperature
+              - type: climate-hvac-modes
+                style: dropdown
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: climate.upstairs
+            name: Upstairs
+            features:
+              - type: target-temperature
+              - type: climate-hvac-modes
+                style: dropdown
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.main_floor_humidity
+            name: Main humidity
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.upstairs_humidity
+            name: Upstairs humidity
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: Lights
+            icon: mdi:lightbulb-group
+          - type: tile
+            entity: light.lamp
+            name: Lamp
+            features:
+              - type: light-brightness
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: light.lamp_up
+            name: Lamp up
+            features:
+              - type: light-brightness
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: light.lamp_angled
+            name: Lamp angled
+            features:
+              - type: light-brightness
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Weather
+            icon: mdi:weather-partly-cloudy
+          - type: weather-forecast
+            entity: weather.forecast_home
+            forecast_type: daily
+            show_current: true
+            show_forecast: true
+            grid_options:
+              columns: full
+      - type: grid
+        cards:
+          - type: heading
+            heading: Garage & camera
+            icon: mdi:garage
+          - type: tile
+            entity: cover.garage_garage_door_garage_door
+            name: Garage door
+            features:
+              - type: cover-open-close
+            grid_options:
+              columns: 12
+          - type: picture-entity
+            entity: camera.g5_flex_high_resolution_channel
+            name: G5 Flex
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: full
+          - type: tile
+            entity: binary_sensor.g5_flex_person_detected
+            name: Person
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.g5_flex_vehicle_detected
+            name: Vehicle
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: Vacuum
+            icon: mdi:robot-vacuum
+          - type: tile
+            entity: vacuum.q5_max
+            name: Q5 Max+
+            features:
+              - type: vacuum-commands
+                commands:
+                  - start_pause
+                  - stop
+                  - return_home
+                  - locate
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.q5_max_battery
+            name: Battery
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.q5_max_last_clean_begin
+            name: Last clean
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.q5_max_vacuum_error
+            name: Error
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: Ollie
+            icon: mdi:cat
+          - type: tile
+            entity: vacuum.litter_robot_4_litter_box
+            name: Litter-Robot 4
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.litter_robot_4_waste_drawer
+            name: Waste drawer
+            features:
+              - type: bar-gauge
+                max: 100
+                min: 0
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.litter_robot_4_litter_level
+            name: Litter level
+            features:
+              - type: bar-gauge
+                max: 100
+                min: 0
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.ollie_weight
+            name: Weight
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.ollie_visits_today
+            name: Visits today
+            grid_options:
+              columns: 6

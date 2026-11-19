@@ -14,5 +14,11 @@ configMapGenerator:
     files:
       - config/packages/hvac.yaml
       - config/packages/vacuum.yaml
+  - name: home-assistant-dashboards
+    files:
+      - config/dashboards/home.yaml
+      - config/dashboards/climate.yaml
+      - config/dashboards/network.yaml
+      - config/dashboards/media.yaml
 configurations:
   - kustomizeconfig.yaml

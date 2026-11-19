@@ -118,5 +118,11 @@ spec:
         globalMounts:
           - path: /config/packages
             readOnly: true
+      dashboards:
+        type: configMap
+        name: home-assistant-dashboards
+        globalMounts:
+          - path: /config/dashboards
+            readOnly: true
       tmp:
         type: emptyDir
