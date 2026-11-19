@@ -43,6 +43,15 @@
       allowedVersions: "<1.104.3",
     },
     {
+      // GitLab 19.6.0 (chart 10.6.0) webservice fails to boot: eager load re-requires
+      // gitlab_schema.rb from LazyRelationLoader.inherited and raises
+      // "Can't reinstall subscriptions". Drop this rule once a release boots clean.
+      description: "Hold GitLab chart below 10.6.0 until the webservice boot crash is fixed",
+      matchDatasources: ["helm"],
+      matchPackageNames: ["gitlab"],
+      allowedVersions: "<10.6.0",
+    },
+    {
       description: "Override Helmfile Dependency Name",
       matchDatasources: ["docker"],
       matchManagers: ["helmfile"],
