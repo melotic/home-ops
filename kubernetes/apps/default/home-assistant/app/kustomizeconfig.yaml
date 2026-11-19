@@ -10,3 +10,5 @@ nameReference:
         kind: HelmRelease
       - path: spec/values/persistence/packages/name
         kind: HelmRelease
+      - path: spec/values/persistence/dashboards/name
+        kind: HelmRelease

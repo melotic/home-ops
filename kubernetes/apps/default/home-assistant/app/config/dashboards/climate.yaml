@@ -1,0 +1,287 @@
+---
+views:
+  - title: Climate
+    path: climate
+    type: sections
+    max_columns: 4
+    badges:
+      - type: entity
+        entity: sensor.outdoor_temperature
+        name: Outside
+        show_name: true
+        color: light-blue
+      - type: entity
+        entity: binary_sensor.house_occupied
+        name: Occupied
+        show_name: true
+      - type: entity
+        entity: binary_sensor.main_floor_occupancy
+        name: Main floor motion
+        show_name: true
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Main Floor
+            icon: mdi:sofa
+          - type: tile
+            entity: climate.main_floor
+            name: Main Floor
+            state_content:
+              - hvac_action
+              - preset_mode
+            features:
+              - type: target-temperature
+              - type: climate-hvac-modes
+                style: icons
+                hvac_modes:
+                  - heat_cool
+                  - heat
+                  - cool
+                  - 'off'
+              - type: climate-preset-modes
+                style: dropdown
+              - type: climate-fan-modes
+                style: dropdown
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.main_floor_temperature
+            name: Temp
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.main_floor_humidity
+            name: Humidity
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.main_floor_carbon_dioxide
+            name: CO2
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.main_floor_volatile_organic_compounds
+            name: VOC
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.main_floor_air_quality_index
+            name: Air quality index
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Upstairs
+            icon: mdi:stairs-up
+          - type: tile
+            entity: climate.upstairs
+            name: Upstairs
+            state_content:
+              - hvac_action
+              - preset_mode
+            features:
+              - type: target-temperature
+              - type: climate-hvac-modes
+                style: icons
+                hvac_modes:
+                  - heat_cool
+                  - heat
+                  - cool
+                  - 'off'
+              - type: climate-preset-modes
+                style: dropdown
+              - type: climate-fan-modes
+                style: dropdown
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.upstairs_temperature
+            name: Temp
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.upstairs_humidity
+            name: Humidity
+            grid_options:
+              columns: 6
+          - type: heading
+            heading: Outside
+            heading_style: subtitle
+            icon: mdi:weather-partly-cloudy
+          - type: tile
+            entity: weather.forecast_home
+            name: Forecast
+            features:
+              - type: temperature-forecast
+                forecast_type: hourly
+                hours_to_show: 24
+            grid_options:
+              columns: 12
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Last 24 hours
+            icon: mdi:chart-line
+          - title: Temperature
+            type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.main_floor_temperature
+                name: Main Floor
+              - entity: sensor.upstairs_temperature
+                name: Upstairs
+              - entity: sensor.outdoor_temperature
+                name: Outside
+            grid_options:
+              columns: full
+              rows: 5
+          - title: Humidity
+            type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.main_floor_humidity
+                name: Main Floor
+              - entity: sensor.upstairs_humidity
+                name: Upstairs
+            grid_options:
+              columns: 12
+              rows: 4
+          - title: Main floor air
+            type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.main_floor_carbon_dioxide
+                name: CO2
+              - entity: sensor.main_floor_volatile_organic_compounds
+                name: VOC
+            grid_options:
+              columns: 12
+              rows: 4
+          - title: Thermostat activity
+            type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: climate.main_floor
+                name: Main Floor
+              - entity: climate.upstairs
+                name: Upstairs
+            grid_options:
+              columns: full
+              rows: 4
+      - type: grid
+        cards:
+          - type: heading
+            heading: Filters & blowers
+            icon: mdi:air-filter
+          - type: tile
+            entity: sensor.main_floor_filter_hours
+            name: Main filter hours
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.upstairs_filter_hours
+            name: Upstairs filter hours
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.main_floor_blower_hours
+            name: Main blower hours
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.upstairs_blower_hours
+            name: Upstairs blower hours
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.main_floor_blower_running
+            name: Main blower running
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.upstairs_blower_running
+            name: Upstairs blower running
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: script.hvac_filter_changed
+            name: Filter changed
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: script.hvac_baseline
+            name: Enforce baseline
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: HVAC automations
+            icon: mdi:robot
+          - type: tile
+            entity: automation.hvac_enforce_baseline_on_start
+            name: Baseline on start
+            state_content:
+              - state
+              - last_triggered
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: automation.hvac_away_when_house_empty
+            name: Away when empty
+            state_content:
+              - state
+              - last_triggered
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: automation.hvac_resume_schedule_when_heading_home
+            name: Resume when heading home
+            state_content:
+              - state
+              - last_triggered
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: automation.hvac_home_comfort_while_occupied
+            name: Comfort while occupied
+            state_content:
+              - state
+              - last_triggered
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: automation.hvac_pet_failsafe_while_away
+            name: Pet failsafe
+            state_content:
+              - state
+              - last_triggered
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: automation.hvac_filter_due
+            name: Filter due
+            state_content:
+              - state
+              - last_triggered
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12

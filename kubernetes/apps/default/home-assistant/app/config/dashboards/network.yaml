@@ -1,0 +1,525 @@
+---
+views:
+  - title: Network
+    path: network
+    type: sections
+    icon: mdi:lan
+    max_columns: 4
+    badges:
+      - type: entity
+        entity: sensor.home_udm_se_state
+        name: UDM-SE
+        show_name: true
+      - type: entity
+        entity: sensor.stuxnet_clients
+        name: Stuxnet
+        show_name: true
+      - type: entity
+        entity: sensor.stuxnetiot_clients
+        name: IoT
+        show_name: true
+      - type: entity
+        entity: sensor.arris_8c8d_clients
+        name: ARRIS-8C8D
+        show_name: true
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Gateway
+            icon: mdi:router-network
+          - type: tile
+            entity: sensor.home_udm_se_state
+            name: UDM-SE
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.home_udm_se_cpu_utilization
+            name: CPU
+            features:
+              - type: bar-gauge
+                min: 0
+                max: 100
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.home_udm_se_memory_utilization
+            name: Memory
+            features:
+              - type: bar-gauge
+                min: 0
+                max: 100
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.home_udm_se_storage_utilization
+            name: Storage
+            features:
+              - type: bar-gauge
+                min: 0
+                max: 100
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.home_udm_se_hdd_1
+            name: HDD 1
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.home_udm_se_uptime
+            name: Up since
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Switches
+            icon: mdi:switch
+          - type: tile
+            entity: sensor.switch_pro_max_16_poe_state
+            name: Pro Max 16 PoE
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.switch_pro_max_16_poe_cpu_utilization
+            name: CPU
+            grid_options:
+              columns: 4
+          - type: tile
+            entity: sensor.switch_pro_max_16_poe_memory_utilization
+            name: Memory
+            grid_options:
+              columns: 4
+          - type: tile
+            entity: sensor.switch_pro_max_16_poe_temperature
+            name: Temp
+            grid_options:
+              columns: 4
+          - type: tile
+            entity: sensor.switch_flex_mini_state
+            name: USW Flex Mini
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.usw_flex_mini_cpu_utilization
+            name: CPU
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.usw_flex_mini_memory_utilization
+            name: Memory
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: Access points
+            icon: mdi:access-point
+          - type: tile
+            entity: sensor.none_state
+            name: U7 Pro
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.u7_pro_cpu_utilization
+            name: CPU
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.u7_pro_memory_utilization
+            name: Memory
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.u7_pro_max_state
+            name: U7 Pro Max
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.u7_pro_max_cpu_utilization
+            name: CPU
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.u7_pro_max_memory_utilization
+            name: Memory
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wi-Fi networks
+            icon: mdi:wifi
+          - type: tile
+            entity: switch.stuxnet_enabled
+            name: Stuxnet
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.stuxnet_clients
+            name: Clients
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.stuxnetiot_enabled
+            name: stuxnetiot
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.stuxnetiot_clients
+            name: Clients
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.arris_8c8d_enabled
+            name: ARRIS-8C8D
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.arris_8c8d_clients
+            name: Clients
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: switch.stuxnet_guest_enabled
+            name: Stuxnet Guest
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+      - type: grid
+        column_span: 2
+        cards:
+          - type: heading
+            heading: Load, last 24 hours
+            icon: mdi:chart-line
+          - title: CPU
+            type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.home_udm_se_cpu_utilization
+                name: UDM-SE
+              - entity: sensor.switch_pro_max_16_poe_cpu_utilization
+                name: Pro Max 16
+              - entity: sensor.u7_pro_cpu_utilization
+                name: U7 Pro
+              - entity: sensor.u7_pro_max_cpu_utilization
+                name: U7 Pro Max
+            grid_options:
+              columns: full
+              rows: 5
+          - title: Wi-Fi clients
+            type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.stuxnet_clients
+                name: Stuxnet
+              - entity: sensor.stuxnetiot_clients
+                name: IoT
+              - entity: sensor.arris_8c8d_clients
+                name: ARRIS-8C8D
+            grid_options:
+              columns: full
+              rows: 4
+      - type: grid
+        cards:
+          - type: heading
+            heading: Firewall rules
+            icon: mdi:wall-fire
+          - type: heading
+            heading: Tap opens details; the icon does nothing, so a stray tap can't flip a rule
+            heading_style: subtitle
+          - type: tile
+            entity: switch.unifi_network_allow_management_to_all_2
+            name: Management to all
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_trusted_to_management
+            name: Trusted to management
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_trusted_to_servers_2
+            name: Trusted to servers
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_trusted_to_iot_2
+            name: Trusted to IoT
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_server_to_trusted_2
+            name: Server to trusted
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_server_to_iot_2
+            name: Server to IoT
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_iot_to_plex_2
+            name: IoT to Plex
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_iot_to_jellyfin_2
+            name: IoT to Jellyfin
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_allow_he_icmp_2
+            name: HE ICMP
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_adblock_exclusions_2
+            name: AdBlock exclusions
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_slskd_2
+            name: slskd
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: switch.unifi_network_cucking_the_republicans_3
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Firmware
+            icon: mdi:update
+          - type: tile
+            entity: update.home_udm_se
+            name: UDM-SE
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: update.switch_pro_max_16_poe
+            name: Pro Max 16
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: update.switch_flex_mini
+            name: Flex Mini
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: update.unifi_device_update_a8_9c_6c_48_c2_1c
+            name: U7 Pro
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: update.u7_pro_max
+            name: U7 Pro Max
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+  - title: Homelab
+    path: homelab
+    type: sections
+    icon: mdi:kubernetes
+    max_columns: 4
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Zion nodes
+            icon: mdi:kubernetes
+          - type: tile
+            entity: device_tracker.k8s_niobe
+            name: k8s-niobe
+            icon: mdi:server
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: device_tracker.k8s_trinity
+            name: k8s-trinity
+            icon: mdi:server
+            grid_options:
+              columns: 6
+          - type: heading
+            heading: Wake on LAN
+            heading_style: subtitle
+          - type: tile
+            entity: button.wake_on_lan_k8s_niobe
+            name: Wake niobe
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: button.server_rack_wake_on_lan_k8s_trinity
+            name: Wake trinity
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: button.server_rack_wake_on_lan_k8s_ghost
+            name: Wake ghost
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Server rack
+            icon: mdi:server-network
+          - type: tile
+            entity: device_tracker.unas_pro
+            name: UNAS Pro
+            icon: mdi:nas
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: binary_sensor.slzb_mr3u_ethernet
+            name: SLZB Ethernet
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.slzb_mr3u_internet
+            name: SLZB Internet
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.slzb_mr3u_core_chip_temp
+            name: SLZB core temp
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.slzb_mr3u_zigbee_chip_temp
+            name: SLZB Zigbee temp
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: binary_sensor.zigbee2mqtt_bridge_connection_state
+            name: Zigbee2MQTT
+            grid_options:
+              columns: 12
+      - type: grid
+        cards:
+          - type: heading
+            heading: Downloads
+            icon: mdi:download-network
+            badges:
+              - type: entity
+                entity: binary_sensor.sabnzbd_warnings
+                show_state: true
+          - type: tile
+            entity: sensor.sabnzbd_status
+            name: SABnzbd
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.sabnzbd_speed
+            name: Speed
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.sabnzbd_queue_count
+            name: Queue
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.sabnzbd_left_to_download
+            name: Left
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.sabnzbd_free_disk_space
+            name: Free disk
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: number.sabnzbd_speedlimit
+            name: Speed limit
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: binary_sensor.radarr_health
+            name: Radarr health
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.sonarr_upcoming
+            name: Sonarr upcoming
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: Plex & Home Assistant
+            icon: mdi:plex
+          - type: tile
+            entity: sensor.zion_tx
+            name: Plex streams
+            icon: mdi:plex
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: update.zion_tx_update
+            name: Plex server
+            icon_tap_action:
+              action: none
+            grid_options:
+              columns: 6
+          - type: tile
+            entity: sensor.backup_last_successful_automatic_backup
+            name: Last backup
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.backup_next_scheduled_automatic_backup
+            name: Next backup
+            grid_options:
+              columns: 12
+          - type: tile
+            entity: sensor.backup_backup_manager_state
+            name: Backup manager
+            grid_options:
+              columns: 12

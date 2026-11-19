@@ -12,6 +12,30 @@ frontend:
 homeassistant:
   packages: !include_dir_named packages
 
+lovelace:
+  dashboards:
+    home-overview:
+      mode: yaml
+      filename: dashboards/home.yaml
+      title: Home
+      icon: mdi:home-variant
+    home-climate:
+      mode: yaml
+      filename: dashboards/climate.yaml
+      title: Climate
+      icon: mdi:thermostat
+    network-homelab:
+      mode: yaml
+      filename: dashboards/network.yaml
+      title: Network & Homelab
+      icon: mdi:server-network
+      require_admin: true
+    home-media:
+      mode: yaml
+      filename: dashboards/media.yaml
+      title: Media
+      icon: mdi:television-play
+
 # UI-editable sandbox. Promote a proven automation into a package.
 automation ui: !include automations.yaml
 script ui: !include scripts.yaml
