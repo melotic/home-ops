@@ -22,6 +22,7 @@ resources:
   - ./nas-backup/ks.yaml
   - ./open-terminal/ks.yaml
   - ./open-webui/ks.yaml
+  - ./paperless-mcp/ks.yaml
   - ./paperless-ngx/ks.yaml
   - ./plex/ks.yaml
   - ./prowlarr/ks.yaml
