@@ -59,7 +59,7 @@ views:
                 min: 0
                 max: 100
             grid_options:
-              columns: 6
+              columns: 12
           - type: tile
             entity: binary_sensor.home_udm_se_hdd_1
             name: HDD 1
@@ -69,7 +69,7 @@ views:
             entity: sensor.home_udm_se_uptime
             name: Up since
             grid_options:
-              columns: 12
+              columns: 6
       - type: grid
         cards:
           - type: heading
@@ -84,17 +84,17 @@ views:
             entity: sensor.switch_pro_max_16_poe_cpu_utilization
             name: CPU
             grid_options:
-              columns: 4
+              columns: 6
           - type: tile
             entity: sensor.switch_pro_max_16_poe_memory_utilization
             name: Memory
             grid_options:
-              columns: 4
+              columns: 6
           - type: tile
             entity: sensor.switch_pro_max_16_poe_temperature
             name: Temp
             grid_options:
-              columns: 4
+              columns: 12
           - type: tile
             entity: sensor.switch_flex_mini_state
             name: USW Flex Mini
@@ -357,7 +357,7 @@ views:
             icon_tap_action:
               action: none
             grid_options:
-              columns: 6
+              columns: 12
   - title: Homelab
     path: homelab
     type: sections
@@ -399,8 +399,8 @@ views:
             grid_options:
               columns: 12
           - type: tile
-            entity: button.server_rack_wake_on_lan_k8s_ghost
-            name: Wake ghost
+            entity: button.server_rack_wake_on_lan_18_c0_4d_03_b8_0b
+            name: Wake seraph
             icon_tap_action:
               action: none
             grid_options:
