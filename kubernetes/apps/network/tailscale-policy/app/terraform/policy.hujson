@@ -36,10 +36,18 @@
 			"dst": ["disco-ninja"],
 			"ip":  ["tcp:9900"],
 		},
+		// Outbound A2A to a machine genos shared into the tailnet. dst
+		// autogroup:shared is source-only, hence the host alias.
+		{
+			"src": ["autogroup:member"],
+			"dst": ["genos"],
+			"ip":  ["tcp:9900"],
+		},
 	],
 
 	"hosts": {
 		"disco-ninja": "100.108.57.7",
+		"genos":       "100.92.233.45",
 	},
 
 	// Resolver and Talos nodes are left out on purpose: they stay
