@@ -29,12 +29,12 @@
 			"dst": ["disco-ninja"],
 			"ip":  ["tcp:443", "tcp:8080"],
 		},
-		// External peers reach Hermes A2A only (9900, bearer-token auth). A
-		// shared node is quarantined, so this covers every port they can open.
+		// External peers reach the default profile's Hermes A2A only (9901,
+		// bearer-token auth); homelab's agent stays internal.
 		{
 			"src": ["autogroup:shared"],
 			"dst": ["disco-ninja"],
-			"ip":  ["tcp:9900"],
+			"ip":  ["tcp:9901"],
 		},
 		// Outbound calls to genos's shared machine. dst autogroup:shared is
 		// source-only, hence the host alias. 9900 A2A, 8642 api_server, 443
