@@ -36,12 +36,13 @@
 			"dst": ["disco-ninja"],
 			"ip":  ["tcp:9900"],
 		},
-		// Outbound A2A to a machine genos shared into the tailnet. dst
-		// autogroup:shared is source-only, hence the host alias.
+		// Outbound calls to genos's shared machine. dst autogroup:shared is
+		// source-only, hence the host alias. 9900 A2A, 8642 api_server, 443
+		// tailscale serve.
 		{
 			"src": ["autogroup:member"],
 			"dst": ["genos"],
-			"ip":  ["tcp:9900"],
+			"ip":  ["tcp:9900", "tcp:8642", "tcp:443"],
 		},
 	],
 
