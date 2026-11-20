@@ -53,8 +53,22 @@ spec:
           hostNetwork: false
           replicas: 2
           priorityClassName: system-cluster-critical
+          # Operator defaults reserve 512Mi for a container that peaks near 150Mi.
+          resources:
+            plugin:
+              requests:
+                memory: 256Mi
+              limits:
+                memory: 1Gi
         nodePlugin:
           priorityClassName: system-node-critical
+          resources:
+            plugin:
+              requests:
+                cpu: 250m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
       cephfs:
         name: rook-ceph.cephfs.csi.ceph.com
         enabled: true
@@ -68,8 +82,21 @@ spec:
           hostNetwork: false
           replicas: 2
           priorityClassName: system-cluster-critical
+          resources:
+            plugin:
+              requests:
+                memory: 256Mi
+              limits:
+                memory: 1Gi
         nodePlugin:
           priorityClassName: system-node-critical
+          resources:
+            plugin:
+              requests:
+                cpu: 250m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
       nvmeof:
         enabled: false
       nfs:
