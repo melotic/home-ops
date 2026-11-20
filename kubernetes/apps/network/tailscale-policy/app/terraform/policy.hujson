@@ -29,6 +29,13 @@
 			"dst": ["disco-ninja"],
 			"ip":  ["tcp:443", "tcp:8080"],
 		},
+		// External peers reach Hermes A2A only (9900, bearer-token auth). A
+		// shared node is quarantined, so this covers every port they can open.
+		{
+			"src": ["autogroup:shared"],
+			"dst": ["disco-ninja"],
+			"ip":  ["tcp:9900"],
+		},
 	],
 
 	"hosts": {
