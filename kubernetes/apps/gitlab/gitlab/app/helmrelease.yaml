@@ -289,7 +289,10 @@ spec:
             cpu: 500m
             memory: 1.5Gi
           limits:
-            memory: 3Gi
+            memory: 4Gi
+        puma:
+          disableWorkerKiller: false
+          workerMaxMemory: 1800
         extraEnv:
           MALLOC_CONF: dirty_decay_ms:1000,muzzy_decay_ms:1000
         extraVolumes: |
