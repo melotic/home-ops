@@ -85,9 +85,13 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Radarr"
           gethomepage.dev/description: "Movie management"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "radarr.png"
+          gethomepage.dev/group: "Downloads"
+          gethomepage.dev/weight: "20"
+          gethomepage.dev/icon: "radarr.svg"
           gethomepage.dev/href: "https://radarr.melotic.dev"
+          gethomepage.dev/widget.type: "radarr"
+          gethomepage.dev/widget.url: "http://radarr.default.svc.cluster.local"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_RADARR_API_KEY}}" }}'
         hostnames:
           - "radarr.melotic.dev"
         parentRefs:

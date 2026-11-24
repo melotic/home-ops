@@ -6,8 +6,9 @@ metadata:
     gethomepage.dev/enabled: "true"
     gethomepage.dev/name: "VictoriaLogs"
     gethomepage.dev/description: "Logs"
-    gethomepage.dev/group: "Platform"
-    gethomepage.dev/icon: "victorialogs.png"
+    gethomepage.dev/group: "Observability"
+    gethomepage.dev/weight: "40"
+    gethomepage.dev/icon: "victorialogs.svg"
     gethomepage.dev/href: "https://victoria-logs.melotic.dev"
   name: victoria-logs
 spec:

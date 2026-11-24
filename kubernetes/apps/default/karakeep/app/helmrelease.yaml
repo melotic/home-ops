@@ -152,8 +152,12 @@ spec:
           gethomepage.dev/name: "Karakeep"
           gethomepage.dev/description: "Bookmarks and notes"
           gethomepage.dev/group: "Apps"
-          gethomepage.dev/icon: "karakeep.png"
+          gethomepage.dev/weight: "20"
+          gethomepage.dev/icon: "karakeep.svg"
           gethomepage.dev/href: "https://karakeep.melotic.dev"
+          gethomepage.dev/widget.type: "karakeep"
+          gethomepage.dev/widget.url: "http://karakeep.default.svc.cluster.local:3000"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_KARAKEEP_API_KEY}}" }}'
         hostnames:
           - "karakeep.melotic.dev"
         parentRefs:

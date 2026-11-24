@@ -135,9 +135,14 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Immich"
           gethomepage.dev/description: "Photo library"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "immich.png"
+          gethomepage.dev/group: "Library"
+          gethomepage.dev/weight: "20"
+          gethomepage.dev/icon: "immich.svg"
           gethomepage.dev/href: "https://immich.melotic.dev"
+          gethomepage.dev/widget.type: "immich"
+          gethomepage.dev/widget.url: "http://immich-server.default.svc.cluster.local:2283"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_IMMICH_API_KEY}}" }}'
+          gethomepage.dev/widget.version: "2"
         hostnames:
           - "immich.melotic.dev"
         parentRefs:

@@ -115,9 +115,13 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Seerr"
           gethomepage.dev/description: "Media requests"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "seerr.png"
+          gethomepage.dev/group: "Library"
+          gethomepage.dev/weight: "30"
+          gethomepage.dev/icon: "seerr.svg"
           gethomepage.dev/href: "https://seerr.melotic.dev"
+          gethomepage.dev/widget.type: "seerr"
+          gethomepage.dev/widget.url: "http://seerr.default.svc.cluster.local"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_SEERR_API_KEY}}" }}'
         hostnames:
           - "seerr.melotic.dev"
         parentRefs:

@@ -85,9 +85,13 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Sonarr"
           gethomepage.dev/description: "TV management"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "sonarr.png"
+          gethomepage.dev/group: "Downloads"
+          gethomepage.dev/weight: "10"
+          gethomepage.dev/icon: "sonarr.svg"
           gethomepage.dev/href: "https://sonarr.melotic.dev"
+          gethomepage.dev/widget.type: "sonarr"
+          gethomepage.dev/widget.url: "http://sonarr.default.svc.cluster.local"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_SONARR_API_KEY}}" }}'
         hostnames:
           - "sonarr.melotic.dev"
         parentRefs:

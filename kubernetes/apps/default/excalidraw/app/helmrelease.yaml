@@ -62,7 +62,8 @@ spec:
           gethomepage.dev/name: "Excalidraw"
           gethomepage.dev/description: "Whiteboard"
           gethomepage.dev/group: "Apps"
-          gethomepage.dev/icon: "excalidraw.png"
+          gethomepage.dev/weight: "70"
+          gethomepage.dev/icon: "excalidraw.svg"
           gethomepage.dev/href: "https://excalidraw.melotic.dev"
         hostnames: ["{{ .Release.Name }}.melotic.dev"]
         parentRefs:
