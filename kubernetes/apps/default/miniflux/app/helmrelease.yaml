@@ -97,6 +97,9 @@ spec:
           gethomepage.dev/weight: "30"
           gethomepage.dev/icon: "miniflux.svg"
           gethomepage.dev/href: "https://reader.melotic.dev"
+          gethomepage.dev/widget.type: "miniflux"
+          gethomepage.dev/widget.url: "http://miniflux.default.svc.cluster.local:8080"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_MINIFLUX_API_KEY}}" }}'
         hostnames:
           - reader.melotic.dev
         parentRefs:

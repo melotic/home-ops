@@ -163,6 +163,9 @@ spec:
           gethomepage.dev/weight: "10"
           gethomepage.dev/icon: "paperless-ngx.svg"
           gethomepage.dev/href: "https://paperless.melotic.dev"
+          gethomepage.dev/widget.type: "paperlessngx"
+          gethomepage.dev/widget.url: "http://paperless-ngx.default.svc.cluster.local:8000"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_PAPERLESS_TOKEN}}" }}'
         hostnames:
           - "paperless.melotic.dev"
         parentRefs:

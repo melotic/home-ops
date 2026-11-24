@@ -66,6 +66,9 @@ spec:
           gethomepage.dev/weight: "40"
           gethomepage.dev/icon: "sabnzbd.svg"
           gethomepage.dev/href: "https://sabnzbd.melotic.dev"
+          gethomepage.dev/widget.type: "sabnzbd"
+          gethomepage.dev/widget.url: "http://sabnzbd.default.svc.cluster.local:8080"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_SABNZBD_API_KEY}}" }}'
         hostnames:
           - sabnzbd.melotic.dev
         parentRefs:
