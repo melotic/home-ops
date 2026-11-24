@@ -68,9 +68,13 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Tautulli"
           gethomepage.dev/description: "Plex statistics"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "tautulli.png"
+          gethomepage.dev/group: "Library"
+          gethomepage.dev/weight: "40"
+          gethomepage.dev/icon: "tautulli.svg"
           gethomepage.dev/href: "https://tautulli.melotic.dev"
+          gethomepage.dev/widget.type: "tautulli"
+          gethomepage.dev/widget.url: "http://tautulli.default.svc.cluster.local"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_TAUTULLI_API_KEY}}" }}'
         hostnames:
           - "{{ .Release.Name }}.melotic.dev"
         parentRefs:

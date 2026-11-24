@@ -9,7 +9,8 @@ metadata:
     gethomepage.dev/name: Dashboard
     gethomepage.dev/description: Cluster dashboard
     gethomepage.dev/group: "Platform"
-    gethomepage.dev/icon: homepage.png
+    gethomepage.dev/weight: "30"
+    gethomepage.dev/icon: "homepage.png"
     gethomepage.dev/href: https://dash.melotic.dev
 spec:
   parentRefs:

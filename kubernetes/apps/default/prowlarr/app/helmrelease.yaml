@@ -85,9 +85,13 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Prowlarr"
           gethomepage.dev/description: "Indexer manager"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "prowlarr.png"
+          gethomepage.dev/group: "Downloads"
+          gethomepage.dev/weight: "30"
+          gethomepage.dev/icon: "prowlarr.svg"
           gethomepage.dev/href: "https://prowlarr.melotic.dev"
+          gethomepage.dev/widget.type: "prowlarr"
+          gethomepage.dev/widget.url: "http://prowlarr.default.svc.cluster.local"
+          gethomepage.dev/widget.key: '{{ "{{HOMEPAGE_VAR_PROWLARR_API_KEY}}" }}'
         hostnames:
           - "prowlarr.melotic.dev"
         parentRefs:

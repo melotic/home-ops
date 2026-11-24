@@ -99,8 +99,9 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Plex"
           gethomepage.dev/description: "Media server"
-          gethomepage.dev/group: "Media"
-          gethomepage.dev/icon: "plex.png"
+          gethomepage.dev/group: "Library"
+          gethomepage.dev/weight: "10"
+          gethomepage.dev/icon: "plex.svg"
           gethomepage.dev/href: "https://plex.melotic.dev"
         hostnames:
           - "plex.melotic.dev"

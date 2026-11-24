@@ -5,6 +5,8 @@ metadata:
   name: homepage
   labels:
     app.kubernetes.io/name: homepage
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   replicas: 1
   revisionHistoryLimit: 1
@@ -17,8 +19,6 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: homepage
-      annotations:
-        reloader.stakater.com/auto: "true"
     spec:
       serviceAccountName: homepage
       automountServiceAccountToken: true
@@ -42,6 +42,9 @@ spec:
               value: $(MY_POD_IP):3000,dash.melotic.dev
             - name: TZ
               value: America/Chicago
+          envFrom:
+            - secretRef:
+                name: homepage-secret
           ports:
             - name: http
               containerPort: 3000
@@ -79,6 +82,12 @@ spec:
             - name: config-files
               mountPath: /app/config/widgets.yaml
               subPath: widgets.yaml
+            - name: config-files
+              mountPath: /app/config/bookmarks.yaml
+              subPath: bookmarks.yaml
+            - name: config-files
+              mountPath: /app/config/custom.css
+              subPath: custom.css
             - name: cache
               mountPath: /app/.next/cache
             - name: tmp

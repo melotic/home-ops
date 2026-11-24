@@ -92,8 +92,9 @@ spec:
           gethomepage.dev/enabled: "true"
           gethomepage.dev/name: "Home Assistant"
           gethomepage.dev/description: "Home automation"
-          gethomepage.dev/group: "Platform"
-          gethomepage.dev/icon: "home-assistant.png"
+          gethomepage.dev/group: "Smart Home"
+          gethomepage.dev/weight: "10"
+          gethomepage.dev/icon: "home-assistant.svg"
           gethomepage.dev/href: "https://hass.melotic.dev"
         hostnames:
           - "{{ .Release.Name }}.melotic.dev"

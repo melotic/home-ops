@@ -104,7 +104,8 @@ spec:
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=authentik,app.kubernetes.io/component=server"
             gethomepage.dev/description: "Identity provider"
             gethomepage.dev/group: "Platform"
-            gethomepage.dev/icon: "authentik.png"
+            gethomepage.dev/weight: "10"
+            gethomepage.dev/icon: "authentik.svg"
             gethomepage.dev/href: "https://sso.melotic.dev"
           hostnames:
             - sso.melotic.dev

@@ -12,37 +12,86 @@ data:
     favicon: https://raw.githubusercontent.com/homarr-labs/dashboard-icons/main/png/homepage.png
     theme: dark
     color: slate
-    headerStyle: clean
+    headerStyle: boxedWidgets
+    cardStyle: hairline
+    blockStyle: refined
+    cardBlur: sm
+    font: plexData
+    iconStyle: theme
     statusStyle: dot
+    useEqualHeights: true
     hideVersion: true
+    disableUpdateCheck: true
+    disableIndexing: true
     quicklaunch:
       searchDescriptions: true
       hideInternetSearch: true
       showSearchSuggestions: true
     layout:
-      Media:
+      Smart Home:
+        tab: Home
+        icon: mdi-home-automation
         style: row
         columns: 2
-        icon: mdi-play-circle
       Apps:
+        tab: Home
+        icon: mdi-apps
         style: row
-        columns: 2
-        icon: mdi-application
+        columns: 4
+      Library:
+        tab: Media
+        icon: mdi-play-circle
+        style: row
+        columns: 4
+      Downloads:
+        tab: Media
+        icon: mdi-download-circle
+        style: row
+        columns: 4
       Platform:
-        style: row
-        columns: 2
+        tab: Infra
         icon: mdi-server-network
+        style: row
+        columns: 3
+      Observability:
+        tab: Infra
+        icon: mdi-chart-timeline-variant
+        style: row
+        columns: 4
+      Links:
+        tab: Infra
+        icon: mdi-bookmark-multiple
+        style: row
+        columns: 5
   kubernetes.yaml: |
     mode: cluster
     gateway: true
     ingress: false
   services.yaml: |
     []
+  bookmarks.yaml: |
+    - Links:
+        - home-ops:
+            - icon: github.svg
+              href: https://github.com/melotic/home-ops
+              description: GitOps repo
+        - Cloudflare:
+            - icon: cloudflare.svg
+              href: https://dash.cloudflare.com
+              description: DNS and tunnels
+        - Tailscale:
+            - icon: tailscale.svg
+              href: https://login.tailscale.com/admin
+              description: Tailnet admin
+        - UniFi:
+            - icon: ubiquiti-unifi.svg
+              href: https://unifi.ui.com
+              description: Network
+        - 1Password:
+            - icon: 1password.svg
+              href: https://my.1password.com
+              description: Secrets
   widgets.yaml: |-
-    - search:
-        provider: duckduckgo
-        focus: false
-        target: _blank
     - kubernetes:
         cluster:
           show: true
@@ -55,9 +104,54 @@ data:
           cpu: true
           memory: true
           showLabel: true
+    - openmeteo:
+        label: Home
+        latitude: {{HOMEPAGE_VAR_LATITUDE}}
+        longitude: {{HOMEPAGE_VAR_LONGITUDE}}
+        timezone: America/Chicago
+        units: imperial
+        cache: 15
+        format:
+          maximumFractionDigits: 0
     - datetime:
-        text_size: l
+        text_size: xl
         format:
           dateStyle: long
           timeStyle: short
           hourCycle: h23
+    - search:
+        provider: duckduckgo
+        focus: false
+        target: _blank
+  custom.css: |
+    body {
+      background-image:
+        radial-gradient(60rem 40rem at 8% -10%, rgb(99 102 241 / 0.20), transparent 65%),
+        radial-gradient(50rem 36rem at 96% 4%, rgb(20 184 166 / 0.14), transparent 65%),
+        radial-gradient(70rem 46rem at 50% 115%, rgb(168 85 247 / 0.12), transparent 65%);
+      background-attachment: fixed;
+    }
+
+    #__next {
+      background-color: transparent;
+    }
+
+    .service-group-name,
+    .bookmark-group-name {
+      letter-spacing: 0.02em;
+    }
+
+    .service-card {
+      transition:
+        transform 150ms ease,
+        background-color 150ms ease,
+        border-color 150ms ease;
+    }
+
+    .service-card:hover {
+      transform: translateY(-2px);
+    }
+
+    #tabs button[aria-selected="true"] {
+      box-shadow: inset 0 -2px 0 rgb(129 140 248 / 0.9);
+    }

@@ -36,8 +36,9 @@ spec:
             gethomepage.dev/name: "Alertmanager"
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=alertmanager"
             gethomepage.dev/description: "Alert routing"
-            gethomepage.dev/group: "Platform"
-            gethomepage.dev/icon: "alertmanager.png"
+            gethomepage.dev/group: "Observability"
+            gethomepage.dev/weight: "30"
+            gethomepage.dev/icon: "alertmanager.svg"
             gethomepage.dev/href: "https://alertmanager.melotic.dev"
           hostnames:
             - alertmanager.melotic.dev
@@ -67,9 +68,12 @@ spec:
             gethomepage.dev/name: "Prometheus"
             gethomepage.dev/pod-selector: "app.kubernetes.io/name=prometheus"
             gethomepage.dev/description: "Metrics"
-            gethomepage.dev/group: "Platform"
-            gethomepage.dev/icon: "prometheus.png"
+            gethomepage.dev/group: "Observability"
+            gethomepage.dev/weight: "20"
+            gethomepage.dev/icon: "prometheus.svg"
             gethomepage.dev/href: "https://prometheus.melotic.dev"
+            gethomepage.dev/widget.type: "prometheus"
+            gethomepage.dev/widget.url: "http://prometheus-operated.monitoring.svc.cluster.local:9090"
           hostnames:
             - prometheus.melotic.dev
           parentRefs:

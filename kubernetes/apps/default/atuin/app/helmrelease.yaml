@@ -74,7 +74,8 @@ spec:
           gethomepage.dev/name: "Atuin"
           gethomepage.dev/description: "Shell history sync"
           gethomepage.dev/group: "Apps"
-          gethomepage.dev/icon: "atuin.png"
+          gethomepage.dev/weight: "80"
+          gethomepage.dev/icon: "atuin.svg"
           gethomepage.dev/href: "https://atuin.melotic.dev"
         hostnames:
           - "{{ .Release.Name }}.melotic.dev"

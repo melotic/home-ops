@@ -160,7 +160,8 @@ spec:
           gethomepage.dev/name: "Paperless-ngx"
           gethomepage.dev/description: "Document archive"
           gethomepage.dev/group: "Apps"
-          gethomepage.dev/icon: "paperless-ngx.png"
+          gethomepage.dev/weight: "10"
+          gethomepage.dev/icon: "paperless-ngx.svg"
           gethomepage.dev/href: "https://paperless.melotic.dev"
         hostnames:
           - "paperless.melotic.dev"

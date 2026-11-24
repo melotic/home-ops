@@ -152,7 +152,8 @@ spec:
           gethomepage.dev/name: "Karakeep"
           gethomepage.dev/description: "Bookmarks and notes"
           gethomepage.dev/group: "Apps"
-          gethomepage.dev/icon: "karakeep.png"
+          gethomepage.dev/weight: "20"
+          gethomepage.dev/icon: "karakeep.svg"
           gethomepage.dev/href: "https://karakeep.melotic.dev"
         hostnames:
           - "karakeep.melotic.dev"
