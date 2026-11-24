@@ -90,6 +90,8 @@ spec:
       ENABLE_PERSISTENT_CONFIG: "false"
       ENABLE_PROFILE_IMAGE_URL_FORWARDING: "false"
       ENABLE_SIGNUP: "false"
+      ENABLE_SKILL_LAZY_LOADING: "true"
+      ENABLE_TOOL_SEARCH: "true"
       HOME: /tmp
       OAUTH_AUTO_REDIRECT: "true"
       OPENID_REDIRECT_URI: https://open-webui.melotic.dev/oauth/oidc/login/callback
