@@ -46,6 +46,7 @@ spec:
               DISABLE_PASSWORD_AUTH: "true"
               # bge-m3 emits 1024-dim vectors; karakeep defaults to 1536 and rejects the mismatch.
               EMBEDDING_DIMENSIONS: "1024"
+              EMBEDDING_ENABLE_AUTO_INDEXING: "true"
               EMBEDDING_TEXT_MODEL: bge-m3
               HOME: /tmp
               INFERENCE_CONTEXT_LENGTH: "8192"
