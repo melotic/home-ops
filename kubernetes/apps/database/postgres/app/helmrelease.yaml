@@ -80,6 +80,7 @@ spec:
         parameters:
           maintenance_work_mem: 128MB
           autovacuum_vacuum_cost_limit: "800"
+          idle_session_timeout: "15min"
         shared_preload_libraries:
           - vchord
         synchronous:
